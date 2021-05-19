@@ -6,7 +6,13 @@ Plotter <- R6::R6Class(
   public=list(
       semPathsOptions=NULL,
       initialize=function(options,datamatic,operator,resultsplots) {
-            super$initialize(options=options,vars=unlist(c(options$endogenous,options$factors,options$covs)))
+            astring<-options$code
+            reg<-"[=~:+\n]"
+            avec<-stringr::str_split(astring,reg)[[1]]
+            avec<-avec[sapply(avec, function(a) a!="")]
+            vars<-sapply(avec, function(a) stringr::str_remove(a,'.?[*]'))
+        
+            super$initialize(options=options,vars=vars)
             private$.plotgroup<-resultsplots
             private$.operator<-operator
             private$.datamatic<-datamatic

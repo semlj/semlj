@@ -19,7 +19,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .ready=NULL,
         .init = function() {
             ginfo("init")
-            mark("syntax",self$options$code)
+
             ### check that we have enough information to run ####
             private$.ready<-readiness(self$options)
             if (!private$.ready$ready) {
@@ -30,11 +30,11 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### prepare R6 classes that do the work ####
             data_machine<-Datamatic$new(self$options,self$data)
             lav_machine<-Estimate$new(self$options,data_machine)
-            plot_machine<-Plotter$new(self$options,data_machine,lav_machine,self$results$pathgroup)
+            plot_machine<-Plotter$new(self$options,NULL,lav_machine,self$results$pathgroup)
             
             ### fill the info table ###
             j.init_table(self$results$info,lav_machine$tab_info)
-            j.init_table_append(self$results$info,lav_machine$models())
+            j.init_table_append(self$results$info,lav_machine$models)
             j.init_table_append(self$results$info,lav_machine$constraints)
             j.init_table_append(self$results$info,lav_machine$defined)
             
@@ -44,11 +44,14 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### parameter fit indices table ####
             j.init_table(self$results$fit$indices,"",ci=T,ciroot="rmsea.",ciformat='RMSEA {}% CI',ciwidth=self$options$ciWidth)
             ### prepare r2 table
-            j.init_table(self$results$models$r2,lav_machine$tab_r2,ci=T,ciwidth=self$options$ciWidth)
+#            j.init_table(self$results$models$r2,lav_machine$tab_r2,ci=T,ciwidth=self$options$ciWidth)
             
             #### parameter estimates table ####
             j.init_table(self$results$models$coefficients,lav_machine$tab_coefficients,ci=T,ciwidth=self$options$ciWidth)
 
+            #### loadings table ####
+            j.init_table(self$results$models$loadings,lav_machine$tab_loadings,ci=T,ciwidth=self$options$ciWidth)
+            
             ### prepare var cov table ###
             j.init_table(self$results$models$correlations,lav_machine$tab_covariances,ci=T,ciwidth=self$options$ciWidth)
             
@@ -57,21 +60,10 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             j.init_table(self$results$models$defined,lav_machine$tab_defined,ci=T,ciwidth=self$options$ciWidth)
 
             ### prepare intercepts ###
-            if (self$options$showintercepts)
+            mark(lav_machine$tab_intercepts)
+            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                  j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
-            
-            # #### contrast tables ####
-             if (length(self$options$factors)>0) {
-                for (factor in self$options$factors) {
-                 clabs<-data_machine$contrasts_labels[[factor]]
-                 for (i in seq_along(clabs)) {
-                       clab<-clabs[[i]]
-                       self$results$models$contrastCodeTable$addRow(paste0(factor,i),list(rname=paste0(factor,i),clab=clab))
-                 }
-                 self$results$models$contrastCodeTable$setVisible(TRUE)    
-             }
-             }
-            
+
             if (self$options$constraints_examples) {
                 j.init_table(self$results$contraintsnotes,CONT_EXAMPLES,indent=-1)
                 j.init_table_append(self$results$contraintsnotes,DP_EXAMPLES,indent=-1)
@@ -95,7 +87,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             ### clean the data and prepare things ###
             lav_machine<-private$.lav_machine
-            data<-private$.data_machine$cleandata(self$data,lav_machine$interactions)
+            data<-private$.data_machine$cleandata(self$data)
 
             lav_machine$estimate(data)
 
@@ -124,15 +116,19 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### parameters estimates ####
             j.fill_table(self$results$models$coefficients,lav_machine$tab_coefficients)
 
+             ### loadings table ####
+            j.fill_table(self$results$models$loadings,lav_machine$tab_loadings)
+             
+             ### loadings vars and covars ####
             j.fill_table(self$results$models$correlations,lav_machine$tab_covariances)
             
-            j.fill_table(self$results$models$r2,lav_machine$tab_r2)
-            j.add_warnings(self$results$models$r2,lav_machine,"r2")
+#            j.fill_table(self$results$models$r2,lav_machine$tab_r2)
+#            j.add_warnings(self$results$models$r2,lav_machine,"r2")
             
             j.fill_table(self$results$models$defined,lav_machine$tab_defined)
             j.add_warnings(self$results$models$defined,lav_machine,"defined")
             
-            if (self$options$showintercepts)
+            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                    j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
             
 
@@ -201,50 +197,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             return(TRUE)
 
         },
-        .marshalFormula= function(formula, data, name) {
-            endogenous<-list()
-            endogenousTerms<-list()
-            j<-0
-            for (i in seq_along(formula)) {
-                if (lgrep("<|>|==|~~",formula[[i]]))
-                    warning("Constraints and defined parameters are ignored in `formula`. Please use `constraints` option")
-                else {
-                    j<-j+1
-                    line<-as.formula(formula[[i]])
-                    endogenous[[j]]<-as.character(line[[2]])
-                    endogenousTerms[[j]]<-jmvcore::decomposeFormula(expand.formula(as.formula(line)))
-                }
-            }
-            exogenous<-setdiff(unique(unlist(endogenousTerms)),endogenous)
-            allvars<-unlist(c(endogenous,exogenous))
-            if (name=="endogenous")
-                return(endogenous)
-            if (name=="endogenousTerms")
-                return(endogenousTerms)
-            if (name=="exogenous")
-                return(exogenous)
 
-            data<-data[0,allvars]
-            
-            if (name=="covs") {
-                return(allvars[(!sapply(data, is.factor))])
-            }
-            if (name=="factors") {
-                data<-data[0,allvars]
-                return(allvars[(sapply(data, is.factor))])
-            }
-            
-            
-            
-        },
-        
-        .formula = function() {
-            if (!is.something(private$.lav_machine))
-                  return("")
-            paste0("list(",paste(sapply(private$.lav_machine$models(),function(m) paste0('"',m$value,'"')),collapse = ","),")")
-            
-        },
-        
+
         .sourcifyOption = function(option) {
             
             name <- option$name

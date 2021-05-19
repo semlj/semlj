@@ -23,62 +23,42 @@ Syntax <- R6::R6Class(
               lav_terms=NULL,
               lav_structure=NULL,
               tab_coefficients=NULL,
+              tab_loadings=NULL,
               tab_covariances=NULL,
               tab_intercepts=NULL,
               tab_defined=NULL,
-              tab_r2=NULL,
               tab_info=NULL,
               structure=NULL,
               options=NULL,
               constraints=NULL,
               defined=NULL,
-              hasInteractions=FALSE,
-              interactions=list(),
-              factorinfo=NULL,
               contrasts_names=NULL,
               multigroup=NULL,
               indirect_names=NULL,
+              models=NULL,
               initialize=function(options,datamatic) {
-                super$initialize(options=options,vars=unlist(c(options$endogenous,options$factors,options$covs)))
                 
-
-                self$contrasts_names<-datamatic$contrasts_names
+                astring<-options$code
+                reg<-"[=~:+\n]"
+                avec<-stringr::str_split(astring,reg)[[1]]
+                avec<-avec[sapply(avec, function(a) a!="")]
+                vars<-sapply(avec, function(a) stringr::str_remove(a,'.?[*]'))
+                
+                super$initialize(options=options,vars=vars)
                 self$multigroup=datamatic$multigroup
-                
-                # here we prepare the variables. Factors are expanded to dummies and all variables are B64 named
-                # this produce two lists of terms, in plain names self$lav_terms and in B64 private$.lav_terms
 
-                factorinfo<-sapply(self$options$factors,function(f) length(datamatic$factors_levels[[f]])-1 )
-                self$factorinfo<-factorinfo
-                self$lav_terms<-lapply(self$options$endogenousTerms, function(alist) private$.factorlist(alist,factorinfo))
-                names(factorinfo)<-tob64(names(factorinfo))
-                private$.lav_terms<-lapply(tob64(self$options$endogenousTerms), function(alist) private$.factorlist(alist,factorinfo))
-                
                 # check_* check the input options and produces tables and list with names
                 ### prepare list of models for lavaan
                 private$.check_models()
-                ### check if there are interactions and warn if variables are not centered
-                private$.check_interactions()
-                ### check and build constraints and defined parameter lavaan directives
-                private$.check_constraints()
-                ### check and build lavaan directives to free covariances
-                private$.check_varcov()
 
                 ## check and build indirect effect (if requires)
-                private$.indirect()
+#                private$.indirect()
                 
                 ### here we update to build a lavaanify structure
                 private$.update()  
                 
-                }, # here initialize ends
-               models=function() {
-                  lapply(seq_along(self$options$endogenousTerms), 
-                       function(i) list(info="Model",
-                                        value=as.character(jmvcore::constructFormula(dep=self$options$endogenous[i],
-                                                                                     self$options$endogenousTerms[[i]])))
-                )
-              }
-              
+                } # here initialize ends
+
           ),   # End public
           active=list(
            ### inherited warnings and errors are overriden to check specific message to change, and then passed to super 
@@ -114,37 +94,39 @@ Syntax <- R6::R6Class(
             .lav_structure=NULL,
             .lav_constraints=NULL,
             .lav_defined=NULL,
-            .lav_models=NULL,
             .lav_indirect=NULL,
         
+            .check_models=function() {
+              synt<-self$options$code
+              avec<-stringr::str_split(synt,"\n")[[1]]
+              avec<-avec[sapply(avec, function(a) a!="")]
+              self$models<-avec
 
+            },
             ### collapse the informations in the private lists of terms and constraints and produce a lavaan syntax string
             .lavaan_syntax=function() {
-                  models<-private$.lav_models
-                  f<-glue::glue_collapse(unlist(models),sep = " ; ")
-                  con<-paste(private$.lav_constraints,collapse = " ; ")
-                  f<-paste(f,con,sep=" ; ")
-                  est<-paste(private$.lav_defined,collapse = " ; ")
-                  f<-paste(f,est,sep=" ; ")
-                      if (is.something(private$.lav_indirect)) {
-                      f<-paste(f,";")
-                      f<-paste(f,private$.lav_indirect,collapse = " ; ")
-                      }
+                  f<-glue::glue_collapse(unlist(self$models),sep = " ; ")
                   f
             },
             ## lavaanify the information available to obtain a raw (B64) table representing the parameters structure
             ## parameter structure means their names, labels, 
 
             .make_structure=function() {
-              
               lavoptions<-list(
                 model=private$.lavaan_syntax(),
                 int.ov.free = self$options$intercepts, 
-                auto.var = TRUE,
-                auto.th = TRUE, 
                 auto.cov.y = self$options$cov_y,
                 fixed.x=self$options$cov_x,
-                meanstructure = TRUE  ### this is needed for semPaths to work also with multigroups
+                int.lv.free=FALSE,
+                std.lv = FALSE,
+                auto.fix.first = TRUE, 
+                auto.fix.single = TRUE, 
+                auto.var = TRUE, 
+                auto.cov.lv.x = TRUE, 
+                auto.efa = TRUE, 
+                auto.th = TRUE, 
+                auto.delta = TRUE, 
+                meanstructure = FALSE  ### this is needed for semPaths to work also with multigroups
               )
               if (is.something(self$multigroup))
                 lavoptions[["ngroups"]]<-self$multigroup$nlevels
@@ -161,9 +143,13 @@ Syntax <- R6::R6Class(
               ## their nature (exogenous, endogenous, coefficient vs variances, etc), labels and names 
               
               private$.lav_structure<-results$obj
+              mark(private$.lav_structure)
               ## create easy labels to be used by the user in constraints and defined parameters  
-              private$.lav_structure$label<-gsub(".","",private$.lav_structure$plabel,fixed=T)
-              
+              private$.lav_structure$label<-ifelse(
+                                private$.lav_structure$label=="",
+                                gsub(".","",private$.lav_structure$plabel,fixed=T),
+                                private$.lav_structure$label)
+
             },            
 
             ### here we create the tables we need for init results. Those tables contains the information needed to init the results tables
@@ -179,7 +165,7 @@ Syntax <- R6::R6Class(
               ## now we start the filling of the tables to be used in the init of results
               .lav_structure<-private$.lav_structure
               ## fill some info to make nicer tables
-                  .lav_structure$user<-ifelse(.lav_structure$exo==1,"Sample","Estim")
+                  .lav_structure$type<-ifelse(.lav_structure$free>0,"Free","Fixed")
                   ## translate names
                   .lav_structure$lhs<-fromb64(.lav_structure$lhs,self$vars)
                   .lav_structure$rhs<-fromb64(.lav_structure$rhs,self$vars)
@@ -201,17 +187,17 @@ Syntax <- R6::R6Class(
               
               self$tab_coefficients<-.lav_structure[.lav_structure$op=="~",]
               
-              ### tab_r2 contains the r-squares for endogenous variables
-              ####### this is weired, but it works fine with multigroups
-              r2test<-((.lav_structure$op=="~~") & (.lav_structure$lhs %in% self$options$endogenous) & (.lav_structure$lhs==.lav_structure$rhs))
-              self$tab_r2<-.lav_structure[r2test,c("lhs","lgroup")]
-
+              ### tab_loadings contains loadings from observed to latent vars
+              
+              self$tab_loadings<-.lav_structure[.lav_structure$op=="=~",]
+              
+              
               ### tab_covariances contains variances and covariances
               self$tab_covariances<-.lav_structure[.lav_structure$op=="~~",]
               
               ### intercepts table
               self$tab_intercepts<-.lav_structure[.lav_structure$op=="~1",]
-              if (nrow(self$tab_intercepts)==0) self$intercepts<-NULL
+              if (nrow(self$tab_intercepts)==0) self$tab_intercepts<-NULL
               
               ### info contains the info table, with some loose information about the model
               alist<-list()
@@ -260,30 +246,7 @@ Syntax <- R6::R6Class(
               }
 
             },
-            .check_models=function() {
-              
-              terms<-private$.lav_terms
-              endogenous<-tob64(self$options$endogenous)
-              
-              models<-lapply(seq_along(terms), function(i)
-                jmvcore::constructFormula(dep=endogenous[i],terms[[i]]))
-              
-              private$.lav_models<-lapply(models,function(m) {
-                res<-gsub(":",INTERACTION_SYMBOL,m)
-                if (res!=m) {
-                  self$hasInteractions=TRUE
-                  int<-strsplit(res,"+",fixed = T)[[1]]
 
-                  ind<-grep(INTERACTION_SYMBOL,int,fixed = TRUE)
-                  for (j in ind)
-                    self$interactions[[length(self$interactions)+1]]<-trimws(int[j])
-                }
-                res
-              })
-            
-            },
-            
-            
             .check_constraints=function() {
               
               consts<-self$options$constraints
@@ -361,24 +324,6 @@ Syntax <- R6::R6Class(
               
               private$.lav_constraints<-tob64(realconsts,self$vars)
               private$.lav_defined<-tob64(realestims,self$vars)
-
-            },
-            .check_interactions=function() {
-
-                            noscale<-unlist(sapply(self$options$scaling , function(a) if (a$type=="none") return(a$var)))
-                            res<-lapply(seq_along(self$options$endogenousTerms), function(i) {
-                                    sapply(self$options$endogenousTerms[[1]],function(term) {
-                                          if (length(term)>1)
-                                                return(intersect(term,noscale))
-                                          else return(NULL)
-                                    })
-                            })
-                            res<-unique(unlist(res))
-                            if (is.something(res)) {
-                                    w<-glue::glue(WARNS[["nocenterd"]],vars=paste(res,collapse = ", "))
-                                   self$warnings<-list(topic="main",message=w)
-                            }
-                            
 
             },
             .check_varcov=function() {

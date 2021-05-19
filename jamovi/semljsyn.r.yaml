@@ -165,76 +165,17 @@ items:
 
     items:
     
-          - name: r2
-          
-            title: R-squared
-            type: Table
-            clearWith:
-                  - endogenous
-                  - covs
-                  - factors
-                  - ciType
-                  - contrasts
-                  - cov_y
-                  - constraints
-                  - data
-                  - multigroup
-
-            columns:
-                    - name: lgroup
-                      title: Group
-                      type: text
-                      visible: (multigroup)
-                      combineBelow: true
-            
-                    - name: lhs
-                      title: "Variable"
-                      type: text
-                    - name: r2
-                      title: R²
-                      type: number
-                    - name: ci.lower
-                      type: number
-                      title: Lower
-                      visible: (ci)
-                      format: zto
-                    - name: ci.upper
-                      type: number
-                      title: Upper
-                      visible: (ci)
-                      format: zto
-                    - name: chisq
-                      title: Wald X²
-                      type: number
-                      visible: (r2test)
-                    - name:  df
-                      title: "df"
-                      type: integer
-                      visible: (r2test)
-
-                    - name: pvalue
-                      title: "p"
-                      type: number
-                      format: zto,pvalue
-                      visible: (r2test)
-
-
-    
           - name: coefficients
             title: Parameter Estimates
             type: Table
             refs: lavaan
             clearWith:
-                  - endogenousTerms
-                  - endogenous
-                  - covs
-                  - factors
                   - ciType
                   - contrasts
                   - cov_y
-                  - constraints
                   - data
                   - multigroup
+                  - code
 
             columns:
                     - name: lgroup
@@ -278,22 +219,71 @@ items:
                       type: number
                       format: zto,pvalue
 
+          - name: loadings
+            title: Measurement Model
+            type: Table
+            visible: false
+            clearWith:
+                  - ciType
+                  - contrasts
+                  - cov_y
+                  - data
+                  - multigroup
+                  - code
+
+            columns:
+                    - name: lgroup
+                      title: Group
+                      type: text
+                      visible: (multigroup)
+                      combineBelow: true
+                    - name: label
+                      title: Label
+                      type: text
+                      visible: (showlabels)
+                      
+                    - name: lhs
+                      title: "Latent"
+                      type: text
+                      combineBelow: true
+                    - name:  rhs
+                      title: "Observed"
+                      type: text
+                    - name: est
+                      title: "Estimate"
+                      type: number
+                    - name: se
+                      title: "SE"
+                      type: number
+                    - name: ci.lower
+                      type: number
+                      title: Lower
+                      visible: (ci)
+                    - name: ci.upper
+                      type: number
+                      title: Upper
+                      visible: (ci)
+                    - name: std.all
+                      type: number
+                      title: β
+                    - name: z
+                      title: "z"
+                      type: number
+                    - name: pvalue
+                      title: "p"
+                      type: number
+                      format: zto,pvalue
 
           - name: correlations
             title: Variances and Covariances
             type: Table
             clearWith:
-                  - endogenous
-                  - covs
-                  - factors
                   - ciType
-                  - contrasts
                   - cov_y
-                  - constraints
                   - data
                   - multigroup
-                  - varcov
-                  
+                  - code
+
             columns:
                     - name: lgroup
                       title: Group
@@ -335,9 +325,6 @@ items:
                       title: "p"
                       type: number
                       format: zto,pvalue
-                    - name: user
-                      title: "Method"
-                      type: text
                     - name: type
                       title: "Type"
                       type: text
@@ -345,7 +332,7 @@ items:
           - name: intercepts
             title: Intercepts
             type: Table
-            visible: (showintercepts)
+            visible: false
             clearWith:
                   - endogenous
                   - covs
