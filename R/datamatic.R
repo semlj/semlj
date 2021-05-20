@@ -12,7 +12,11 @@ Datamatic <- R6::R6Class(
       avec<-avec[sapply(avec, function(a) a!="")]
       vars<-sapply(avec, function(a) stringr::str_remove(a,'.?[*]'))
       super$initialize(options=options,vars=vars)
-      self$multigroup=options$multigroup
+      mg<-options$multigroup
+      if (is.character(mg))
+             if(trimws(mg)=="")
+                   mg<-NULL
+      self$multigroup=mg
       private$.inspect_data(data)
       
 
