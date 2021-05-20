@@ -82,14 +82,11 @@ Plotter <- R6::R6Class(
 
         labs<-self$options$diag_paths
         nodeLabels<-model@pta$vnames$ov.num[[1]]
-        nodeLabels<-fromb64(nodeLabels)
-        if (self$options$diag_abbrev!="0")
-            nodeLabels<-abbreviate(nodeLabels,minlength = as.numeric(self$options$diag_abbrev),strict = T)
-        
-        size<-12
-        if (self$options$diag_labsize=="small") size<-8
-        if (self$options$diag_labsize=="large") size<-18
-        if (self$options$diag_labsize=="vlarge") size<-24
+
+        size<-8
+        if (self$options$diag_labsize=="small") size<-6
+        if (self$options$diag_labsize=="large") size<-14
+        if (self$options$diag_labsize=="vlarge") size<-18
         
         nNodes<-length(nodeLabels)
         size<-size*exp(-nNodes/80)+1
@@ -100,18 +97,24 @@ Plotter <- R6::R6Class(
             rotation<-1
             self$warnings<-list(topic="diagram",message=PLOT_WARNS[["rotation"]])
         }
+
+        #                      ,nodeLabels=nodeLabels
         
         self$semPathsOptions<-list(
-                      layout = layout,
-                      residuals = self$options$diag_resid,
-                      rotation = rotation ,
-                      intercepts = F
-                      ,nodeLabels=nodeLabels
+                      layout = layout
                       ,whatLabels=labs
-                      ,sizeMan = size
-                      ,sizeMan2=size/2
+                      ,residuals = self$options$diag_resid
+                      ,rotation = rotation 
+                      ,intercepts = F
+                      ,sizeLat = size
+                      ,sizeLat2 = size*.50
+                      ,sizeMan=size*.70
+                      ,sizeMan2=size*.35
                       , curve=2
-                      , shapeMan=self$options$diag_shape
+                      , nCharNodes=as.numeric(self$options$diag_abbrev)
+                      , shapeMan=self$options$diag_shape_man
+                      , shapeLat=self$options$diag_shape_lat
+                      
                       ,edge.label.cex =1.3)
         
 

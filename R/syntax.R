@@ -143,7 +143,6 @@ Syntax <- R6::R6Class(
               ## their nature (exogenous, endogenous, coefficient vs variances, etc), labels and names 
               
               private$.lav_structure<-results$obj
-              mark(private$.lav_structure)
               ## create easy labels to be used by the user in constraints and defined parameters  
               private$.lav_structure$label<-ifelse(
                                 private$.lav_structure$label=="",
@@ -209,7 +208,8 @@ Syntax <- R6::R6Class(
               alist[[length(alist)+1]]<-c(info="Loglikelihood user model",value="" )
               alist[[length(alist)+1]]<-c(info="Loglikelihood unrestricted model",value="")
               alist[[length(alist)+1]]<-c(info="",value="")
-              
+              for (m in self$models)
+                  alist[[length(alist)+1]]<-c(info="Model",value=m)
               self$tab_info<-alist
               
               ###  tab_defined contains defined parameters

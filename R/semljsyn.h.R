@@ -8,7 +8,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             code = "",
             syntax = NULL,
-            R = "bundled",
+            fonts = "small",
             vars = NULL,
             output = "noEcho",
             figWidth = "",
@@ -29,10 +29,11 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             diag_paths = "est",
             diag_resid = FALSE,
             diag_labsize = "medium",
-            diag_rotate = "1",
-            diag_type = "circle",
-            diag_shape = "rectangle",
-            diag_abbrev = "0",
+            diag_rotate = "2",
+            diag_type = "tree",
+            diag_shape_man = "rectangle",
+            diag_shape_lat = "circle",
+            diag_abbrev = "5",
             cov_y = TRUE,
             cov_x = TRUE,
             constraints_examples = FALSE,
@@ -57,14 +58,11 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "syntax",
                 syntax,
                 hidden=TRUE)
-            private$..R <- jmvcore::OptionList$new(
-                "R",
-                R,
-                hidden=TRUE,
-                options=list(
-                    "bundled",
-                    "external"),
-                default="bundled")
+            private$..fonts <- jmvcore::OptionString$new(
+                "fonts",
+                fonts,
+                default="small",
+                hidden=TRUE)
             private$..vars <- jmvcore::OptionVariables$new(
                 "vars",
                 vars,
@@ -185,24 +183,24 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "diag_rotate",
                 diag_rotate,
                 options=list(
-                    "1",
                     "2",
-                    "3",
-                    "4"),
-                default="1")
+                    "1",
+                    "4",
+                    "3"),
+                default="2")
             private$..diag_type <- jmvcore::OptionList$new(
                 "diag_type",
                 diag_type,
                 options=list(
+                    "tree",
                     "circle",
                     "circle2",
                     "tree2",
-                    "tree",
                     "spring"),
-                default="circle")
-            private$..diag_shape <- jmvcore::OptionList$new(
-                "diag_shape",
-                diag_shape,
+                default="tree")
+            private$..diag_shape_man <- jmvcore::OptionList$new(
+                "diag_shape_man",
+                diag_shape_man,
                 options=list(
                     "rectangle",
                     "square",
@@ -210,6 +208,16 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ellipse",
                     "diamond"),
                 default="rectangle")
+            private$..diag_shape_lat <- jmvcore::OptionList$new(
+                "diag_shape_lat",
+                diag_shape_lat,
+                options=list(
+                    "circle",
+                    "rectangle",
+                    "square",
+                    "ellipse",
+                    "diamond"),
+                default="circle")
             private$..diag_abbrev <- jmvcore::OptionList$new(
                 "diag_abbrev",
                 diag_abbrev,
@@ -220,7 +228,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "15",
                     "20",
                     "25"),
-                default="0")
+                default="5")
             private$..cov_y <- jmvcore::OptionBool$new(
                 "cov_y",
                 cov_y,
@@ -265,7 +273,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 
             self$.addOption(private$..code)
             self$.addOption(private$..syntax)
-            self$.addOption(private$..R)
+            self$.addOption(private$..fonts)
             self$.addOption(private$..vars)
             self$.addOption(private$..output)
             self$.addOption(private$..figWidth)
@@ -288,7 +296,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..diag_labsize)
             self$.addOption(private$..diag_rotate)
             self$.addOption(private$..diag_type)
-            self$.addOption(private$..diag_shape)
+            self$.addOption(private$..diag_shape_man)
+            self$.addOption(private$..diag_shape_lat)
             self$.addOption(private$..diag_abbrev)
             self$.addOption(private$..cov_y)
             self$.addOption(private$..cov_x)
@@ -302,7 +311,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         code = function() private$..code$value,
         syntax = function() private$..syntax$value,
-        R = function() private$..R$value,
+        fonts = function() private$..fonts$value,
         vars = function() private$..vars$value,
         output = function() private$..output$value,
         figWidth = function() private$..figWidth$value,
@@ -325,7 +334,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         diag_labsize = function() private$..diag_labsize$value,
         diag_rotate = function() private$..diag_rotate$value,
         diag_type = function() private$..diag_type$value,
-        diag_shape = function() private$..diag_shape$value,
+        diag_shape_man = function() private$..diag_shape_man$value,
+        diag_shape_lat = function() private$..diag_shape_lat$value,
         diag_abbrev = function() private$..diag_abbrev$value,
         cov_y = function() private$..cov_y$value,
         cov_x = function() private$..cov_x$value,
@@ -338,7 +348,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     private = list(
         ..code = NA,
         ..syntax = NA,
-        ..R = NA,
+        ..fonts = NA,
         ..vars = NA,
         ..output = NA,
         ..figWidth = NA,
@@ -361,7 +371,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..diag_labsize = NA,
         ..diag_rotate = NA,
         ..diag_type = NA,
-        ..diag_shape = NA,
+        ..diag_shape_man = NA,
+        ..diag_shape_lat = NA,
         ..diag_abbrev = NA,
         ..cov_y = NA,
         ..cov_x = NA,
@@ -429,19 +440,15 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="fit",
                             title="Overall Tests",
                             clearWith=list(
-                    "endogenousTerms"))
+                    "code"))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="main",
                             title="Model Tests",
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
-                                "contrasts",
                                 "cov_y",
-                                "constraints"),
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="label", 
@@ -565,8 +572,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     loadings = function() private$.items[["loadings"]],
                     correlations = function() private$.items[["correlations"]],
                     intercepts = function() private$.items[["intercepts"]],
-                    defined = function() private$.items[["defined"]],
-                    contrastCodeTable = function() private$.items[["contrastCodeTable"]]),
+                    defined = function() private$.items[["defined"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -772,15 +778,11 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Intercepts",
                             visible=FALSE,
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
-                                "contrasts",
                                 "cov_y",
-                                "constraints",
                                 "data",
-                                "multigroup"),
+                                "multigroup",
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -835,15 +837,11 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Defined Parameters",
                             visible=FALSE,
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
-                                "contrasts",
                                 "cov_y",
-                                "constraints",
                                 "data",
-                                "multigroup"),
+                                "multigroup",
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="lhs", 
@@ -893,21 +891,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="pvalue", 
                                     `title`="p", 
                                     `type`="number", 
-                                    `format`="zto,pvalue"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
-                            name="contrastCodeTable",
-                            title="Contrasts Definition",
-                            visible=FALSE,
-                            columns=list(
-                                list(
-                                    `name`="rname", 
-                                    `title`="Name", 
-                                    `type`="text"),
-                                list(
-                                    `name`="clab", 
-                                    `title`="Contrast", 
-                                    `type`="text"))))}))$new(options=options))
+                                    `format`="zto,pvalue"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -921,12 +905,18 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="pathgroup",
                             title="Path Model",
                             clearWith=list(
-                    "endogenous",
                     "cov_y",
-                    "constraints",
-                    "varcov",
                     "data",
-                    "multigroup"))
+                    "multigroup",
+                    "code",
+                    "diag_shape_man",
+                    "diag_shape_lat",
+                    "diag_abbrev",
+                    "diag_type",
+                    "diag_rotate",
+                    "diag_labsize",
+                    "diag_resid",
+                    "diag_paths"))
                         self$add(jmvcore::Array$new(
                             options=options,
                             name="diagrams",
@@ -936,23 +926,21 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 options=options,
                                 title="$key",
                                 renderFun=".showDiagram",
-                                width=700,
-                                height=500,
+                                width=800,
+                                height=600,
                                 clearWith=list(
-                                    "diag_resid",
-                                    "diag_paths",
-                                    "diag_labsize",
-                                    "diag_rotate",
-                                    "diag_type",
-                                    "diag_shape",
-                                    "diag_abbrev",
-                                    "contrasts",
-                                    "endogenousTerms",
                                     "cov_y",
-                                    "constraints",
                                     "data",
                                     "multigroup",
-                                    "varcov")),
+                                    "code",
+                                    "diag_shape_man",
+                                    "diag_shape_lat",
+                                    "diag_abbrev",
+                                    "diag_type",
+                                    "diag_rotate",
+                                    "diag_labsize",
+                                    "diag_resid",
+                                    "diag_paths")),
                             refs="semplot"))
                         self$add(jmvcore::Table$new(
                             options=options,
@@ -1004,13 +992,13 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresMissings = FALSE)
         }))
 
-#' SEM with lavaan syntax
+#' Structure Equation Modeling
 #'
 #' 
 #' @param data .
 #' @param code .
 #' @param syntax .
-#' @param R .
+#' @param fonts .
 #' @param vars .
 #' @param output .
 #' @param figWidth .
@@ -1038,7 +1026,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param diag_labsize Choose the diagram labels
 #' @param diag_rotate Choose the diagram labels
 #' @param diag_type Choose the diagram labels
-#' @param diag_shape Choose the diagram labels
+#' @param diag_shape_man Choose the diagram labels
+#' @param diag_shape_lat Choose the diagram labels
 #' @param diag_abbrev Choose the diagram labels
 #' @param cov_y \code{TRUE} or \code{FALSE} (default), produce a path diagram
 #' @param cov_x \code{TRUE} or \code{FALSE} (default), produce a path diagram
@@ -1060,7 +1049,6 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$models$correlations} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$models$contrastCodeTable} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
@@ -1077,7 +1065,7 @@ semljsyn <- function(
     data,
     code = "",
     syntax,
-    R = "bundled",
+    fonts = "small",
     vars,
     output = "noEcho",
     figWidth = "",
@@ -1098,10 +1086,11 @@ semljsyn <- function(
     diag_paths = "est",
     diag_resid = FALSE,
     diag_labsize = "medium",
-    diag_rotate = "1",
-    diag_type = "circle",
-    diag_shape = "rectangle",
-    diag_abbrev = "0",
+    diag_rotate = "2",
+    diag_type = "tree",
+    diag_shape_man = "rectangle",
+    diag_shape_lat = "circle",
+    diag_abbrev = "5",
     cov_y = TRUE,
     cov_x = TRUE,
     constraints_examples = FALSE,
@@ -1124,7 +1113,7 @@ semljsyn <- function(
     options <- semljsynOptions$new(
         code = code,
         syntax = syntax,
-        R = R,
+        fonts = fonts,
         vars = vars,
         output = output,
         figWidth = figWidth,
@@ -1147,7 +1136,8 @@ semljsyn <- function(
         diag_labsize = diag_labsize,
         diag_rotate = diag_rotate,
         diag_type = diag_type,
-        diag_shape = diag_shape,
+        diag_shape_man = diag_shape_man,
+        diag_shape_lat = diag_shape_lat,
         diag_abbrev = diag_abbrev,
         cov_y = cov_y,
         cov_x = cov_x,

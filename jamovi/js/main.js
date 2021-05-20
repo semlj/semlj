@@ -18,7 +18,6 @@ const events = {
 	  //  let $contents = ui.view.$el;
    	  let $contents=ui.syntax.$el;
    	  console.log("creating editor");
-   	  console.log($contents);
 	    $contents.css('display', 'flex');
 	    $contents.css('flex-direction', 'column');
 
@@ -35,23 +34,12 @@ const events = {
         let $config = $contents.find('#config');
         $config.append(`
             <div id="menu">
-                <label id="r-label">R Version</label>
-                <select id="r-version">
-                    <option value="bundled">jamovi R</option>
-                    <option value="external">System R</option>
+                <label id="fonts-label">Fonts size</label>
+                <select id="fonts">
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
                 </select>
-                <label id="output-label">Output</label>
-                <select id="output">
-                    <option value="noEcho">Show output only</option>
-                    <option value="echo">Show code and output</option>
-                </select>
-                <div id="figure-size">
-                    <div id="figure-size-title">Figure size (px)</div>
-                    <label>Width</label>
-                    <input id="figure-width" placeholder="Default">
-                    <label>Height</label>
-                    <input id="figure-height" placeholder="Default">
-                </div>
             </div>`);
 
 		this.$editor = $contents.find('#editor');
@@ -60,18 +48,15 @@ const events = {
 
 		this.$run.on('click', () => this.run(ui));
 
-		this.$output = $config.find('#output');
-		this.$output.on('change', (event) => {
-		    ui.output.setValue(this.$output.val());
+		this.$fonts = $config.find('#fonts');
+
+		this.$fonts.on('change', (event) => {
+		    var size=this.$fonts.children("option:selected").val();
+		    this.$editor.css("font-size",size);
+		    ui.fonts.setValue(size);
 		});
 
-		this.$r = $config.find('#r-version');
-		this.$r.on('change', (event) => {
-		    ui.R.setValue(this.$r.val());
-		});
 
-		this.$figWidth = $config.find('#figure-width');
-		this.$figHeight = $config.find('#figure-height');
 
 		this.$menu.find('input').on('keyup', (event) => {
 		    if (event.keyCode == 13)
@@ -99,6 +84,7 @@ const events = {
      loaded(ui) {
         console.log("loaded code");
 
+
         this.editor = ace.edit('editor');
         this.editor.$blockScrolling = Infinity; // disable a warning
         this.editor.setShowPrintMargin(false);
@@ -108,6 +94,10 @@ const events = {
         this.editor.setOptions({
             enableBasicAutocompletion: true,
         });
+        
+        
+        
+        
 
         this.editor.commands.on('afterExec', (event) => {
             let editor = event.editor;
@@ -183,26 +173,16 @@ const events = {
 	        this.$menu.removeClass('visible');
 
 	        ui.view.model.options.beginEdit();
-	        ui.figWidth.setValue(this.$figWidth.val());
-	        ui.figHeight.setValue(this.$figHeight.val());
-	        ui.output.setValue(this.$output.val());
-	        ui.R.setValue(this.$r.val());
 	        ui.view.model.options.endEdit();
         };
 
         this.run = (ui) => {
-            console.log(this.currentSession);
 
             let script = this.currentSession.getDocument().getValue();
 
             this.getColumnNames().then((columns) => {
 
-                ui.view.model.options.beginEdit();
-
-                ui.figWidth.setValue(this.$figWidth.val());
-	            ui.figHeight.setValue(this.$figHeight.val());
-	            ui.output.setValue(this.$output.val());
-	            ui.R.setValue(this.$r.val());
+              ui.view.model.options.beginEdit();
 
                 let match = script.match(/^\s*\#\s*\((.*)\)/);
                 if (match !== null) {
@@ -277,13 +257,10 @@ const events = {
             this.currentSession = ace.createEditSession(code, 'ace/mode/r');
             this.editSessions[id] = this.currentSession;
         }
+        this.$editor.css("font-size",ui.fonts.value());
+        this.$fonts.val(ui.fonts.value());
 
         this.editor.setSession(this.currentSession);
-
-        this.$figWidth.val(ui.figWidth.value());
-        this.$figHeight.val(ui.figHeight.value());
-        this.$output.val(ui.output.value());
-        this.$r.val(ui.R.value());
     },
 };
 

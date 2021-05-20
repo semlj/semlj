@@ -1,4 +1,4 @@
-title: SEM with lavaan syntax
+title: Structure Equation Modeling
 name: semljsyn
 jus: '2.0'
 compilerMode: tame
@@ -146,6 +146,9 @@ children:
             children:
               - type: CheckBox
                 name: cov_x
+              - type: CheckBox
+                name: cov_y
+                
           - type: LayoutBox
             margin: large
             children:
@@ -228,13 +231,12 @@ children:
                 name: diag_labsize
                 enable: (diagram)
               - type: ComboBox
-                name: diag_shape
+                name: diag_shape_man
                 enable: (diagram)
+              - type: ComboBox
+                name: diag_shape_lat
+                enable: (diagram)
+
               - type: ComboBox
                 name: diag_abbrev
                 enable: (diagram)
-          - type: LayoutBox
-            margin: large
-            children:
-              - type: CheckBox
-                name: cov_y

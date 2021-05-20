@@ -34,10 +34,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             ### fill the info table ###
             j.init_table(self$results$info,lav_machine$tab_info)
-            j.init_table_append(self$results$info,lav_machine$models)
-            j.init_table_append(self$results$info,lav_machine$constraints)
-            j.init_table_append(self$results$info,lav_machine$defined)
-            
+
 
 
             
@@ -60,7 +57,6 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             j.init_table(self$results$models$defined,lav_machine$tab_defined,ci=T,ciwidth=self$options$ciWidth)
 
             ### prepare intercepts ###
-            mark(lav_machine$tab_intercepts)
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                  j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
 
@@ -149,21 +145,37 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.something(image$state$semModel))
                  return()
             options<-private$.plot_machine$semPathsOptions
-            res<-try_hard(
-            semPlot::semPaths(object = image$state$semModel,
-                              layout =options$layout,
-                              residuals = options$residuals,
-                              rotation = options$rotation,
-                              intercepts = options$intercepts,
-                              nodeLabels= options$nodeLabels,
-                              whatLabels=options$whatLabels,
-                              sizeMan = options$sizeMan,
-                              sizeMan2=options$sizeMan2,
-                              curve=options$curve,
-                              shapeMan=options$shapeMan,
-                              edge.label.cex =options$edge.label.cex)
-            )
+            # semPlot::semPaths(object = image$state$semModel,
+            #                   layout =options$layout,
+            #                   residuals = options$residuals,
+            #                   rotation = options$rotation,
+            #                   intercepts = options$intercepts,
+            #                   nodeLabels= options$nodeLabels,
+            #                   whatLabels=options$whatLabels,
+            #                   sizeMan = options$sizeMan,
+            #                   sizeMan2=options$sizeMan2,
+            #                   curve=options$curve,
+            #                   shapeMan=options$shapeMan,
+            #                   edge.label.cex =options$edge.label.cex)
             note<-FALSE
+            
+            res<-try_hard(
+                semPlot::semPaths(object = image$state$semModel
+                                  ,layout =options$layout
+                                  ,whatLabels=options$whatLabels
+                                  ,rotation = options$rotation
+                                  ,nCharNodes=options$nCharNodes
+                                  ,sizeLat = options$sizeLat
+                                  ,sizeLat2 = options$sizeLat2
+                                  ,sizeMan=options$sizeMan
+                                  ,sizeMan2=options$sizeMan2
+                                  ,residuals=options$residuals
+                                  ,shapeLat=options$shapeLat
+                                  ,shapeMan=options$shapeMan
+                                  
+                        )
+            )
+            
             
             if (!isFALSE(res$error)) {
                 if  (length(grep("Circle layout only supported",res$error,fixed = T))>0) {

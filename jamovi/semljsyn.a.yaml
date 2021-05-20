@@ -1,6 +1,6 @@
 ---
 name: semljsyn
-title: SEM with lavaan syntax
+title: Structure Equation Modeling
 menuGroup: SEM
 menuSubgroup: semlj
 version: '1.0.0'
@@ -15,20 +15,16 @@ options:
       default: |
       type: String
       hidden: true
+
     - name: syntax
       type: String
       hidden: true
 
-    - name: R
-      title: R version
-      type: List
+    - name: fonts
+      type: String
+      default: "small"
       hidden: true
-      options:
-        - name: bundled
-          title: jamovi R
-        - name: external
-          title: System R
-      default: bundled
+
 
     - name: vars
       type: Variables
@@ -233,16 +229,16 @@ options:
       title: Rotate
       type: List
       options:
-        - name:  "1"
-          title: Exog. top
         - name: "2"
           title: Exog. left
-        - name: "3"
-          title: Exog. bottom
+        - name:  "1"
+          title: Exog. top
         - name: "4"
           title: Exog. right
+        - name: "3"
+          title: Exog. bottom
 
-      default: "1"
+      default: "2"
       description:
           R: >
              Choose the diagram labels
@@ -250,25 +246,24 @@ options:
       title: Type
       type: List
       options:
+        - name:  "tree"
+          title: Tree-like alt.
         - name: "circle"
           title: Circle
         - name: "circle2"
           title: Circle alt.
-
         - name:  "tree2"
           title: Tree-like
-        - name:  "tree"
-          title: Tree-like alt.
         - name: "spring"
           title: Spring
 
-      default: "circle"
+      default: "tree"
       description:
           R: >
              Choose the diagram labels
 
-    - name: diag_shape
-      title: Shapes
+    - name: diag_shape_man
+      title: Manifest shapes
       type: List
       options:
         - name:  "rectangle"
@@ -283,6 +278,26 @@ options:
           title: Diamonds
 
       default: "rectangle"
+      description:
+          R: >
+             Choose the diagram labels
+
+    - name: diag_shape_lat
+      title: Latent shapes
+      type: List
+      options:
+        - name: "circle"
+          title: Circles
+        - name:  "rectangle"
+          title:  Rectangles
+        - name:  "square"
+          title:  Squares
+        - name: "ellipse"
+          title: Ellipses
+        - name: "diamond"
+          title: Diamonds
+
+      default: "circle"
       description:
           R: >
              Choose the diagram labels
@@ -304,7 +319,7 @@ options:
           title:  "20"
         - name:  "25"
           title:  "25"
-      default: "0"
+      default: "5"
       description:
           R: >
              Choose the diagram labels
@@ -316,7 +331,7 @@ options:
 
 
     - name: cov_y
-      title: Endogenous Correlations
+      title: Correlated y
       type: Bool
       default: true
       description:

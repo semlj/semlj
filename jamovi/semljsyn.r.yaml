@@ -37,20 +37,16 @@ items:
     type: Group
     visible: false
     clearWith:
-                  - endogenousTerms
+                  - code
     items:
     
           - name: main
             title: Model Tests
             type: Table
             clearWith:
-                  - endogenous
-                  - covs
-                  - factors
                   - ciType
-                  - contrasts
                   - cov_y
-                  - constraints
+                  - code
 
             columns:
                     - name: label
@@ -334,15 +330,11 @@ items:
             type: Table
             visible: false
             clearWith:
-                  - endogenous
-                  - covs
-                  - factors
                   - ciType
-                  - contrasts
                   - cov_y
-                  - constraints
                   - data
                   - multigroup
+                  - code
                   
             columns:
                     - name: lgroup
@@ -394,15 +386,11 @@ items:
             type: Table
             visible: false
             clearWith:
-                  - endogenous
-                  - covs
-                  - factors
                   - ciType
-                  - contrasts
                   - cov_y
-                  - constraints
                   - data
                   - multigroup
+                  - code
                   
             columns:
 
@@ -453,31 +441,24 @@ items:
                       format: zto,pvalue
 
 
-          - name: contrastCodeTable
-            title: Contrasts Definition
-            type: Table
-            visible: false
-            columns:
-                         - name: rname
-                           title: 'Name'
-                           type: text
-                         - name: clab
-                           title: 'Contrast'
-                           type: text
-
-
 
   - name: pathgroup
     type: Group
     title: Path Model
     visible: (diagram)
     clearWith:
-                  - endogenous
                   - cov_y
-                  - constraints
-                  - varcov
                   - data
                   - multigroup
+                  - code
+                  - diag_shape_man
+                  - diag_shape_lat
+                  - diag_abbrev
+                  - diag_type
+                  - diag_rotate
+                  - diag_labsize
+                  - diag_resid
+                  - diag_paths
 
     items:
            - name: diagrams
@@ -489,24 +470,22 @@ items:
                    title: $key
                    type: Image
                    renderFun: .showDiagram
-                   width: 700
-                   height: 500
+                   width: 800
+                   height: 600
                    clearWith:
-                      - diag_resid
-                      - diag_paths
-                      - diag_labsize
-                      - diag_rotate
-                      - diag_type
-                      - diag_shape
-                      - diag_abbrev
-                      - contrasts
-                      - endogenousTerms
-                      - cov_y
-                      - constraints
-                      - data
-                      - multigroup
-                      - varcov
-
+                        - cov_y
+                        - data
+                        - multigroup
+                        - code
+                        - diag_shape_man
+                        - diag_shape_lat
+                        - diag_abbrev
+                        - diag_type
+                        - diag_rotate
+                        - diag_labsize
+                        - diag_resid
+                        - diag_paths
+  
              refs: semplot
              
            - name: notes
