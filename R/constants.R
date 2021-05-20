@@ -13,6 +13,14 @@ NOTES[["ci"]]<-list("standard"="Standard (Delta method)",
                     "norm"="Parametric bootstrap")
 
 
+LAT_EXAMPLES<-list()
+LAT_EXAMPLES[[1]]<-list("info"="Latent measurement",example="",com="")
+LAT_EXAMPLES[[2]]<-list("info"="indicators",example=" eta =~ x1 + x2 + x3",com="Eta is measured by x1,x2, x3")
+LAT_EXAMPLES[[3]]<-list("info"="indicators fixed",example=" eta =~ x1 + 1*x2 + x3",com="Fix the scale of eta to x2 scale")
+LAT_EXAMPLES[[4]]<-list("info"="Latent Regression",example="eta~beta+gamma",com="Eta is predicted by beta and gamma")
+LAT_EXAMPLES[[5]]<-list("info"="Latent Regression",example="eta~beta+x1",com="Latenent Eta is predicted by beta and observed x1")
+
+
 CONT_EXAMPLES<-list()
 CONT_EXAMPLES[[1]]<-list("info"="Constraints",example="",com="")
 CONT_EXAMPLES[[2]]<-list("info"="Equality constraint",example="p1==p2",com="Constrain the estimates of p1 and p2 to be equal")

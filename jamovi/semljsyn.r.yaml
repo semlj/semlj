@@ -67,13 +67,9 @@ items:
             type: Table
             visible: false
             clearWith:
-                  - endogenous
-                  - covs
-                  - factors
                   - ciType
-                  - contrasts
                   - cov_y
-                  - constraints
+                  - code
 
             columns:
                     - name: type
@@ -501,7 +497,7 @@ items:
   - name: contraintsnotes
     type: Table
     visible: (constraints_examples)
-    title: "Constraints input examples"
+    title: "Syntax examples"
     columns:
                   - name: info
                     type: text

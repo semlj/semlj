@@ -108,8 +108,10 @@ Estimate <- R6::R6Class("Estimate",
                             
 
                             self$tab_info<-alist
-                            if (is.something(self$constraints)) {
-                              check<-sapply(self$constraints,function(con) length(grep("<|>",con$value))>0,simplify = T)
+                            
+                            
+                            if (is.something(self$tab_constfit)) {
+                              check<-sapply(self$tab_constfit$op,function(con) length(grep("<|>",con))>0,simplify = T)
                               if (any(check)) {
                                 self$warnings<-list(topic="main",message=WARNS[["scoreineq"]])
                               } else {
@@ -125,7 +127,7 @@ Estimate <- R6::R6Class("Estimate",
                                 if (self$options$cumscoretest) {
                                   names(tab$cumulative)<-c("lhs","op","rhs","chisq","df","pvalue")
                                   tab$cumulative$type<-"Cumulative"
-                                  self$constfit<-rbind(self$constfit,tab$cumulative)
+                                  self$tab_constfit<-rbind(self$tab_constfit,tab$cumulative)
                                 }
                                 self$tab_fit[[length(self$tab_fit)+1]]<-list(label="Constraints Score Test",
                                                                      chisq=tab$test$X2,

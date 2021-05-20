@@ -148,6 +148,22 @@ options:
             `TRUE` or `FALSE` (default), show intercepts
 
 
+### latent scale
+
+    - name: auto.fix.first
+      title: Fix first indicator
+      type: Bool
+      default: true
+      description:
+          R: >
+            `TRUE` or `FALSE`
+    - name: std.lv
+      title: Standardized
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE`
 
 
 

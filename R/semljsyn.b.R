@@ -19,6 +19,17 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .ready=NULL,
         .init = function() {
             ginfo("init")
+            
+            ### output some syntax examples ####
+            
+            if (self$options$constraints_examples) {
+                j.init_table(self$results$contraintsnotes,LAT_EXAMPLES,indent=-1)
+                j.init_table_append(self$results$contraintsnotes,CONT_EXAMPLES,indent=-1)
+                j.init_table_append(self$results$contraintsnotes,DP_EXAMPLES,indent=-1)
+                j.init_table_append(self$results$contraintsnotes,SY_EXAMPLES,indent=-1)
+                self$results$contraintsnotes$setNote(1,CONT_NOTE)
+            }
+            
 
             ### check that we have enough information to run ####
             private$.ready<-readiness(self$options)
@@ -60,12 +71,6 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                  j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
 
-            if (self$options$constraints_examples) {
-                j.init_table(self$results$contraintsnotes,CONT_EXAMPLES,indent=-1)
-                j.init_table_append(self$results$contraintsnotes,DP_EXAMPLES,indent=-1)
-                j.init_table_append(self$results$contraintsnotes,SY_EXAMPLES,indent=-1)
-                self$results$contraintsnotes$setNote(1,CONT_NOTE)
-            }
             
             private$.lav_machine<-lav_machine
             private$.data_machine<-data_machine

@@ -23,6 +23,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             showintercepts = TRUE,
             intercepts = TRUE,
             indirect = FALSE,
+            auto.fix.first = TRUE,
+            std.lv = FALSE,
             diagram = FALSE,
             diag_paths = "est",
             diag_resid = FALSE,
@@ -140,6 +142,14 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..indirect <- jmvcore::OptionBool$new(
                 "indirect",
                 indirect,
+                default=FALSE)
+            private$..auto.fix.first <- jmvcore::OptionBool$new(
+                "auto.fix.first",
+                auto.fix.first,
+                default=TRUE)
+            private$..std.lv <- jmvcore::OptionBool$new(
+                "std.lv",
+                std.lv,
                 default=FALSE)
             private$..diagram <- jmvcore::OptionBool$new(
                 "diagram",
@@ -280,6 +290,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showintercepts)
             self$.addOption(private$..intercepts)
             self$.addOption(private$..indirect)
+            self$.addOption(private$..auto.fix.first)
+            self$.addOption(private$..std.lv)
             self$.addOption(private$..diagram)
             self$.addOption(private$..diag_paths)
             self$.addOption(private$..diag_resid)
@@ -317,6 +329,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         showintercepts = function() private$..showintercepts$value,
         intercepts = function() private$..intercepts$value,
         indirect = function() private$..indirect$value,
+        auto.fix.first = function() private$..auto.fix.first$value,
+        std.lv = function() private$..std.lv$value,
         diagram = function() private$..diagram$value,
         diag_paths = function() private$..diag_paths$value,
         diag_resid = function() private$..diag_resid$value,
@@ -353,6 +367,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..showintercepts = NA,
         ..intercepts = NA,
         ..indirect = NA,
+        ..auto.fix.first = NA,
+        ..std.lv = NA,
         ..diagram = NA,
         ..diag_paths = NA,
         ..diag_resid = NA,
@@ -461,13 +477,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Constraints Score Tests",
                             visible=FALSE,
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
-                                "contrasts",
                                 "cov_y",
-                                "constraints"),
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="type", 
@@ -946,7 +958,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="contraintsnotes",
                 visible="(constraints_examples)",
-                title="Constraints input examples",
+                title="Syntax examples",
                 columns=list(
                     list(
                         `name`="info", 
@@ -1006,6 +1018,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   intercepts
 #' @param intercepts \code{TRUE} or \code{FALSE} (default), show intercepts
 #' @param indirect \code{TRUE} or \code{FALSE} (default), show intercepts
+#' @param auto.fix.first \code{TRUE} or \code{FALSE}
+#' @param std.lv \code{TRUE} or \code{FALSE}
 #' @param diagram \code{TRUE} or \code{FALSE} (default), produce a path
 #'   diagram
 #' @param diag_paths Choose the diagram labels
@@ -1070,6 +1084,8 @@ semljsyn <- function(
     showintercepts = TRUE,
     intercepts = TRUE,
     indirect = FALSE,
+    auto.fix.first = TRUE,
+    std.lv = FALSE,
     diagram = FALSE,
     diag_paths = "est",
     diag_resid = FALSE,
@@ -1117,6 +1133,8 @@ semljsyn <- function(
         showintercepts = showintercepts,
         intercepts = intercepts,
         indirect = indirect,
+        auto.fix.first = auto.fix.first,
+        std.lv = std.lv,
         diagram = diagram,
         diag_paths = diag_paths,
         diag_resid = diag_resid,
