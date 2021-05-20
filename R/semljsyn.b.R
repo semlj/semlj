@@ -93,15 +93,17 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             lav_machine$estimate(data)
 
             warns<-lav_machine$warnings
-            if (is.something(warns[["main"]]))
-                for (i in seq_along(warns[["main"]]))
-                      self$results$info$setNote(i,warns[["main"]][[i]])
 
-            if (is.something(lav_machine$errors)) {
-                    stop(paste(lav_machine$errors,collapse = "; "))
-            } 
             ## fit info
              j.fill_table(self$results$info,lav_machine$tab_info)
+             j.add_warnings(self$results$info,lav_machine)
+
+             ## stop if error
+             
+             if (is.something(lav_machine$errors)) {
+                 stop(paste(lav_machine$errors,collapse = "; "))
+             } 
+             
             
              ## fit indices
              self$results$fit$indices$setRow(rowNo=1,lav_machine$tab_fitindices)
@@ -112,7 +114,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
              ## constraints fit test
              
              j.fill_table(self$results$fit$constraints,lav_machine$tab_constfit,append=T, spaceby="type")
-
+             j.add_warnings(self$results$fit$constraints,lav_machine)
+             
 
             ### parameters estimates ####
             j.fill_table(self$results$models$coefficients,lav_machine$tab_coefficients)

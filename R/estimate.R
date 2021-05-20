@@ -40,7 +40,7 @@ Estimate <- R6::R6Class("Estimate",
                             results<-try_hard({do.call(lavaan::lavaan,lavoptions)  })
                             
 
-                            self$warnings<-list(topic="main",message=results$warning)
+                            self$warnings<-list(topic="info",message=results$warning)
                             self$errors<-results$error
                             
                             if (is.something(self$errors))
@@ -113,7 +113,7 @@ Estimate <- R6::R6Class("Estimate",
                             if (is.something(self$tab_constfit)) {
                               check<-sapply(self$tab_constfit$op,function(con) length(grep("<|>",con))>0,simplify = T)
                               if (any(check)) {
-                                self$warnings<-list(topic="main",message=WARNS[["scoreineq"]])
+                                self$warnings<-list(topic="constraints",message=WARNS[["scoreineq"]])
                               } else {
                                 tab<-lavaan::lavTestScore(self$model,
                                                           univariate = self$options$scoretest,

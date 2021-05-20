@@ -135,7 +135,7 @@ Syntax <- R6::R6Class(
               results<-try_hard({
                 do.call(lavaan::lavaanify, lavoptions)
               })
-              self$warnings<-list(topic="main",message=results$warning)
+              self$warnings<-list(topic="info",message=results$warning)
               self$errors<-results$error
               if (is.something(self$errors))
                 stop(paste(self$errors,collapse = "\n"))
@@ -143,10 +143,13 @@ Syntax <- R6::R6Class(
 
               private$.lav_structure<-results$obj
               ## if not user defined, create easy labels to be used by the user in constraints and defined parameters  
-              private$.lav_structure$label<-ifelse(
-                                private$.lav_structure$label=="",
-                                gsub(".","",private$.lav_structure$plabel,fixed=T),
-                                private$.lav_structure$label)
+              ## we want to be sure that we do not interfere with user ability to use p* as custom label
+              ulabels<-private$.lav_structure$label
+              def<-ulabels!=""
+              plabels<-setdiff(paste0("p",1:(length(ulabels)*2)),ulabels[def])
+              plabels[which(def)]<-ulabels[def]
+              labels<-plabels[1:length(ulabels)]
+              private$.lav_structure$label<-labels
 
             },            
 
