@@ -1,8 +1,8 @@
 ---
 name: semljsyn
-title: Structure Equation Modeling
+title: Structural Equation Models
 menuGroup: SEM
-menuSubgroup: semlj
+menuTitle: SEM (syntax)
 version: '1.0.0'
 jas: '1.2'
 arbitraryCode: true
@@ -78,25 +78,6 @@ options:
         - name: boot
           title: Bootstrap
       default: standard
-
-    - name: r2ci
-      title: R-squared C.I
-      type: List
-      options:
-        - name: fisher
-          title: Z-to-r transform
-        - name: model
-          title: Residual C.I. 
-
-      default: fisher
-      description:
-          R: >
-             Choose the confidence interval type
-
-    - name: r2test
-      title: R-squared tests
-      type: Bool
-      default: false
 
 
     - name: bootci
@@ -201,6 +182,14 @@ options:
 
     - name: diag_resid
       title: Residuals
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), produce a path diagram
+
+    - name: diag_intercepts
+      title: Intercepts
       type: Bool
       default: false
       description:

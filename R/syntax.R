@@ -113,8 +113,8 @@ Syntax <- R6::R6Class(
             ## parameter structure means their names, labels, 
 
             .make_structure=function() {
-              mark(private$.lavaan_syntax())
-              lavoptions<-list(
+  
+                lavoptions<-list(
                 model=private$.lavaan_syntax(),
                 int.ov.free = self$options$intercepts, 
                 auto.cov.y = self$options$cov_y,
@@ -128,10 +128,13 @@ Syntax <- R6::R6Class(
                 auto.efa = TRUE, 
                 auto.th = TRUE, 
                 auto.delta = TRUE, 
-                meanstructure = FALSE  ### this is needed for semPaths to work also with multigroups
+                meanstructure = FALSE  ### this is needed to be TRUE for semPaths to work also with multigroups
               )
-              if (is.something(self$multigroup))
-                lavoptions[["ngroups"]]<-self$multigroup$nlevels
+              if (is.something(self$multigroup)) {
+                    lavoptions[["ngroups"]]<-self$multigroup$nlevels
+                    lavoptions[["meanstructure"]]<-TRUE
+                    
+                }
               
               results<-try_hard({
                 do.call(lavaan::lavaanify, lavoptions)
@@ -167,9 +170,6 @@ Syntax <- R6::R6Class(
               .lav_structure<-private$.lav_structure
               ## fill some info to make nicer tables
                   .lav_structure$type<-ifelse(.lav_structure$free>0,"Free","Fixed")
-                  ## translate names
-                  .lav_structure$lhs<-fromb64(.lav_structure$lhs,self$vars)
-                  .lav_structure$rhs<-fromb64(.lav_structure$rhs,self$vars)
               ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
                   if (is.something(self$multigroup)) {
                         levs<-c(self$multigroup$levels,"All")
@@ -179,7 +179,7 @@ Syntax <- R6::R6Class(
                         .lav_structure$lgroup<-"1"
               
               ### self$structure containts all parameters with plain names. Useful for children to refer to parameters properties
-              ### is not a tab_* which will be displayed in results
+              ### .lav_structure is not a tab_* which will be displayed in results
                   
               sel<-grep("==|<|>",.lav_structure$op,invert = T)
               self$structure<-.lav_structure[sel,]

@@ -19,6 +19,7 @@ Estimate <- R6::R6Class("Estimate",
                             
                             
                             ## prepare the options based on Syntax definitions
+                            
                             lavoptions<-list(model = private$.lav_structure, 
                                              data = data,
                                              se=self$options$se,
@@ -37,7 +38,6 @@ Estimate <- R6::R6Class("Estimate",
                             
                             ## estimate the models
                             results<-try_hard({do.call(lavaan::lavaan,lavoptions)  })
-                            
                             
 
                             self$warnings<-list(topic="main",message=results$warning)

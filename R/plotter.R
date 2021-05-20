@@ -61,8 +61,7 @@ Plotter <- R6::R6Class(
         sm<-semPlot::semPlotModel(model)
         groups<-unique(sm@Pars$group)
         images<-private$.plotgroup$diagrams
-        
-        
+
         if (all(groups=="")) {
           image<-images$get(key = "0")
           image$setState(list(semModel = sm))
@@ -104,6 +103,7 @@ Plotter <- R6::R6Class(
                       layout = layout
                       ,whatLabels=labs
                       ,residuals = self$options$diag_resid
+                      ,intercepts= self$options$diag_intercepts
                       ,rotation = rotation 
                       ,intercepts = F
                       ,sizeLat = size
@@ -128,31 +128,7 @@ Plotter <- R6::R6Class(
     .diagrams=NULL,
     .datamatic=FALSE,
     .plotgroup=NULL,
-    .operator=NULL,
-    .semPaths=function(options) {
-      ### we need this because semPaths does not work with do.call() in windows
-        res<-try_hard({
-        semPlot::semPaths(object = options$object,
-                      layout =options$layout,
-                      residuals = options$residuals,
-                      rotation = options$rotation,
-                      intercepts = options$intercepts,
-                      nodeLabels= options$nodeLabels,
-                      whatLabels=options$whatLabels,
-                      sizeMan = options$sizeMan,
-                      sizeMan2=options$sizeMan2,
-                      curve=options$curve,
-                      shapeMan=options$shapeMan,
-                      edge.label.cex =options$edge.label.cex,
-                      DoNotPlot=TRUE)
-
-      })
-      if (is.something(res$error))
-          self$warnings<-list(topic="diagram",message=res$error)
-      
-      return(res)
-    }
-
+    .operator=NULL
   ) # end of private
 ) # end of class
     

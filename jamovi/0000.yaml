@@ -10,13 +10,13 @@ date: 2021-1-1
 type: R
 description: Structural Equation Models based on lavaan
 analyses:
-  - title: Structure Equation Modeling
+  - title: Structural Equation Models
     name: semljsyn
     ns: semlj
     menuGroup: SEM
-    menuSubgroup: semlj
-    menuTitle: Structure Equation Modeling
-    description: Path Analysis
+    menuSubgroup: SEMLj
+    menuTitle: SEM (syntax)
+    description: Syntax based SEM
   - title: SEM for jamovi
     name: semljgui
     ns: semlj

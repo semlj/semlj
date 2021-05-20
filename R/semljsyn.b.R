@@ -30,7 +30,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### prepare R6 classes that do the work ####
             data_machine<-Datamatic$new(self$options,self$data)
             lav_machine<-Estimate$new(self$options,data_machine)
-            plot_machine<-Plotter$new(self$options,NULL,lav_machine,self$results$pathgroup)
+            plot_machine<-Plotter$new(self$options,data_machine,lav_machine,self$results$pathgroup)
             
             ### fill the info table ###
             j.init_table(self$results$info,lav_machine$tab_info)
@@ -170,6 +170,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                   ,sizeMan=options$sizeMan
                                   ,sizeMan2=options$sizeMan2
                                   ,residuals=options$residuals
+                                  ,intercepts=options$intercepts
                                   ,shapeLat=options$shapeLat
                                   ,shapeMan=options$shapeMan
                                   
@@ -212,31 +213,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
         .sourcifyOption = function(option) {
-            
-            name <- option$name
-            value <- option$value
-            
-            if (!is.something(value))
-                return('')
-            
-            if (option$name %in% c('factors', 'endogenous', 'covs', 'endogenousTerms'))
-                return('')
-            
-            if (name =='scaling') {
-                vec<-sourcifyList(option,"none")
-                return(vec)
-            }
-            if (name =='contrasts') {
-                vec<-sourcifyList(option,"simple")
-                return(vec)
-            }
-            if (name =='varcov') {
-                vec<-lapply(self$options$varcov, function(v) c(v$i1,v$i2))
-                vec=paste0("varcov=list(",paste(vec,collapse = ","),")",collapse = "")
-                return(vec)
-            }
-            
-            super$.sourcifyOption(option)
+            return("")
         }
         
         

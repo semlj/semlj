@@ -16,8 +16,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             toggle = FALSE,
             multigroup = NULL,
             se = "standard",
-            r2ci = "fisher",
-            r2test = FALSE,
             bootci = "perc",
             ci = TRUE,
             ciWidth = 95,
@@ -28,6 +26,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             diagram = FALSE,
             diag_paths = "est",
             diag_resid = FALSE,
+            diag_intercepts = FALSE,
             diag_labsize = "medium",
             diag_rotate = "2",
             diag_type = "tree",
@@ -106,17 +105,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "robust.huber.white",
                     "boot"),
                 default="standard")
-            private$..r2ci <- jmvcore::OptionList$new(
-                "r2ci",
-                r2ci,
-                options=list(
-                    "fisher",
-                    "model"),
-                default="fisher")
-            private$..r2test <- jmvcore::OptionBool$new(
-                "r2test",
-                r2test,
-                default=FALSE)
             private$..bootci <- jmvcore::OptionList$new(
                 "bootci",
                 bootci,
@@ -169,6 +157,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..diag_resid <- jmvcore::OptionBool$new(
                 "diag_resid",
                 diag_resid,
+                default=FALSE)
+            private$..diag_intercepts <- jmvcore::OptionBool$new(
+                "diag_intercepts",
+                diag_intercepts,
                 default=FALSE)
             private$..diag_labsize <- jmvcore::OptionList$new(
                 "diag_labsize",
@@ -281,8 +273,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..toggle)
             self$.addOption(private$..multigroup)
             self$.addOption(private$..se)
-            self$.addOption(private$..r2ci)
-            self$.addOption(private$..r2test)
             self$.addOption(private$..bootci)
             self$.addOption(private$..ci)
             self$.addOption(private$..ciWidth)
@@ -293,6 +283,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..diagram)
             self$.addOption(private$..diag_paths)
             self$.addOption(private$..diag_resid)
+            self$.addOption(private$..diag_intercepts)
             self$.addOption(private$..diag_labsize)
             self$.addOption(private$..diag_rotate)
             self$.addOption(private$..diag_type)
@@ -319,8 +310,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         toggle = function() private$..toggle$value,
         multigroup = function() private$..multigroup$value,
         se = function() private$..se$value,
-        r2ci = function() private$..r2ci$value,
-        r2test = function() private$..r2test$value,
         bootci = function() private$..bootci$value,
         ci = function() private$..ci$value,
         ciWidth = function() private$..ciWidth$value,
@@ -331,6 +320,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         diagram = function() private$..diagram$value,
         diag_paths = function() private$..diag_paths$value,
         diag_resid = function() private$..diag_resid$value,
+        diag_intercepts = function() private$..diag_intercepts$value,
         diag_labsize = function() private$..diag_labsize$value,
         diag_rotate = function() private$..diag_rotate$value,
         diag_type = function() private$..diag_type$value,
@@ -356,8 +346,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..toggle = NA,
         ..multigroup = NA,
         ..se = NA,
-        ..r2ci = NA,
-        ..r2test = NA,
         ..bootci = NA,
         ..ci = NA,
         ..ciWidth = NA,
@@ -368,6 +356,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..diagram = NA,
         ..diag_paths = NA,
         ..diag_resid = NA,
+        ..diag_intercepts = NA,
         ..diag_labsize = NA,
         ..diag_rotate = NA,
         ..diag_type = NA,
@@ -401,15 +390,14 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="Structural Equation Modeling")
+                title="SEM r")
             private$..model <- NULL
             self$add(jmvcore::Table$new(
                 options=options,
                 name="info",
                 title="Models Info",
                 clearWith=list(
-                    "endogenousTerms",
-                    "constraints"),
+                    "code"),
                 columns=list(
                     list(
                         `name`="info", 
@@ -916,7 +904,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "diag_rotate",
                     "diag_labsize",
                     "diag_resid",
-                    "diag_paths"))
+                    "diag_paths",
+                    "dia_intercepts"))
                         self$add(jmvcore::Array$new(
                             options=options,
                             name="diagrams",
@@ -940,7 +929,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     "diag_rotate",
                                     "diag_labsize",
                                     "diag_resid",
-                                    "diag_paths")),
+                                    "diag_paths",
+                                    "diag_intercepts")),
                             refs="semplot"))
                         self$add(jmvcore::Table$new(
                             options=options,
@@ -992,7 +982,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresMissings = FALSE)
         }))
 
-#' Structure Equation Modeling
+#' Structural Equation Models
 #'
 #' 
 #' @param data .
@@ -1006,8 +996,6 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param toggle .
 #' @param multigroup .
 #' @param se .
-#' @param r2ci Choose the confidence interval type
-#' @param r2test .
 #' @param bootci Choose the confidence interval type
 #' @param ci .
 #' @param ciWidth a number between 50 and 99.9 (default: 95) specifying the
@@ -1023,6 +1011,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param diag_paths Choose the diagram labels
 #' @param diag_resid \code{TRUE} or \code{FALSE} (default), produce a path
 #'   diagram
+#' @param diag_intercepts \code{TRUE} or \code{FALSE} (default), produce a
+#'   path diagram
 #' @param diag_labsize Choose the diagram labels
 #' @param diag_rotate Choose the diagram labels
 #' @param diag_type Choose the diagram labels
@@ -1073,8 +1063,6 @@ semljsyn <- function(
     toggle = FALSE,
     multigroup,
     se = "standard",
-    r2ci = "fisher",
-    r2test = FALSE,
     bootci = "perc",
     ci = TRUE,
     ciWidth = 95,
@@ -1085,6 +1073,7 @@ semljsyn <- function(
     diagram = FALSE,
     diag_paths = "est",
     diag_resid = FALSE,
+    diag_intercepts = FALSE,
     diag_labsize = "medium",
     diag_rotate = "2",
     diag_type = "tree",
@@ -1121,8 +1110,6 @@ semljsyn <- function(
         toggle = toggle,
         multigroup = multigroup,
         se = se,
-        r2ci = r2ci,
-        r2test = r2test,
         bootci = bootci,
         ci = ci,
         ciWidth = ciWidth,
@@ -1133,6 +1120,7 @@ semljsyn <- function(
         diagram = diagram,
         diag_paths = diag_paths,
         diag_resid = diag_resid,
+        diag_intercepts = diag_intercepts,
         diag_labsize = diag_labsize,
         diag_rotate = diag_rotate,
         diag_type = diag_type,

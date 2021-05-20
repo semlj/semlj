@@ -1,4 +1,4 @@
-title: Structure Equation Modeling
+title: Structural Equation Modeling
 name: semljsyn
 jus: '2.0'
 compilerMode: tame
@@ -44,12 +44,14 @@ children:
                 name: likelihood
                 enable: '(estimator:ML)'
           - type: Label
-            label: Inferential Tests
+            label: Constraints Tests
             margin: large
             style: list
             children:
               - type: CheckBox
-                name: r2test
+                name: scoretest
+              - type: CheckBox
+                name: cumscoretest
   - type: CollapseBox
     label: Parameters Options
     collapsed: true
@@ -93,8 +95,6 @@ children:
                 suffix: '%'
                 format: number
                 enable: (ci)
-              - type: ComboBox
-                name: r2ci
           - type: Label
             label: Bootstrap C.I.
             margin: large
@@ -148,18 +148,14 @@ children:
                 name: cov_x
               - type: CheckBox
                 name: cov_y
+              - type: CheckBox
+                name: showlabels
                 
           - type: LayoutBox
             margin: large
             children:
               - type: CheckBox
                 name: constraints_examples
-              - type: CheckBox
-                name: showlabels
-              - type: CheckBox
-                name: scoretest
-              - type: CheckBox
-                name: cumscoretest
   - type: CollapseBox
     label: Path Diagram
     collapsed: true
@@ -206,6 +202,10 @@ children:
               - type: CheckBox
                 name: diag_resid
                 enable: (diagram)
+              - type: CheckBox
+                name: diag_intercepts
+                enable: (diagram)
+
       - type: LayoutBox
         margin: large
         stretchFactor: 1

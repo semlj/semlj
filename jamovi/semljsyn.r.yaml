@@ -1,6 +1,6 @@
 ---
 name: semljsyn
-title: Structural Equation Modeling
+title: SEM r
 jrs: '1.0'
 
 
@@ -15,8 +15,7 @@ items:
     title: Models Info
     type: Table
     clearWith:
-                      - endogenousTerms
-                      - constraints
+                      - code
 
     columns:
        - name: info
@@ -459,6 +458,7 @@ items:
                   - diag_labsize
                   - diag_resid
                   - diag_paths
+                  - dia_intercepts
 
     items:
            - name: diagrams
@@ -485,6 +485,7 @@ items:
                         - diag_labsize
                         - diag_resid
                         - diag_paths
+                        - diag_intercepts
   
              refs: semplot
              
