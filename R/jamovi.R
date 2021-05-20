@@ -140,12 +140,13 @@ j.fill_table<-function(table,obj, fixNA=TRUE,append=FALSE,spaceby=NULL,start=1) 
     rows<-unlist(lapply(unique(col),function(x) min(which(col==x))))
     for (j in rows)
       table$addFormat(rowNo=j+last,col=1,jmvcore::Cell.BEGIN_GROUP)
-    
   }
   table$setVisible(TRUE)
 }
 
-j.add_warnings<-function(atable,adispatch,atopic) {
+j.add_warnings<-function(atable,adispatch,atopic=NULL) {
+  
+  if (is.null(atopic)) atopic<-atable$name
   
   if (!is.something(adispatch$warnings[[atopic]]))
        return()

@@ -28,11 +28,9 @@ Syntax <- R6::R6Class(
               tab_intercepts=NULL,
               tab_defined=NULL,
               tab_info=NULL,
+              tab_constfits=NULL,
               structure=NULL,
               options=NULL,
-              constraints=NULL,
-              defined=NULL,
-              contrasts_names=NULL,
               multigroup=NULL,
               indirect_names=NULL,
               models=NULL,
@@ -92,8 +90,6 @@ Syntax <- R6::R6Class(
           private=list(
             .lav_terms=NULL,
             .lav_structure=NULL,
-            .lav_constraints=NULL,
-            .lav_defined=NULL,
             .lav_indirect=NULL,
         
             .check_models=function() {
@@ -120,8 +116,8 @@ Syntax <- R6::R6Class(
                 auto.cov.y = self$options$cov_y,
                 fixed.x=self$options$cov_x,
                 int.lv.free=FALSE,
-                std.lv = FALSE,
-                auto.fix.first = TRUE, 
+                std.lv = self$options$std.lv,
+                auto.fix.first = self$options$auto.fix.first, 
                 auto.fix.single = TRUE, 
                 auto.var = TRUE, 
                 auto.cov.lv.x = TRUE, 
@@ -139,20 +135,21 @@ Syntax <- R6::R6Class(
               results<-try_hard({
                 do.call(lavaan::lavaanify, lavoptions)
               })
-              self$warnings<-list(topic="main",message=results$warning)
+              self$warnings<-list(topic="info",message=results$warning)
               self$errors<-results$error
               if (is.something(self$errors))
                 stop(paste(self$errors,collapse = "\n"))
               
-              ## raw (B64ed) structure of results gos in .lav_structure. Here are all parameters to be estimated, with info regarding
-              ## their nature (exogenous, endogenous, coefficient vs variances, etc), labels and names 
-              
+
               private$.lav_structure<-results$obj
-              ## create easy labels to be used by the user in constraints and defined parameters  
-              private$.lav_structure$label<-ifelse(
-                                private$.lav_structure$label=="",
-                                gsub(".","",private$.lav_structure$plabel,fixed=T),
-                                private$.lav_structure$label)
+              ## if not user defined, create easy labels to be used by the user in constraints and defined parameters  
+              ## we want to be sure that we do not interfere with user ability to use p* as custom label
+              ulabels<-private$.lav_structure$label
+              def<-ulabels!=""
+              plabels<-setdiff(paste0("p",1:(length(ulabels)*2)),ulabels[def])
+              plabels[which(def)]<-ulabels[def]
+              labels<-plabels[1:length(ulabels)]
+              private$.lav_structure$label<-labels
 
             },            
 
@@ -214,6 +211,13 @@ Syntax <- R6::R6Class(
                   alist[[length(alist)+1]]<-c(info="Model",value=m)
               self$tab_info<-alist
               
+              # tab constraints
+              sel<-grep("==|<|>",.lav_structure$op)
+              const<-.lav_structure[sel,]
+              if (nrow(const)>0)
+                 self$tab_constfit<-const
+
+              
               ###  tab_defined contains defined parameters
 
               dp<-.lav_structure[.lav_structure$op==":=",]
@@ -246,86 +250,6 @@ Syntax <- R6::R6Class(
                      
                 }
               }
-
-            },
-
-            .check_constraints=function() {
-              
-              consts<-self$options$constraints
-              realconsts<-list()
-              realestims<-list()
-              for (con in consts) {
-                ## error if user passes a latent variable definition. Not the right module :-)
-                check<-(length(grep("=~",con,fixed=T))>0)
-                if (check) {
-                      self$errors<-ERRS[["nolatent"]]
-                      return()
-                }
-                ### divide constraints from defined parameters
-                check<-(length(grep("==|>|<",con,fixed=F))>0) 
-                if (check)
-                  realconsts[[length(realconsts)+1]]<-con
-                else
-                  realestims[[length(realestims)+1]]<-con
-              }
-              ### handle defined parameters
-              realestims<-lapply(seq_along(realestims), function(j) {
-                    estim<-realestims[[j]]
-                    estim<-trimws(estim)
-                    
-                    if (estim=="")
-                           return("")
-
-                    check<-grep(":=|~",estim)
-                    if (length(check)==0 ) {
-                          estim<-paste0("dp",j,":=",estim)
-                      }
-                    else {
-                       check<-grep("^IE",estim)
-                       if (length(check)>0)
-                         self$warnings<-list(topic="defined",message=glue::glue(WARNS[["noreserved"]],var="IE"))
-                       check<-grep("^dp",estim)
-                       if (length(check)>0)
-                         self$warnings<-list(topic="defined",message=glue::glue(WARNS[["noreserved"]],var="dp"))
-                    }
-                    estim
-              })
-              ### this are used in the info results table to list the user parameter
-              self$constraints<-lapply(realconsts, function(x) list(info="Constraint",value=x))
-              self$defined<-lapply(realestims, function(x) list(info="Defined parameter",value=x))
-              
-              ## now we translate constraints to be passed to estimation with correct names, B64ed and interaction/factor aware
-              for (i in seq_along(realconsts)) {
-                     
-                      for (term in self$interactions) {
-                        realconsts[[i]]<-gsub(fromb64(term),term,realconsts[[i]],fixed=TRUE)
-                      }
-                     
-                      realconsts[[i]]<-gsub(":",INTERACTION_SYMBOL,realconsts[[i]],fixed = T)
-                
-                
-                     for (name in names(self$contrasts_names))
-                       realconsts[[i]]<-gsub(name,self$contrasts_names[[name]],realconsts[[i]],fixed=TRUE)
-              }
-              
-              ## now we translate realestims to be passed to estimation with correct names, B64ed and interaction/factor aware
-              for (i in seq_along(realestims)) {
-                  estim<-realestims[[i]]
-                  estim<-gsub(":="," $ ",estim,fixed = T)
-                for (term in self$interactions) {
-                  estim<-gsub(fromb64(term),term,estim)
-                }
-                estim<-gsub(":",INTERACTION_SYMBOL,estim)
-                
-                for (name in names(self$contrasts_names))
-                  estim<-gsub(name,self$contrasts_names[[name]],estim,fixed=TRUE)
-                estim<-gsub("$",":=",estim,fixed = T)
-                realestims[[i]]<-estim
-              }
-
-              
-              private$.lav_constraints<-tob64(realconsts,self$vars)
-              private$.lav_defined<-tob64(realestims,self$vars)
 
             },
             .check_varcov=function() {

@@ -13,6 +13,14 @@ NOTES[["ci"]]<-list("standard"="Standard (Delta method)",
                     "norm"="Parametric bootstrap")
 
 
+LAT_EXAMPLES<-list()
+LAT_EXAMPLES[[1]]<-list("info"="Latent measurement",example="",com="")
+LAT_EXAMPLES[[2]]<-list("info"="indicators",example=" eta =~ x1 + x2 + x3",com="Eta is measured by x1,x2, x3")
+LAT_EXAMPLES[[3]]<-list("info"="indicators fixed",example=" eta =~ x1 + 1*x2 + x3",com="Fix the scale of eta to x2 scale")
+LAT_EXAMPLES[[4]]<-list("info"="Latent Regression",example="eta~beta+gamma",com="Eta is predicted by beta and gamma")
+LAT_EXAMPLES[[5]]<-list("info"="Latent Regression",example="eta~beta+x1",com="Latenent Eta is predicted by beta and observed x1")
+
+
 CONT_EXAMPLES<-list()
 CONT_EXAMPLES[[1]]<-list("info"="Constraints",example="",com="")
 CONT_EXAMPLES[[2]]<-list("info"="Equality constraint",example="p1==p2",com="Constrain the estimates of p1 and p2 to be equal")
@@ -28,11 +36,9 @@ CONT_EXAMPLES[[10]]<-list("info"="Non linear constraint",example="p1*p2=0", com=
 
 DP_EXAMPLES<-list()
 DP_EXAMPLES[[1]]<-list("info"="Defined Parameters",example="",com="")
-DP_EXAMPLES[[2]]<-list("info"="Linear estimates",example="p1+p2",com="p1 and p2 are free, and their sum is estimated and tested")
-DP_EXAMPLES[[3]]<-list("info"="Linear estimates",example="(p1+p2)-p3",com="p1,p2, and p3 are free, and the specified function is estimated and tested")
-DP_EXAMPLES[[4]]<-list("info"="Non linear estimates",example="p1*p2",com="p1 and p2 are free, and their product is estimated and tested")
-DP_EXAMPLES[[5]]<-list("info"="Non linear estimates",example="ab:=p1*p2", com="Estimate and test the product p1*p2 and name it `ab`")
-DP_EXAMPLES[[6]]<-list("info"="Non linear estimates",example="a2:=p1^2", com="Estimate and test the square of p1 and name it `a2`")
+DP_EXAMPLES[[2]]<-list("info"="Linear estimates",example="dp:=p1+p2",com="p1 and p2 are free, and their sum is estimated and tested")
+DP_EXAMPLES[[3]]<-list("info"="Linear estimates",example="dp:=(p1+p2)-p3",com="p1,p2, and p3 are free, and the specified function is estimated and tested")
+DP_EXAMPLES[[4]]<-list("info"="Non linear estimates",example="aname:=p1^2", com="Estimate and test the square of p1")
 
 
 SY_EXAMPLES<-list()

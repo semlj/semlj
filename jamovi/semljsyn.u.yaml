@@ -140,6 +140,16 @@ children:
               - type: CheckBox
                 name: indirect
           - type: Label
+            label: Latent scale
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: auto.fix.first
+              - type: CheckBox
+                name: std.lv
+
+          - type: Label
             label: Miscellaneous
             margin: large
             style: list
@@ -150,12 +160,10 @@ children:
                 name: cov_y
               - type: CheckBox
                 name: showlabels
-                
-          - type: LayoutBox
-            margin: large
-            children:
               - type: CheckBox
                 name: constraints_examples
+
+
   - type: CollapseBox
     label: Path Diagram
     collapsed: true

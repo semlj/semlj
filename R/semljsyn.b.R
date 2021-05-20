@@ -19,6 +19,17 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .ready=NULL,
         .init = function() {
             ginfo("init")
+            
+            ### output some syntax examples ####
+            
+            if (self$options$constraints_examples) {
+                j.init_table(self$results$contraintsnotes,LAT_EXAMPLES,indent=-1)
+                j.init_table_append(self$results$contraintsnotes,CONT_EXAMPLES,indent=-1)
+                j.init_table_append(self$results$contraintsnotes,DP_EXAMPLES,indent=-1)
+                j.init_table_append(self$results$contraintsnotes,SY_EXAMPLES,indent=-1)
+                self$results$contraintsnotes$setNote(1,CONT_NOTE)
+            }
+            
 
             ### check that we have enough information to run ####
             private$.ready<-readiness(self$options)
@@ -60,12 +71,6 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                  j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
 
-            if (self$options$constraints_examples) {
-                j.init_table(self$results$contraintsnotes,CONT_EXAMPLES,indent=-1)
-                j.init_table_append(self$results$contraintsnotes,DP_EXAMPLES,indent=-1)
-                j.init_table_append(self$results$contraintsnotes,SY_EXAMPLES,indent=-1)
-                self$results$contraintsnotes$setNote(1,CONT_NOTE)
-            }
             
             private$.lav_machine<-lav_machine
             private$.data_machine<-data_machine
@@ -88,15 +93,17 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             lav_machine$estimate(data)
 
             warns<-lav_machine$warnings
-            if (is.something(warns[["main"]]))
-                for (i in seq_along(warns[["main"]]))
-                      self$results$info$setNote(i,warns[["main"]][[i]])
 
-            if (is.something(lav_machine$errors)) {
-                    stop(paste(lav_machine$errors,collapse = "; "))
-            } 
             ## fit info
              j.fill_table(self$results$info,lav_machine$tab_info)
+             j.add_warnings(self$results$info,lav_machine)
+
+             ## stop if error
+             
+             if (is.something(lav_machine$errors)) {
+                 stop(paste(lav_machine$errors,collapse = "; "))
+             } 
+             
             
              ## fit indices
              self$results$fit$indices$setRow(rowNo=1,lav_machine$tab_fitindices)
@@ -107,7 +114,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
              ## constraints fit test
              
              j.fill_table(self$results$fit$constraints,lav_machine$tab_constfit,append=T, spaceby="type")
-
+             j.add_warnings(self$results$fit$constraints,lav_machine)
+             
 
             ### parameters estimates ####
             j.fill_table(self$results$models$coefficients,lav_machine$tab_coefficients)

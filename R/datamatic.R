@@ -30,7 +30,7 @@ Datamatic <- R6::R6Class(
                 return()
             }
             if (length(levels(data[[var]]))==2) {
-              self$warnings<-paste("Variable",var, "is a factor with two levels, it has been converted to continuous type")
+              self$warnings<-list(topic="info",message=paste("Variable",var, "is a factor with two levels, it has been converted to continuous type"))
               avar<-data[[var]]
               levels(avar)<-1:nlevels(avar)
               data[[var]]<-as.numeric(a)-1
