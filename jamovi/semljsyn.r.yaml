@@ -1,0 +1,516 @@
+---
+name: semljsyn
+title: SEM r
+jrs: '1.0'
+
+
+items:
+
+  - name: model
+    type: Property
+    description: The underlying `lavaan` object
+
+
+  - name: info
+    title: Models Info
+    type: Table
+    clearWith:
+                      - code
+
+    columns:
+       - name: info
+         type: text
+         title: ""
+         combineBelow: true
+       - name: value
+         type: text
+         title: ""
+       - name: specs
+         type: text
+         title: ""
+         combineBelow: true
+    refs: pathj
+
+  - name: fit
+    title: "Overall Tests"
+    type: Group
+    visible: false
+    clearWith:
+                  - code
+    items:
+    
+          - name: main
+            title: Model Tests
+            type: Table
+            clearWith:
+                  - ciType
+                  - cov_y
+                  - code
+
+            columns:
+                    - name: label
+                      title: Label
+                      type: text
+                    - name: chisq
+                      title:  X²
+                      type: number
+                    - name:  df
+                      title: "df"
+                      type: integer
+                    - name: pvalue
+                      title: "p"
+                      type: number
+                      format: zto,pvalue
+
+          - name: constraints
+            title: Constraints Score Tests
+            type: Table
+            visible: false
+            clearWith:
+                  - endogenous
+                  - covs
+                  - factors
+                  - ciType
+                  - contrasts
+                  - cov_y
+                  - constraints
+
+            columns:
+                    - name: type
+                      type: text
+                      title: Type
+                      visible: true
+                      combineBelow: true
+                    - name: lhs
+                      title: Par 1
+                      type: text
+                    - name: op
+                      title: ""
+                      type: text
+                    - name: rhs
+                      title: Par 2
+                      type: text
+                    - name: chisq
+                      title:  X²
+                      type: number
+                    - name:  df
+                      title: "df"
+                      type: integer
+                    - name: pvalue
+                      title: "p"
+                      type: number
+                      format: zto,pvalue
+
+          - name: indices
+            title: Fit Indices
+            type: Table
+            clearWith:
+                  - endogenous
+                  - covs
+                  - factors
+                  - ciType
+                  - contrasts
+                  - cov_y
+                  - constraints
+
+            columns:
+
+                    - name:  aic
+                      title: AIC
+                      visible: (estimator:ML)
+                      type: number
+                    - name:  bic
+                      title: BIC
+                      type: number
+                      visible: (estimator:ML)
+                    - name:  bic2
+                      title: "adj. BIC"
+                      type: number
+                      visible: (estimator:ML)
+                    - name:  srmr
+                      title: SRMR
+                      type: number
+                      format: zto
+
+                    - name: rmsea
+                      title:  RMSEA
+                      type: number
+                      format: zto
+                      
+                    - name:  rmsea.ci.lower
+                      title: Lower
+                      type: number
+                      format: zto
+
+                    - name:  rmsea.ci.upper
+                      title: Upper
+                      type: number
+                      format: zto
+
+                    - name: rmsea.pvalue
+                      title: 'RMSEA p'
+                      type: number
+                      format: zto,pvalue
+
+
+  - name: models
+    title: "Estimates"
+    type: Group
+    visible: false
+
+    items:
+    
+          - name: coefficients
+            title: Parameter Estimates
+            type: Table
+            refs: lavaan
+            clearWith:
+                  - ciType
+                  - contrasts
+                  - cov_y
+                  - data
+                  - multigroup
+                  - code
+
+            columns:
+                    - name: lgroup
+                      title: Group
+                      type: text
+                      visible: (multigroup)
+                      combineBelow: true
+                    - name: label
+                      title: Label
+                      type: text
+                      visible: (showlabels)
+                      
+                    - name: lhs
+                      title: "Dep"
+                      type: text
+                    - name:  rhs
+                      title: "Pred"
+                      type: text
+                    - name: est
+                      title: "Estimate"
+                      type: number
+                    - name: se
+                      title: "SE"
+                      type: number
+                    - name: ci.lower
+                      type: number
+                      title: Lower
+                      visible: (ci)
+                    - name: ci.upper
+                      type: number
+                      title: Upper
+                      visible: (ci)
+                    - name: std.all
+                      type: number
+                      title: β
+                    - name: z
+                      title: "z"
+                      type: number
+                    - name: pvalue
+                      title: "p"
+                      type: number
+                      format: zto,pvalue
+
+          - name: loadings
+            title: Measurement Model
+            type: Table
+            visible: false
+            clearWith:
+                  - ciType
+                  - contrasts
+                  - cov_y
+                  - data
+                  - multigroup
+                  - code
+
+            columns:
+                    - name: lgroup
+                      title: Group
+                      type: text
+                      visible: (multigroup)
+                      combineBelow: true
+                    - name: label
+                      title: Label
+                      type: text
+                      visible: (showlabels)
+                      
+                    - name: lhs
+                      title: "Latent"
+                      type: text
+                      combineBelow: true
+                    - name:  rhs
+                      title: "Observed"
+                      type: text
+                    - name: est
+                      title: "Estimate"
+                      type: number
+                    - name: se
+                      title: "SE"
+                      type: number
+                    - name: ci.lower
+                      type: number
+                      title: Lower
+                      visible: (ci)
+                    - name: ci.upper
+                      type: number
+                      title: Upper
+                      visible: (ci)
+                    - name: std.all
+                      type: number
+                      title: β
+                    - name: z
+                      title: "z"
+                      type: number
+                    - name: pvalue
+                      title: "p"
+                      type: number
+                      format: zto,pvalue
+
+          - name: correlations
+            title: Variances and Covariances
+            type: Table
+            clearWith:
+                  - ciType
+                  - cov_y
+                  - data
+                  - multigroup
+                  - code
+
+            columns:
+                    - name: lgroup
+                      title: Group
+                      type: text
+                      visible: (multigroup)
+                      combineBelow: true
+
+                    - name: label
+                      title: Label
+                      type: text
+                      visible: (showlabels)
+                    - name: lhs
+                      title: "Variable 1"
+                      type: text
+                    - name:  rhs
+                      title: "Variable 2"
+                      type: text
+                    - name: est
+                      title: "Estimate"
+                      type: number
+                    - name: se
+                      title: "SE"
+                      type: number
+                    - name: ci.lower
+                      type: number
+                      title: Lower
+                      visible: (ci)
+                    - name: ci.upper
+                      type: number
+                      title: Upper
+                      visible: (ci)
+                    - name: std.all
+                      type: number
+                      title: β
+                    - name: z
+                      title: "z"
+                      type: number
+                    - name: pvalue
+                      title: "p"
+                      type: number
+                      format: zto,pvalue
+                    - name: type
+                      title: "Type"
+                      type: text
+
+          - name: intercepts
+            title: Intercepts
+            type: Table
+            visible: false
+            clearWith:
+                  - ciType
+                  - cov_y
+                  - data
+                  - multigroup
+                  - code
+                  
+            columns:
+                    - name: lgroup
+                      title: Group
+                      type: text
+                      visible: (multigroup)
+                      combineBelow: true
+
+                    - name: label
+                      title: Label
+                      type: text
+                      visible: (showlabels)
+                    - name: lhs
+                      title: "Variable"
+                      type: text
+                    - name: est
+                      title: "Intercept"
+                      type: number
+                      format: zto
+
+                    - name: se
+                      title: "SE"
+                      type: number
+                      format: zto
+                    - name: ci.lower
+                      type: number
+                      title: Lower
+                      visible: (ci)
+                      format: zto
+
+                    - name: ci.upper
+                      type: number
+                      title: Upper
+                      visible: (ci)
+                      format: zto
+
+                    - name: z
+                      title: "z"
+                      type: number
+                      format: zto
+
+                    - name: pvalue
+                      title: "p"
+                      type: number
+                      format: zto
+
+          - name: defined
+            title: Defined Parameters
+            type: Table
+            visible: false
+            clearWith:
+                  - ciType
+                  - cov_y
+                  - data
+                  - multigroup
+                  - code
+                  
+            columns:
+
+                    - name: lhs
+                      title: "Label"
+                      type: text
+                    - name: desc
+                      title: "Description"
+                      type: text
+
+                    - name:  rhs
+                      title: "Parameter"
+                      type: text
+                    - name: est
+                      title: "Estimate"
+                      type: number
+                      format: zto
+                    - name: se
+                      title: "SE"
+                      type: number
+                      format: zto
+
+                    - name: ci.lower
+                      type: number
+                      title: Lower
+                      visible: (ci)
+                      format: zto
+
+                    - name: ci.upper
+                      type: number
+                      title: Upper
+                      visible: (ci)
+                      format: zto
+
+                    - name: std.all
+                      type: number
+                      title: β
+                      format: zto
+
+                    - name: z
+                      title: "z"
+                      type: number
+                      format: zto
+
+                    - name: pvalue
+                      title: "p"
+                      type: number
+                      format: zto,pvalue
+
+
+
+  - name: pathgroup
+    type: Group
+    title: Path Model
+    visible: (diagram)
+    clearWith:
+                  - cov_y
+                  - data
+                  - multigroup
+                  - code
+                  - diag_shape_man
+                  - diag_shape_lat
+                  - diag_abbrev
+                  - diag_type
+                  - diag_rotate
+                  - diag_labsize
+                  - diag_resid
+                  - diag_paths
+                  - dia_intercepts
+
+    items:
+           - name: diagrams
+             title: Path Diagrams
+             type: Array
+             description: an array of path diagrams
+             visible: (diagram)
+             template:
+                   title: $key
+                   type: Image
+                   renderFun: .showDiagram
+                   width: 800
+                   height: 600
+                   clearWith:
+                        - cov_y
+                        - data
+                        - multigroup
+                        - code
+                        - diag_shape_man
+                        - diag_shape_lat
+                        - diag_abbrev
+                        - diag_type
+                        - diag_rotate
+                        - diag_labsize
+                        - diag_resid
+                        - diag_paths
+                        - diag_intercepts
+  
+             refs: semplot
+             
+           - name: notes
+             type: Table
+             title: ""
+             visible: false
+             columns:
+                  - name: message
+                    type: text
+                    title: "Model diagram notes"
+
+  - name: contraintsnotes
+    type: Table
+    visible: (constraints_examples)
+    title: "Constraints input examples"
+    columns:
+                  - name: info
+                    type: text
+                    title: Aim
+                  - name: example
+                    type: text
+                    title: Example
+                  - name: com
+                    type: text
+                    title: Outcome
+                    
+                    

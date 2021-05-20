@@ -1,0 +1,34 @@
+---
+title: SEM
+name: semlj
+version: 0.0.3
+jms: '1.0'
+authors:
+  - Marcello Gallucci
+maintainer: Marcello Gallucci <mcfanda@gmail.com>
+date: 2021-1-1
+type: R
+description: Structural Equation Models based on lavaan
+analyses:
+  - title: Structural Equation Models
+    name: semljsyn
+    ns: semlj
+    menuGroup: SEM
+    menuSubgroup: SEMLj
+    menuTitle: SEM (syntax)
+    description: Syntax based SEM
+  - title: SEM for jamovi
+    name: semljgui
+    ns: semlj
+    menuGroup: SEM
+    menuSubgroup: SEMLj
+    menuTitle: SEM for jamovi
+    description: Path Analysis
+datasets:
+  - name: pathjdata
+    path: pathjdata.csv
+    description: Example data for SEMLj tests
+usesNative: true
+minApp: 1.8.0
+
+...

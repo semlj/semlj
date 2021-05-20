@@ -1,0 +1,242 @@
+title: Structural Equation Modeling
+name: semljsyn
+jus: '2.0'
+compilerMode: tame
+events:
+  loaded: './main::loaded'
+  update: './main::update'
+  remoteDataChanged: './main::onDataChanged'
+children:
+  - type: LayoutBox
+    stretchFactor: 1
+    children:
+      - type: CustomControl
+        stretchFactor: 1
+        name: syntax
+        events:
+            creating: './main::editor_creating'
+      - type: LayoutBox
+        margin: large
+        children:
+            - type: TextBox
+              stretchFactor: 1
+              name: multigroup
+              format: string
+
+
+  - type: CollapseBox
+    label: Model Options
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Estimation
+            margin: large
+            style: list
+            children:
+              - type: ComboBox
+                name: estimator
+              - type: ComboBox
+                name: likelihood
+                enable: '(estimator:ML)'
+          - type: Label
+            label: Constraints Tests
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: scoretest
+              - type: CheckBox
+                name: cumscoretest
+  - type: CollapseBox
+    label: Parameters Options
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Standard Errors
+            margin: large
+            style: list
+            children:
+              - type: RadioButton
+                name: se_standard
+                optionName: se
+                optionPart: standard
+              - name: se_robust.sem
+                type: RadioButton
+                optionName: se
+                optionPart: robust.sem
+              - type: RadioButton
+                name: se_robust.huber.white
+                optionName: se
+                optionPart: robust.huber.white
+              - type: RadioButton
+                name: se_boot
+                optionName: se
+                optionPart: boot
+          - type: Label
+            label: Confidence Intervals
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: ci
+              - type: TextBox
+                name: ciWidth
+                label: Interval
+                suffix: '%'
+                format: number
+                enable: (ci)
+          - type: Label
+            label: Bootstrap C.I.
+            margin: large
+            style: list
+            children:
+              - type: RadioButton
+                name: bootci_bootperc
+                optionName: bootci
+                optionPart: perc
+                enable: '(se:boot)'
+              - type: RadioButton
+                name: bootci_bootnorm
+                optionName: bootci
+                optionPart: norm
+                enable: '(se:boot)'
+              - name: bootci_bca.simple
+                type: RadioButton
+                optionName: bootci
+                optionPart: bca.simple
+                enable: '(se:boot)'
+              - type: RadioButton
+                name: bootci_basic
+                optionName: bootci
+                optionPart: basic
+                enable: '(se:boot)'
+              - type: TextBox
+                name: bootN
+                format: number
+                enable: '(se:boot)'
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Estimates
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: intercepts
+              - type: CheckBox
+                name: showintercepts
+              - type: CheckBox
+                name: indirect
+          - type: Label
+            label: Miscellaneous
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: cov_x
+              - type: CheckBox
+                name: cov_y
+              - type: CheckBox
+                name: showlabels
+                
+          - type: LayoutBox
+            margin: large
+            children:
+              - type: CheckBox
+                name: constraints_examples
+  - type: CollapseBox
+    label: Path Diagram
+    collapsed: true
+    stretchFactor: 1
+    style: list
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        style: inline
+        children:
+          - type: CheckBox
+            name: diagram
+          - type: Label
+            label: Paths
+            margin: large
+            style: list
+            children:
+              - type: RadioButton
+                name: diag_paths_est
+                optionName: diag_paths
+                optionPart: est
+                enable: (diagram)
+              - type: RadioButton
+                name: diag_paths_stand
+                optionName: diag_paths
+                optionPart: stand
+                enable: (diagram)
+              - type: RadioButton
+                name: diag_paths_name
+                optionName: diag_paths
+                optionPart: name
+                enable: (diagram)
+              - type: RadioButton
+                name: diag_paths_hide
+                optionName: diag_paths
+                optionPart: hide
+                enable: (diagram)
+          - type: Label
+            label: Show
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: diag_resid
+                enable: (diagram)
+              - type: CheckBox
+                name: diag_intercepts
+                enable: (diagram)
+
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        style: inline
+        children:
+          - type: Label
+            label: Layout
+            margin: large
+            style: list
+            children:
+              - type: ComboBox
+                name: diag_type
+                enable: (diagram)
+              - type: ComboBox
+                name: diag_rotate
+                enable: (diagram)
+          - type: Label
+            label: Nodes
+            margin: large
+            style: list
+            children:
+              - type: ComboBox
+                name: diag_labsize
+                enable: (diagram)
+              - type: ComboBox
+                name: diag_shape_man
+                enable: (diagram)
+              - type: ComboBox
+                name: diag_shape_lat
+                enable: (diagram)
+
+              - type: ComboBox
+                name: diag_abbrev
+                enable: (diagram)

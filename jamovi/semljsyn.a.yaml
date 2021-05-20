@@ -1,0 +1,395 @@
+---
+name: semljsyn
+title: Structural Equation Models
+menuGroup: SEM
+menuTitle: SEM (syntax)
+version: '1.0.0'
+jas: '1.2'
+arbitraryCode: true
+
+options:
+    - name: data
+      type: Data
+
+    - name: code
+      default: |
+      type: String
+      hidden: true
+
+    - name: syntax
+      type: String
+      hidden: true
+
+    - name: fonts
+      type: String
+      default: "small"
+      hidden: true
+
+
+    - name: vars
+      type: Variables
+      hidden: true
+      permitted:
+        - factor
+        - numeric
+        - id
+
+    - name: output
+      type: List
+      hidden: true
+      options:
+        - noEcho
+        - echo
+      default: noEcho
+
+    - name: figWidth
+      type: String
+      default: ''
+      hidden: true
+
+    - name: figHeight
+      type: String
+      default: ''
+      hidden: true
+
+    - name: toggle
+      type: Bool
+      default: false
+      hidden: true
+
+#### other options ####
+
+
+    - name: multigroup
+      title: Multigroup Analysis Factor
+      type: String
+
+
+    - name: se
+      title: Standard errors
+      type: List
+      options:
+        - name: standard
+          title: Standard
+        - name: robust.sem
+          title: Robust
+        - name: robust.huber.white
+          title: Pseudo ML
+        - name: boot
+          title: Bootstrap
+      default: standard
+
+
+    - name: bootci
+      title: Bootstrap C.I
+      type: List
+      options:
+        - name: perc
+          title: Percentiles
+        - name: bca.simple
+          title: Adjusted bias corrected
+        - name: norm
+          title: Normal
+        - name: basic
+          title: Basic
+          
+      default: perc
+      description:
+          R: >
+             Choose the confidence interval type
+
+    - name: ci
+      title: Show
+      type: Bool
+      default: true
+
+
+    - name: ciWidth
+      title: Confidence level
+      type: Number
+      min: 50
+      max: 99.9
+      default: 95
+      description:
+          R: >
+            a number between 50 and 99.9 (default: 95) specifying the confidence
+            interval width for the parameter estimates
+
+    - name: bootN
+      title: Bootstrap Rep.
+      type: Number
+      min: 50
+      default: 1000
+      description:
+          R: >
+            number of bootstrap samples for estimating confidence intervals
+
+    - name: showintercepts
+      title: Show intercepts estimates
+      type: Bool
+      default: true
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show intercepts
+    - name: intercepts
+      title: Estimates intercepts
+      type: Bool
+      default: true
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show intercepts
+
+    - name: indirect
+      title: Indirect Effects
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show intercepts
+
+
+
+
+
+
+
+##### diagram ####
+
+    - name: diagram
+      title: Path Diagram
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), produce a path diagram
+
+    - name: diag_paths
+      title: Paths Labels
+      type: List
+      options:
+        - name:  est
+          title: Coefficients
+        - name: stand
+          title: Betas
+        - name: name
+          title: Labels
+        - name: hide
+          title: None
+      default: est
+      description:
+          R: >
+             Choose the diagram labels
+
+    - name: diag_resid
+      title: Residuals
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), produce a path diagram
+
+    - name: diag_intercepts
+      title: Intercepts
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), produce a path diagram
+
+    - name: diag_labsize
+      title: Node Size
+      type: List
+      options:
+        - name:  small
+          title: Small
+        - name: medium
+          title: Medium
+        - name: large
+          title: Large
+        - name: vlarge
+          title: Very Large
+
+      default: medium
+      description:
+          R: >
+             Choose the diagram labels
+
+    - name: diag_rotate
+      title: Rotate
+      type: List
+      options:
+        - name: "2"
+          title: Exog. left
+        - name:  "1"
+          title: Exog. top
+        - name: "4"
+          title: Exog. right
+        - name: "3"
+          title: Exog. bottom
+
+      default: "2"
+      description:
+          R: >
+             Choose the diagram labels
+    - name: diag_type
+      title: Type
+      type: List
+      options:
+        - name:  "tree"
+          title: Tree-like alt.
+        - name: "circle"
+          title: Circle
+        - name: "circle2"
+          title: Circle alt.
+        - name:  "tree2"
+          title: Tree-like
+        - name: "spring"
+          title: Spring
+
+      default: "tree"
+      description:
+          R: >
+             Choose the diagram labels
+
+    - name: diag_shape_man
+      title: Manifest shapes
+      type: List
+      options:
+        - name:  "rectangle"
+          title:  Rectangles
+        - name:  "square"
+          title:  Squares
+        - name: "circle"
+          title: Circles
+        - name: "ellipse"
+          title: Ellipses
+        - name: "diamond"
+          title: Diamonds
+
+      default: "rectangle"
+      description:
+          R: >
+             Choose the diagram labels
+
+    - name: diag_shape_lat
+      title: Latent shapes
+      type: List
+      options:
+        - name: "circle"
+          title: Circles
+        - name:  "rectangle"
+          title:  Rectangles
+        - name:  "square"
+          title:  Squares
+        - name: "ellipse"
+          title: Ellipses
+        - name: "diamond"
+          title: Diamonds
+
+      default: "circle"
+      description:
+          R: >
+             Choose the diagram labels
+
+
+    - name: diag_abbrev
+      title: Abbreviate
+      type: List
+      options:
+        - name:  "0"
+          title:  No abbrev.
+        - name:  "5"
+          title:  "5"
+        - name:  "10"
+          title:  "10"
+        - name:  "15"
+          title:  "15"
+        - name:  "20"
+          title:  "20"
+        - name:  "25"
+          title:  "25"
+      default: "5"
+      description:
+          R: >
+             Choose the diagram labels
+
+
+### end diagram ###
+
+#### variances and covariances ###
+
+
+    - name: cov_y
+      title: Correlated y
+      type: Bool
+      default: true
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), produce a path diagram
+    - name: cov_x
+      title: Fixed Exogenous
+      type: Bool
+      default: true
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), produce a path diagram
+
+
+
+    - name: constraints_examples
+      type: Bool
+      title: Show Examples
+      default: false
+
+    - name: showlabels
+      type: Bool
+      title: Show parameters labels
+      default: false
+
+    - name: scoretest
+      type: Bool
+      title: Univariate
+      default: true
+    - name: cumscoretest
+      type: Bool
+      title: Cumulative
+      default: false
+
+    - name: estimator
+      title: Method
+      type: List
+      options:
+        - name:  ML
+          title: Maximum Lik
+        - name: GLS 
+          title: Generalized least squares
+        - name: WLS 
+          title: Weighted LS
+        - name: DWLS
+          title: Diagonally weighted LS
+        - name: ULS
+          title: Unweighted LS
+      default: ML
+      description:
+          R: >
+             Choose the diagram labels
+
+    - name: likelihood
+      title: ML likelihood approach
+      type: List
+      options:
+        - name: normal 
+          title: Normal
+        - name:  wishart
+          title: Wishart
+          
+      default: normal
+      description:
+          R: >
+             Choose the diagram labels
+
+
+
+
+
+...
