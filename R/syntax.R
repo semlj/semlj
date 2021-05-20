@@ -52,7 +52,7 @@ Syntax <- R6::R6Class(
                 private$.check_models()
 
                 ## check and build indirect effect (if requires)
-#                private$.indirect()
+                private$.indirect()
                 
                 ### here we update to build a lavaanify structure
                 private$.update()  
@@ -106,12 +106,14 @@ Syntax <- R6::R6Class(
             ### collapse the informations in the private lists of terms and constraints and produce a lavaan syntax string
             .lavaan_syntax=function() {
                   f<-glue::glue_collapse(unlist(self$models),sep = " ; ")
-                  f
+                  i<-glue::glue_collapse(unlist(private$.lav_indirect),sep = " ; ")
+                  paste(f,i, sep=";")
             },
             ## lavaanify the information available to obtain a raw (B64) table representing the parameters structure
             ## parameter structure means their names, labels, 
 
             .make_structure=function() {
+              mark(private$.lavaan_syntax())
               lavoptions<-list(
                 model=private$.lavaan_syntax(),
                 int.ov.free = self$options$intercepts, 
@@ -434,7 +436,7 @@ Syntax <- R6::R6Class(
               plabs<-paste0("IE",1:length(pars))
               synt<-paste(plabs,pars,sep=":=",collapse = " ; ")
               private$.lav_indirect<-synt
-              self$indirect_names<-as.list(fromb64(labs,self$vars))
+              self$indirect_names<-labs
               if (is.something(self$options$multigroup))
                 self$indirect_names<-paste0("(",self$indirect_names,")",SUB[unlist(groupslist)])
               names(self$indirect_names)<-pars
