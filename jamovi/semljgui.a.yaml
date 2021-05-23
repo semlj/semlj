@@ -1,80 +1,85 @@
 ---
 name: semljgui
-title: SEM for jamovi
+title: Structural Equation Models
 menuGroup: SEM
-version: '0.0.1'
+menuTitle: SEM (interactive)
+version: '1.0.0'
 jas: '1.2'
-export: true
-completeWhenFilled: false
-description:
-    main: Path Analysis
-    R:
-        dontrun: true
-formula:
-   endogenous: 
-     custom: true
-   endogenousTerms: 
-     custom: true
-   factors: 
-     custom: true
-   covs: 
-     custom: true
+arbitraryCode: true
 
-   
 options:
     - name: data
       type: Data
-      description:
-          R: the data as a data frame
 
+    - name: code
+      default: |
+      type: String
+      hidden: true
+
+
+### interface ###
 
     - name: endogenous
-      title: Endogenous Variables
-      type: Variables
-      suggested:
-        - continuous
-        - ordinal
-      permitted:
-        - numeric
+      type: Array
       default:
+        - label: Endogenous1
+          vars: []
+      template:
+          type: Group
+          elements:
+            - name: label
+              type: String
+            - name: vars
+              type: Variables
+              suggested:
+                - continuous
+              permitted:
+                - numeric
       description:
-          R: a vector of strings naming the mediators from `data`
+          R: >
+            a list containing named lists that define the `label` of
+            the latent variables and the `vars` that belong to that latent
 
-    - name: factors
-      title: Exogenous Factors
-      type: Variables
-      suggested:
-        - nominal
-        - ordinal
-      permitted:
-        - factor
+    - name: exogenous
+      type: Array
       default:
+        - label: Exogenous1
+          vars: []
+      template:
+          type: Group
+          elements:
+            - name: label
+              type: String
+            - name: vars
+              type: Variables
+              suggested:
+                - continuous
+              permitted:
+                - numeric
       description:
-          R: a vector of strings naming the fixed factors from `data`
+          R: >
+            a list containing named lists that define the `label` of
+            the latent variables and the `vars` that belong to that latent
 
-    - name: covs
-      title: Exogenous Covariates
-      type: Variables
-      suggested:
-        - continuous
-        - ordinal
-      permitted:
-        - numeric
-      default:
+
+    - name: endogenousTerms
+      title: Endogenous Latent Vars Models  
+      type: Array
+      default: [[]]
+      template:
+          type: Terms
       description:
-          R: a vector of strings naming the covariates from `data`
+          R: >
+            a list of lists specifying the models for with the mediators as dependent variables.          
+
+
+
+#### other options ####
+
 
     - name: multigroup
       title: Multigroup Analysis Factor
-      type: Variable
-      suggested:
-        - nominal
-        - ordinal
-      permitted:
-        - factor
-      default:
-      description:
-          R: factor defining groups for multigroup analysis
+      type: String
 
 
     - name: se
@@ -90,25 +95,6 @@ options:
         - name: boot
           title: Bootstrap
       default: standard
-
-    - name: r2ci
-      title: R-squared C.I
-      type: List
-      options:
-        - name: fisher
-          title: Z-to-r transform
-        - name: model
-          title: Residual C.I. 
-
-      default: fisher
-      description:
-          R: >
-             Choose the confidence interval type
-
-    - name: r2test
-      title: R-squared tests
-      type: Bool
-      default: false
 
 
     - name: bootci
@@ -178,86 +164,27 @@ options:
           R: >
             `TRUE` or `FALSE` (default), show intercepts
 
-    - name: contrasts
-      title: Factors Coding
-      type: Array
-      items: (factors)
-      default: 
-      template:
-          type: Group
-          elements:
-              - name: var
-                type: Variable
-                content: $key
-              - name: type
-                type: List
-                options:
-                  - simple
-                  - deviation
-                  - dummy
-                  - difference
-                  - helmert
-                  - repeated
-                  - polynomial
-                default: simple
+
+### latent scale
+
+    - name: auto.fix.first
+      title: Fix first indicator
+      type: Bool
+      default: true
       description:
           R: >
-            a list of lists specifying the factor and type of contrast to use,
-            one of `'deviation'`, `'simple'`, `'difference'`, `'helmert'`,
-            `'repeated'` or `'polynomial'`
-
-
-
-    - name: showContrastCode
-      title: Contrast Coefficients tables
+            `TRUE` or `FALSE`
+    - name: std.lv
+      title: Standardized
       type: Bool
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), provide contrast coefficients tables
+            `TRUE` or `FALSE`
 
 
 
-    - name: scaling
-      title: Continuous Variables Scaling
-      type: Array
-      default:
-      template:
-          type: Group
-          elements:
-              - name: var
-                type: Variable
-                content: $key
-              - name: type
-                type: List
-                options:
-                    - title: None
-                      name: 'none'
-                    - title: Centered
-                      name:  centered
-                    - title: z-scores
-                      name: standardized
-                    - title: Log
-                      name: 'log'
 
-                default: none 
-      description:
-          R: >
-             a named vector of the form \code{c(var1='type', var2='type2')} specifying the transformation to apply to covariates,
-             one of `'centered'` to the mean, `'standardized'`,`'log'` or  `'none'`. `'none'` leaves the variable as it is.
-
-######### specs here ##########
-
-          
-    - name: endogenousTerms
-      title: Models for Endogenous Vars 
-      type: Array
-      default: [[]]
-      template:
-          type: Terms
-      description:
-          R: >
-            a list of lists specifying the models for with the mediators as dependent variables.          
 
 ##### diagram ####
 
@@ -294,6 +221,14 @@ options:
           R: >
             `TRUE` or `FALSE` (default), produce a path diagram
 
+    - name: diag_intercepts
+      title: Intercepts
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), produce a path diagram
+
     - name: diag_labsize
       title: Node Size
       type: List
@@ -316,16 +251,16 @@ options:
       title: Rotate
       type: List
       options:
-        - name:  "1"
-          title: Exog. top
         - name: "2"
           title: Exog. left
-        - name: "3"
-          title: Exog. bottom
+        - name:  "1"
+          title: Exog. top
         - name: "4"
           title: Exog. right
+        - name: "3"
+          title: Exog. bottom
 
-      default: "1"
+      default: "2"
       description:
           R: >
              Choose the diagram labels
@@ -333,25 +268,24 @@ options:
       title: Type
       type: List
       options:
+        - name:  "tree"
+          title: Tree-like alt.
         - name: "circle"
           title: Circle
         - name: "circle2"
           title: Circle alt.
-
         - name:  "tree2"
           title: Tree-like
-        - name:  "tree"
-          title: Tree-like alt.
         - name: "spring"
           title: Spring
 
-      default: "circle"
+      default: "tree"
       description:
           R: >
              Choose the diagram labels
 
-    - name: diag_shape
-      title: Shapes
+    - name: diag_shape_man
+      title: Manifest shapes
       type: List
       options:
         - name:  "rectangle"
@@ -366,6 +300,26 @@ options:
           title: Diamonds
 
       default: "rectangle"
+      description:
+          R: >
+             Choose the diagram labels
+
+    - name: diag_shape_lat
+      title: Latent shapes
+      type: List
+      options:
+        - name: "circle"
+          title: Circles
+        - name:  "rectangle"
+          title:  Rectangles
+        - name:  "square"
+          title:  Squares
+        - name: "ellipse"
+          title: Ellipses
+        - name: "diamond"
+          title: Diamonds
+
+      default: "circle"
       description:
           R: >
              Choose the diagram labels
@@ -387,7 +341,7 @@ options:
           title:  "20"
         - name:  "25"
           title:  "25"
-      default: "0"
+      default: "5"
       description:
           R: >
              Choose the diagram labels
@@ -397,16 +351,9 @@ options:
 
 #### variances and covariances ###
 
-    - name: varcov
-      title: Select pairs
-      type: Pairs
-      description:
-          R: >
-            a list of lists specifying the  covariances that
-            need to be estimated
-            
+
     - name: cov_y
-      title: Endogenous Correlations
+      title: Correlated y
       type: Bool
       default: true
       description:
@@ -420,24 +367,6 @@ options:
           R: >
             `TRUE` or `FALSE` (default), produce a path diagram
 
-
-    - name: constraints
-      title: Insert contraints or defined parameters
-      type: Array
-      default: []
-      template:
-          type: String
-      description:
-          R: >
-            a list of lists specifying the models random effects.          
-
-
-    - name: syntax
-      type: String
-      hidden: true
-    - name: code
-      type: String
-      hidden: true
 
 
     - name: constraints_examples
@@ -494,5 +423,6 @@ options:
 
 
 
-...
 
+
+...

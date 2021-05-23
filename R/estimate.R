@@ -61,8 +61,6 @@ Estimate <- R6::R6Class("Estimate",
                              sel<-grep("==|<|>",.lav_structure$op,invert = T)
                             .lav_structure<-.lav_structure[sel,]
                             ## make some change to render the results
-                            .lav_params$rhs<-fromb64(.lav_params$rhs,self$vars)
-                            .lav_params$lhs<-fromb64(.lav_params$lhs,self$vars)
                             .lav_params$free<-(.lav_structure$free>0)
                             
                             ## collect regression coefficients table

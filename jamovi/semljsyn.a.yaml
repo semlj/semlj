@@ -34,23 +34,6 @@ options:
         - numeric
         - id
 
-    - name: output
-      type: List
-      hidden: true
-      options:
-        - noEcho
-        - echo
-      default: noEcho
-
-    - name: figWidth
-      type: String
-      default: ''
-      hidden: true
-
-    - name: figHeight
-      type: String
-      default: ''
-      hidden: true
 
     - name: toggle
       type: Bool

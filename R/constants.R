@@ -2,8 +2,6 @@ j_DEBUG=T
 j_INFO=T
 
 
-INTERACTION_SYMBOL="__XX__XX__"
-FACTOR_SYMBOL="._._._."
 
 NOTES<-list()
 

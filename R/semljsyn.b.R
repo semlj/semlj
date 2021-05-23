@@ -11,7 +11,6 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     "semljsynClass",
     inherit = semljsynBase,
     private = list(
-        .factors=NULL,
         .lav_machine=NULL,
         .data_machine=NULL,
         .plot_machine=NULL,

@@ -17,13 +17,13 @@ analyses:
     menuSubgroup: SEMLj
     menuTitle: SEM (syntax)
     description: Syntax based SEM
-  - title: SEM for jamovi
+  - title: Structural Equation Models
     name: semljgui
     ns: semlj
     menuGroup: SEM
     menuSubgroup: SEMLj
-    menuTitle: SEM for jamovi
-    description: Path Analysis
+    menuTitle: SEM (interactive)
+    description: SEM Analysis
 datasets:
   - name: pathjdata
     path: pathjdata.csv
