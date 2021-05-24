@@ -10,9 +10,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             syntax = NULL,
             fonts = "small",
             vars = NULL,
-            output = "noEcho",
-            figWidth = "",
-            figHeight = "",
             toggle = FALSE,
             multigroup = NULL,
             se = "standard",
@@ -72,24 +69,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "factor",
                     "numeric",
                     "id"))
-            private$..output <- jmvcore::OptionList$new(
-                "output",
-                output,
-                hidden=TRUE,
-                options=list(
-                    "noEcho",
-                    "echo"),
-                default="noEcho")
-            private$..figWidth <- jmvcore::OptionString$new(
-                "figWidth",
-                figWidth,
-                default="",
-                hidden=TRUE)
-            private$..figHeight <- jmvcore::OptionString$new(
-                "figHeight",
-                figHeight,
-                default="",
-                hidden=TRUE)
             private$..toggle <- jmvcore::OptionBool$new(
                 "toggle",
                 toggle,
@@ -277,9 +256,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..syntax)
             self$.addOption(private$..fonts)
             self$.addOption(private$..vars)
-            self$.addOption(private$..output)
-            self$.addOption(private$..figWidth)
-            self$.addOption(private$..figHeight)
             self$.addOption(private$..toggle)
             self$.addOption(private$..multigroup)
             self$.addOption(private$..se)
@@ -316,9 +292,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         syntax = function() private$..syntax$value,
         fonts = function() private$..fonts$value,
         vars = function() private$..vars$value,
-        output = function() private$..output$value,
-        figWidth = function() private$..figWidth$value,
-        figHeight = function() private$..figHeight$value,
         toggle = function() private$..toggle$value,
         multigroup = function() private$..multigroup$value,
         se = function() private$..se$value,
@@ -354,9 +327,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..syntax = NA,
         ..fonts = NA,
         ..vars = NA,
-        ..output = NA,
-        ..figWidth = NA,
-        ..figHeight = NA,
         ..toggle = NA,
         ..multigroup = NA,
         ..se = NA,
@@ -1002,9 +972,6 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param syntax .
 #' @param fonts .
 #' @param vars .
-#' @param output .
-#' @param figWidth .
-#' @param figHeight .
 #' @param toggle .
 #' @param multigroup .
 #' @param se .
@@ -1071,9 +1038,6 @@ semljsyn <- function(
     syntax,
     fonts = "small",
     vars,
-    output = "noEcho",
-    figWidth = "",
-    figHeight = "",
     toggle = FALSE,
     multigroup,
     se = "standard",
@@ -1120,9 +1084,6 @@ semljsyn <- function(
         syntax = syntax,
         fonts = fonts,
         vars = vars,
-        output = output,
-        figWidth = figWidth,
-        figHeight = figHeight,
         toggle = toggle,
         multigroup = multigroup,
         se = se,

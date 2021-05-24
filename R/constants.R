@@ -2,8 +2,6 @@ j_DEBUG=T
 j_INFO=T
 
 
-INTERACTION_SYMBOL="__XX__XX__"
-FACTOR_SYMBOL="._._._."
 
 NOTES<-list()
 
@@ -50,7 +48,7 @@ SY_EXAMPLES[[5]]<-list("info"="Estimate  variables covariances",example="y1~~x1"
 SY_EXAMPLES[[6]]<-list("info"="Estimate covariances involving interactions",example="x1:x2~~x3",com="The interaction term x1:x2 and x3 variable covariance is set free. Direct path should not be set")
 
 
-CONT_NOTE<-"All the parameters labels are in the form `pN`, where `N` is a number. 
+CONT_NOTE<-"Not user defined labels are in the form `pN`, where `N` is a number. 
 The parameter labels can be found in the results tables. Please be sure to have the options `Show parameters labels` selected."
 
 WARNS<-list()

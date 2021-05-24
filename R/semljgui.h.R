@@ -6,13 +6,15 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Options,
     public = list(
         initialize = function(
-            endogenous = NULL,
-            factors = NULL,
-            covs = NULL,
+            code = "",
+            endogenous = list(
+                list(label="Endogenous1", vars=list())),
+            exogenous = list(
+                list(label="Exogenous1", vars=list())),
+            endogenousTerms = list(
+                list()),
             multigroup = NULL,
             se = "standard",
-            r2ci = "fisher",
-            r2test = FALSE,
             bootci = "perc",
             ci = TRUE,
             ciWidth = 95,
@@ -20,31 +22,28 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             showintercepts = TRUE,
             intercepts = TRUE,
             indirect = FALSE,
-            contrasts = NULL,
-            showContrastCode = FALSE,
-            scaling = NULL,
-            endogenousTerms = list(
-                list()),
+            auto.fix.first = TRUE,
+            std.lv = FALSE,
             diagram = FALSE,
             diag_paths = "est",
             diag_resid = FALSE,
+            diag_intercepts = FALSE,
             diag_labsize = "medium",
-            diag_rotate = "1",
-            diag_type = "circle",
-            diag_shape = "rectangle",
-            diag_abbrev = "0",
-            varcov = NULL,
+            diag_rotate = "2",
+            diag_type = "tree",
+            diag_shape_man = "rectangle",
+            diag_shape_lat = "circle",
+            diag_abbrev = "5",
             cov_y = TRUE,
             cov_x = TRUE,
-            constraints = list(),
-            syntax = NULL,
-            code = NULL,
             constraints_examples = FALSE,
             showlabels = FALSE,
             scoretest = TRUE,
             cumscoretest = FALSE,
             estimator = "ML",
-            likelihood = "normal", ...) {
+            likelihood = "normal",
+            varcov = NULL,
+            constraints = list(), ...) {
 
             super$initialize(
                 package="semlj",
@@ -52,33 +51,57 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresData=TRUE,
                 ...)
 
-            private$..endogenous <- jmvcore::OptionVariables$new(
+            private$..code <- jmvcore::OptionString$new(
+                "code",
+                code,
+                default="",
+                hidden=TRUE)
+            private$..endogenous <- jmvcore::OptionArray$new(
                 "endogenous",
                 endogenous,
-                suggested=list(
-                    "continuous",
-                    "ordinal"),
-                permitted=list(
-                    "numeric"),
-                default=NULL)
-            private$..factors <- jmvcore::OptionVariables$new(
-                "factors",
-                factors,
-                suggested=list(
-                    "nominal",
-                    "ordinal"),
-                permitted=list(
-                    "factor"),
-                default=NULL)
-            private$..covs <- jmvcore::OptionVariables$new(
-                "covs",
-                covs,
-                suggested=list(
-                    "continuous",
-                    "ordinal"),
-                permitted=list(
-                    "numeric"),
-                default=NULL)
+                default=list(
+                    list(label="Endogenous1", vars=list())),
+                template=jmvcore::OptionGroup$new(
+                    "endogenous",
+                    NULL,
+                    elements=list(
+                        jmvcore::OptionString$new(
+                            "label",
+                            NULL),
+                        jmvcore::OptionVariables$new(
+                            "vars",
+                            NULL,
+                            suggested=list(
+                                "continuous"),
+                            permitted=list(
+                                "numeric")))))
+            private$..exogenous <- jmvcore::OptionArray$new(
+                "exogenous",
+                exogenous,
+                default=list(
+                    list(label="Exogenous1", vars=list())),
+                template=jmvcore::OptionGroup$new(
+                    "exogenous",
+                    NULL,
+                    elements=list(
+                        jmvcore::OptionString$new(
+                            "label",
+                            NULL),
+                        jmvcore::OptionVariables$new(
+                            "vars",
+                            NULL,
+                            suggested=list(
+                                "continuous"),
+                            permitted=list(
+                                "numeric")))))
+            private$..endogenousTerms <- jmvcore::OptionArray$new(
+                "endogenousTerms",
+                endogenousTerms,
+                default=list(
+                    list()),
+                template=jmvcore::OptionTerms$new(
+                    "endogenousTerms",
+                    NULL))
             private$..multigroup <- jmvcore::OptionVariable$new(
                 "multigroup",
                 multigroup,
@@ -97,17 +120,6 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "robust.huber.white",
                     "boot"),
                 default="standard")
-            private$..r2ci <- jmvcore::OptionList$new(
-                "r2ci",
-                r2ci,
-                options=list(
-                    "fisher",
-                    "model"),
-                default="fisher")
-            private$..r2test <- jmvcore::OptionBool$new(
-                "r2test",
-                r2test,
-                default=FALSE)
             private$..bootci <- jmvcore::OptionList$new(
                 "bootci",
                 bootci,
@@ -144,64 +156,14 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "indirect",
                 indirect,
                 default=FALSE)
-            private$..contrasts <- jmvcore::OptionArray$new(
-                "contrasts",
-                contrasts,
-                items="(factors)",
-                default=NULL,
-                template=jmvcore::OptionGroup$new(
-                    "contrasts",
-                    NULL,
-                    elements=list(
-                        jmvcore::OptionVariable$new(
-                            "var",
-                            NULL,
-                            content="$key"),
-                        jmvcore::OptionList$new(
-                            "type",
-                            NULL,
-                            options=list(
-                                "simple",
-                                "deviation",
-                                "dummy",
-                                "difference",
-                                "helmert",
-                                "repeated",
-                                "polynomial"),
-                            default="simple"))))
-            private$..showContrastCode <- jmvcore::OptionBool$new(
-                "showContrastCode",
-                showContrastCode,
+            private$..auto.fix.first <- jmvcore::OptionBool$new(
+                "auto.fix.first",
+                auto.fix.first,
+                default=TRUE)
+            private$..std.lv <- jmvcore::OptionBool$new(
+                "std.lv",
+                std.lv,
                 default=FALSE)
-            private$..scaling <- jmvcore::OptionArray$new(
-                "scaling",
-                scaling,
-                default=NULL,
-                template=jmvcore::OptionGroup$new(
-                    "scaling",
-                    NULL,
-                    elements=list(
-                        jmvcore::OptionVariable$new(
-                            "var",
-                            NULL,
-                            content="$key"),
-                        jmvcore::OptionList$new(
-                            "type",
-                            NULL,
-                            options=list(
-                                "none",
-                                "centered",
-                                "standardized",
-                                "log"),
-                            default="none"))))
-            private$..endogenousTerms <- jmvcore::OptionArray$new(
-                "endogenousTerms",
-                endogenousTerms,
-                default=list(
-                    list()),
-                template=jmvcore::OptionTerms$new(
-                    "endogenousTerms",
-                    NULL))
             private$..diagram <- jmvcore::OptionBool$new(
                 "diagram",
                 diagram,
@@ -219,6 +181,10 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "diag_resid",
                 diag_resid,
                 default=FALSE)
+            private$..diag_intercepts <- jmvcore::OptionBool$new(
+                "diag_intercepts",
+                diag_intercepts,
+                default=FALSE)
             private$..diag_labsize <- jmvcore::OptionList$new(
                 "diag_labsize",
                 diag_labsize,
@@ -232,24 +198,24 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "diag_rotate",
                 diag_rotate,
                 options=list(
-                    "1",
                     "2",
-                    "3",
-                    "4"),
-                default="1")
+                    "1",
+                    "4",
+                    "3"),
+                default="2")
             private$..diag_type <- jmvcore::OptionList$new(
                 "diag_type",
                 diag_type,
                 options=list(
+                    "tree",
                     "circle",
                     "circle2",
                     "tree2",
-                    "tree",
                     "spring"),
-                default="circle")
-            private$..diag_shape <- jmvcore::OptionList$new(
-                "diag_shape",
-                diag_shape,
+                default="tree")
+            private$..diag_shape_man <- jmvcore::OptionList$new(
+                "diag_shape_man",
+                diag_shape_man,
                 options=list(
                     "rectangle",
                     "square",
@@ -257,6 +223,16 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ellipse",
                     "diamond"),
                 default="rectangle")
+            private$..diag_shape_lat <- jmvcore::OptionList$new(
+                "diag_shape_lat",
+                diag_shape_lat,
+                options=list(
+                    "circle",
+                    "rectangle",
+                    "square",
+                    "ellipse",
+                    "diamond"),
+                default="circle")
             private$..diag_abbrev <- jmvcore::OptionList$new(
                 "diag_abbrev",
                 diag_abbrev,
@@ -267,10 +243,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "15",
                     "20",
                     "25"),
-                default="0")
-            private$..varcov <- jmvcore::OptionPairs$new(
-                "varcov",
-                varcov)
+                default="5")
             private$..cov_y <- jmvcore::OptionBool$new(
                 "cov_y",
                 cov_y,
@@ -279,21 +252,6 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cov_x",
                 cov_x,
                 default=TRUE)
-            private$..constraints <- jmvcore::OptionArray$new(
-                "constraints",
-                constraints,
-                default=list(),
-                template=jmvcore::OptionString$new(
-                    "constraints",
-                    NULL))
-            private$..syntax <- jmvcore::OptionString$new(
-                "syntax",
-                syntax,
-                hidden=TRUE)
-            private$..code <- jmvcore::OptionString$new(
-                "code",
-                code,
-                hidden=TRUE)
             private$..constraints_examples <- jmvcore::OptionBool$new(
                 "constraints_examples",
                 constraints_examples,
@@ -327,14 +285,23 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "normal",
                     "wishart"),
                 default="normal")
+            private$..varcov <- jmvcore::OptionPairs$new(
+                "varcov",
+                varcov)
+            private$..constraints <- jmvcore::OptionArray$new(
+                "constraints",
+                constraints,
+                default=list(),
+                template=jmvcore::OptionString$new(
+                    "constraints",
+                    NULL))
 
+            self$.addOption(private$..code)
             self$.addOption(private$..endogenous)
-            self$.addOption(private$..factors)
-            self$.addOption(private$..covs)
+            self$.addOption(private$..exogenous)
+            self$.addOption(private$..endogenousTerms)
             self$.addOption(private$..multigroup)
             self$.addOption(private$..se)
-            self$.addOption(private$..r2ci)
-            self$.addOption(private$..r2test)
             self$.addOption(private$..bootci)
             self$.addOption(private$..ci)
             self$.addOption(private$..ciWidth)
@@ -342,39 +309,36 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showintercepts)
             self$.addOption(private$..intercepts)
             self$.addOption(private$..indirect)
-            self$.addOption(private$..contrasts)
-            self$.addOption(private$..showContrastCode)
-            self$.addOption(private$..scaling)
-            self$.addOption(private$..endogenousTerms)
+            self$.addOption(private$..auto.fix.first)
+            self$.addOption(private$..std.lv)
             self$.addOption(private$..diagram)
             self$.addOption(private$..diag_paths)
             self$.addOption(private$..diag_resid)
+            self$.addOption(private$..diag_intercepts)
             self$.addOption(private$..diag_labsize)
             self$.addOption(private$..diag_rotate)
             self$.addOption(private$..diag_type)
-            self$.addOption(private$..diag_shape)
+            self$.addOption(private$..diag_shape_man)
+            self$.addOption(private$..diag_shape_lat)
             self$.addOption(private$..diag_abbrev)
-            self$.addOption(private$..varcov)
             self$.addOption(private$..cov_y)
             self$.addOption(private$..cov_x)
-            self$.addOption(private$..constraints)
-            self$.addOption(private$..syntax)
-            self$.addOption(private$..code)
             self$.addOption(private$..constraints_examples)
             self$.addOption(private$..showlabels)
             self$.addOption(private$..scoretest)
             self$.addOption(private$..cumscoretest)
             self$.addOption(private$..estimator)
             self$.addOption(private$..likelihood)
+            self$.addOption(private$..varcov)
+            self$.addOption(private$..constraints)
         }),
     active = list(
+        code = function() private$..code$value,
         endogenous = function() private$..endogenous$value,
-        factors = function() private$..factors$value,
-        covs = function() private$..covs$value,
+        exogenous = function() private$..exogenous$value,
+        endogenousTerms = function() private$..endogenousTerms$value,
         multigroup = function() private$..multigroup$value,
         se = function() private$..se$value,
-        r2ci = function() private$..r2ci$value,
-        r2test = function() private$..r2test$value,
         bootci = function() private$..bootci$value,
         ci = function() private$..ci$value,
         ciWidth = function() private$..ciWidth$value,
@@ -382,38 +346,35 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         showintercepts = function() private$..showintercepts$value,
         intercepts = function() private$..intercepts$value,
         indirect = function() private$..indirect$value,
-        contrasts = function() private$..contrasts$value,
-        showContrastCode = function() private$..showContrastCode$value,
-        scaling = function() private$..scaling$value,
-        endogenousTerms = function() private$..endogenousTerms$value,
+        auto.fix.first = function() private$..auto.fix.first$value,
+        std.lv = function() private$..std.lv$value,
         diagram = function() private$..diagram$value,
         diag_paths = function() private$..diag_paths$value,
         diag_resid = function() private$..diag_resid$value,
+        diag_intercepts = function() private$..diag_intercepts$value,
         diag_labsize = function() private$..diag_labsize$value,
         diag_rotate = function() private$..diag_rotate$value,
         diag_type = function() private$..diag_type$value,
-        diag_shape = function() private$..diag_shape$value,
+        diag_shape_man = function() private$..diag_shape_man$value,
+        diag_shape_lat = function() private$..diag_shape_lat$value,
         diag_abbrev = function() private$..diag_abbrev$value,
-        varcov = function() private$..varcov$value,
         cov_y = function() private$..cov_y$value,
         cov_x = function() private$..cov_x$value,
-        constraints = function() private$..constraints$value,
-        syntax = function() private$..syntax$value,
-        code = function() private$..code$value,
         constraints_examples = function() private$..constraints_examples$value,
         showlabels = function() private$..showlabels$value,
         scoretest = function() private$..scoretest$value,
         cumscoretest = function() private$..cumscoretest$value,
         estimator = function() private$..estimator$value,
-        likelihood = function() private$..likelihood$value),
+        likelihood = function() private$..likelihood$value,
+        varcov = function() private$..varcov$value,
+        constraints = function() private$..constraints$value),
     private = list(
+        ..code = NA,
         ..endogenous = NA,
-        ..factors = NA,
-        ..covs = NA,
+        ..exogenous = NA,
+        ..endogenousTerms = NA,
         ..multigroup = NA,
         ..se = NA,
-        ..r2ci = NA,
-        ..r2test = NA,
         ..bootci = NA,
         ..ci = NA,
         ..ciWidth = NA,
@@ -421,30 +382,28 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..showintercepts = NA,
         ..intercepts = NA,
         ..indirect = NA,
-        ..contrasts = NA,
-        ..showContrastCode = NA,
-        ..scaling = NA,
-        ..endogenousTerms = NA,
+        ..auto.fix.first = NA,
+        ..std.lv = NA,
         ..diagram = NA,
         ..diag_paths = NA,
         ..diag_resid = NA,
+        ..diag_intercepts = NA,
         ..diag_labsize = NA,
         ..diag_rotate = NA,
         ..diag_type = NA,
-        ..diag_shape = NA,
+        ..diag_shape_man = NA,
+        ..diag_shape_lat = NA,
         ..diag_abbrev = NA,
-        ..varcov = NA,
         ..cov_y = NA,
         ..cov_x = NA,
-        ..constraints = NA,
-        ..syntax = NA,
-        ..code = NA,
         ..constraints_examples = NA,
         ..showlabels = NA,
         ..scoretest = NA,
         ..cumscoretest = NA,
         ..estimator = NA,
-        ..likelihood = NA)
+        ..likelihood = NA,
+        ..varcov = NA,
+        ..constraints = NA)
 )
 
 semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -464,15 +423,14 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 options=options,
                 name="",
-                title="SEM for jamovi")
+                title="SEM gui")
             private$..model <- NULL
             self$add(jmvcore::Table$new(
                 options=options,
                 name="info",
                 title="Models Info",
                 clearWith=list(
-                    "endogenousTerms",
-                    "constraints"),
+                    "code"),
                 columns=list(
                     list(
                         `name`="info", 
@@ -503,19 +461,15 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="fit",
                             title="Overall Tests",
                             clearWith=list(
-                    "endogenousTerms"))
+                    "code"))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="main",
                             title="Model Tests",
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
-                                "contrasts",
                                 "cov_y",
-                                "constraints"),
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="label", 
@@ -540,13 +494,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Constraints Score Tests",
                             visible=FALSE,
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
-                                "contrasts",
                                 "cov_y",
-                                "constraints"),
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="type", 
@@ -635,12 +585,11 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    r2 = function() private$.items[["r2"]],
                     coefficients = function() private$.items[["coefficients"]],
+                    loadings = function() private$.items[["loadings"]],
                     correlations = function() private$.items[["correlations"]],
                     intercepts = function() private$.items[["intercepts"]],
-                    defined = function() private$.items[["defined"]],
-                    contrastCodeTable = function() private$.items[["contrastCodeTable"]]),
+                    defined = function() private$.items[["defined"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -650,77 +599,16 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Estimates")
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="r2",
-                            title="R-squared",
-                            clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
-                                "ciType",
-                                "contrasts",
-                                "cov_y",
-                                "constraints",
-                                "data",
-                                "multigroup"),
-                            columns=list(
-                                list(
-                                    `name`="lgroup", 
-                                    `title`="Group", 
-                                    `type`="text", 
-                                    `visible`="(multigroup)", 
-                                    `combineBelow`=TRUE),
-                                list(
-                                    `name`="lhs", 
-                                    `title`="Variable", 
-                                    `type`="text"),
-                                list(
-                                    `name`="r2", 
-                                    `title`="R\u00B2", 
-                                    `type`="number"),
-                                list(
-                                    `name`="ci.lower", 
-                                    `type`="number", 
-                                    `title`="Lower", 
-                                    `visible`="(ci)", 
-                                    `format`="zto"),
-                                list(
-                                    `name`="ci.upper", 
-                                    `type`="number", 
-                                    `title`="Upper", 
-                                    `visible`="(ci)", 
-                                    `format`="zto"),
-                                list(
-                                    `name`="chisq", 
-                                    `title`="Wald X\u00B2", 
-                                    `type`="number", 
-                                    `visible`="(r2test)"),
-                                list(
-                                    `name`="df", 
-                                    `title`="df", 
-                                    `type`="integer", 
-                                    `visible`="(r2test)"),
-                                list(
-                                    `name`="pvalue", 
-                                    `title`="p", 
-                                    `type`="number", 
-                                    `format`="zto,pvalue", 
-                                    `visible`="(r2test)"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
                             name="coefficients",
                             title="Parameter Estimates",
                             refs="lavaan",
                             clearWith=list(
-                                "endogenousTerms",
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
                                 "contrasts",
                                 "cov_y",
-                                "constraints",
                                 "data",
-                                "multigroup"),
+                                "multigroup",
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -774,19 +662,78 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `format`="zto,pvalue"))))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="correlations",
-                            title="Variances and Covariances",
+                            name="loadings",
+                            title="Measurement Model",
+                            visible=FALSE,
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
                                 "contrasts",
                                 "cov_y",
-                                "constraints",
                                 "data",
                                 "multigroup",
-                                "varcov"),
+                                "code"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="label", 
+                                    `title`="Label", 
+                                    `type`="text", 
+                                    `visible`="(showlabels)"),
+                                list(
+                                    `name`="lhs", 
+                                    `title`="Latent", 
+                                    `type`="text", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Observed", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="Estimate", 
+                                    `type`="number"),
+                                list(
+                                    `name`="se", 
+                                    `title`="SE", 
+                                    `type`="number"),
+                                list(
+                                    `name`="ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(ci)"),
+                                list(
+                                    `name`="ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(ci)"),
+                                list(
+                                    `name`="std.all", 
+                                    `type`="number", 
+                                    `title`="\u03B2"),
+                                list(
+                                    `name`="z", 
+                                    `title`="z", 
+                                    `type`="number"),
+                                list(
+                                    `name`="pvalue", 
+                                    `title`="p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="correlations",
+                            title="Variances and Covariances",
+                            clearWith=list(
+                                "ciType",
+                                "cov_y",
+                                "data",
+                                "multigroup",
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -839,10 +786,6 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="number", 
                                     `format`="zto,pvalue"),
                                 list(
-                                    `name`="user", 
-                                    `title`="Method", 
-                                    `type`="text"),
-                                list(
                                     `name`="type", 
                                     `title`="Type", 
                                     `type`="text"))))
@@ -850,17 +793,13 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="intercepts",
                             title="Intercepts",
-                            visible="(showintercepts)",
+                            visible=FALSE,
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
-                                "contrasts",
                                 "cov_y",
-                                "constraints",
                                 "data",
-                                "multigroup"),
+                                "multigroup",
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -915,15 +854,11 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Defined Parameters",
                             visible=FALSE,
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
                                 "ciType",
-                                "contrasts",
                                 "cov_y",
-                                "constraints",
                                 "data",
-                                "multigroup"),
+                                "multigroup",
+                                "code"),
                             columns=list(
                                 list(
                                     `name`="lhs", 
@@ -973,21 +908,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="pvalue", 
                                     `title`="p", 
                                     `type`="number", 
-                                    `format`="zto,pvalue"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
-                            name="contrastCodeTable",
-                            title="Contrasts Definition",
-                            visible=FALSE,
-                            columns=list(
-                                list(
-                                    `name`="rname", 
-                                    `title`="Name", 
-                                    `type`="text"),
-                                list(
-                                    `name`="clab", 
-                                    `title`="Contrast", 
-                                    `type`="text"))))}))$new(options=options))
+                                    `format`="zto,pvalue"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -1001,12 +922,19 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="pathgroup",
                             title="Path Model",
                             clearWith=list(
-                    "endogenous",
                     "cov_y",
-                    "constraints",
-                    "varcov",
                     "data",
-                    "multigroup"))
+                    "multigroup",
+                    "code",
+                    "diag_shape_man",
+                    "diag_shape_lat",
+                    "diag_abbrev",
+                    "diag_type",
+                    "diag_rotate",
+                    "diag_labsize",
+                    "diag_resid",
+                    "diag_paths",
+                    "dia_intercepts"))
                         self$add(jmvcore::Array$new(
                             options=options,
                             name="diagrams",
@@ -1016,23 +944,22 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 options=options,
                                 title="$key",
                                 renderFun=".showDiagram",
-                                width=700,
-                                height=500,
+                                width=800,
+                                height=600,
                                 clearWith=list(
-                                    "diag_resid",
-                                    "diag_paths",
-                                    "diag_labsize",
-                                    "diag_rotate",
-                                    "diag_type",
-                                    "diag_shape",
-                                    "diag_abbrev",
-                                    "contrasts",
-                                    "endogenousTerms",
                                     "cov_y",
-                                    "constraints",
                                     "data",
                                     "multigroup",
-                                    "varcov")),
+                                    "code",
+                                    "diag_shape_man",
+                                    "diag_shape_lat",
+                                    "diag_abbrev",
+                                    "diag_type",
+                                    "diag_rotate",
+                                    "diag_labsize",
+                                    "diag_resid",
+                                    "diag_paths",
+                                    "diag_intercepts")),
                             refs="semplot"))
                         self$add(jmvcore::Table$new(
                             options=options,
@@ -1048,7 +975,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="contraintsnotes",
                 visible="(constraints_examples)",
-                title="Constraints input examples",
+                title="Syntax examples",
                 columns=list(
                     list(
                         `name`="info", 
@@ -1072,7 +999,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 package = "semlj",
                 name = "semljgui",
-                version = c(0,0,1),
+                version = c(1,0,0),
                 options = options,
                 results = semljguiResults$new(options=options),
                 data = data,
@@ -1084,18 +1011,20 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 requiresMissings = FALSE)
         }))
 
-#' SEM for jamovi
+#' Structural Equation Models
 #'
-#' Path Analysis
-#' @param data the data as a data frame
-#' @param endogenous a vector of strings naming the mediators from \code{data}
-#' @param factors a vector of strings naming the fixed factors from
-#'   \code{data}
-#' @param covs a vector of strings naming the covariates from \code{data}
+#' 
+#' @param data .
+#' @param code .
+#' @param endogenous a list containing named lists that define the
+#'   \code{label} of the latent variables and the \code{vars} that belong to
+#'   that latent
+#' @param exogenous a list containing named lists that define the \code{label}
+#'   of the latent variables and the \code{vars} that belong to that latent
+#' @param endogenousTerms a list of lists specifying the models for with the
+#'   mediators as dependent variables.
 #' @param multigroup factor defining groups for multigroup analysis
 #' @param se .
-#' @param r2ci Choose the confidence interval type
-#' @param r2test .
 #' @param bootci Choose the confidence interval type
 #' @param ci .
 #' @param ciWidth a number between 50 and 99.9 (default: 95) specifying the
@@ -1106,41 +1035,32 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   intercepts
 #' @param intercepts \code{TRUE} or \code{FALSE} (default), show intercepts
 #' @param indirect \code{TRUE} or \code{FALSE} (default), show intercepts
-#' @param contrasts a list of lists specifying the factor and type of contrast
-#'   to use, one of \code{'deviation'}, \code{'simple'}, \code{'difference'},
-#'   \code{'helmert'}, \code{'repeated'} or \code{'polynomial'}
-#' @param showContrastCode \code{TRUE} or \code{FALSE} (default), provide
-#'   contrast coefficients tables
-#' @param scaling a named vector of the form \code{c(var1='type',
-#'   var2='type2')} specifying the transformation to apply to covariates, one of
-#'   \code{'centered'} to the mean, \code{'standardized'},\code{'log'} or
-#'   \code{'none'}. \code{'none'} leaves the variable as it is.
-#' @param endogenousTerms a list of lists specifying the models for with the
-#'   mediators as dependent variables.
+#' @param auto.fix.first \code{TRUE} or \code{FALSE}
+#' @param std.lv \code{TRUE} or \code{FALSE}
 #' @param diagram \code{TRUE} or \code{FALSE} (default), produce a path
 #'   diagram
 #' @param diag_paths Choose the diagram labels
 #' @param diag_resid \code{TRUE} or \code{FALSE} (default), produce a path
 #'   diagram
+#' @param diag_intercepts \code{TRUE} or \code{FALSE} (default), produce a
+#'   path diagram
 #' @param diag_labsize Choose the diagram labels
 #' @param diag_rotate Choose the diagram labels
 #' @param diag_type Choose the diagram labels
-#' @param diag_shape Choose the diagram labels
+#' @param diag_shape_man Choose the diagram labels
+#' @param diag_shape_lat Choose the diagram labels
 #' @param diag_abbrev Choose the diagram labels
-#' @param varcov a list of lists specifying the  covariances that need to be
-#'   estimated
 #' @param cov_y \code{TRUE} or \code{FALSE} (default), produce a path diagram
 #' @param cov_x \code{TRUE} or \code{FALSE} (default), produce a path diagram
-#' @param constraints a list of lists specifying the models random effects.
-#' @param syntax .
-#' @param code .
 #' @param constraints_examples .
 #' @param showlabels .
 #' @param scoretest .
 #' @param cumscoretest .
 #' @param estimator Choose the diagram labels
 #' @param likelihood Choose the diagram labels
-#' @param formula (optional) the formula to use, see the examples
+#' @param varcov a list of lists specifying the  covariances that need to be
+#'   estimated
+#' @param constraints a list of lists specifying the models random effects.
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
@@ -1148,12 +1068,11 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$constraints} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$models$r2} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$coefficients} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$models$loadings} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$correlations} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$models$contrastCodeTable} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
@@ -1168,13 +1087,15 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @export
 semljgui <- function(
     data,
-    endogenous = NULL,
-    factors = NULL,
-    covs = NULL,
+    code = "",
+    endogenous = list(
+                list(label="Endogenous1", vars=list())),
+    exogenous = list(
+                list(label="Exogenous1", vars=list())),
+    endogenousTerms = list(
+                list()),
     multigroup = NULL,
     se = "standard",
-    r2ci = "fisher",
-    r2test = FALSE,
     bootci = "perc",
     ci = TRUE,
     ciWidth = 95,
@@ -1182,82 +1103,47 @@ semljgui <- function(
     showintercepts = TRUE,
     intercepts = TRUE,
     indirect = FALSE,
-    contrasts = NULL,
-    showContrastCode = FALSE,
-    scaling = NULL,
-    endogenousTerms = list(
-                list()),
+    auto.fix.first = TRUE,
+    std.lv = FALSE,
     diagram = FALSE,
     diag_paths = "est",
     diag_resid = FALSE,
+    diag_intercepts = FALSE,
     diag_labsize = "medium",
-    diag_rotate = "1",
-    diag_type = "circle",
-    diag_shape = "rectangle",
-    diag_abbrev = "0",
-    varcov,
+    diag_rotate = "2",
+    diag_type = "tree",
+    diag_shape_man = "rectangle",
+    diag_shape_lat = "circle",
+    diag_abbrev = "5",
     cov_y = TRUE,
     cov_x = TRUE,
-    constraints = list(),
-    syntax,
-    code,
     constraints_examples = FALSE,
     showlabels = FALSE,
     scoretest = TRUE,
     cumscoretest = FALSE,
     estimator = "ML",
     likelihood = "normal",
-    formula) {
+    varcov,
+    constraints = list()) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("semljgui requires jmvcore to be installed (restart may be required)")
 
-    if ( ! missing(formula)) {
-        if (missing(endogenous))
-            endogenous <- semljguiClass$private_methods$.marshalFormula(
-                formula=formula,
-                data=`if`( ! missing(data), data, NULL),
-                name="endogenous")
-        if (missing(endogenousTerms))
-            endogenousTerms <- semljguiClass$private_methods$.marshalFormula(
-                formula=formula,
-                data=`if`( ! missing(data), data, NULL),
-                name="endogenousTerms")
-        if (missing(factors))
-            factors <- semljguiClass$private_methods$.marshalFormula(
-                formula=formula,
-                data=`if`( ! missing(data), data, NULL),
-                name="factors")
-        if (missing(covs))
-            covs <- semljguiClass$private_methods$.marshalFormula(
-                formula=formula,
-                data=`if`( ! missing(data), data, NULL),
-                name="covs")
-    }
-
-    if ( ! missing(endogenous)) endogenous <- jmvcore::resolveQuo(jmvcore::enquo(endogenous))
-    if ( ! missing(factors)) factors <- jmvcore::resolveQuo(jmvcore::enquo(factors))
-    if ( ! missing(covs)) covs <- jmvcore::resolveQuo(jmvcore::enquo(covs))
     if ( ! missing(multigroup)) multigroup <- jmvcore::resolveQuo(jmvcore::enquo(multigroup))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(endogenous), endogenous, NULL),
-            `if`( ! missing(factors), factors, NULL),
-            `if`( ! missing(covs), covs, NULL),
             `if`( ! missing(multigroup), multigroup, NULL))
 
-    for (v in factors) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     for (v in multigroup) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- semljguiOptions$new(
+        code = code,
         endogenous = endogenous,
-        factors = factors,
-        covs = covs,
+        exogenous = exogenous,
+        endogenousTerms = endogenousTerms,
         multigroup = multigroup,
         se = se,
-        r2ci = r2ci,
-        r2test = r2test,
         bootci = bootci,
         ci = ci,
         ciWidth = ciWidth,
@@ -1265,30 +1151,28 @@ semljgui <- function(
         showintercepts = showintercepts,
         intercepts = intercepts,
         indirect = indirect,
-        contrasts = contrasts,
-        showContrastCode = showContrastCode,
-        scaling = scaling,
-        endogenousTerms = endogenousTerms,
+        auto.fix.first = auto.fix.first,
+        std.lv = std.lv,
         diagram = diagram,
         diag_paths = diag_paths,
         diag_resid = diag_resid,
+        diag_intercepts = diag_intercepts,
         diag_labsize = diag_labsize,
         diag_rotate = diag_rotate,
         diag_type = diag_type,
-        diag_shape = diag_shape,
+        diag_shape_man = diag_shape_man,
+        diag_shape_lat = diag_shape_lat,
         diag_abbrev = diag_abbrev,
-        varcov = varcov,
         cov_y = cov_y,
         cov_x = cov_x,
-        constraints = constraints,
-        syntax = syntax,
-        code = code,
         constraints_examples = constraints_examples,
         showlabels = showlabels,
         scoretest = scoretest,
         cumscoretest = cumscoretest,
         estimator = estimator,
-        likelihood = likelihood)
+        likelihood = likelihood,
+        varcov = varcov,
+        constraints = constraints)
 
     analysis <- semljguiClass$new(
         options = options,

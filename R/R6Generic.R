@@ -21,7 +21,6 @@ Dispatch <- R6::R6Class(
                            return()
               if (obj$message==FALSE)
                            return()
-              obj<-fromb64(obj,self$vars)
               topic<-private$.warnings[[obj$topic]]
               topic[[length(topic)+1]]<-obj$message
               topic<-unique(topic)
@@ -36,7 +35,6 @@ Dispatch <- R6::R6Class(
                             return()
                      if (obj==FALSE)
                            return()
-                     obj<-fromb64(obj,self$vars)
                      private$.errors[[length(private$.errors)+1]]<-obj
         }
         

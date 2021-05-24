@@ -6,10 +6,10 @@ readiness <- function(options) {
 if(length(options$code) == 0 | options$code=="") {
     result$ready <- FALSE
     result$report <- TRUE
-    result$reason <- glue::glue("we need some syntax to begin")
+    result$reason <- glue::glue("Please define a model to begin")
     return(result)
   } 
 
-
+  
   return(result)
 }

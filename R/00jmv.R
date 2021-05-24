@@ -6,9 +6,9 @@
         `type`="software", 
         `author`="Gallucci, M.", 
         `year`=2021, 
-        `title`="PATHj: jamovi Path Analysis", 
-        `publisher`="[jamovi module]. For help please visit https://pathj.github.io/", 
-        `url`="https://pathj.github.io/"), 
+        `title`="SEMLj: jamovi SEM Analysis", 
+        `publisher`="[jamovi module]. For help please visit https://semlj.github.io/", 
+        `url`="https://semlj.github.io/"), 
     `lavaan`=list(
         `type`="article", 
         `author`="Rosseel, Y.", 
