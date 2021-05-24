@@ -22,8 +22,8 @@ children:
             height: large
             addButton: Add New Latent
             events:
-              listItemAdded: './gui.events::onChange_endo_items_added'
-              listItemRemoved: './gui.events::onChange_endo_items_removed'
+              listItemAdded: './gui.events::onChange_items_changed'
+              listItemRemoved: './gui.events::onChange_items_changed'
             templateName: linreg-block-template
             template:
               type: LayoutBox
@@ -41,8 +41,8 @@ children:
                 - type: VariablesListBox
                   valueFilter: unique
                   events:
-                       listItemAdded: './gui.events::onChange_endo_items_changed'
-                       listItemRemoved: './gui.events::onChange_endo_items_changed'
+                       listItemAdded: './gui.events::onChange_items_changed'
+                       listItemRemoved: './gui.events::onChange_items_changed'
   
                   valueKey:
                     - vars
@@ -60,8 +60,8 @@ children:
             addButton: Add New Latent
             templateName: linreg-block-template
             events:
-              listItemAdded: './gui.events::onChange_exo_items_added'
-              listItemRemoved: './gui.events::onChange_exo_items_removed'
+              listItemAdded: './gui.events::onChange_items_changed'
+              listItemRemoved: './gui.events::onChange_items_changed'
 
             template:
               type: LayoutBox
@@ -80,8 +80,8 @@ children:
                 - type: VariablesListBox
                   valueFilter: unique
                   events:
-                     listItemAdded: './gui.events::onChange_exo_items_changed'
-                     listItemRemoved: './gui.events::onChange_exo_items_changed'
+                     listItemAdded: './gui.events::onChange_items_changed'
+                     listItemRemoved: './gui.events::onChange_items_changed'
                   valueKey:
                     - vars
                   name: blockList
@@ -89,6 +89,13 @@ children:
                   height: auto
                   ghostText: drag variables here
 
+      - type: TargetLayoutBox
+        children:
+          - type: VariablesListBox
+            name: multigroup
+            maxItemCount: 1
+            isTarget: true
+            itemDropBehaviour: overwrite
 
 
   - type: CollapseBox
@@ -106,7 +113,7 @@ children:
             persistentItems: true
             stretchFactor: 1
             events:
-              update: './gui.events::onChange_endogenousSupplier'
+              update: './gui.events::onUpdate_endogenousSupplier'
               change: './gui.events::onChange_endogenousSupplier'
             children:
               - type: TargetLayoutBox
@@ -137,7 +144,102 @@ children:
                           events:
                             change: './gui.events::onChange_endogenousTerms'
                           template:
-                            type: TermLabel
+                             type: TermLabel
+
+
+  - type: CollapseBox
+    label: Variances and Covariances
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        style: inline
+        stretchFactor: 1
+        children:
+
+               - type: VariableSupplier
+                 name: varcovSupplier
+                 populate: manual
+                 persistentItems: true
+                 stretchFactor: 1
+                 events:
+                     change: './gui.events::onChange_varcovSupplier'
+                     update: './gui.events::onChange_varcovSupplier'
+                 children:
+                     - type: TargetLayoutBox
+                       label: Select pairs
+                       children:
+                             - type: VariablesListBox
+                               name: varcov
+                               fullRowSelect: true
+                               isTarget: true
+                               events:
+                                       change: './gui.events::onChange_varcov'
+ 
+                               columns:
+                                    - name: i1
+                                      stretchFactor: 1
+                                      template:
+                                           type: VariableLabel
+                                    - name: i2
+                                      stretchFactor: 1
+                                      template:
+                                           type: VariableLabel
+
+
+  - type: CollapseBox
+    label: Custom Model Settings
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: LayoutBox
+            margin: large
+            stretchFactor: 1
+            children:
+              - type: TargetLayoutBox
+                children:
+                  - type: ListBox
+                    name: constraints
+                    events:
+                                 change: './gui.events::onChange_constraints'
+                    height: large
+                    addButton: Add directive
+                    selectable: true
+                    templateName: linreg-block-template
+                    template:
+                      type: LayoutBox
+                      margin: normal
+                      stretchFactor: 1
+                      children:
+                        - type: TextBox
+                          name: randblockList
+                          valueFilter: unique
+                          stretchFactor: 0.5
+                          borderless: true
+                          height: auto
+                          ghostText: write here
+
+          - type: LayoutBox
+            margin: large
+            style: inline
+
+            children:
+              - type: Label
+                label: Information
+                children:
+                  - type: LayoutBox
+                    margin: large
+                    children:
+                      - type: CheckBox
+                        name: showlabels
+                      - type: CheckBox
+                        name: constraints_examples
+
 
 
 
@@ -274,10 +376,6 @@ children:
                 name: cov_x
               - type: CheckBox
                 name: cov_y
-              - type: CheckBox
-                name: showlabels
-              - type: CheckBox
-                name: constraints_examples
   - type: CollapseBox
     label: Path Diagram
     collapsed: true
@@ -360,9 +458,3 @@ children:
               - type: ComboBox
                 name: diag_abbrev
                 enable: (diagram)
-  - type: LayoutBox
-    margin: large
-    children:
-      - type: TextBox
-        name: multigroup
-        format: string

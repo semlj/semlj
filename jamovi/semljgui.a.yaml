@@ -79,7 +79,15 @@ options:
 
     - name: multigroup
       title: Multigroup Analysis Factor
-      type: String
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+      default:
+      description:
+          R: factor defining groups for multigroup analysis
 
 
     - name: se
@@ -422,7 +430,25 @@ options:
              Choose the diagram labels
 
 
+#### variances and covariances ###
 
+    - name: varcov
+      title: Select pairs
+      type: Pairs
+      description:
+          R: >
+            a list of lists specifying the  covariances that
+            need to be estimated
+
+    - name: constraints
+      title: Insert contraints or defined parameters
+      type: Array
+      default: []
+      template:
+          type: String
+      description:
+          R: >
+            a list of lists specifying the models random effects.          
 
 
 ...

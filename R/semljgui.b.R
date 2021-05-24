@@ -22,8 +22,7 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### output some syntax examples ####
             
             if (self$options$constraints_examples) {
-                j.init_table(self$results$contraintsnotes,LAT_EXAMPLES,indent=-1)
-                j.init_table_append(self$results$contraintsnotes,CONT_EXAMPLES,indent=-1)
+                j.init_table(self$results$contraintsnotes,CONT_EXAMPLES,indent=-1)
                 j.init_table_append(self$results$contraintsnotes,DP_EXAMPLES,indent=-1)
                 j.init_table_append(self$results$contraintsnotes,SY_EXAMPLES,indent=-1)
                 self$results$contraintsnotes$setNote(1,CONT_NOTE)

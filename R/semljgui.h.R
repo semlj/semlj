@@ -41,7 +41,9 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             scoretest = TRUE,
             cumscoretest = FALSE,
             estimator = "ML",
-            likelihood = "normal", ...) {
+            likelihood = "normal",
+            varcov = NULL,
+            constraints = list(), ...) {
 
             super$initialize(
                 package="semlj",
@@ -100,9 +102,15 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 template=jmvcore::OptionTerms$new(
                     "endogenousTerms",
                     NULL))
-            private$..multigroup <- jmvcore::OptionString$new(
+            private$..multigroup <- jmvcore::OptionVariable$new(
                 "multigroup",
-                multigroup)
+                multigroup,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"),
+                default=NULL)
             private$..se <- jmvcore::OptionList$new(
                 "se",
                 se,
@@ -277,6 +285,16 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "normal",
                     "wishart"),
                 default="normal")
+            private$..varcov <- jmvcore::OptionPairs$new(
+                "varcov",
+                varcov)
+            private$..constraints <- jmvcore::OptionArray$new(
+                "constraints",
+                constraints,
+                default=list(),
+                template=jmvcore::OptionString$new(
+                    "constraints",
+                    NULL))
 
             self$.addOption(private$..code)
             self$.addOption(private$..endogenous)
@@ -311,6 +329,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cumscoretest)
             self$.addOption(private$..estimator)
             self$.addOption(private$..likelihood)
+            self$.addOption(private$..varcov)
+            self$.addOption(private$..constraints)
         }),
     active = list(
         code = function() private$..code$value,
@@ -345,7 +365,9 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         scoretest = function() private$..scoretest$value,
         cumscoretest = function() private$..cumscoretest$value,
         estimator = function() private$..estimator$value,
-        likelihood = function() private$..likelihood$value),
+        likelihood = function() private$..likelihood$value,
+        varcov = function() private$..varcov$value,
+        constraints = function() private$..constraints$value),
     private = list(
         ..code = NA,
         ..endogenous = NA,
@@ -379,7 +401,9 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..scoretest = NA,
         ..cumscoretest = NA,
         ..estimator = NA,
-        ..likelihood = NA)
+        ..likelihood = NA,
+        ..varcov = NA,
+        ..constraints = NA)
 )
 
 semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -999,7 +1023,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   of the latent variables and the \code{vars} that belong to that latent
 #' @param endogenousTerms a list of lists specifying the models for with the
 #'   mediators as dependent variables.
-#' @param multigroup .
+#' @param multigroup factor defining groups for multigroup analysis
 #' @param se .
 #' @param bootci Choose the confidence interval type
 #' @param ci .
@@ -1034,6 +1058,9 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cumscoretest .
 #' @param estimator Choose the diagram labels
 #' @param likelihood Choose the diagram labels
+#' @param varcov a list of lists specifying the  covariances that need to be
+#'   estimated
+#' @param constraints a list of lists specifying the models random effects.
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
@@ -1067,7 +1094,7 @@ semljgui <- function(
                 list(label="Exogenous1", vars=list())),
     endogenousTerms = list(
                 list()),
-    multigroup,
+    multigroup = NULL,
     se = "standard",
     bootci = "perc",
     ci = TRUE,
@@ -1095,15 +1122,20 @@ semljgui <- function(
     scoretest = TRUE,
     cumscoretest = FALSE,
     estimator = "ML",
-    likelihood = "normal") {
+    likelihood = "normal",
+    varcov,
+    constraints = list()) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("semljgui requires jmvcore to be installed (restart may be required)")
 
+    if ( ! missing(multigroup)) multigroup <- jmvcore::resolveQuo(jmvcore::enquo(multigroup))
     if (missing(data))
         data <- jmvcore::marshalData(
-            parent.frame())
+            parent.frame(),
+            `if`( ! missing(multigroup), multigroup, NULL))
 
+    for (v in multigroup) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- semljguiOptions$new(
         code = code,
@@ -1138,7 +1170,9 @@ semljgui <- function(
         scoretest = scoretest,
         cumscoretest = cumscoretest,
         estimator = estimator,
-        likelihood = likelihood)
+        likelihood = likelihood,
+        varcov = varcov,
+        constraints = constraints)
 
     analysis <- semljguiClass$new(
         options = options,

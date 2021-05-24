@@ -5,92 +5,68 @@ const events = {
     update: function(ui) {
       console.log("general update");
       updateModelLabels(ui,this);
+      calcCustomVariables(ui,this);
       updateSuppliers(ui,this);
-      prepareEndogenousTerms(ui,this);
+      cleanEndogenousTerms(ui,this);
+      update_syntax(ui,this); 
+    },
+
+    onChange_items_changed: function(ui) {
+    console.log("items changed");
+      updateModelLabels(ui,this);
+      updateSuppliers(ui,this);
       cleanEndogenousTerms(ui,this);
       update_syntax(ui,this);
     },
 
-    onChange_endo_items_added: function(ui) {
-    console.log("endo items added");
-      updateModelLabels(ui,this);
-      updateSuppliers(ui,this);
-      prepareEndogenousTerms(ui,this);
-      update_syntax(ui,this);
-
-    },
-    onChange_endo_items_removed: function(ui) {
-      console.log("endo items remove");
-      updateSuppliers(ui,this);
-      prepareEndogenousTerms(ui,this);
-      update_syntax(ui,this);
-
-    },
-    onChange_endo_items_changed: function(ui) {
-      console.log("endo items changed");
-      update_syntax(ui,this);
-
-    },
-
-    onChange_exo_items_added: function(ui) {
-    console.log("endo items added");
-      updateModelLabels(ui,this);
-      updateSuppliers(ui,this);
-      prepareEndogenousTerms(ui,this);
-      update_syntax(ui,this);
-
-    },
-    onChange_exo_items_removed: function(ui) {
-      console.log("endo items remove");
-      updateSuppliers(ui,this);
-      prepareEndogenousTerms(ui,this);
-      update_syntax(ui,this);
-
-    },
-    onChange_exo_items_changed: function(ui) {
-      console.log("endo items changed");
-      update_syntax(ui,this);
-
-//      prepareEndogenousTerms(ui,this);
-    },
-
-
-    onChange_endogenousSupplier: function(ui) {
-       console.log("endogenousSupplier has changed");
-//       console.log("nothing done");
-
-
-    },
-
-    onUpdate_endogenousSupplier: function(ui) {
-            console.log("endogenousSupplier update");
-
-    },
-    
     onChange_latentName: function(ui) {
      console.log("change latent name");
-      prepareEndogenousTerms(ui,this);
-      updateSuppliers(ui,this);
-      update_syntax(ui,this);
+     updateSuppliers(ui,this);
+     cleanEndogenousTerms(ui,this);
+     update_syntax(ui,this);
 
     },
 
      onChange_endogenousTerms: function(ui) {
        console.log(" endogenousTerms changed"); 
-      cleanEndogenousTerms(ui,this);
+//      cleanEndogenousTerms(ui,this);
       update_syntax(ui,this);
 
     },
+    onChange_endogenousSupplier: function(ui) {
+     console.log("endosupplier change");
+//     calcCustomVariables(ui,this);
+//     prepareEndogenousTerms(ui,this);
+//      cleanEndogenousTerms(ui,this);
+      
+    },
+    onUpdate_endogenousSupplier: function(ui) {
+     console.log("endosupplier update");
+//     calcCustomVariables(ui,this);
 
+    },
+
+    onChange_varcov: function(ui) {
+      update_syntax(ui,this);
+    },
+ 
+    onChange_varcovSupplier: function(ui) {
+     let values = this.itemsToValues(ui.varcovSupplier.value());
+     this.checkPairsValue(ui.varcov, values);
+    },
+    
+    onChange_constraints: function(ui) {
+      console.log("constraints changed");
+      update_syntax(ui,this);
+      
+      
+    },
 
      onEvent_nothing: function(ui) {
       console.log("I did not do anything");
-    },
-
-     onChange_nothing: function(ui) {
-      console.log("I did not do anything");
     }
-  
+
+
 
 };
 
@@ -106,12 +82,31 @@ var initializeAll = function(ui, context) {
 
 
 
+const calcCustomVariables=function(ui,context) {
+  
+  console.log("calcCustomVariables");
+  var endogenousIndicators=context.cloneArray(ui.endogenous.value(),[]);
+  var exogenousIndicators=context.cloneArray(ui.exogenous.value(),[]);
+  var endogenous=getLabels(endogenousIndicators);
+  var exogenous=getLabels(exogenousIndicators);
+  var latent=endogenous.concat(exogenous);
+
+  let customVariables = [];
+    for(let i = 0; i < latent.length; i++) {
+        customVariables.push( { name: latent[i], measureType: 'none', dataType: 'none', levels: [] } );
+    }
+  context.setCustomVariables(customVariables);
+
+  
+};
 
 const updateSuppliers=function(ui, context) {
   
   console.log("updateSuppliers function");
-  var endogenous=getLabels(context.cloneArray(ui.endogenous.value(),[]));
-  var exogenous=getLabels(context.cloneArray(ui.exogenous.value(),[]));
+  var endogenousIndicators=context.cloneArray(ui.endogenous.value(),[]);
+  var exogenousIndicators=context.cloneArray(ui.exogenous.value(),[]);
+  var endogenous=getLabels(endogenousIndicators);
+  var exogenous=getLabels(exogenousIndicators);
   var latent=endogenous.concat(exogenous);
 
   let customVariables = [];
@@ -121,7 +116,20 @@ const updateSuppliers=function(ui, context) {
   
   context.setCustomVariables(customVariables);
   ui.endogenousSupplier.setValue(context.valuesToItems(latent, FormatDef.variable));
-  
+
+  var vars=[];  
+   for (var i = 0; i < endogenousIndicators.length; i++) {
+      if  (endogenousIndicators[i]!==undefined)
+        if  (endogenousIndicators[i].vars!==undefined & endogenousIndicators[i].vars!==null) {
+             for (var j = 0; j < endogenousIndicators[i].vars.length; j++) {
+                vars.push(endogenousIndicators[i].vars[j]); 
+             }
+        }
+     }
+
+  var allvars=unique(latent.concat(vars));
+  ui.varcovSupplier.setValue(context.valuesToItems(allvars, FormatDef.variable));
+
 };
 
 const updateModelLabels = function(ui,context) {
@@ -146,7 +154,6 @@ var prepareEndogenousTerms= function(ui,context) {
      // we also want to put a label to show which dependent variable the user is working on
 
      console.log("prepareEndogenousTerms");
-     
      var endogenous = getLabels(context.cloneArray(ui.endogenous.value(),[]));
      var endogenousTerms = context.cloneArray(ui.endogenousTerms.value(),[]);
      
@@ -157,30 +164,32 @@ var prepareEndogenousTerms= function(ui,context) {
          var aList = endogenousTerms[i] === undefined ? [] : endogenousTerms[i] ;
              okList.push(aList);
      }
-      console.log(context.customVariables);
-      console.log(endogenousTerms);
-
       ui.endogenousTerms.setValue(okList);    
-      
+
      // we give a label for each endogenous model
      labelize(ui.endogenousTerms, endogenous, "Endogenous");
   
-  
+     console.log("....end");
 };
 
 
 var cleanEndogenousTerms= function(ui,context) {
 
     console.log("cleanEndogenousTerms");
+    prepareEndogenousTerms(ui,context);
     var endogenous = getLabels(context.cloneArray(ui.endogenous.value(), []));
     var endogenousTerms = context.cloneArray(ui.endogenousTerms.value(),[]);
+    console.log(endogenousTerms)
 
-    for (var i = 0; i < endogenous.length; i++)
+    for (var i = 0; i < endogenous.length; i++) {
         endogenousTerms[i]=removeFromList(endogenous[i],endogenousTerms[i],context,1);
 
+    }
 
     var endogenousSupplierList = context.cloneArray(context.itemsToValues(ui.endogenousSupplier.value()),[]);
     var diff = context.findChanges("endogenousSupplierList",endogenousSupplierList,context);
+    console.log(endogenousTerms)
+    console.log(diff)
     if (diff.hasChanged) {
       for (var i = 0; i < endogenous.length; i++) 
            for (var j = 0; j < diff.removed.length; j++) {
@@ -202,10 +211,13 @@ var update_syntax=function(ui,context) {
     var endogenous=context.cloneArray(ui.endogenous.value(),[]);
     var exogenous=context.cloneArray(ui.exogenous.value(),[]);
     var vars=endogenous.concat(exogenous);
-
+    var varcov=context.cloneArray(ui.varcov.value(),[]);
+    var constraints=context.cloneArray(ui.constraints.value(),[]);
     syntax.measures(vars);
     syntax.make(endogenousTerms,getLabels(endogenous));
-    console.log(syntax.lav_syntax);
+    syntax.varcov(varcov);
+    syntax.constraints(constraints);
+    
     ui.code.setValue(syntax.lav_syntax);
 
   
@@ -214,10 +226,35 @@ var update_syntax=function(ui,context) {
 var getLabels=function(alist,context) {
      var okList=[];
      for (var i = 0; i < alist.length; i++) {
-         if (alist[i].label!==undefined)
-                       okList.push(alist[i].label);
+         if (alist[i].label!==undefined) {
+           if (alist[i].vars===undefined | alist[i].vars===null)
+               continue;
+           if (alist[i].vars.length===0)
+               continue;
+
+           okList.push(alist[i].label);
+      }
      }
      return(okList);
+};
+
+var unique=function(arr) {
+    var u = {}, a = [];
+    for(var i = 0, l = arr.length; i < l; ++i){
+        var prop=ssort(JSON.stringify(arr[i]));
+        if(!u.hasOwnProperty(prop) && arr[i].length>0) {
+            a.push(arr[i]);
+            u[prop] = 1;
+        }
+    }
+    return a;
+};
+
+var ssort= function(str){
+  str = str.replace(/[`\[\]"\\\/]/gi, '');
+  var arr = str.split(',');
+  var sorted = arr.sort();
+  return sorted.join('');
 };
 
 
