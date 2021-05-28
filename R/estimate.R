@@ -1,5 +1,7 @@
-## This class takes care of estimating the model and return the results. It inherit from Syntax, and define the same tables
-## defined by Syntax, but it fill them with the results.
+## This class takes care of estimating the model and return the results. It inherit from Syntax, and defines the same tables
+## defined by Syntax, but it fill them with the results. It also adds a few tables not defined in Syntax
+
+## Any function that produce a table goes here
 
 Estimate <- R6::R6Class("Estimate",
                         inherit = Syntax,
@@ -39,7 +41,7 @@ Estimate <- R6::R6Class("Estimate",
                             ## estimate the models
                             results<-try_hard({do.call(lavaan::lavaan,lavoptions)  })
                             
-
+                            ## check if warnings or errors are produced
                             self$warnings<-list(topic="info",message=results$warning)
                             self$errors<-results$error
                             

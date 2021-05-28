@@ -1,10 +1,12 @@
-### This class takes care of passing all information from lavaan tables definitions and estimations  from jamovi input
-### to jamovi results tables. It wokrs using Syntax R6 class, Estimate R6 class, and Plotter R6 class.
-### Syntax R6 class gets all input options and defines the tables required for showing the results. Estimate R6 class inherit from Syntax
-### all properties of the tables and fill them with the actual results estimated with lavaan() function.
-### Estimate inherit from Syntax, so only one instance of Estimate is defined. Here is called lav_machine
-### Filling the results tables is handle by function in jamovi.R (functions starting with j.)
-### Data are handled by a Datamatic R6 class, which does all transformations and checking required.
+### This class takes care of passing all information from lavaan tables definitions and estimations from jamovi input
+### to jamovi results tables. It works using Datamatic R6 class, Syntax R6 class, Estimate R6 class, and Plotter R6 class.
+### Datamatic R6 cleans the data and makes some checking
+### Syntax R6 class gets all input options and defines the tables required for showing the results using lavaan::lavaanify(). 
+### Estimate R6 class inherits from Syntax all properties of the tables and fill them with the actual 
+### results estimated with lavaan::lavaan() function.
+### We do not need to initiate Syntax class because Estimate inherits from Syntax, 
+### so only one instance of Estimate is defined. Here is called lav_machine.
+### Filling the results tables is handled by function in jamovi.R (functions starting with j.)
 
 
 semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
@@ -19,7 +21,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .init = function() {
             ginfo("init")
             
-            ### output some syntax examples ####
+            ### output some syntax examples if required by the user####
             
             if (self$options$constraints_examples) {
                 j.init_table(self$results$contraintsnotes,LAT_EXAMPLES,indent=-1)
@@ -30,7 +32,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             
 
-            ### check that we have enough information to run ####
+            ### check that we have enough information to run using readiness.R function####
             private$.ready<-readiness(self$options)
             if (!private$.ready$ready) {
                   if(private$.ready$report)
@@ -45,14 +47,9 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### fill the info table ###
             j.init_table(self$results$info,lav_machine$tab_info)
 
-
-
-            
             #### parameter fit indices table ####
             j.init_table(self$results$fit$indices,"",ci=T,ciroot="rmsea.",ciformat='RMSEA {}% CI',ciwidth=self$options$ciWidth)
-            ### prepare r2 table
-#            j.init_table(self$results$models$r2,lav_machine$tab_r2,ci=T,ciwidth=self$options$ciWidth)
-            
+
             #### parameter estimates table ####
             j.init_table(self$results$models$coefficients,lav_machine$tab_coefficients,ci=T,ciwidth=self$options$ciWidth)
 
@@ -73,8 +70,10 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             private$.lav_machine<-lav_machine
             private$.data_machine<-data_machine
-            plot_machine$initPlots()
             private$.plot_machine<-plot_machine 
+
+            ### init the diagram
+            plot_machine$initPlots()
             
             
         },
@@ -89,6 +88,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             lav_machine<-private$.lav_machine
             data<-private$.data_machine$cleandata(self$data)
 
+            ## estimate the model running lavaan in lav_machine (Estimate R6 class)
             lav_machine$estimate(data)
 
             warns<-lav_machine$warnings
@@ -152,20 +152,9 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (!is.something(image$state$semModel))
                  return()
             options<-private$.plot_machine$semPathsOptions
-            # semPlot::semPaths(object = image$state$semModel,
-            #                   layout =options$layout,
-            #                   residuals = options$residuals,
-            #                   rotation = options$rotation,
-            #                   intercepts = options$intercepts,
-            #                   nodeLabels= options$nodeLabels,
-            #                   whatLabels=options$whatLabels,
-            #                   sizeMan = options$sizeMan,
-            #                   sizeMan2=options$sizeMan2,
-            #                   curve=options$curve,
-            #                   shapeMan=options$shapeMan,
-            #                   edge.label.cex =options$edge.label.cex)
             note<-FALSE
-            
+            # we cannot do a do.call() because semPaths will fail
+            # so we need to pass the options directly to semPaths
             res<-try_hard(
                 semPlot::semPaths(object = image$state$semModel
                                   ,layout =options$layout
@@ -186,6 +175,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             
             if (!isFALSE(res$error)) {
+                # translate some lavaan error so they make sense for the user interface
                 if  (length(grep("Circle layout only supported",res$error,fixed = T))>0) {
                     res$error<-PLOT_WARNS[["nocircle"]]
                     note<-TRUE
@@ -218,7 +208,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
         },
 
-
+## at the moment no "syntax mode" is produced. I do not think that this module will be 
+## useful in R, so the there's no need to output it's R syntax
         .sourcifyOption = function(option) {
             return("")
         }

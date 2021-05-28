@@ -1,3 +1,6 @@
+## This class prepares the pathdiagram. It does not produce the actual diagram to avoid
+## issues in Windows with semPaths(). The actual diagram is produced in the .rederFun " in .b.R file.
+
 Plotter <- R6::R6Class(
   "Plotter",
   cloneable=FALSE,
@@ -40,7 +43,7 @@ Plotter <- R6::R6Class(
           return()
         
         model<-private$.operator$model
-        ### this is due to the fact that semPaths seems to fail when an inequality constraints is in ###
+        ### We need to clean the model because semPaths seems to fail when an inequality constraints is in ###
         ### check for more lavaanian solution ###
         check<-grep(">|<",model@ParTable$op,invert = T)
         par<-model@ParTable
@@ -53,7 +56,7 @@ Plotter <- R6::R6Class(
         
         ## At the moment (mid-2021) semPaths invokes the graphical device even when DoNotPlot is TRUE,
         ## which causes a window to pop up in windows and mac when run in jamovi. So, we need to prepare a semPlot object 
-        ## here and make the actual plot in the .renderfun of pathj.b.R with semPaths. 
+        ## here and make the actual plot in the .renderfun of .b.R with semPaths. 
         ## for multigroup, we trick the .renderfun semPaths() to believe that there's always only one group
         ## per call, because the .renderfun is called for each group.
         
@@ -97,8 +100,7 @@ Plotter <- R6::R6Class(
             self$warnings<-list(topic="diagram",message=PLOT_WARNS[["rotation"]])
         }
 
-        #                      ,nodeLabels=nodeLabels
-        
+
         self$semPathsOptions<-list(
                       layout = layout
                       ,whatLabels=labs
