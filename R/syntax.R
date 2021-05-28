@@ -1,15 +1,16 @@
-### This class takes care of producing lavaan syntax with B64 and normal names and all tables with information about the estimation
-### tables are `parameter table` in Yves Rosseel terminology (see lavaan manual)
-### It takes care also of producing and checking constraints
-### free parameters, indirect effects and the like. 
-### it assumes that the estimation will be done on B64 names, and the results reported in plain names
-### It assumes that all factors are present in the data as K-1 new variables with appropriated constrast value as numeric variables. 
-### each "dummy" variable in named `VAR{FACTOR_SYMBOL}k`` 
-### Inherit from Dispatch, which provides $warnings and $errors mechanisms to store info. Requires the try_hard() function to catch errors
-##  naming convention: all objects containing lavaan syntax, objects that are needed to build objects that can be passed directly
-##                     to lavaan are named $lav_*.   $lav_* objects contains B64 variable names 
-##                     All object containing tables to be passed to the results init tables are called $tab_*. 
+### This class takes care of digesting lavaan syntax and it makes all tables with information about the estimation
 
+### tables are `parameter table` in Yves Rosseel terminology (see lavaan manual)
+### Inherit from Dispatch, which provides $warnings and $errors mechanisms to store info. 
+### It requires the try_hard() function to catch errors (see functions.R)
+##  naming convention: all objects containing lavaan syntax, objects that are needed to build objects 
+###                   that can be passed directly  to lavaan are named $lav_*.    
+##                     All object containing tables to be passed to the results init tables are called $tab_*. 
+##  Tables produced here are assumed to have the columns names matching the jamovi results tables
+
+## The Syntax class does all the work on the model produced by lavaanify(). The estimation is done in the "Estimate" class,
+## which is a offspring of this class. The version of the tables produced here are used by the ".init()" function in .b.R
+## to prepare the tables (so the output is nicely shown during estimation)
 
 Syntax <- R6::R6Class(
          "Syntax",
@@ -103,8 +104,8 @@ Syntax <- R6::R6Class(
                   i<-glue::glue_collapse(unlist(private$.lav_indirect),sep = " ; ")
                   paste(f,i, sep=";")
             },
-            ## lavaanify the information available to obtain a raw (B64) table representing the parameters structure
-            ## parameter structure means their names, labels, 
+            ## lavaanify the information available to obtain a info table representing the parameters structure.
+            ## That is, the parameter names, labels, 
 
             .make_structure=function() {
   
@@ -122,8 +123,9 @@ Syntax <- R6::R6Class(
                 auto.efa = TRUE, 
                 auto.th = TRUE, 
                 auto.delta = TRUE, 
-                meanstructure = FALSE  ### this is needed to be TRUE for semPaths to work also with multigroups
+                meanstructure = FALSE  
               )
+                ### semPaths has trouble with some multigroups diagram when meanstructure is FALSE
               if (is.something(self$multigroup)) {
                     lavoptions[["ngroups"]]<-self$multigroup$nlevels
                     lavoptions[["meanstructure"]]<-TRUE
@@ -167,13 +169,13 @@ Syntax <- R6::R6Class(
                   .lav_structure$type<-ifelse(.lav_structure$free>0,"Free","Fixed")
               ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
                   if (is.something(self$multigroup)) {
-                        levs<-c(self$multigroup$levels,"All")
+  #                      levs<-c(self$multigroup$levels,"All")
                        .lav_structure$group<-ifelse(.lav_structure$group==0,length(levs)+1,.lav_structure$group)
                        .lav_structure$lgroup<-levs[.lav_structure$group]
                    } else
                         .lav_structure$lgroup<-"1"
               
-              ### self$structure containts all parameters with plain names. Useful for children to refer to parameters properties
+              ### self$structure containts all parameters with. Useful for children to refer to parameters properties
               ### .lav_structure is not a tab_* which will be displayed in results
                   
               sel<-grep("==|<|>",.lav_structure$op,invert = T)
@@ -250,42 +252,7 @@ Syntax <- R6::R6Class(
               }
 
             },
-            .check_varcov=function() {
-              
-              
-              varcov64<-tob64(self$options$varcov)
-              ## we need to check for single variable pair, when a term is null
-              sel<-unlist(sapply(varcov64, function(vc) !any(unlist(sapply(vc,is.null)))))
-              varcov64<-varcov64[sel]
-              factorinfo64<-self$factorinfo
-              names(factorinfo64)<-tob64(names(factorinfo64))
-              varcov64<-private$.factorlist(varcov64,factorinfo64)
-              res<-lapply(varcov64, function(vc) {
-                if (length(vc)==2) {
-                        private$.lav_defined[[length(private$..lav_defined)+1]]<-paste(vc[[1]],vc[[2]],sep = "~~")
-                }
-              })
-
-            },
-            .factorlist=function(terms,factorslen) {
-              .terms<-list()
-              for (f in names(factorslen)) {
-                for (term in terms) {
-                  ind<-which(term==f)
-                  for (i in ind) {
-                    for (j in seq_len(factorslen[[f]])) {
-                      .term<-term
-                      .term[[i]]<-paste0(trimws(.term[[i]]),FACTOR_SYMBOL,j)
-                      .terms[[length(.terms)+1]]<-.term
-                    }
-                  }
-                  if (length(ind)==0)
-                    .terms[[length(.terms)+1]]<-trimws(term)
-                }
-                terms<-.terms
-              }
-              terms  
-            },
+            ### compute indirect effects if required by the user
             .indirect=function() {
 
               if (!self$options$indirect)
