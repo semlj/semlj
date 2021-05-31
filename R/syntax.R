@@ -97,7 +97,6 @@ Syntax <- R6::R6Class(
               avec<-stringr::str_split(synt,"\n")[[1]]
               avec<-avec[sapply(avec, function(a) a!="")]
               self$models<-avec
-              wmark(self$models)
 
             },
             ### collapse the informations in the private lists of terms and constraints and produce a lavaan syntax string
