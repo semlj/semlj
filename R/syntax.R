@@ -93,6 +93,7 @@ Syntax <- R6::R6Class(
         
             .check_models=function() {
               synt<-self$options$code
+              synt<-stringr::str_replace_all(synt, "[\r]" , "")
               avec<-stringr::str_split(synt,"\n")[[1]]
               avec<-avec[sapply(avec, function(a) a!="")]
               self$models<-avec
