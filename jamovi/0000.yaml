@@ -1,10 +1,11 @@
 ---
 title: SEM
 name: semlj
-version: 0.0.4
+version: 0.1.0
 jms: '1.0'
 authors:
   - Marcello Gallucci
+  - Sebastian Jentschke
 maintainer: Marcello Gallucci <mcfanda@gmail.com>
 date: 2021-1-1
 type: R
@@ -16,14 +17,14 @@ analyses:
     menuGroup: SEM
     menuSubgroup: SEMLj
     menuTitle: SEM (syntax)
-    description: Syntax based SEM
+    description: Syntax based Structural Equation Models
   - title: Structural Equation Models
     name: semljgui
     ns: semlj
     menuGroup: SEM
     menuSubgroup: SEMLj
     menuTitle: SEM (interactive)
-    description: SEM Analysis
+    description: GUI-based Structural Equation Model Analyses
 datasets:
   - name: pathjdata
     path: pathjdata.csv

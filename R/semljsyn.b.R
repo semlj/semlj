@@ -119,20 +119,23 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### parameters estimates ####
             j.fill_table(self$results$models$coefficients,lav_machine$tab_coefficients)
 
-             ### loadings table ####
+            ### loadings table ####
             j.fill_table(self$results$models$loadings,lav_machine$tab_loadings)
              
-             ### loadings vars and covars ####
+            ### loadings vars and covars ####
             j.fill_table(self$results$models$correlations,lav_machine$tab_covariances)
-            
-#            j.fill_table(self$results$models$r2,lav_machine$tab_r2)
-#            j.add_warnings(self$results$models$r2,lav_machine,"r2")
             
             j.fill_table(self$results$models$defined,lav_machine$tab_defined)
             j.add_warnings(self$results$models$defined,lav_machine,"defined")
             
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
-                   j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
+               j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
+
+
+#            j.fill_table(self$results$models$r2,lav_machine$tab_r2)
+#            j.add_warnings(self$results$models$r2,lav_machine,"r2")
+            
+            ginfo("run")
             
 
             ## diagrams

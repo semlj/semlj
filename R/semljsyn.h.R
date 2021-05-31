@@ -11,17 +11,43 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             fonts = "small",
             vars = NULL,
             toggle = FALSE,
-            multigroup = NULL,
+            estimator = "ML",
+            likelihood = "normal",
+            scoretest = TRUE,
+            cumscoretest = FALSE,
             se = "standard",
             bootci = "perc",
+            bootN = 1000,
             ci = TRUE,
             ciWidth = 95,
-            bootN = 1000,
-            showintercepts = TRUE,
             intercepts = TRUE,
+            showintercepts = TRUE,
             indirect = FALSE,
             auto.fix.first = TRUE,
             std.lv = FALSE,
+            cov_x = TRUE,
+            cov_y = TRUE,
+            multigroup = NULL,
+            eq_loadings = FALSE,
+            eq_intercepts = FALSE,
+            eq_residuals = FALSE,
+            eq_residual.covariances = FALSE,
+            eq_means = FALSE,
+            eq_thresholds = FALSE,
+            eq_regressions = FALSE,
+            eq_lv.variances = FALSE,
+            eq_lv.covariances = FALSE,
+            showlabels = FALSE,
+            constraints_examples = FALSE,
+            outputAdditionalFitMeasures = FALSE,
+            outputRSquared = FALSE,
+            outputMardiasCoefficients = FALSE,
+            outputObservedCovariances = FALSE,
+            outputImpliedCovariances = FALSE,
+            outputResidualCovariances = FALSE,
+            outputModificationIndices = FALSE,
+            miHideLow = FALSE,
+            miThreshold = 10,
             diagram = FALSE,
             diag_paths = "est",
             diag_resid = FALSE,
@@ -31,15 +57,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             diag_type = "tree",
             diag_shape_man = "rectangle",
             diag_shape_lat = "circle",
-            diag_abbrev = "5",
-            cov_y = TRUE,
-            cov_x = TRUE,
-            constraints_examples = FALSE,
-            showlabels = FALSE,
-            scoretest = TRUE,
-            cumscoretest = FALSE,
-            estimator = "ML",
-            likelihood = "normal", ...) {
+            diag_abbrev = "5", ...) {
 
             super$initialize(
                 package="semlj",
@@ -74,9 +92,31 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 toggle,
                 default=FALSE,
                 hidden=TRUE)
-            private$..multigroup <- jmvcore::OptionString$new(
-                "multigroup",
-                multigroup)
+            private$..estimator <- jmvcore::OptionList$new(
+                "estimator",
+                estimator,
+                options=list(
+                    "ML",
+                    "GLS",
+                    "WLS",
+                    "DWLS",
+                    "ULS"),
+                default="ML")
+            private$..likelihood <- jmvcore::OptionList$new(
+                "likelihood",
+                likelihood,
+                options=list(
+                    "normal",
+                    "wishart"),
+                default="normal")
+            private$..scoretest <- jmvcore::OptionBool$new(
+                "scoretest",
+                scoretest,
+                default=TRUE)
+            private$..cumscoretest <- jmvcore::OptionBool$new(
+                "cumscoretest",
+                cumscoretest,
+                default=FALSE)
             private$..se <- jmvcore::OptionList$new(
                 "se",
                 se,
@@ -95,6 +135,11 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "norm",
                     "basic"),
                 default="perc")
+            private$..bootN <- jmvcore::OptionNumber$new(
+                "bootN",
+                bootN,
+                min=50,
+                default=1000)
             private$..ci <- jmvcore::OptionBool$new(
                 "ci",
                 ci,
@@ -105,18 +150,13 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 min=50,
                 max=99.9,
                 default=95)
-            private$..bootN <- jmvcore::OptionNumber$new(
-                "bootN",
-                bootN,
-                min=50,
-                default=1000)
-            private$..showintercepts <- jmvcore::OptionBool$new(
-                "showintercepts",
-                showintercepts,
-                default=TRUE)
             private$..intercepts <- jmvcore::OptionBool$new(
                 "intercepts",
                 intercepts,
+                default=TRUE)
+            private$..showintercepts <- jmvcore::OptionBool$new(
+                "showintercepts",
+                showintercepts,
                 default=TRUE)
             private$..indirect <- jmvcore::OptionBool$new(
                 "indirect",
@@ -130,6 +170,98 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "std.lv",
                 std.lv,
                 default=FALSE)
+            private$..cov_x <- jmvcore::OptionBool$new(
+                "cov_x",
+                cov_x,
+                default=TRUE)
+            private$..cov_y <- jmvcore::OptionBool$new(
+                "cov_y",
+                cov_y,
+                default=TRUE)
+            private$..multigroup <- jmvcore::OptionString$new(
+                "multigroup",
+                multigroup)
+            private$..eq_loadings <- jmvcore::OptionBool$new(
+                "eq_loadings",
+                eq_loadings,
+                default=FALSE)
+            private$..eq_intercepts <- jmvcore::OptionBool$new(
+                "eq_intercepts",
+                eq_intercepts,
+                default=FALSE)
+            private$..eq_residuals <- jmvcore::OptionBool$new(
+                "eq_residuals",
+                eq_residuals,
+                default=FALSE)
+            private$..eq_residual.covariances <- jmvcore::OptionBool$new(
+                "eq_residual.covariances",
+                eq_residual.covariances,
+                default=FALSE)
+            private$..eq_means <- jmvcore::OptionBool$new(
+                "eq_means",
+                eq_means,
+                default=FALSE)
+            private$..eq_thresholds <- jmvcore::OptionBool$new(
+                "eq_thresholds",
+                eq_thresholds,
+                default=FALSE)
+            private$..eq_regressions <- jmvcore::OptionBool$new(
+                "eq_regressions",
+                eq_regressions,
+                default=FALSE)
+            private$..eq_lv.variances <- jmvcore::OptionBool$new(
+                "eq_lv.variances",
+                eq_lv.variances,
+                default=FALSE)
+            private$..eq_lv.covariances <- jmvcore::OptionBool$new(
+                "eq_lv.covariances",
+                eq_lv.covariances,
+                default=FALSE)
+            private$..showlabels <- jmvcore::OptionBool$new(
+                "showlabels",
+                showlabels,
+                default=FALSE)
+            private$..constraints_examples <- jmvcore::OptionBool$new(
+                "constraints_examples",
+                constraints_examples,
+                default=FALSE)
+            private$..outputAdditionalFitMeasures <- jmvcore::OptionBool$new(
+                "outputAdditionalFitMeasures",
+                outputAdditionalFitMeasures,
+                default=FALSE)
+            private$..outputRSquared <- jmvcore::OptionBool$new(
+                "outputRSquared",
+                outputRSquared,
+                default=FALSE)
+            private$..outputMardiasCoefficients <- jmvcore::OptionBool$new(
+                "outputMardiasCoefficients",
+                outputMardiasCoefficients,
+                default=FALSE)
+            private$..outputObservedCovariances <- jmvcore::OptionBool$new(
+                "outputObservedCovariances",
+                outputObservedCovariances,
+                default=FALSE)
+            private$..outputImpliedCovariances <- jmvcore::OptionBool$new(
+                "outputImpliedCovariances",
+                outputImpliedCovariances,
+                default=FALSE)
+            private$..outputResidualCovariances <- jmvcore::OptionBool$new(
+                "outputResidualCovariances",
+                outputResidualCovariances,
+                default=FALSE)
+            private$..outputModificationIndices <- jmvcore::OptionBool$new(
+                "outputModificationIndices",
+                outputModificationIndices,
+                default=FALSE)
+            private$..miHideLow <- jmvcore::OptionBool$new(
+                "miHideLow",
+                miHideLow,
+                default=FALSE)
+            private$..miThreshold <- jmvcore::OptionNumber$new(
+                "miThreshold",
+                miThreshold,
+                default=10,
+                min=0)
             private$..diagram <- jmvcore::OptionBool$new(
                 "diagram",
                 diagram,
@@ -210,64 +342,49 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "20",
                     "25"),
                 default="5")
-            private$..cov_y <- jmvcore::OptionBool$new(
-                "cov_y",
-                cov_y,
-                default=TRUE)
-            private$..cov_x <- jmvcore::OptionBool$new(
-                "cov_x",
-                cov_x,
-                default=TRUE)
-            private$..constraints_examples <- jmvcore::OptionBool$new(
-                "constraints_examples",
-                constraints_examples,
-                default=FALSE)
-            private$..showlabels <- jmvcore::OptionBool$new(
-                "showlabels",
-                showlabels,
-                default=FALSE)
-            private$..scoretest <- jmvcore::OptionBool$new(
-                "scoretest",
-                scoretest,
-                default=TRUE)
-            private$..cumscoretest <- jmvcore::OptionBool$new(
-                "cumscoretest",
-                cumscoretest,
-                default=FALSE)
-            private$..estimator <- jmvcore::OptionList$new(
-                "estimator",
-                estimator,
-                options=list(
-                    "ML",
-                    "GLS",
-                    "WLS",
-                    "DWLS",
-                    "ULS"),
-                default="ML")
-            private$..likelihood <- jmvcore::OptionList$new(
-                "likelihood",
-                likelihood,
-                options=list(
-                    "normal",
-                    "wishart"),
-                default="normal")
 
             self$.addOption(private$..code)
             self$.addOption(private$..syntax)
             self$.addOption(private$..fonts)
             self$.addOption(private$..vars)
             self$.addOption(private$..toggle)
-            self$.addOption(private$..multigroup)
+            self$.addOption(private$..estimator)
+            self$.addOption(private$..likelihood)
+            self$.addOption(private$..scoretest)
+            self$.addOption(private$..cumscoretest)
             self$.addOption(private$..se)
             self$.addOption(private$..bootci)
+            self$.addOption(private$..bootN)
             self$.addOption(private$..ci)
             self$.addOption(private$..ciWidth)
-            self$.addOption(private$..bootN)
-            self$.addOption(private$..showintercepts)
             self$.addOption(private$..intercepts)
+            self$.addOption(private$..showintercepts)
             self$.addOption(private$..indirect)
             self$.addOption(private$..auto.fix.first)
             self$.addOption(private$..std.lv)
+            self$.addOption(private$..cov_x)
+            self$.addOption(private$..cov_y)
+            self$.addOption(private$..multigroup)
+            self$.addOption(private$..eq_loadings)
+            self$.addOption(private$..eq_intercepts)
+            self$.addOption(private$..eq_residuals)
+            self$.addOption(private$..eq_residual.covariances)
+            self$.addOption(private$..eq_means)
+            self$.addOption(private$..eq_thresholds)
+            self$.addOption(private$..eq_regressions)
+            self$.addOption(private$..eq_lv.variances)
+            self$.addOption(private$..eq_lv.covariances)
+            self$.addOption(private$..showlabels)
+            self$.addOption(private$..constraints_examples)
+            self$.addOption(private$..outputAdditionalFitMeasures)
+            self$.addOption(private$..outputRSquared)
+            self$.addOption(private$..outputMardiasCoefficients)
+            self$.addOption(private$..outputObservedCovariances)
+            self$.addOption(private$..outputImpliedCovariances)
+            self$.addOption(private$..outputResidualCovariances)
+            self$.addOption(private$..outputModificationIndices)
+            self$.addOption(private$..miHideLow)
+            self$.addOption(private$..miThreshold)
             self$.addOption(private$..diagram)
             self$.addOption(private$..diag_paths)
             self$.addOption(private$..diag_resid)
@@ -278,14 +395,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..diag_shape_man)
             self$.addOption(private$..diag_shape_lat)
             self$.addOption(private$..diag_abbrev)
-            self$.addOption(private$..cov_y)
-            self$.addOption(private$..cov_x)
-            self$.addOption(private$..constraints_examples)
-            self$.addOption(private$..showlabels)
-            self$.addOption(private$..scoretest)
-            self$.addOption(private$..cumscoretest)
-            self$.addOption(private$..estimator)
-            self$.addOption(private$..likelihood)
         }),
     active = list(
         code = function() private$..code$value,
@@ -293,17 +402,43 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fonts = function() private$..fonts$value,
         vars = function() private$..vars$value,
         toggle = function() private$..toggle$value,
-        multigroup = function() private$..multigroup$value,
+        estimator = function() private$..estimator$value,
+        likelihood = function() private$..likelihood$value,
+        scoretest = function() private$..scoretest$value,
+        cumscoretest = function() private$..cumscoretest$value,
         se = function() private$..se$value,
         bootci = function() private$..bootci$value,
+        bootN = function() private$..bootN$value,
         ci = function() private$..ci$value,
         ciWidth = function() private$..ciWidth$value,
-        bootN = function() private$..bootN$value,
-        showintercepts = function() private$..showintercepts$value,
         intercepts = function() private$..intercepts$value,
+        showintercepts = function() private$..showintercepts$value,
         indirect = function() private$..indirect$value,
         auto.fix.first = function() private$..auto.fix.first$value,
         std.lv = function() private$..std.lv$value,
+        cov_x = function() private$..cov_x$value,
+        cov_y = function() private$..cov_y$value,
+        multigroup = function() private$..multigroup$value,
+        eq_loadings = function() private$..eq_loadings$value,
+        eq_intercepts = function() private$..eq_intercepts$value,
+        eq_residuals = function() private$..eq_residuals$value,
+        eq_residual.covariances = function() private$..eq_residual.covariances$value,
+        eq_means = function() private$..eq_means$value,
+        eq_thresholds = function() private$..eq_thresholds$value,
+        eq_regressions = function() private$..eq_regressions$value,
+        eq_lv.variances = function() private$..eq_lv.variances$value,
+        eq_lv.covariances = function() private$..eq_lv.covariances$value,
+        showlabels = function() private$..showlabels$value,
+        constraints_examples = function() private$..constraints_examples$value,
+        outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
+        outputRSquared = function() private$..outputRSquared$value,
+        outputMardiasCoefficients = function() private$..outputMardiasCoefficients$value,
+        outputObservedCovariances = function() private$..outputObservedCovariances$value,
+        outputImpliedCovariances = function() private$..outputImpliedCovariances$value,
+        outputResidualCovariances = function() private$..outputResidualCovariances$value,
+        outputModificationIndices = function() private$..outputModificationIndices$value,
+        miHideLow = function() private$..miHideLow$value,
+        miThreshold = function() private$..miThreshold$value,
         diagram = function() private$..diagram$value,
         diag_paths = function() private$..diag_paths$value,
         diag_resid = function() private$..diag_resid$value,
@@ -313,32 +448,50 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         diag_type = function() private$..diag_type$value,
         diag_shape_man = function() private$..diag_shape_man$value,
         diag_shape_lat = function() private$..diag_shape_lat$value,
-        diag_abbrev = function() private$..diag_abbrev$value,
-        cov_y = function() private$..cov_y$value,
-        cov_x = function() private$..cov_x$value,
-        constraints_examples = function() private$..constraints_examples$value,
-        showlabels = function() private$..showlabels$value,
-        scoretest = function() private$..scoretest$value,
-        cumscoretest = function() private$..cumscoretest$value,
-        estimator = function() private$..estimator$value,
-        likelihood = function() private$..likelihood$value),
+        diag_abbrev = function() private$..diag_abbrev$value),
     private = list(
         ..code = NA,
         ..syntax = NA,
         ..fonts = NA,
         ..vars = NA,
         ..toggle = NA,
-        ..multigroup = NA,
+        ..estimator = NA,
+        ..likelihood = NA,
+        ..scoretest = NA,
+        ..cumscoretest = NA,
         ..se = NA,
         ..bootci = NA,
+        ..bootN = NA,
         ..ci = NA,
         ..ciWidth = NA,
-        ..bootN = NA,
-        ..showintercepts = NA,
         ..intercepts = NA,
+        ..showintercepts = NA,
         ..indirect = NA,
         ..auto.fix.first = NA,
         ..std.lv = NA,
+        ..cov_x = NA,
+        ..cov_y = NA,
+        ..multigroup = NA,
+        ..eq_loadings = NA,
+        ..eq_intercepts = NA,
+        ..eq_residuals = NA,
+        ..eq_residual.covariances = NA,
+        ..eq_means = NA,
+        ..eq_thresholds = NA,
+        ..eq_regressions = NA,
+        ..eq_lv.variances = NA,
+        ..eq_lv.covariances = NA,
+        ..showlabels = NA,
+        ..constraints_examples = NA,
+        ..outputAdditionalFitMeasures = NA,
+        ..outputRSquared = NA,
+        ..outputMardiasCoefficients = NA,
+        ..outputObservedCovariances = NA,
+        ..outputImpliedCovariances = NA,
+        ..outputResidualCovariances = NA,
+        ..outputModificationIndices = NA,
+        ..miHideLow = NA,
+        ..miThreshold = NA,
         ..diagram = NA,
         ..diag_paths = NA,
         ..diag_resid = NA,
@@ -348,35 +501,33 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..diag_type = NA,
         ..diag_shape_man = NA,
         ..diag_shape_lat = NA,
-        ..diag_abbrev = NA,
-        ..cov_y = NA,
-        ..cov_x = NA,
-        ..constraints_examples = NA,
-        ..showlabels = NA,
-        ..scoretest = NA,
-        ..cumscoretest = NA,
-        ..estimator = NA,
-        ..likelihood = NA)
+        ..diag_abbrev = NA)
 )
 
 semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "semljsynResults",
     inherit = jmvcore::Group,
     active = list(
+        prev_options = function() private$..prev_options,
         model = function() private$..model,
         info = function() private$.items[["info"]],
+        contraintsnotes = function() private$.items[["contraintsnotes"]],
         fit = function() private$.items[["fit"]],
         models = function() private$.items[["models"]],
-        pathgroup = function() private$.items[["pathgroup"]],
-        contraintsnotes = function() private$.items[["contraintsnotes"]]),
+        add_outputs = function() private$.items[["add_outputs"]],
+        group_covariances = function() private$.items[["group_covariances"]],
+        modgroup = function() private$.items[["modgroup"]],
+        pathgroup = function() private$.items[["pathgroup"]]),
     private = list(
+        ..prev_options = NA,
         ..model = NA),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
-                title="SEM r")
+                title="Structural Equation Modelling")
+            private$..prev_options <- NULL
             private$..model <- NULL
             self$add(jmvcore::Table$new(
                 options=options,
@@ -399,7 +550,25 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text", 
                         `title`="", 
                         `combineBelow`=TRUE)),
-                refs="pathj"))
+                refs="semlj"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="contraintsnotes",
+                visible="(constraints_examples)",
+                title="Syntax examples",
+                columns=list(
+                    list(
+                        `name`="info", 
+                        `type`="text", 
+                        `title`="Aim"),
+                    list(
+                        `name`="example", 
+                        `type`="text", 
+                        `title`="Example"),
+                    list(
+                        `name`="com", 
+                        `type`="text", 
+                        `title`="Outcome"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -540,7 +709,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 active = list(
                     coefficients = function() private$.items[["coefficients"]],
                     loadings = function() private$.items[["loadings"]],
-                    correlations = function() private$.items[["correlations"]],
                     intercepts = function() private$.items[["intercepts"]],
                     defined = function() private$.items[["defined"]]),
                 private = list(),
@@ -679,71 +847,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `format`="zto,pvalue"))))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="correlations",
-                            title="Variances and Covariances",
-                            clearWith=list(
-                                "ciType",
-                                "cov_y",
-                                "data",
-                                "multigroup",
-                                "code"),
-                            columns=list(
-                                list(
-                                    `name`="lgroup", 
-                                    `title`="Group", 
-                                    `type`="text", 
-                                    `visible`="(multigroup)", 
-                                    `combineBelow`=TRUE),
-                                list(
-                                    `name`="label", 
-                                    `title`="Label", 
-                                    `type`="text", 
-                                    `visible`="(showlabels)"),
-                                list(
-                                    `name`="lhs", 
-                                    `title`="Variable 1", 
-                                    `type`="text"),
-                                list(
-                                    `name`="rhs", 
-                                    `title`="Variable 2", 
-                                    `type`="text"),
-                                list(
-                                    `name`="est", 
-                                    `title`="Estimate", 
-                                    `type`="number"),
-                                list(
-                                    `name`="se", 
-                                    `title`="SE", 
-                                    `type`="number"),
-                                list(
-                                    `name`="ci.lower", 
-                                    `type`="number", 
-                                    `title`="Lower", 
-                                    `visible`="(ci)"),
-                                list(
-                                    `name`="ci.upper", 
-                                    `type`="number", 
-                                    `title`="Upper", 
-                                    `visible`="(ci)"),
-                                list(
-                                    `name`="std.all", 
-                                    `type`="number", 
-                                    `title`="\u03B2"),
-                                list(
-                                    `name`="z", 
-                                    `title`="z", 
-                                    `type`="number"),
-                                list(
-                                    `name`="pvalue", 
-                                    `title`="p", 
-                                    `type`="number", 
-                                    `format`="zto,pvalue"),
-                                list(
-                                    `name`="type", 
-                                    `title`="Type", 
-                                    `type`="text"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
                             name="intercepts",
                             title="Intercepts",
                             visible=FALSE,
@@ -865,6 +968,256 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
+                    testBslModel = function() private$.items[["testBslModel"]],
+                    compModelBsl = function() private$.items[["compModelBsl"]],
+                    infCrit = function() private$.items[["infCrit"]],
+                    Rsquared = function() private$.items[["Rsquared"]],
+                    mardia = function() private$.items[["mardia"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="add_outputs",
+                            title="Additional outputs")
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="testBslModel",
+                            title="Model test baseline model",
+                            visible="(outputAdditionalFitMeasures)",
+                            clearWith=NULL,
+                            rows=4,
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text"),
+                                list(
+                                    `name`="statistics", 
+                                    `title`="Model", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="compModelBsl",
+                            title="User model versus baseline model",
+                            visible="(outputAdditionalFitMeasures)",
+                            clearWith=NULL,
+                            rows=8,
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text"),
+                                list(
+                                    `name`="statistics", 
+                                    `title`="Model", 
+                                    `type`="number", 
+                                    `format`="zto"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="infCrit",
+                            title="Loglikelihood and Information Criteria",
+                            visible="(outputAdditionalFitMeasures)",
+                            clearWith=NULL,
+                            rows=6,
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text"),
+                                list(
+                                    `name`="statistics", 
+                                    `title`="Model", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="Rsquared",
+                            title="R-Squared",
+                            visible="(outputRSquared)",
+                            clearWith=NULL,
+                            columns=list(
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="R\u00B2", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="mardia",
+                            title="Mardia's coefficients",
+                            visible="(outputMardiasCoefficients)",
+                            clearWith=NULL,
+                            rows=2,
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text"),
+                                list(
+                                    `name`="coeff", 
+                                    `title`="Coefficient", 
+                                    `type`="number"),
+                                list(
+                                    `name`="z", 
+                                    `title`="z", 
+                                    `type`="number"),
+                                list(
+                                    `name`="chi", 
+                                    `title`="\u03C7\u00B2", 
+                                    `type`="number"),
+                                list(
+                                    `name`="df", 
+                                    `title`="df", 
+                                    `type`="integer"),
+                                list(
+                                    `name`="p", 
+                                    `title`="p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"))))}))$new(options=options))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    correlations = function() private$.items[["correlations"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="group_covariances",
+                            title="Covariances and correlations")
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="correlations",
+                            title="Variances and Covariances",
+                            visible="(outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)",
+                            clearWith=list(
+                                "ciType",
+                                "cov_y",
+                                "data",
+                                "multigroup",
+                                "code"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="label", 
+                                    `title`="Label", 
+                                    `type`="text", 
+                                    `visible`="(showlabels)"),
+                                list(
+                                    `name`="lhs", 
+                                    `title`="Variable 1", 
+                                    `type`="text"),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Variable 2", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="Estimate", 
+                                    `type`="number"),
+                                list(
+                                    `name`="se", 
+                                    `title`="SE", 
+                                    `type`="number"),
+                                list(
+                                    `name`="ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(ci)"),
+                                list(
+                                    `name`="ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(ci)"),
+                                list(
+                                    `name`="std.all", 
+                                    `type`="number", 
+                                    `title`="\u03B2"),
+                                list(
+                                    `name`="z", 
+                                    `title`="z", 
+                                    `type`="number"),
+                                list(
+                                    `name`="pvalue", 
+                                    `title`="p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"),
+                                list(
+                                    `name`="type", 
+                                    `title`="Type", 
+                                    `type`="text"))))}))$new(options=options))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
+                    modifIndic = function() private$.items[["modifIndic"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="modgroup",
+                            title="Modifcation indices",
+                            clearWith=list(
+                    "ciType",
+                    "cov_y",
+                    "data",
+                    "multigroup",
+                    "code"))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="modifIndic",
+                            title="Modification indices",
+                            visible="(outputModificationIndices)",
+                            notes=list(
+                                `EPC`="expected parameter changes and their standardized forms (sEPC); for latent variables (LV), all variables (all), and latent and observed variables except for the exogenous observed variables (nox)"),
+                            columns=list(
+                                list(
+                                    `name`="lhs", 
+                                    `title`="", 
+                                    `type`="text"),
+                                list(
+                                    `name`="op", 
+                                    `title`="", 
+                                    `type`="text"),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="", 
+                                    `type`="text"),
+                                list(
+                                    `name`="mi", 
+                                    `title`="Modif. index", 
+                                    `type`="number"),
+                                list(
+                                    `name`="epc", 
+                                    `title`="EPC", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="sepc.lv", 
+                                    `title`="sEPC (LV)", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="sepc.all", 
+                                    `title`="sEPC (all)", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="sepc.nox", 
+                                    `title`="sEPC (nox)", 
+                                    `type`="number", 
+                                    `format`="zto"))))}))$new(options=options))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
                     diagrams = function() private$.items[["diagrams"]],
                     notes = function() private$.items[["notes"]]),
                 private = list(),
@@ -912,8 +1265,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     "diag_labsize",
                                     "diag_resid",
                                     "diag_paths",
-                                    "diag_intercepts")),
-                            refs="semplot"))
+                                    "diag_intercepts"),
+                                refs="semplot")))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="notes",
@@ -923,25 +1276,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="message", 
                                     `type`="text", 
-                                    `title`="Model diagram notes"))))}))$new(options=options))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="contraintsnotes",
-                visible="(constraints_examples)",
-                title="Syntax examples",
-                columns=list(
-                    list(
-                        `name`="info", 
-                        `type`="text", 
-                        `title`="Aim"),
-                    list(
-                        `name`="example", 
-                        `type`="text", 
-                        `title`="Example"),
-                    list(
-                        `name`="com", 
-                        `type`="text", 
-                        `title`="Outcome"))))},
+                                    `title`="Model diagram notes"))))}))$new(options=options))},
+        .setPrev_options=function(x) private$..prev_options <- x,
         .setModel=function(x) private$..model <- x))
 
 semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -973,20 +1309,47 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param fonts .
 #' @param vars .
 #' @param toggle .
-#' @param multigroup .
-#' @param se .
-#' @param bootci Choose the confidence interval type
+#' @param estimator TO ADD
+#' @param likelihood TO ADD
+#' @param scoretest TO ADD
+#' @param cumscoretest TO ADD
+#' @param se TO ADD
+#' @param bootci choose the confidence interval type
+#' @param bootN number of bootstrap samples for estimating confidence
+#'   intervals
 #' @param ci .
 #' @param ciWidth a number between 50 and 99.9 (default: 95) specifying the
 #'   confidence interval width for the parameter estimates
-#' @param bootN number of bootstrap samples for estimating confidence
-#'   intervals
+#' @param intercepts \code{TRUE} or \code{FALSE} (default), show intercepts
 #' @param showintercepts \code{TRUE} or \code{FALSE} (default), show
 #'   intercepts
-#' @param intercepts \code{TRUE} or \code{FALSE} (default), show intercepts
 #' @param indirect \code{TRUE} or \code{FALSE} (default), show intercepts
 #' @param auto.fix.first \code{TRUE} or \code{FALSE}
 #' @param std.lv \code{TRUE} or \code{FALSE}
+#' @param cov_x \code{TRUE} (default) or \code{FALSE}, fix exogenous
+#'   covariates
+#' @param cov_y \code{TRUE} or \code{FALSE} (default), produce a path diagram
+#' @param multigroup .
+#' @param eq_loadings .
+#' @param eq_intercepts .
+#' @param eq_residuals .
+#' @param eq_residual.covariances .
+#' @param eq_means .
+#' @param eq_thresholds .
+#' @param eq_regressions .
+#' @param eq_lv.variances .
+#' @param eq_lv.covariances .
+#' @param showlabels .
+#' @param constraints_examples .
+#' @param outputAdditionalFitMeasures .
+#' @param outputRSquared .
+#' @param outputMardiasCoefficients .
+#' @param outputObservedCovariances .
+#' @param outputImpliedCovariances .
+#' @param outputResidualCovariances .
+#' @param outputModificationIndices .
+#' @param miHideLow .
+#' @param miThreshold .
 #' @param diagram \code{TRUE} or \code{FALSE} (default), produce a path
 #'   diagram
 #' @param diag_paths Choose the diagram labels
@@ -1000,29 +1363,28 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param diag_shape_man Choose the diagram labels
 #' @param diag_shape_lat Choose the diagram labels
 #' @param diag_abbrev Choose the diagram labels
-#' @param cov_y \code{TRUE} or \code{FALSE} (default), produce a path diagram
-#' @param cov_x \code{TRUE} or \code{FALSE} (default), produce a path diagram
-#' @param constraints_examples .
-#' @param showlabels .
-#' @param scoretest .
-#' @param cumscoretest .
-#' @param estimator Choose the diagram labels
-#' @param likelihood Choose the diagram labels
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$prev_options} \tab \tab \tab \tab \tab Object to store the previous options in \cr
 #'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$constraints} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$coefficients} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$loadings} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$models$correlations} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$add_outputs$testBslModel} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$add_outputs$compModelBsl} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$add_outputs$infCrit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$add_outputs$Rsquared} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$add_outputs$mardia} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$group_covariances$correlations} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$modgroup$modifIndic} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -1039,17 +1401,43 @@ semljsyn <- function(
     fonts = "small",
     vars,
     toggle = FALSE,
-    multigroup,
+    estimator = "ML",
+    likelihood = "normal",
+    scoretest = TRUE,
+    cumscoretest = FALSE,
     se = "standard",
     bootci = "perc",
+    bootN = 1000,
     ci = TRUE,
     ciWidth = 95,
-    bootN = 1000,
-    showintercepts = TRUE,
     intercepts = TRUE,
+    showintercepts = TRUE,
     indirect = FALSE,
     auto.fix.first = TRUE,
     std.lv = FALSE,
+    cov_x = TRUE,
+    cov_y = TRUE,
+    multigroup,
+    eq_loadings = FALSE,
+    eq_intercepts = FALSE,
+    eq_residuals = FALSE,
+    eq_residual.covariances = FALSE,
+    eq_means = FALSE,
+    eq_thresholds = FALSE,
+    eq_regressions = FALSE,
+    eq_lv.variances = FALSE,
+    eq_lv.covariances = FALSE,
+    showlabels = FALSE,
+    constraints_examples = FALSE,
+    outputAdditionalFitMeasures = FALSE,
+    outputRSquared = FALSE,
+    outputMardiasCoefficients = FALSE,
+    outputObservedCovariances = FALSE,
+    outputImpliedCovariances = FALSE,
+    outputResidualCovariances = FALSE,
+    outputModificationIndices = FALSE,
+    miHideLow = FALSE,
+    miThreshold = 10,
     diagram = FALSE,
     diag_paths = "est",
     diag_resid = FALSE,
@@ -1059,15 +1447,7 @@ semljsyn <- function(
     diag_type = "tree",
     diag_shape_man = "rectangle",
     diag_shape_lat = "circle",
-    diag_abbrev = "5",
-    cov_y = TRUE,
-    cov_x = TRUE,
-    constraints_examples = FALSE,
-    showlabels = FALSE,
-    scoretest = TRUE,
-    cumscoretest = FALSE,
-    estimator = "ML",
-    likelihood = "normal") {
+    diag_abbrev = "5") {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("semljsyn requires jmvcore to be installed (restart may be required)")
@@ -1085,17 +1465,43 @@ semljsyn <- function(
         fonts = fonts,
         vars = vars,
         toggle = toggle,
-        multigroup = multigroup,
+        estimator = estimator,
+        likelihood = likelihood,
+        scoretest = scoretest,
+        cumscoretest = cumscoretest,
         se = se,
         bootci = bootci,
+        bootN = bootN,
         ci = ci,
         ciWidth = ciWidth,
-        bootN = bootN,
-        showintercepts = showintercepts,
         intercepts = intercepts,
+        showintercepts = showintercepts,
         indirect = indirect,
         auto.fix.first = auto.fix.first,
         std.lv = std.lv,
+        cov_x = cov_x,
+        cov_y = cov_y,
+        multigroup = multigroup,
+        eq_loadings = eq_loadings,
+        eq_intercepts = eq_intercepts,
+        eq_residuals = eq_residuals,
+        eq_residual.covariances = eq_residual.covariances,
+        eq_means = eq_means,
+        eq_thresholds = eq_thresholds,
+        eq_regressions = eq_regressions,
+        eq_lv.variances = eq_lv.variances,
+        eq_lv.covariances = eq_lv.covariances,
+        showlabels = showlabels,
+        constraints_examples = constraints_examples,
+        outputAdditionalFitMeasures = outputAdditionalFitMeasures,
+        outputRSquared = outputRSquared,
+        outputMardiasCoefficients = outputMardiasCoefficients,
+        outputObservedCovariances = outputObservedCovariances,
+        outputImpliedCovariances = outputImpliedCovariances,
+        outputResidualCovariances = outputResidualCovariances,
+        outputModificationIndices = outputModificationIndices,
+        miHideLow = miHideLow,
+        miThreshold = miThreshold,
         diagram = diagram,
         diag_paths = diag_paths,
         diag_resid = diag_resid,
@@ -1105,15 +1511,7 @@ semljsyn <- function(
         diag_type = diag_type,
         diag_shape_man = diag_shape_man,
         diag_shape_lat = diag_shape_lat,
-        diag_abbrev = diag_abbrev,
-        cov_y = cov_y,
-        cov_x = cov_x,
-        constraints_examples = constraints_examples,
-        showlabels = showlabels,
-        scoretest = scoretest,
-        cumscoretest = cumscoretest,
-        estimator = estimator,
-        likelihood = likelihood)
+        diag_abbrev = diag_abbrev)
 
     analysis <- semljsynClass$new(
         options = options,

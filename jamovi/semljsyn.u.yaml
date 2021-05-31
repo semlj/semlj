@@ -1,11 +1,13 @@
 title: Structural Equation Modeling
 name: semljsyn
-jus: '2.0'
+jus: '3.0'
+stage: 0
 compilerMode: tame
 events:
   loaded: './main::loaded'
   update: './main::update'
   remoteDataChanged: './main::onDataChanged'
+
 children:
   - type: LayoutBox
     stretchFactor: 1
@@ -14,18 +16,10 @@ children:
         stretchFactor: 1
         name: syntax
         events:
-            creating: './main::editor_creating'
-      - type: LayoutBox
-        margin: large
-        children:
-            - type: TextBox
-              stretchFactor: 1
-              name: multigroup
-              format: string
-
+          creating: './main::editor_creating'
 
   - type: CollapseBox
-    label: Model Options
+    label: Model options
     collapsed: true
     stretchFactor: 1
     children:
@@ -52,8 +46,9 @@ children:
                 name: scoretest
               - type: CheckBox
                 name: cumscoretest
+
   - type: CollapseBox
-    label: Parameters Options
+    label: Parameter options
     collapsed: true
     stretchFactor: 1
     children:
@@ -148,7 +143,6 @@ children:
                 name: auto.fix.first
               - type: CheckBox
                 name: std.lv
-
           - type: Label
             label: Miscellaneous
             margin: large
@@ -158,14 +152,138 @@ children:
                 name: cov_x
               - type: CheckBox
                 name: cov_y
-              - type: CheckBox
-                name: showlabels
-              - type: CheckBox
-                name: constraints_examples
-
 
   - type: CollapseBox
-    label: Path Diagram
+    label: Multi-group analyses
+    collapsed: true
+    stretchFactor: 1
+    style: list
+    children:
+      - type: LayoutBox
+        margin: large
+        style: list
+        children:
+          - type: LayoutBox
+            margin: large
+            style: list
+            stretchFactor: 1
+            children:
+              - type: TextBox
+                name: multigroup
+                stretchFactor: 1
+                format: string
+          - type: Label
+            label: Equality constraints
+          - type: LayoutBox
+            margin: large
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: LayoutBox
+                    margin: large
+                    style: list
+                    children:
+                      - type: CheckBox
+                        name: eq_loadings
+                      - type: CheckBox
+                        name: eq_intercepts
+                      - type: CheckBox
+                        name: eq_means
+                  - type: LayoutBox
+                    margin: large
+                    style: list
+                    children:
+                      - type: CheckBox
+                        name: eq_thresholds 
+                      - type: CheckBox
+                        name: eq_residuals
+                      - type: CheckBox
+                        name: eq_residual.covariances
+                  - type: LayoutBox
+                    margin: large
+                    style: list
+                    children:
+                      - type: CheckBox
+                        name: eq_regressions
+                      - type: CheckBox
+                        name: eq_lv.variances
+                      - type: CheckBox
+                        name: eq_lv.covariances
+
+  - type: CollapseBox
+    label: Output options
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: LayoutBox
+            margin: large
+            style: list
+            children:
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: Label
+                    label: Labels and examples
+                  - type: CheckBox
+                    name: showlabels
+                  - type: CheckBox
+                    name: constraints_examples
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: LayoutBox
+                    margin: large
+                    style: list
+                    children:
+                      - type: Label
+                        label: Additional outputs
+                      - type: CheckBox
+                        name: outputAdditionalFitMeasures
+                      - type: CheckBox
+                        name: outputRSquared
+                      - type: CheckBox
+                        name: outputMardiasCoefficients
+                  - type: LayoutBox
+                    margin: large
+                    style: list
+                    children:
+                      - type: Label
+                        label: Covariances and correlations
+                      - type: CheckBox    
+                        name: outputObservedCovariances
+                      - type: CheckBox
+                        name: outputImpliedCovariances
+                      - type: CheckBox
+                        name: outputResidualCovariances
+                  - type: LayoutBox
+                    margin: large
+                    style: list
+                    children:
+                      - type: Label
+                        label: Modification indices
+                      - type: CheckBox
+                        name: outputModificationIndices
+                        children:
+                          - type: CheckBox
+                            name: miHideLow
+                            enable: (outputModificationIndices)
+                            children:
+                            - type: TextBox
+                              name: miThreshold
+                              format: number
+                              enable: (miHideLow)
+
+  - type: CollapseBox
+    label: Path diagram
     collapsed: true
     stretchFactor: 1
     style: list
@@ -213,7 +331,6 @@ children:
               - type: CheckBox
                 name: diag_intercepts
                 enable: (diagram)
-
       - type: LayoutBox
         margin: large
         stretchFactor: 1
@@ -244,7 +361,6 @@ children:
               - type: ComboBox
                 name: diag_shape_lat
                 enable: (diagram)
-
               - type: ComboBox
                 name: diag_abbrev
                 enable: (diagram)

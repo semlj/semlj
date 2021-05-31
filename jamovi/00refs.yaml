@@ -1,7 +1,7 @@
 refs:
-   pathj:
+   semlj:
       type: 'software'
-      author: Gallucci, M.
+      author: Gallucci, M., Jentschke, S.
       year: 2021
       title: "SEMLj: jamovi SEM Analysis"
       publisher: '[jamovi module]. For help please visit https://semlj.github.io/'
