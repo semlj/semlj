@@ -93,6 +93,7 @@ Syntax <- R6::R6Class(
         
             .check_models=function() {
               synt<-self$options$code
+              synt<-stringr::str_replace_all(synt, "[\r]" , "")
               avec<-stringr::str_split(synt,"\n")[[1]]
               avec<-avec[sapply(avec, function(a) a!="")]
               self$models<-avec
@@ -102,6 +103,7 @@ Syntax <- R6::R6Class(
             .lavaan_syntax=function() {
                   f<-glue::glue_collapse(unlist(self$models),sep = " ; ")
                   i<-glue::glue_collapse(unlist(private$.lav_indirect),sep = " ; ")
+
                   paste(f,i, sep=";")
             },
             ## lavaanify the information available to obtain a info table representing the parameters structure.
