@@ -28,6 +28,10 @@ Syntax <- R6::R6Class(
               tab_defined=NULL,
               tab_info=NULL,
               tab_constfits=NULL,
+              tab_addFit=NULL,
+              tab_r2=NULL,
+              tab_covcorr=NULL,
+              tab_modInd=NULL,
               structure=NULL,
               options=NULL,
               multigroup=NULL,
@@ -204,7 +208,7 @@ Syntax <- R6::R6Class(
               alist[[length(alist)+1]]<-c(info="Estimation Method",value=self$options$estimator)
               alist[[length(alist)+1]]<-c(info="Number of observations",value="") 
               alist[[length(alist)+1]]<-c(info="Free parameters",value=max(.lav_structure$free))
-              alist[[length(alist)+1]]<-c(info="Converged","") 
+              alist[[length(alist)+1]]<-c(info="Converged", value="") 
               alist[[length(alist)+1]]<-c(info="",value="")
               alist[[length(alist)+1]]<-c(info="Loglikelihood user model",value="" )
               alist[[length(alist)+1]]<-c(info="Loglikelihood unrestricted model",value="")
@@ -252,6 +256,8 @@ Syntax <- R6::R6Class(
                      
                 }
               }
+              
+              
 
             },
             ### compute indirect effects if required by the user
@@ -272,7 +278,7 @@ Syntax <- R6::R6Class(
               tab<-tab[sel,]
               tab<-tab[tab$group>0,]
               
-              ## recursive function to extact indirect effects.
+              ## recursive function to extract indirect effects.
               .doit<-function(tab,term,alist=list(),blist=list(),lab=NULL) {
                 alist<-c(alist,term)
                 blist<-c(blist,lab)

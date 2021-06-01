@@ -56,10 +56,6 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             #### loadings table ####
             j.init_table(self$results$models$loadings,lav_machine$tab_loadings,ci=T,ciwidth=self$options$ciWidth)
             
-            ### prepare var cov table ###
-            j.init_table(self$results$models$correlations,lav_machine$tab_covariances,ci=T,ciwidth=self$options$ciWidth)
-            
-
             ### prepare defined params ###
             j.init_table(self$results$models$defined,lav_machine$tab_defined,ci=T,ciwidth=self$options$ciWidth)
 
@@ -67,6 +63,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                  j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
 
+            ### prepare var cov table ###
+#           j.init_table(self$results$models$correlations,lav_machine$tab_covariances,ci=T,ciwidth=self$options$ciWidth)
             
             private$.lav_machine<-lav_machine
             private$.data_machine<-data_machine
@@ -74,7 +72,6 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             ### init the diagram
             plot_machine$initPlots()
-            
             
         },
     
@@ -122,14 +119,15 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### loadings table ####
             j.fill_table(self$results$models$loadings,lav_machine$tab_loadings)
              
-            ### loadings vars and covars ####
-            j.fill_table(self$results$models$correlations,lav_machine$tab_covariances)
-            
             j.fill_table(self$results$models$defined,lav_machine$tab_defined)
             j.add_warnings(self$results$models$defined,lav_machine,"defined")
             
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
+
+
+            ### loadings vars and covars ####
+#           j.fill_table(self$results$models$correlations,lav_machine$tab_covariances)
 
 
 #            j.fill_table(self$results$models$r2,lav_machine$tab_r2)

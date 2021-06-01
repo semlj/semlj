@@ -12,11 +12,11 @@ Estimate <- R6::R6Class("Estimate",
                           tab_fit=NULL,
                           tab_fitindices=NULL,
                           tab_constfit=NULL,
-                          tab_addfit=NULL,
-                          tab_r2=NULL,
-                          tab_mardia=NULL,
-                          tab_covcorr=NULL,
-                          tab_modInd=NULL,
+#                         tab_addFit=NULL,
+#                         tab_r2=NULL,
+#                         tab_mardia=NULL,
+#                         tab_covcorr=NULL,
+#                         tab_modInd=NULL,
                           ciwidth=NULL,
                           initialize=function(options,datamatic) {
                             super$initialize(options=options,datamatic=datamatic)
@@ -149,84 +149,94 @@ Estimate <- R6::R6Class("Estimate",
                               }
                             } # end of checking constraints
 
+                            ginfo('before SJ');
                             # additional fit measures
                             if (self$options$outputAdditionalFitMeasures) {
                               alist <- list()
                               # (1) Model test baseline model
-                              alist[[length(alist) + 1]]  <- c(name = "Minimum Function Test Statistic",            statistics = ff[["fmin"]]);
-#                             alist[[length(alist) + 1]]  <- c(name = "χ²",                                         statistics = ff[["chisq"]]);
-#                             alist[[length(alist) + 1]]  <- c(name = "Degrees of freedom",                         statistics = ff[["df"]]);
-#                             alist[[length(alist) + 1]]  <- c(name = "p",                                          statistics = ff[["pvalue"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Minimum Function Test Statistic",            statistics = ff[["fmin"]]);
+#                             alist[[length(alist) + 1]]  <- list(name = "χ²",                                         statistics = ff[["chisq"]]);
+#                             alist[[length(alist) + 1]]  <- list(name = "Degrees of freedom",                         statistics = ff[["df"]]);
+#                             alist[[length(alist) + 1]]  <- list(name = "p",                                          statistics = ff[["pvalue"]]);
 
                               # (2) User model versus baseline model
-                              alist[[length(alist) + 1]]  <- c(name = "Comparative Fit Index (CFI)",                statistics = ff[["cfi"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Tucker-Lewis Index (TLI)",                   statistics = ff[["tli"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Bentler-Bonett Non-normed Fit Index (NNFI)", statistics = ff[["nnfi"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Bentler-Bonett Normed Fit Index (NFI)",      statistics = ff[["nfi"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Parsimony Normed Fit Index (PNFI)",          statistics = ff[["pnfi"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Bollen's Relative Fit Index (RFI)",          statistics = ff[["rfi"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Bollen's Incremental Fit Index (IFI)",       statistics = ff[["ifi"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Relative Noncentrality Index (RNI)",         statistics = ff[["rni"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Comparative Fit Index (CFI)",                statistics = ff[["cfi"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Tucker-Lewis Index (TLI)",                   statistics = ff[["tli"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Non-normed Fit Index (NNFI)", statistics = ff[["nnfi"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Normed Fit Index (NFI)",      statistics = ff[["nfi"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Parsimony Normed Fit Index (PNFI)",          statistics = ff[["pnfi"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Bollen's Relative Fit Index (RFI)",          statistics = ff[["rfi"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Bollen's Incremental Fit Index (IFI)",       statistics = ff[["ifi"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Relative Noncentrality Index (RNI)",         statistics = ff[["rni"]]);
 
                               # (3) Loglikelihood and Information Criteria
-                              alist[[length(alist) + 1]]  <- c(name = "Loglikelihood user model (H0)",              statistics = ff[["logl"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Loglikelihood unrestricted model (H1)",      statistics = ff[["unrestricted.logl"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Number of free parameters",                  statistics = ff[["npar"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Akaike Information Criterion (AIC)",         statistics = ff[["aic"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Bayesian Information Criterion (BIC)",       statistics = ff[["bic"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Sample-size adjusted Bayesian (BIC)",        statistics = ff[["bic2"]]);
-               
+                              alist[[length(alist) + 1]]  <- list(name = "Loglikelihood user model (H0)",              statistics = ff[["logl"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Loglikelihood unrestricted model (H1)",      statistics = ff[["unrestricted.logl"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Number of free parameters",                  statistics = ff[["npar"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Akaike Information Criterion (AIC)",         statistics = ff[["aic"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Bayesian Information Criterion (BIC)",       statistics = ff[["bic"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Sample-size adjusted Bayesian (BIC)",        statistics = ff[["bic2"]]);
+
                               # (4) Root Mean Square Error of Approximation
-                              alist[[length(alist) + 1]]  <- c(name = "Root Mean Square Error of Approximation",    statistics = ff[["rmsea"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "lower boundary of the 90% CI",               statistics = ff[["rmsea.ci.lower"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "upper boundary of the 90% CI",               statistics = ff[["rmsea.ci.upper"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "p-value RMSEA <= 0.05",                      statistics = ff[["rmsea.pvalue"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Root Mean Square Error of Approximation",    statistics = ff[["rmsea"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "lower boundary of the 90% CI",               statistics = ff[["rmsea.ci.lower"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "upper boundary of the 90% CI",               statistics = ff[["rmsea.ci.upper"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "p-value RMSEA <= 0.05",                      statistics = ff[["rmsea.pvalue"]]);
 
                               # (5) Standardized Root Mean Square Residual
-                              alist[[length(alist) + 1]]  <- c(name = "Root Mean Square Residual",                  statistics = ff[["rmr"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Root Mean Square Residual (no mean)",        statistics = ff[["rmr_nomean"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Standardized Root Mean Square Residual",     statistics = ff[["srmr"]]);
-                 
-                              # (6) Other Fit Indices
-                              alist[[length(alist) + 1]]  <- c(name = "Hoelter Critical N (CN), α=0.05",            statistics = ff[["cn_05"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Hoelter Critical N (CN), α=0.01",            statistics = ff[["cn_01"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Goodness of Fit Index (GFI)",                statistics = ff[["gfi"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "Parsimony Goodness of Fit Index (GFI)",      statistics = ff[["pgfi"]]);
-                              alist[[length(alist) + 1]]  <- c(name = "McDonald Fit Index (MFI)",                   statistics = ff[["mfi"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Root Mean Square Residual",                  statistics = ff[["rmr"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Root Mean Square Residual (no mean)",        statistics = ff[["rmr_nomean"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Standardized Root Mean Square Residual",     statistics = ff[["srmr"]]);
 
-                              alist[[length(alist) + 1]]  <- c(name = "",                                           statsitics = "");
+                              # (6) Other Fit Indices
+                              alist[[length(alist) + 1]]  <- list(name = "Hoelter Critical N (CN), α=0.05",            statistics = ff[["cn_05"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Hoelter Critical N (CN), α=0.01",            statistics = ff[["cn_01"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Goodness of Fit Index (GFI)",                statistics = ff[["gfi"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "Parsimony Goodness of Fit Index (GFI)",      statistics = ff[["pgfi"]]);
+                              alist[[length(alist) + 1]]  <- list(name = "McDonald Fit Index (MFI)",                   statistics = ff[["mfi"]]);
+
+                              alist[[length(alist) + 1]]  <- list(name = "",                                           statistics = "");
                               # other measures that are not implemented yet: "srmr_bentler", "srmr_bentler_nomean", "crmr", "crmr_nomean", "srmr_mplus", "srmr_mplus_nomean"
                               #                                              "agfi", "ecvi"
-
-                              self$tab_addFit <- alist
+                              self$tab_addFit <- alist;
+                              ginfo('finished tab_addFit');
                             }
+                            
 
                             # R²
                             if (self$options$outputRSquared) {
+                              ginfo('begin tab_r2')
                               RSqEst = lavaan::parameterEstimates(fit, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE);
                               RSqEst = RSqEst[RSqEst$op == "r2", 3:4];
-                              self$tab_r2 <- NULL
-                              if (nrow(self$tab_r2) == 0) self$tab_r2 < -NULL
+                              if (nrow(RSqEst) > 0) { 
+                                self$tab_r2 <- as.list(RSqEst);
+                              };
+                              ginfo('finished tab_r2');
+                              ginfo(str(self$tab_r2));
                             }
+                            
 
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
+                              ginfo('begin tab_mardia');
                               mrdSkw = semTools::mardiaSkew(self$data[,lavaan::lavaanNames(fit)]);
                               mrdKrt = semTools::mardiaKurtosis(self$data[,lavaan::lavaanNames(fit)]);
-                              alist = list();
-                              alist[[length(alist) + 1]]  <- c(name = "Skewness", coeff=mrdSkw[[1]], as.list(mrdSkw[2:4]));
-                              alist[[length(alist) + 1]]  <- c(name = "Kurtosis", coeff=mrdKrt[[1]], as.list(mrdKrt[2:3]));
-                              self$tab_mardia <- alist;
+                              
+                              ginfo('before adding to tab_mardia')
+                              self$tab_mardia <- list(list(name = "Skewness", coeff=mrdSkw[[1]], as.list(mrdSkw[2:4])),
+                                                      list(name = "Kurtosis", coeff=mrdKrt[[1]], as.list(mrdKrt[2:3])));
+                              ginfo('finished tab_mardia');                            
                             }
 
                             # covariances and correlations
-                            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
-                              self$tab_covcorr <- NULL
-                              if (nrow(self$tab_covcorr) == 0) self$tab_covcorr <- NULL
-                            }
+#                            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
+#                              self$tab_covcorr <- NULL
+#                              if (nrow(self$tab_covcorr) == 0) self$tab_covcorr <- NULL
+#                            }
 
                             # modification indices
                             if (self$options$outputModificationIndices) {
+                              ginfo('begin tab_modInd');
                               modRes = lavaan::modificationIndices(fit);
                               if (self$options$miHideLow) {
                                 modRes = modRes[modRes$mi > self$options$miThreshold, ];
@@ -238,7 +248,9 @@ Estimate <- R6::R6Class("Estimate",
                               } else {
                                 alist[[1]] <- list(lhs='No modification indices above threshold.');
                               }
+                              ginfo(str(slist));
                               self$tab_modInd <- alist;
+                              ginfo('finished tab_modInd');
                             }
                             
                             ginfo("Estimation is done...")
