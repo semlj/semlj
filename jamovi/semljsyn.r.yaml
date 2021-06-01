@@ -549,7 +549,7 @@ items:
       - multigroup
       - code
     items:
-      - name: modifIndic
+      - name: modInd
         title: 'Modification indices'
         type: Table
         visible: (outputModificationIndices)     

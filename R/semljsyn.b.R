@@ -125,7 +125,29 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
 
+            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
+                j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
+            
+            if (self$options$outputAdditionalFitMeasures)
+                j.fill_table(self$results$add_outputs$compModelBsl,lav_machine$tab_compModelBsl)
 
+            if (self$options$outputAdditionalFitMeasures)
+                j.fill_table(self$results$add_outputs$infCrit,lav_machine$tab_infCrit)
+            
+            if (self$options$outputAdditionalFitMeasures)
+                j.fill_table(self$results$add_outputs$testBslModel,lav_machine$tab_testBslModel)
+            
+            if (self$options$outputRSquared)
+                j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
+            
+            if (self$options$outputMardiasCoefficients)
+                j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia,append=T)
+            
+            if (self$options$outputModificationIndices)
+                j.fill_table(self$results$modgroup$modInd,lav_machine$tab_modInd,append=T)
+            
+            
+    
             ### loadings vars and covars ####
 #           j.fill_table(self$results$models$correlations,lav_machine$tab_covariances)
 
@@ -133,7 +155,6 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 #            j.fill_table(self$results$models$r2,lav_machine$tab_r2)
 #            j.add_warnings(self$results$models$r2,lav_machine,"r2")
             
-            ginfo("run")
             
 
             ## diagrams
@@ -145,6 +166,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             
             self$results$.setModel(lav_machine$model)
+            ginfo("run ends")
+            
         },
  
         .showDiagram=function(image,ggtheme, theme, ...) {

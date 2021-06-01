@@ -1157,7 +1157,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    modifIndic = function() private$.items[["modifIndic"]]),
+                    modInd = function() private$.items[["modInd"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -1173,7 +1173,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "code"))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="modifIndic",
+                            name="modInd",
                             title="Modification indices",
                             visible="(outputModificationIndices)",
                             notes=list(
@@ -1382,7 +1382,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$add_outputs$Rsquared} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$mardia} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$group_covariances$correlations} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$modgroup$modifIndic} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$modgroup$modInd} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
 #' }

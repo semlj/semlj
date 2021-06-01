@@ -12,9 +12,13 @@ Estimate <- R6::R6Class("Estimate",
                           tab_fit=NULL,
                           tab_fitindices=NULL,
                           tab_constfit=NULL,
+                          tab_testBslModel=NULL,
+                          tab_compModelBsl=NULL,
+                          tab_infCrit=NULL,
+                          tab_Rsquared=NULL,
+                          tab_mardia=NULL,
+                          tab_modInd=NULL,
 #                         tab_addFit=NULL,
-#                         tab_r2=NULL,
-#                         tab_mardia=NULL,
 #                         tab_covcorr=NULL,
 #                         tab_modInd=NULL,
                           ciwidth=NULL,
@@ -149,17 +153,19 @@ Estimate <- R6::R6Class("Estimate",
                               }
                             } # end of checking constraints
 
-                            ginfo('before SJ');
+                            mark('before SJ');
                             # additional fit measures
                             if (self$options$outputAdditionalFitMeasures) {
                               alist <- list()
                               # (1) Model test baseline model
-                              alist[[length(alist) + 1]]  <- list(name = "Minimum Function Test Statistic",            statistics = ff[["fmin"]]);
-#                             alist[[length(alist) + 1]]  <- list(name = "χ²",                                         statistics = ff[["chisq"]]);
-#                             alist[[length(alist) + 1]]  <- list(name = "Degrees of freedom",                         statistics = ff[["df"]]);
-#                             alist[[length(alist) + 1]]  <- list(name = "p",                                          statistics = ff[["pvalue"]]);
-
+                             alist[[length(alist) + 1]]  <- list(name = "Minimum Function Test Statistic",            statistics = ff[["fmin"]]);
+                             alist[[length(alist) + 1]]  <- list(name = "χ²",                                         statistics = ff[["chisq"]]);
+                             alist[[length(alist) + 1]]  <- list(name = "Degrees of freedom",                         statistics = ff[["df"]]);
+                             alist[[length(alist) + 1]]  <- list(name = "p",                                          statistics = ff[["pvalue"]]);
+                             self$tab_testBslModel<-alist
+                             
                               # (2) User model versus baseline model
+                              alist<-list()
                               alist[[length(alist) + 1]]  <- list(name = "Comparative Fit Index (CFI)",                statistics = ff[["cfi"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Tucker-Lewis Index (TLI)",                   statistics = ff[["tli"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Non-normed Fit Index (NNFI)", statistics = ff[["nnfi"]]);
@@ -168,15 +174,19 @@ Estimate <- R6::R6Class("Estimate",
                               alist[[length(alist) + 1]]  <- list(name = "Bollen's Relative Fit Index (RFI)",          statistics = ff[["rfi"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Bollen's Incremental Fit Index (IFI)",       statistics = ff[["ifi"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Relative Noncentrality Index (RNI)",         statistics = ff[["rni"]]);
-
+                              self$tab_compModelBsl<-alist
+                              
+                              
                               # (3) Loglikelihood and Information Criteria
+                              alist<-list()
                               alist[[length(alist) + 1]]  <- list(name = "Loglikelihood user model (H0)",              statistics = ff[["logl"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Loglikelihood unrestricted model (H1)",      statistics = ff[["unrestricted.logl"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Number of free parameters",                  statistics = ff[["npar"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Akaike Information Criterion (AIC)",         statistics = ff[["aic"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Bayesian Information Criterion (BIC)",       statistics = ff[["bic"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Sample-size adjusted Bayesian (BIC)",        statistics = ff[["bic2"]]);
-
+                              self$tab_infCrit<-alist
+                              
                               # (4) Root Mean Square Error of Approximation
                               alist[[length(alist) + 1]]  <- list(name = "Root Mean Square Error of Approximation",    statistics = ff[["rmsea"]]);
                               alist[[length(alist) + 1]]  <- list(name = "lower boundary of the 90% CI",               statistics = ff[["rmsea.ci.lower"]]);
@@ -198,34 +208,36 @@ Estimate <- R6::R6Class("Estimate",
                               alist[[length(alist) + 1]]  <- list(name = "",                                           statistics = "");
                               # other measures that are not implemented yet: "srmr_bentler", "srmr_bentler_nomean", "crmr", "crmr_nomean", "srmr_mplus", "srmr_mplus_nomean"
                               #                                              "agfi", "ecvi"
-                              self$tab_addFit <- alist;
-                              ginfo('finished tab_addFit');
+                              mark('finished addFit');
                             }
                             
 
                             # R²
                             if (self$options$outputRSquared) {
                               ginfo('begin tab_r2')
-                              RSqEst = lavaan::parameterEstimates(fit, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE);
-                              RSqEst = RSqEst[RSqEst$op == "r2", 3:4];
+                              RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE);
+                              mark(RSqEst)
+                              RSqEst = RSqEst[RSqEst$op == "r2",];
                               if (nrow(RSqEst) > 0) { 
-                                self$tab_r2 <- as.list(RSqEst);
+                                self$tab_Rsquared<- RSqEst;
                               };
-                              ginfo('finished tab_r2');
-                              ginfo(str(self$tab_r2));
+                              mark('finished tab_r2');
+                              mark(self$tab_r2);
                             }
                             
 
                             # Mardia's coefficients
+                            if (FALSE) {
                             if (self$options$outputMardiasCoefficients) {
-                              ginfo('begin tab_mardia');
-                              mrdSkw = semTools::mardiaSkew(self$data[,lavaan::lavaanNames(fit)]);
-                              mrdKrt = semTools::mardiaKurtosis(self$data[,lavaan::lavaanNames(fit)]);
+                              mark('begin tab_mardia');
+                              mrdSkw = semTools::mardiaSkew(self$data[,lavaan::lavaanNames(self$model)]);
+                              mrdKrt = semTools::mardiaKurtosis(self$data[,lavaan::lavaanNames(self$model)]);
                               
-                              ginfo('before adding to tab_mardia')
+                              mark('before adding to tab_mardia')
                               self$tab_mardia <- list(list(name = "Skewness", coeff=mrdSkw[[1]], as.list(mrdSkw[2:4])),
                                                       list(name = "Kurtosis", coeff=mrdKrt[[1]], as.list(mrdKrt[2:3])));
-                              ginfo('finished tab_mardia');                            
+                              mark('finished tab_mardia');                            
+                            }
                             }
 
                             # covariances and correlations
@@ -237,7 +249,7 @@ Estimate <- R6::R6Class("Estimate",
                             # modification indices
                             if (self$options$outputModificationIndices) {
                               ginfo('begin tab_modInd');
-                              modRes = lavaan::modificationIndices(fit);
+                              modRes = lavaan::modificationIndices(self$model);
                               if (self$options$miHideLow) {
                                 modRes = modRes[modRes$mi > self$options$miThreshold, ];
                               }
@@ -246,11 +258,10 @@ Estimate <- R6::R6Class("Estimate",
                                 alist = list();
                                 for (r in seq(nrow(modRes))) { alist[[r]] <- as.list(modRes[r, !is.na(modRes[r, ])]) }
                               } else {
-                                alist[[1]] <- list(lhs='No modification indices above threshold.');
+                                self$warnings <- list(topic="mi",message='No modification indices above threshold.');
                               }
-                              ginfo(str(slist));
                               self$tab_modInd <- alist;
-                              ginfo('finished tab_modInd');
+                              mark('finished tab_modInd');
                             }
                             
                             ginfo("Estimation is done...")
