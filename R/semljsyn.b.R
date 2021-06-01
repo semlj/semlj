@@ -91,27 +91,24 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             warns<-lav_machine$warnings
 
             ## fit info
-             j.fill_table(self$results$info,lav_machine$tab_info)
-             j.add_warnings(self$results$info,lav_machine)
+            j.fill_table(self$results$info,lav_machine$tab_info)
+            j.add_warnings(self$results$info,lav_machine)
 
-             ## stop if error
+            ## stop if error
              
-             if (is.something(lav_machine$errors)) {
-                 stop(paste(lav_machine$errors,collapse = "; "))
-             } 
-             
+            if (is.something(lav_machine$errors)) {
+              stop(paste(lav_machine$errors,collapse = "; "))
+            } 
             
-             ## fit indices
-             self$results$fit$indices$setRow(rowNo=1,lav_machine$tab_fitindices)
+            ## fit indices
+            self$results$fit$indices$setRow(rowNo=1,lav_machine$tab_fitindices)
              
-             ## fit test
-             j.fill_table(self$results$fit$main,lav_machine$tab_fit,append=T)
+            ## fit test
+            j.fill_table(self$results$fit$main,lav_machine$tab_fit,append=T)
 
-             ## constraints fit test
-             
-             j.fill_table(self$results$fit$constraints,lav_machine$tab_constfit,append=T, spaceby="type")
-             j.add_warnings(self$results$fit$constraints,lav_machine)
-             
+            ## constraints fit test
+            j.fill_table(self$results$fit$constraints,lav_machine$tab_constfit,append=T, spaceby="type")
+            j.add_warnings(self$results$fit$constraints,lav_machine)
 
             ### parameters estimates ####
             j.fill_table(self$results$models$coefficients,lav_machine$tab_coefficients)
@@ -150,12 +147,6 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
             ### loadings vars and covars ####
 #           j.fill_table(self$results$models$correlations,lav_machine$tab_covariances)
-
-
-#            j.fill_table(self$results$models$r2,lav_machine$tab_r2)
-#            j.add_warnings(self$results$models$r2,lav_machine,"r2")
-            
-            
 
             ## diagrams
             private$.plot_machine$preparePlots()   
