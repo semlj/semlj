@@ -212,7 +212,7 @@ Estimate <- R6::R6Class("Estimate",
                             if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
                               nmeVar = lavaan::lavNames(self$model, 'ov');
                               numVar = length(nmeVar);
-                              self$tab_covcorr <- matrix(, nrow = 0, ncol=numVar + 1);
+                              self$tab_covcorr <- matrix(, nrow = 0, ncol=numVar + 1, dimnames=list(list(), c('type', nmeVar)));
                               
                               obsCov = lavaan::inspect(self$model, "observed")$cov;
                               fitCov = lavaan::inspect(self$model,   "fitted")$cov;

@@ -391,7 +391,7 @@ options:
 
     - name: outputRSquared
       type: Bool
-      title: "R-squared"
+      title: "R² (endogenous vars.)"
       default: false
       
     - name: outputMardiasCoefficients
