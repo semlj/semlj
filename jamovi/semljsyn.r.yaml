@@ -486,39 +486,42 @@ items:
 #       type: text
 #       visible: (multigroup)
 #       combineBelow: true
-      - name: .name[o]
+      - name: type
         title: ""
         type: text
-        content: ($key)
-        combineBelow: true
-        visible: (outputObservedCovariances)
-      - name: .stat[o]
-        title: ""
-        type: text
-        content: observed
-        visible: (outputObservedCovariances)
-      - name: .name[f]
-        title: ""
-        type: text
-        content: ($key)
-        combineBelow: true
-        visible: (outputImpliedCovariances)
-      - name: .stat[f]
-        title: ""
-        type: text
-        content: implied / fitted
-        visible: (outputImpliedCovariances)
-      - name: .name[r]
-        title: ""
-        type: text
-        content: ($key)
-        combineBelow: true
-        visible: (outputResidualCovariances)
-      - name: .stat[r]
-        title: ""
-        type: text
-        content: residual
-        visible: (outputResidualCovariances)
+#      - name: .name[o]
+#        title: ""
+#        type: text
+#        content: ($key)
+#        combineBelow: true
+#        visible: (outputObservedCovariances)
+#      - name: .stat[o]
+#        title: ""
+#        type: text
+#        content: observed
+#        visible: (outputObservedCovariances)
+#      - name: .name[f]
+#        title: ""
+#        type: text
+#        content: ($key)
+#        combineBelow: true
+#        visible: (outputImpliedCovariances)
+#      - name: .stat[f]
+#        title: ""
+#        type: text
+#        content: implied / fitted
+#        visible: (outputImpliedCovariances)
+#      - name: .name[r]
+#        title: ""
+#        type: text
+#        content: ($key)
+#        combineBelow: true
+#        visible: (outputResidualCovariances)
+#      - name: .stat[r]
+#        title: ""
+#        type: text
+#        content: residual
+#        visible: (outputResidualCovariances)
 
   # Modification indices
   - name: modgroup
