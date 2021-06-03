@@ -968,9 +968,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    testBslModel = function() private$.items[["testBslModel"]],
                     compModelBsl = function() private$.items[["compModelBsl"]],
-                    infCrit = function() private$.items[["infCrit"]],
+                    otherFit = function() private$.items[["otherFit"]],
                     Rsquared = function() private$.items[["Rsquared"]],
                     mardia = function() private$.items[["mardia"]]),
                 private = list(),
@@ -980,22 +979,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="add_outputs",
                             title="Additional outputs")
-                        self$add(jmvcore::Table$new(
-                            options=options,
-                            name="testBslModel",
-                            title="Model test baseline model",
-                            visible="(outputAdditionalFitMeasures)",
-                            clearWith=NULL,
-                            rows=4,
-                            columns=list(
-                                list(
-                                    `name`="name", 
-                                    `title`="", 
-                                    `type`="text"),
-                                list(
-                                    `name`="statistics", 
-                                    `title`="Model", 
-                                    `type`="number"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="compModelBsl",
@@ -1015,11 +998,11 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `format`="zto"))))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="infCrit",
-                            title="Loglikelihood and Information Criteria",
+                            name="otherFit",
+                            title="Other Fit Indices",
                             visible="(outputAdditionalFitMeasures)",
                             clearWith=NULL,
-                            rows=6,
+                            rows=5,
                             columns=list(
                                 list(
                                     `name`="name", 
@@ -1032,7 +1015,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="Rsquared",
-                            title="R-Squared",
+                            title="R\u00B2-values of the endogenous variables",
                             visible="(outputRSquared)",
                             clearWith=NULL,
                             columns=list(
@@ -1080,7 +1063,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    correlations = function() private$.items[["correlations"]]),
+                    covcorr = function() private$.items[["covcorr"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -1090,9 +1073,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Covariances and correlations")
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="correlations",
-                            title="Variances and Covariances",
-                            visible="(outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)",
+                            name="covcorr",
+                            title="Covariances (lower triangle) and correlation (upper triangle) matrix",
+                            visible="(outputObservedCovariances | outputImpliedCovariances | outputResidualCovariances)",
                             clearWith=list(
                                 "ciType",
                                 "cov_y",
@@ -1101,59 +1084,44 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
-                                    `name`="lgroup", 
-                                    `title`="Group", 
+                                    `name`=".name[o]", 
+                                    `title`="", 
                                     `type`="text", 
-                                    `visible`="(multigroup)", 
-                                    `combineBelow`=TRUE),
+                                    `content`="($key)", 
+                                    `combineBelow`=TRUE, 
+                                    `visible`="(outputObservedCovariances)"),
                                 list(
-                                    `name`="label", 
-                                    `title`="Label", 
+                                    `name`=".stat[o]", 
+                                    `title`="", 
                                     `type`="text", 
-                                    `visible`="(showlabels)"),
+                                    `content`="observed", 
+                                    `visible`="(outputObservedCovariances)"),
                                 list(
-                                    `name`="lhs", 
-                                    `title`="Variable 1", 
-                                    `type`="text"),
+                                    `name`=".name[f]", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="($key)", 
+                                    `combineBelow`=TRUE, 
+                                    `visible`="(outputImpliedCovariances)"),
                                 list(
-                                    `name`="rhs", 
-                                    `title`="Variable 2", 
-                                    `type`="text"),
+                                    `name`=".stat[f]", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="implied / fitted", 
+                                    `visible`="(outputImpliedCovariances)"),
                                 list(
-                                    `name`="est", 
-                                    `title`="Estimate", 
-                                    `type`="number"),
+                                    `name`=".name[r]", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="($key)", 
+                                    `combineBelow`=TRUE, 
+                                    `visible`="(outputResidualCovariances)"),
                                 list(
-                                    `name`="se", 
-                                    `title`="SE", 
-                                    `type`="number"),
-                                list(
-                                    `name`="ci.lower", 
-                                    `type`="number", 
-                                    `title`="Lower", 
-                                    `visible`="(ci)"),
-                                list(
-                                    `name`="ci.upper", 
-                                    `type`="number", 
-                                    `title`="Upper", 
-                                    `visible`="(ci)"),
-                                list(
-                                    `name`="std.all", 
-                                    `type`="number", 
-                                    `title`="\u03B2"),
-                                list(
-                                    `name`="z", 
-                                    `title`="z", 
-                                    `type`="number"),
-                                list(
-                                    `name`="pvalue", 
-                                    `title`="p", 
-                                    `type`="number", 
-                                    `format`="zto,pvalue"),
-                                list(
-                                    `name`="type", 
-                                    `title`="Type", 
-                                    `type`="text"))))}))$new(options=options))
+                                    `name`=".stat[r]", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `content`="residual", 
+                                    `visible`="(outputResidualCovariances)"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -1376,12 +1344,11 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$models$loadings} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$add_outputs$testBslModel} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$compModelBsl} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$add_outputs$infCrit} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$add_outputs$otherFit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$Rsquared} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$mardia} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$group_covariances$correlations} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$group_covariances$covcorr} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$modgroup$modInd} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr

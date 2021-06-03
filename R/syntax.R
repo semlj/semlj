@@ -27,9 +27,10 @@ Syntax <- R6::R6Class(
               tab_intercepts=NULL,
               tab_defined=NULL,
               tab_info=NULL,
-              tab_constfits=NULL,
-              tab_addFit=NULL,
-              tab_RSquared=NULL,
+              tab_constfit=NULL,
+              tab_compModelBsl=NULL,
+              tab_otherFit=NULL,
+              tab_Rsquared=NULL,
               tab_mardia=NULL,
               tab_covcorr=NULL,
               tab_modInd=NULL,
@@ -342,4 +343,3 @@ Syntax <- R6::R6Class(
 
           ) # end of private
 ) # End Rclass
-

@@ -380,16 +380,8 @@ options:
 
     - name: constraints_examples
       type: Bool
-      title: Show Examples
+      title: Show syntax examples
       default: false
-
-     # NOT IMPLEMENTED YET (JASP-SEM)
-     # The lavResiduals() gives more extensive information about the residuals. Per default, it will print both raw and
-     # standardized residuals, as well as several summary statistics (including the SRMR and the unbiased SRMR).
-#    - name: outputStandardizedResiduals
-#      type: Bool
-#      title: "Standardized residuals"
-#      default: false
 
     #    (4a) Additional outputs
     - name: outputAdditionalFitMeasures
@@ -423,6 +415,14 @@ options:
       type: Bool
       title: "residual"
       default: false
+      
+     # NOT IMPLEMENTED YET (JASP-SEM)
+     # The lavResiduals() gives more extensive information about the residuals. Per default, it will print both raw and
+     # standardized residuals, as well as several summary statistics (including the SRMR and the unbiased SRMR).
+#    - name: outputStandardizedResiduals
+#      type: Bool
+#      title: "Standardized residuals"
+#      default: false
 
     #    (4c) Modification indices (grouped / indented)
     - name: outputModificationIndices

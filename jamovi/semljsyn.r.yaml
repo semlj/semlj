@@ -382,22 +382,7 @@ items:
     type: Group
     visible: (outputAdditionalFitMeasures || outputRSquared || outputMardiasCoefficients)
     items:
-      # Additional fit measures (1)
-      - name: testBslModel
-        title: 'Model test baseline model'
-        type: Table
-#       description:
-        visible: (outputAdditionalFitMeasures)
-        clearWith:
-        rows: 4 
-        columns:
-          - name: name
-            title: ""
-            type: text
-          - name: statistics
-            title: Model
-            type: number
-      # Additional fit measures (2)
+      # Additional fit measures (1): User model versus baseline model
       - name: compModelBsl
         title: 'User model versus baseline model'
         type: Table
@@ -413,14 +398,14 @@ items:
             title: Model
             type: number
             format: zto
-      # Additional fit measures (3)
-      - name: infCrit
-        title: 'Loglikelihood and Information Criteria'
+      # Additional fit measures (2): Other Fit Indices
+      - name: otherFit
+        title: 'Other Fit Indices'
         type: Table
+        visible: (outputAdditionalFitMeasures)      
 #       description:
-        visible: (outputAdditionalFitMeasures)
         clearWith:
-        rows: 6
+        rows: 5
         columns:
           - name: name
             title: ""
@@ -431,7 +416,7 @@ items:
 
       # R² measures
       - name: Rsquared
-        title: 'R-Squared'
+        title: 'R²-values of the endogenous variables'
         type: Table
 #       description:
         visible: (outputRSquared)
@@ -481,61 +466,59 @@ items:
     type: Group    
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)
     items:
-      - name: correlations
-        title: Variances and Covariances
-        type: Table
-#       description:
-        visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)
-        clearWith:
-          - ciType
-          - cov_y
-          - data
-          - multigroup
-          - code
-        columns:
-          - name: lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
-          - name: lhs
-            title: "Variable 1"
-            type: text
-          - name:  rhs
-            title: "Variable 2"
-            type: text
-          - name: est
-            title: "Estimate"
-            type: number
-          - name: se
-            title: "SE"
-            type: number
-          - name: ci.lower
-            type: number
-            title: Lower
-            visible: (ci)
-          - name: ci.upper
-            type: number
-            title: Upper
-            visible: (ci)
-          - name: std.all
-            type: number
-            title: β
-          - name: z
-            title: "z"
-            type: number
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-          - name: type
-            title: "Type"
-            type: text
-
+    - name: covcorr
+      title: Covariances (lower triangle) and correlation (upper triangle) matrix
+      type: Table
+      visible: (outputObservedCovariances | outputImpliedCovariances | outputResidualCovariances)      
+      description: A covariance / correlation matrix table.
+      clearWith:
+        - ciType
+        - cov_y
+        - data
+        - multigroup
+        - code
+#     variable number of rows and columns
+      columns:
+#     ## uncertain as to whether implement a group distinction for the correlations
+#     ## the table is already busy enough      
+#     - name: lgroup
+#       title: Group
+#       type: text
+#       visible: (multigroup)
+#       combineBelow: true
+      - name: .name[o]
+        title: ""
+        type: text
+        content: ($key)
+        combineBelow: true
+        visible: (outputObservedCovariances)
+      - name: .stat[o]
+        title: ""
+        type: text
+        content: observed
+        visible: (outputObservedCovariances)
+      - name: .name[f]
+        title: ""
+        type: text
+        content: ($key)
+        combineBelow: true
+        visible: (outputImpliedCovariances)
+      - name: .stat[f]
+        title: ""
+        type: text
+        content: implied / fitted
+        visible: (outputImpliedCovariances)
+      - name: .name[r]
+        title: ""
+        type: text
+        content: ($key)
+        combineBelow: true
+        visible: (outputResidualCovariances)
+      - name: .stat[r]
+        title: ""
+        type: text
+        content: residual
+        visible: (outputResidualCovariances)
 
   # Modification indices
   - name: modgroup

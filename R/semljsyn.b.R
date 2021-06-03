@@ -64,7 +64,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                  j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
 
             ### prepare var cov table ###
-#           j.init_table(self$results$models$correlations,lav_machine$tab_covariances,ci=T,ciwidth=self$options$ciWidth)
+#           j.init_table(self$results$models$covcorr,lav_machine$tab_covcorr,ci=F,ciwidth=self$options$ciWidth)
             
             private$.lav_machine<-lav_machine
             private$.data_machine<-data_machine
@@ -119,32 +119,45 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             j.fill_table(self$results$models$defined,lav_machine$tab_defined)
             j.add_warnings(self$results$models$defined,lav_machine,"defined")
             
-            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
+            
+            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts)) {
                j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
+            }
 
-            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
+
+            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts)) {
                 j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
-            
-            if (self$options$outputAdditionalFitMeasures)
-                j.fill_table(self$results$add_outputs$compModelBsl,lav_machine$tab_compModelBsl)
+            }
 
-            if (self$options$outputAdditionalFitMeasures)
-                j.fill_table(self$results$add_outputs$infCrit,lav_machine$tab_infCrit)
+            # Additional fit measures (1): User model versus baseline model
+            if (self$options$outputAdditionalFitMeasures) {
+                j.fill_table(self$results$add_outputs$compModelBsl,lav_machine$tab_compModelBsl)
+            }
+
+            # Additional fit measures (2): Other Fit Indices
+            if (self$options$outputAdditionalFitMeasures) {
+                j.fill_table(self$results$add_outputs$otherFit,lav_machine$tab_otherFit)
+            }
             
-            if (self$options$outputAdditionalFitMeasures)
-                j.fill_table(self$results$add_outputs$testBslModel,lav_machine$tab_testBslModel)
-            
-            if (self$options$outputRSquared)
+            # R² measures
+            if (self$options$outputRSquared) {
                 j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
+            }
             
-            if (self$options$outputMardiasCoefficients)
+            # Mardia's coefficients
+            if (self$options$outputMardiasCoefficients) {
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia,append=T)
-            
-            if (self$options$outputModificationIndices)
+            }
+
+            # Covariances and correlations            
+            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
+#               j.fill_table(self$results$models$covcorr,lav_machine$tab_covcorr, append=T)
+            }
+
+            # Modification indices
+            if (self$options$outputModificationIndices) {
                 j.fill_table(self$results$modgroup$modInd,lav_machine$tab_modInd,append=T)
-            
-            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances)
-#               j.fill_table(self$results$models$correlations,lav_machine$tab_covariances)                
+            }
     
             ### loadings vars and covars ####
 
