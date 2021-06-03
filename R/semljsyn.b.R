@@ -143,10 +143,11 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$outputModificationIndices)
                 j.fill_table(self$results$modgroup$modInd,lav_machine$tab_modInd,append=T)
             
-            
+            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances)
+#               j.fill_table(self$results$models$correlations,lav_machine$tab_covariances)                
     
             ### loadings vars and covars ####
-#           j.fill_table(self$results$models$correlations,lav_machine$tab_covariances)
+
 
             ## diagrams
             private$.plot_machine$preparePlots()   
@@ -228,10 +229,6 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .sourcifyOption = function(option) {
             return("")
         }
-        
-        
-        
-        
         
         )
 )

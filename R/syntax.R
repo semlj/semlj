@@ -339,9 +339,7 @@ Syntax <- R6::R6Class(
                 self$indirect_names<-paste0("(",self$indirect_names,")",SUB[unlist(groupslist)])
               names(self$indirect_names)<-pars
             }
-            
-            
-            
+
           ) # end of private
 ) # End Rclass
 

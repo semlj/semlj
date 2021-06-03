@@ -241,10 +241,23 @@ Estimate <- R6::R6Class("Estimate",
                             }
 
                             # covariances and correlations
-#                            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
-#                              self$tab_covcorr <- NULL
-#                              if (nrow(self$tab_covcorr) == 0) self$tab_covcorr <- NULL
-#                            }
+                            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
+                              numVar <- length(lavaan::lavNames(fit, 'ov'));
+                              self$tab_covcorr <- matrix(, nrow = 0, ncol=numVar + 1);
+                              
+                              obsCov = lavaan::inspect(self$model, "observed")$cov;
+                              fitCov = lavaan::inspect(self$model,   "fitted")$cov;
+                              # TO-DO: Implement standardized residuals (cov.z instead of cov)
+                              resCov = lavaan::lavResiduals(self$model, type="raw")$cov;
+                              
+                              if (self$options$outputObservedCovariances) { self$tab_covcorr = rbind(self$tab_covcorr, cbind(rep("observed", numVar), .cmbCvC(obsCov, cov2cor(obsCov)))); }
+                              if (self$options$outputImpliedCovariances)  { self$tab_covcorr = rbind(self$tab_covcorr, cbind(rep("fitted",   numVar), .cmbCvC(fitCov, cov2cor(fitCov)))); }
+                              if (self$options$outputResidualCovariances) { self$tab_covcorr = rbind(self$tab_covcorr, cbind(rep("residual", numVar), .cmbCvC(resCov, cov2cor(fitCov) - cov2cor(fitCov)))); }
+
+                              if (nrow(self$tab_covcorr) == 0) self$tab_covcorr <- NULL;
+                              mark(self$tab_covcorr);
+                              mark('finished tab_covcorr');
+                            }
 
                             # modification indices
                             if (self$options$outputModificationIndices) {
@@ -265,8 +278,15 @@ Estimate <- R6::R6Class("Estimate",
                             }
                             
                             ginfo("Estimation is done...")
-                          } # end of private function estimate
+                          }, # end of private function estimate
 
+                          # combine lower (covariances) and upper triangle (correlations)
+                          .cmbCvC <- function(inpCov=NULL, inpCrr=NULL) {
+                            outCvC = matrix(NA, nrow=dim(inpCov)[1], ncol=dim(inpCov)[2], dimnames=dimnames(inpCov));
+                            outCvC[lower.tri(outCvC, diag=TRUE)]  = inpCov[lower.tri(inpCov, diag=TRUE)];
+                            outCvC[upper.tri(outCvC, diag=FALSE)] = inpCrr[upper.tri(inpCrr, diag=FALSE)];
+                            return(outCvC);
+                          }
               ) # end of private
 )  # end of class
 
