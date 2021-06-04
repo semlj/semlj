@@ -19,6 +19,7 @@ Syntax <- R6::R6Class(
           inherit = Dispatch,
           public=list(
               endogenous=NULL,
+              observed=NULL,
               lav_terms=NULL,
               lav_structure=NULL,
               tab_coefficients=NULL,
@@ -33,6 +34,8 @@ Syntax <- R6::R6Class(
               tab_Rsquared=NULL,
               tab_mardia=NULL,
               tab_covcorr=NULL,
+              tab_covcorrImplied=NULL,                          
+              tab_covcorrResidual=NULL,                          
               tab_modInd=NULL,
               structure=NULL,
               options=NULL,
@@ -40,14 +43,10 @@ Syntax <- R6::R6Class(
               indirect_names=NULL,
               models=NULL,
               initialize=function(options,datamatic) {
-                
                 astring<-options$code
-                reg<-"[=~:+\n]"
-                avec<-stringr::str_split(astring,reg)[[1]]
-                avec<-avec[sapply(avec, function(a) a!="")]
-                vars<-sapply(avec, function(a) stringr::str_remove(a,'.?[*]'))
-                
-                super$initialize(options=options,vars=vars)
+                super$initialize(options=options,vars=datamatic$vars)
+
+                self$observed<-datamatic$observed
                 self$multigroup=datamatic$multigroup
 
                 # check_* check the input options and produces tables and list with names
@@ -258,6 +257,30 @@ Syntax <- R6::R6Class(
                      
                 }
               }
+              
+              #### additional output ####
+              .length<-length(self$observed)
+              tab<-as.data.frame(matrix(0,ncol=.length,nrow=.length))
+              names(tab)<-self$observed
+              
+              if (self$options$outputObservedCovariances) {
+                tab$Variable<-self$observed
+                self$tab_covcorr<-tab[,c(.length+1,1:.length)] 
+              }
+              if (self$options$outputImpliedCovariances) {
+                tab$Variable<-self$observed
+                self$tab_covcorrImplied<-tab[,c(.length+1,1:.length)] 
+              }
+              if (self$options$outputResidualCovariances) {
+                tab$Variable<-self$observed
+                self$tab_covcorrResidual<-tab[,c(.length+1,1:.length)] 
+              }
+              
+              
+              
+              
+              
+              
               
               
 

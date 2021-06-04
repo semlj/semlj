@@ -511,12 +511,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         prev_options = function() private$..prev_options,
         model = function() private$..model,
         info = function() private$.items[["info"]],
-        contraintsnotes = function() private$.items[["contraintsnotes"]],
         fit = function() private$.items[["fit"]],
         models = function() private$.items[["models"]],
         add_outputs = function() private$.items[["add_outputs"]],
         group_covariances = function() private$.items[["group_covariances"]],
         modgroup = function() private$.items[["modgroup"]],
+        contraintsnotes = function() private$.items[["contraintsnotes"]],
         pathgroup = function() private$.items[["pathgroup"]]),
     private = list(
         ..prev_options = NA,
@@ -551,24 +551,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `combineBelow`=TRUE)),
                 refs="semlj"))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="contraintsnotes",
-                visible="(constraints_examples)",
-                title="Syntax examples",
-                columns=list(
-                    list(
-                        `name`="info", 
-                        `type`="text", 
-                        `title`="Aim"),
-                    list(
-                        `name`="example", 
-                        `type`="text", 
-                        `title`="Example"),
-                    list(
-                        `name`="com", 
-                        `type`="text", 
-                        `title`="Outcome"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -1063,7 +1045,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    covcorr = function() private$.items[["covcorr"]]),
+                    covcorr = function() private$.items[["covcorr"]],
+                    covcorrImplied = function() private$.items[["covcorrImplied"]],
+                    covcorrResidual = function() private$.items[["covcorrResidual"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -1074,8 +1058,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="covcorr",
-                            title="Covariances (lower triangle) and correlation (upper triangle) matrix",
-                            visible="(outputObservedCovariances | outputImpliedCovariances | outputResidualCovariances)",
+                            title="Observed covariances (lower triangle) and correlations (upper triangle)",
+                            visible="(outputObservedCovariances)",
                             clearWith=list(
                                 "ciType",
                                 "cov_y",
@@ -1084,44 +1068,44 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
-                                    `name`=".name[o]", 
+                                    `name`="bogus", 
                                     `title`="", 
                                     `type`="text", 
-                                    `content`="($key)", 
-                                    `combineBelow`=TRUE, 
-                                    `visible`="(outputObservedCovariances)"),
+                                    `visible`=FALSE))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="covcorrImplied",
+                            title="Fitted covariances (lower triangle) and correlations (upper triangle)",
+                            visible="(outputImpliedCovariances)",
+                            clearWith=list(
+                                "ciType",
+                                "cov_y",
+                                "data",
+                                "multigroup",
+                                "code"),
+                            columns=list(
                                 list(
-                                    `name`=".stat[o]", 
+                                    `name`="bogus", 
                                     `title`="", 
                                     `type`="text", 
-                                    `content`="observed", 
-                                    `visible`="(outputObservedCovariances)"),
+                                    `visible`=FALSE))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="covcorrResidual",
+                            title="Residual covariances (lower triangle) and correlations (upper triangle)",
+                            visible="(outputResidualCovariances)",
+                            clearWith=list(
+                                "ciType",
+                                "cov_y",
+                                "data",
+                                "multigroup",
+                                "code"),
+                            columns=list(
                                 list(
-                                    `name`=".name[f]", 
+                                    `name`="bogus", 
                                     `title`="", 
                                     `type`="text", 
-                                    `content`="($key)", 
-                                    `combineBelow`=TRUE, 
-                                    `visible`="(outputImpliedCovariances)"),
-                                list(
-                                    `name`=".stat[f]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="implied / fitted", 
-                                    `visible`="(outputImpliedCovariances)"),
-                                list(
-                                    `name`=".name[r]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="($key)", 
-                                    `combineBelow`=TRUE, 
-                                    `visible`="(outputResidualCovariances)"),
-                                list(
-                                    `name`=".stat[r]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="residual", 
-                                    `visible`="(outputResidualCovariances)"))))}))$new(options=options))
+                                    `visible`=FALSE))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -1183,6 +1167,24 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="sEPC (nox)", 
                                     `type`="number", 
                                     `format`="zto"))))}))$new(options=options))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="contraintsnotes",
+                visible="(constraints_examples)",
+                title="Syntax examples",
+                columns=list(
+                    list(
+                        `name`="info", 
+                        `type`="text", 
+                        `title`="Aim"),
+                    list(
+                        `name`="example", 
+                        `type`="text", 
+                        `title`="Example"),
+                    list(
+                        `name`="com", 
+                        `type`="text", 
+                        `title`="Outcome"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -1336,7 +1338,6 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$prev_options} \tab \tab \tab \tab \tab Object to store the previous options in \cr
 #'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$constraints} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
@@ -1349,7 +1350,10 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$add_outputs$Rsquared} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$mardia} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$group_covariances$covcorr} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+#'   \code{results$group_covariances$covcorrImplied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+#'   \code{results$group_covariances$covcorrResidual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$modgroup$modInd} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
 #' }

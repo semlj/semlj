@@ -37,20 +37,6 @@ items:
         combineBelow: true
     refs: semlj
     
-  - name: contraintsnotes
-    type: Table
-    visible: (constraints_examples)
-    title: "Syntax examples"
-    columns:
-      - name: info
-        type: text
-        title: Aim
-      - name: example
-        type: text
-        title: Example
-      - name: com
-        type: text
-        title: Outcome
 
 
   # Overall Tests
@@ -466,10 +452,11 @@ items:
     type: Group    
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)
     items:
+    #     variable number of rows and columns
     - name: covcorr
-      title: Covariances (lower triangle) and correlation (upper triangle) matrix
+      title: Observed covariances (lower triangle) and correlations (upper triangle) 
       type: Table
-      visible: (outputObservedCovariances | outputImpliedCovariances | outputResidualCovariances)      
+      visible: (outputObservedCovariances)    
       description: A covariance / correlation matrix table.
       clearWith:
         - ciType
@@ -477,51 +464,60 @@ items:
         - data
         - multigroup
         - code
-#     variable number of rows and columns
       columns:
 #     ## uncertain as to whether implement a group distinction for the correlations
 #     ## the table is already busy enough      
+#     
+      # We should think how to deal with multigroup here
 #     - name: lgroup
 #       title: Group
 #       type: text
 #       visible: (multigroup)
 #       combineBelow: true
-      - name: type
+
+# For some reason the jamovi function to add columns in R does not allow to add on the
+# right of the last column. So we define a bogus invisible column on the left of which all the
+# new columns will go
+
+      - name: bogus
         title: ""
         type: text
-#      - name: .name[o]
-#        title: ""
-#        type: text
-#        content: ($key)
-#        combineBelow: true
-#        visible: (outputObservedCovariances)
-#      - name: .stat[o]
-#        title: ""
-#        type: text
-#        content: observed
-#        visible: (outputObservedCovariances)
-#      - name: .name[f]
-#        title: ""
-#        type: text
-#        content: ($key)
-#        combineBelow: true
-#        visible: (outputImpliedCovariances)
-#      - name: .stat[f]
-#        title: ""
-#        type: text
-#        content: implied / fitted
-#        visible: (outputImpliedCovariances)
-#      - name: .name[r]
-#        title: ""
-#        type: text
-#        content: ($key)
-#        combineBelow: true
-#        visible: (outputResidualCovariances)
-#      - name: .stat[r]
-#        title: ""
-#        type: text
-#        content: residual
-#        visible: (outputResidualCovariances)
+        visible: false
+
+    - name: covcorrImplied
+      title: Fitted covariances (lower triangle) and correlations (upper triangle)
+      type: Table
+      visible: (outputImpliedCovariances)      
+      description: A covariance / correlation matrix table.
+      clearWith:
+        - ciType
+        - cov_y
+        - data
+        - multigroup
+        - code
+      columns:
+      - name: bogus
+        title: ""
+        type: text
+        visible: false
+
+    - name: covcorrResidual
+      title: Residual covariances (lower triangle) and correlations (upper triangle)
+      type: Table
+      visible: (outputResidualCovariances)      
+      description: A covariance / correlation matrix table.
+      clearWith:
+        - ciType
+        - cov_y
+        - data
+        - multigroup
+        - code
+      columns:
+      - name: bogus
+        title: ""
+        type: text
+        visible: false
+
 
   # Modification indices
   - name: modgroup
@@ -573,6 +569,21 @@ items:
           title: sEPC (nox)
           type: number
           format: zto
+
+  - name: contraintsnotes
+    type: Table
+    visible: (constraints_examples)
+    title: "Syntax examples"
+    columns:
+      - name: info
+        type: text
+        title: Aim
+      - name: example
+        type: text
+        title: Example
+      - name: com
+        type: text
+        title: Outcome
 
 
   # Path model

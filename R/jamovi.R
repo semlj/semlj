@@ -108,6 +108,33 @@ j.init_table_append<-function(table,obj, indent=NULL) {
   
 }
 
+## add columns to a table
+j.expand_table<-function(table,obj,types="text", superTitle=NULL,append=FALSE) {
+  
+  j<-0
+  if (append) {
+    j<-length(table$columns)-1
+  }
+  if (inherits(obj,"data.frame")) {
+      .names<-names(obj)
+      .types<-unlist(lapply(obj,class))
+      .types<-gsub("numeric","number",.types)
+      .types<-gsub("integer","number",.types)
+      .types<-gsub("factor","text",.types)
+  } else {
+    mark("exp",obj)
+    .names<-obj
+    if (length(types)==1)
+         .types<-rep(types,length(obj))
+    }
+
+  for (i in seq_along(.names)) {
+    table$addColumn(name = .names[[i]], title = .names[[i]], index = (i+j), superTitle = superTitle, type=.types[i])
+  }
+  
+  
+  
+}
 
 j.fill_table<-function(table,obj, fixNA=TRUE,append=FALSE,spaceby=NULL,start=1) {
 

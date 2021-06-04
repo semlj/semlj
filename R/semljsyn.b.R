@@ -63,8 +63,22 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                  j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
 
-            ### prepare var cov table ###
-#           j.init_table(self$results$models$covcorr,lav_machine$tab_covcorr,ci=F,ciwidth=self$options$ciWidth)
+
+            ### additional output ###
+            if (self$options$outputObservedCovariances) {
+                   j.expand_table(self$results$group_covariances$covcorr,lav_machine$tab_covcorr)
+                   j.init_table(self$results$group_covariances$covcorr,lav_machine$tab_covcorr)
+            }
+            if (self$options$outputImpliedCovariances) {
+                j.expand_table(self$results$group_covariances$covcorrImplied,lav_machine$tab_covcorrImplied)
+                j.init_table(self$results$group_covariances$covcorrImplied,lav_machine$tab_covcorrImplied)
+            }
+            if (self$options$outputResidualCovariances) {
+                j.expand_table(self$results$group_covariances$covcorrResidual,lav_machine$tab_covcorrResidual)
+                j.init_table(self$results$group_covariances$covcorrResidual,lav_machine$tab_covcorrResidual)
+            }
+            
+            ################
             
             private$.lav_machine<-lav_machine
             private$.data_machine<-data_machine
@@ -146,22 +160,41 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             # Mardia's coefficients
             if (self$options$outputMardiasCoefficients) {
-                j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia,append=T)
+                j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)
             }
 
-            # Covariances and correlations            
-            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
-#               j.fill_table(self$results$models$covcorr,lav_machine$tab_covcorr, append=T)
-            }
 
             # Modification indices
             if (self$options$outputModificationIndices) {
                 j.fill_table(self$results$modgroup$modInd,lav_machine$tab_modInd,append=T)
+                j.add_warnings(self$results$modgroup$modInd,lav_machine,"tab_modInd")
             }
     
             ### loadings vars and covars ####
+            if (self$options$outputObservedCovariances) {
+                
+                table<-self$results$group_covariances$covcorr
+                obj<-lav_machine$tab_covcorr
+                j.fill_table(table,obj) 
 
-
+            }
+            
+            if (self$options$outputImpliedCovariances) {
+                
+                table<-self$results$group_covariances$covcorrImplied
+                obj<-lav_machine$tab_covcorrImplied
+                j.fill_table(table,obj) 
+                
+            }
+            
+            if (self$options$outputResidualCovariances) {
+                
+                table<-self$results$group_covariances$covcorrResidual
+                obj<-lav_machine$tab_covcorrResidual
+                j.fill_table(table,obj) 
+                
+            }
+            
             ## diagrams
             private$.plot_machine$preparePlots()   
             if (is.something(private$.plot_machine$warnings$diagram)) {
