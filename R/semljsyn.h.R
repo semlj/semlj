@@ -508,7 +508,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "semljsynResults",
     inherit = jmvcore::Group,
     active = list(
-        prev_options = function() private$..prev_options,
         model = function() private$..model,
         info = function() private$.items[["info"]],
         contraintsnotes = function() private$.items[["contraintsnotes"]],
@@ -519,7 +518,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         modgroup = function() private$.items[["modgroup"]],
         pathgroup = function() private$.items[["pathgroup"]]),
     private = list(
-        ..prev_options = NA,
         ..model = NA),
     public=list(
         initialize=function(options) {
@@ -527,7 +525,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Structural Equation Modelling")
-            private$..prev_options <- NULL
             private$..model <- NULL
             self$add(jmvcore::Table$new(
                 options=options,
@@ -1084,44 +1081,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
-                                    `name`=".name[o]", 
+                                    `name`="type", 
                                     `title`="", 
-                                    `type`="text", 
-                                    `content`="($key)", 
-                                    `combineBelow`=TRUE, 
-                                    `visible`="(outputObservedCovariances)"),
-                                list(
-                                    `name`=".stat[o]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="observed", 
-                                    `visible`="(outputObservedCovariances)"),
-                                list(
-                                    `name`=".name[f]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="($key)", 
-                                    `combineBelow`=TRUE, 
-                                    `visible`="(outputImpliedCovariances)"),
-                                list(
-                                    `name`=".stat[f]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="implied / fitted", 
-                                    `visible`="(outputImpliedCovariances)"),
-                                list(
-                                    `name`=".name[r]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="($key)", 
-                                    `combineBelow`=TRUE, 
-                                    `visible`="(outputResidualCovariances)"),
-                                list(
-                                    `name`=".stat[r]", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `content`="residual", 
-                                    `visible`="(outputResidualCovariances)"))))}))$new(options=options))
+                                    `type`="text"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -1245,7 +1207,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="message", 
                                     `type`="text", 
                                     `title`="Model diagram notes"))))}))$new(options=options))},
-        .setPrev_options=function(x) private$..prev_options <- x,
         .setModel=function(x) private$..model <- x))
 
 semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -1282,7 +1243,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param scoretest TO ADD
 #' @param cumscoretest TO ADD
 #' @param se TO ADD
-#' @param bootci choose the confidence interval type
+#' @param bootci Choose the confidence interval type
 #' @param bootN number of bootstrap samples for estimating confidence
 #'   intervals
 #' @param ci .
@@ -1296,7 +1257,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param std.lv \code{TRUE} or \code{FALSE}
 #' @param cov_x \code{TRUE} (default) or \code{FALSE}, fix exogenous
 #'   covariates
-#' @param cov_y \code{TRUE} or \code{FALSE} (default), produce a path diagram
+#' @param cov_y \code{TRUE} (default) or \code{FALSE}, TO ADD
 #' @param multigroup .
 #' @param eq_loadings .
 #' @param eq_intercepts .
@@ -1333,7 +1294,6 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param diag_abbrev Choose the diagram labels
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$prev_options} \tab \tab \tab \tab \tab Object to store the previous options in \cr
 #'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr

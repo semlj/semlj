@@ -5,12 +5,6 @@ jrs: '1.0'
 
 
 items:
-  # objects to store information to keep
-  - name: prev_options
-    type: Property
-    description: Object to store the previous options in
-    visible: (FALSE)
-
   - name: model
     type: Property
     description: The underlying `lavaan` object

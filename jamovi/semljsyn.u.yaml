@@ -18,6 +18,7 @@ children:
         events:
           creating: './main::editor_creating'
 
+  ### Model options ===========================================================
   - type: CollapseBox
     label: Model options
     collapsed: true
@@ -47,6 +48,7 @@ children:
               - type: CheckBox
                 name: cumscoretest
 
+  ## Parameter options ========================================================
   - type: CollapseBox
     label: Parameter options
     collapsed: true
@@ -153,6 +155,8 @@ children:
               - type: CheckBox
                 name: cov_y
 
+
+  ### Multi-group analyses ====================================================
   - type: CollapseBox
     label: Multi-group analyses
     collapsed: true
@@ -180,39 +184,37 @@ children:
             children:
               - type: LayoutBox
                 margin: large
-                style: inline
+                style: list
                 children:
-                  - type: LayoutBox
-                    margin: large
-                    style: list
-                    children:
-                      - type: CheckBox
-                        name: eq_loadings
-                      - type: CheckBox
-                        name: eq_intercepts
-                      - type: CheckBox
-                        name: eq_means
-                  - type: LayoutBox
-                    margin: large
-                    style: list
-                    children:
-                      - type: CheckBox
-                        name: eq_thresholds 
-                      - type: CheckBox
-                        name: eq_residuals
-                      - type: CheckBox
-                        name: eq_residual.covariances
-                  - type: LayoutBox
-                    margin: large
-                    style: list
-                    children:
-                      - type: CheckBox
-                        name: eq_regressions
-                      - type: CheckBox
-                        name: eq_lv.variances
-                      - type: CheckBox
-                        name: eq_lv.covariances
+                  - type: CheckBox
+                    name: eq_loadings
+                  - type: CheckBox
+                    name: eq_intercepts
+                  - type: CheckBox
+                    name: eq_means
+              - type: LayoutBox
+                margin: large
+                style: list
+                children:
+                  - type: CheckBox
+                    name: eq_thresholds 
+                  - type: CheckBox
+                    name: eq_residuals
+                  - type: CheckBox
+                    name: eq_residual.covariances
+              - type: LayoutBox
+                margin: large
+                style: list
+                children:
+                  - type: CheckBox
+                    name: eq_regressions
+                  - type: CheckBox
+                    name: eq_lv.variances
+                  - type: CheckBox
+                    name: eq_lv.covariances
 
+
+  ### Output options ==========================================================
   - type: CollapseBox
     label: Output options
     collapsed: true
@@ -231,7 +233,7 @@ children:
                 style: inline
                 children:
                   - type: Label
-                    label: Labels and examples
+                    label: Information
                   - type: CheckBox
                     name: showlabels
                   - type: CheckBox
@@ -282,6 +284,7 @@ children:
                               format: number
                               enable: (miHideLow)
 
+  ### Path diagram ============================================================
   - type: CollapseBox
     label: Path diagram
     collapsed: true

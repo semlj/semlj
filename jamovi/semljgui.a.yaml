@@ -13,12 +13,11 @@ options:
 
     - name: code
       default: |
+          
       type: String
       hidden: true
 
-
-### interface ###
-
+    # Interface for selecting latent variables and the grouping variable 
     - name: endogenous
       type: Array
       default:
@@ -61,22 +60,6 @@ options:
             a list containing named lists that define the `label` of
             the latent variables and the `vars` that belong to that latent
 
-
-    - name: endogenousTerms
-      title: Endogenous Latent Vars Models  
-      type: Array
-      default: [[]]
-      template:
-          type: Terms
-      description:
-          R: >
-            a list of lists specifying the models for with the mediators as dependent variables.          
-
-
-
-#### other options ####
-
-
     - name: multigroup
       title: Multigroup Analysis Factor
       type: Variable
@@ -89,7 +72,153 @@ options:
       description:
           R: factor defining groups for multigroup analysis
 
+    # TO ADD?: input format
+#    - name: inputformat
+#      title: "Input data format"
+#      hidden: true
+#      type: List
+#      options:
+#        - name: dataraw
+#          title: "Raw"
+#        - name: varcov
+#          title: "Variance-covariance matrix"
+#      default: dataraw
+#      description:
+#          R: >
+#             TO ADD     
+#           
+#    - name: samplesize
+#      title: "– Sample size"
+#      hidden: true
+#      type: Integer
+#      default: 0
+#      description:
+#          R: >
+#             TO ADD     
 
+
+    ### OPTIONS #########
+
+    ### Endogenous models =====================================================
+    - name: endogenousTerms
+      title: Endogenous Latent Vars Models  
+      type: Array
+      default: [[]]
+      template:
+          type: Terms
+      description:
+          R: >
+            a list of lists specifying the models for with the mediators as dependent variables.          
+
+    ### Variances and covariances =============================================
+    - name: varcov
+      title: Select pairs
+      type: Pairs
+      description:
+          R: >
+            a list of lists specifying the  covariances that
+            need to be estimated
+
+
+    ### Custom model settings =================================================
+    - name: constraints
+      title: Insert contraints or defined parameters
+      type: Array
+      default: []
+      template:
+          type: String
+      description:
+          R: >
+            a list of lists specifying the models random effects.          
+
+    ### Model options =========================================================
+    #   (a) Estimation
+    - name: estimator
+      title: Method
+      type: List
+      options:
+        # TO BE INCLUDED? (available in JASP-SEM)
+#       - name: default
+#         title: "Auto"
+        - name:  ML
+          title: Maximum Likelihood
+        - name: GLS
+          title: Generalized Least Squares
+        - name: WLS
+          title: Weighted Least Squares
+        - name: DWLS
+          title: Diagonally weighted Least Squares
+        - name: ULS
+          title: Unweighted Least Squares
+#       - name: PML
+#         title: "Pairwise maximum likelihood"          
+      default: ML
+      description:
+          R: >
+             TO ADD
+
+    - name: likelihood
+      title: ML likelihood approach
+      type: List
+      options:
+        - name: normal 
+          title: Normal
+        - name:  wishart
+          title: Wishart
+      default: normal
+      description:
+          R: >
+             TO ADD
+    
+    # TO BE INCLUDED? (available in JASP-SEM)
+#   - name: std.ov
+#     type: Bool
+#     title: "Standardize variables before estimation"
+#     default: false
+
+    #   (b) Constraint Tests --------------------------------------------------
+    - name: scoretest
+      type: Bool
+      title: Univariate
+      default: true
+      description:
+          R: >
+             TO ADD     
+
+    - name: cumscoretest
+      type: Bool
+      title: Cumulative
+      default: false
+      description:
+          R: >
+             TO ADD     
+
+    # TO BE INCLUDED?
+#   - name: factorStandardisation
+#     title: "Factor scaling"
+#     type: List
+#     options:
+#       - name: auto.fix.first
+#         title: "Factor loadings"
+#       - name: std.lv
+#         title: "Factor variance"
+#       - name: effect.coding
+#         title: "Effects coding"
+#       - name: none
+#         title: "None"
+
+#   - name: meanstructure
+#     type: Bool
+#     title: "Include mean structure"
+#     default: false
+
+#   - name: orthogonal
+#     type: Bool
+#     title: "Assume factors uncorrelated"
+#     default: false
+    
+    ### Parameter options =====================================================
+    #   (a) Standard errors ---------------------------------------------------
     - name: se
       title: Standard errors
       type: List
@@ -103,8 +232,11 @@ options:
         - name: boot
           title: Bootstrap
       default: standard
+      description:
+          R: >
+            TO ADD
 
-
+    #   (b) Bootstrap options -------------------------------------------------
     - name: bootci
       title: Bootstrap C.I
       type: List
@@ -117,17 +249,25 @@ options:
           title: Normal
         - name: basic
           title: Basic
-          
       default: perc
       description:
           R: >
-             Choose the confidence interval type
+            Choose the confidence interval type
 
+    - name: bootN
+      title: Bootstrap Rep.
+      type: Number
+      min: 50
+      default: 1000
+      description:
+          R: >
+            number of bootstrap samples for estimating confidence intervals
+
+    #   (c) Confidence intervals ----------------------------------------------
     - name: ci
       title: Show
       type: Bool
       default: true
-
 
     - name: ciWidth
       title: Confidence level
@@ -140,24 +280,17 @@ options:
             a number between 50 and 99.9 (default: 95) specifying the confidence
             interval width for the parameter estimates
 
-    - name: bootN
-      title: Bootstrap Rep.
-      type: Number
-      min: 50
-      default: 1000
-      description:
-          R: >
-            number of bootstrap samples for estimating confidence intervals
-
-    - name: showintercepts
-      title: Show intercepts estimates
+    #   (d) Estimates ---------------------------------------------------------
+    - name: intercepts
+      title: Estimates intercepts
       type: Bool
       default: true
       description:
           R: >
             `TRUE` or `FALSE` (default), show intercepts
-    - name: intercepts
-      title: Estimates intercepts
+
+    - name: showintercepts
+      title: Show intercepts estimates
       type: Bool
       default: true
       description:
@@ -172,9 +305,7 @@ options:
           R: >
             `TRUE` or `FALSE` (default), show intercepts
 
-
-### latent scale
-
+    #   (e) Latent scale ------------------------------------------------------
     - name: auto.fix.first
       title: Fix first indicator
       type: Bool
@@ -182,6 +313,7 @@ options:
       description:
           R: >
             `TRUE` or `FALSE`
+
     - name: std.lv
       title: Standardized
       type: Bool
@@ -190,12 +322,182 @@ options:
           R: >
             `TRUE` or `FALSE`
 
+    #   (f) Miscellaneous -----------------------------------------------------
+    # TO-DO: find a better name than miscellaneous; perhaps: Constraints
+    - name: cov_x
+#   - name: fixed.x (lavOpt)  
+      title: Fix exogenous covariates
+      type: Bool
+      default: true
+      description:
+          R: >
+            `TRUE` (default) or `FALSE`, fix exogenous covariates
+    
+    - name: cov_y
+      title: Correlated y
+      type: Bool
+      default: true
+      description:
+          R: >
+            `TRUE` (default) or `FALSE`, TO ADD
+
+    #   FURTHER OPTIONS (included in JASP-SEM)
+#    - name: int.ov.fixed
+#      type: Bool
+#      title: "Fix manifest intercepts to zero"
+#      default: false
+
+#    - name: int.lv.fixed
+#      type: Bool
+#      title: "Fix latent intercepts to zero"
+#      default: false
+
+#    - name: auto.fix.single
+#      type: Bool
+#      title: "Omit residual single indicator"
+#      default: true
+
+#    - name: auto.var
+#      type: Bool
+#      title: "Include residual variances"
+#      default: true
+
+#    - name: auto.cov.lv.x
+#      type: Bool
+#      title: "Correlate exogenous latents"
+#      default: true
+
+#    - name: auto.cov.y
+#      type: Bool
+#      title: "Correlate dependent variables"
+#      default: true
+
+#    - name: auto.th
+#      type: Bool
+#      title: "Add thresholds"
+#      default: true
+
+#    - name: auto.delta
+#      type: Bool
+#      title: "Add scaling parameters"
+#      default: true
+
+#    - name: auto.efa
+#      type: Bool
+#      title: "Constrain EFA blocks"
+#      default: true
+     
+      
+    ### Multigroup options / equality constraints =============================
+    #   For the GUI-version, the GUI-element multigroup is part of the inter-
+    #   face to elect variables
+
+    - name: eq_loadings
+      type: Bool
+      title: "Loadings"
+      default: false
+    - name: eq_intercepts
+      type: Bool
+      title: "Intercepts"
+      default: false
+    - name: eq_residuals
+      type: Bool
+      title: "Residuals"
+      default: false
+    - name: eq_residual.covariances
+      type: Bool
+      title: "Residual covariances"
+      default: false
+    - name: eq_means
+      type: Bool
+      title: "Means"
+      default: false
+    - name: eq_thresholds
+      type: Bool
+      title: "Threshold"
+      default: false
+    - name: eq_regressions
+      type: Bool
+      title: "Regressions"
+      default: false
+    - name: eq_lv.variances
+      type: Bool
+      title: "Latent variances"
+      default: false
+    - name: eq_lv.covariances
+      type: Bool
+      title: "Latent covariances"
+      default: false
 
 
+    ### Output options ========================================================
+    - name: showlabels
+      type: Bool
+      title: Show parameters labels
+      default: false
+
+    - name: constraints_examples
+      type: Bool
+      title: Show syntax examples
+      default: false
+
+    #   (a) Additional outputs ------------------------------------------------
+    - name: outputAdditionalFitMeasures
+      type: Bool
+      title: "Additional fit measures"
+      default: false
+
+    - name: outputRSquared
+      type: Bool
+      title: "R² (endogenous vars.)"
+      default: false
+      
+    - name: outputMardiasCoefficients
+      type: Bool
+      title: "Mardia's coefficients"
+      default: false
+
+    #   (b) Covariances and correlations --------------------------------------
+    - name: outputObservedCovariances
+      type: Bool
+      title: "observed"
+      default: false
+
+    - name: outputImpliedCovariances
+      type: Bool
+      title: "model-implied (fitted)"
+      default: false
+
+    - name: outputResidualCovariances
+      type: Bool
+      title: "residual"
+      default: false
+      
+     # NOT IMPLEMENTED YET (JASP-SEM)
+     # The lavResiduals() gives more extensive information about the residuals. Per default, it will print both raw and
+     # standardized residuals, as well as several summary statistics (including the SRMR and the unbiased SRMR).
+#    - name: outputStandardizedResiduals
+#      type: Bool
+#      title: "Standardized residuals"
+#      default: false
+
+    #   (c) Modification indices (grouped / indented) -------------------------
+    - name: outputModificationIndices
+      type: Bool
+      title: "Modification indices"
+      default: false
+    - name: miHideLow
+      type: Bool
+      title: "Hide low indices"
+      default: false
+    - name: miThreshold
+      type: Number
+      title: "Threshold"
+      default: 10
+      min: 0      
 
 
-##### diagram ####
-
+    ### Path diagram ==========================================================
     - name: diagram
       title: Path Diagram
       type: Bool
@@ -249,7 +551,6 @@ options:
           title: Large
         - name: vlarge
           title: Very Large
-
       default: medium
       description:
           R: >
@@ -267,11 +568,11 @@ options:
           title: Exog. right
         - name: "3"
           title: Exog. bottom
-
       default: "2"
       description:
           R: >
              Choose the diagram labels
+
     - name: diag_type
       title: Type
       type: List
@@ -286,7 +587,6 @@ options:
           title: Tree-like
         - name: "spring"
           title: Spring
-
       default: "tree"
       description:
           R: >
@@ -306,7 +606,6 @@ options:
           title: Ellipses
         - name: "diamond"
           title: Diamonds
-
       default: "rectangle"
       description:
           R: >
@@ -326,12 +625,10 @@ options:
           title: Ellipses
         - name: "diamond"
           title: Diamonds
-
       default: "circle"
       description:
           R: >
              Choose the diagram labels
-
 
     - name: diag_abbrev
       title: Abbreviate
@@ -353,102 +650,5 @@ options:
       description:
           R: >
              Choose the diagram labels
-
-
-### end diagram ###
-
-#### variances and covariances ###
-
-
-    - name: cov_y
-      title: Correlated y
-      type: Bool
-      default: true
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), produce a path diagram
-    - name: cov_x
-      title: Fixed Exogenous
-      type: Bool
-      default: true
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), produce a path diagram
-
-
-
-    - name: constraints_examples
-      type: Bool
-      title: Show Examples
-      default: false
-
-    - name: showlabels
-      type: Bool
-      title: Show parameters labels
-      default: false
-
-    - name: scoretest
-      type: Bool
-      title: Univariate
-      default: true
-    - name: cumscoretest
-      type: Bool
-      title: Cumulative
-      default: false
-
-    - name: estimator
-      title: Method
-      type: List
-      options:
-        - name:  ML
-          title: Maximum Lik
-        - name: GLS 
-          title: Generalized least squares
-        - name: WLS 
-          title: Weighted LS
-        - name: DWLS
-          title: Diagonally weighted LS
-        - name: ULS
-          title: Unweighted LS
-      default: ML
-      description:
-          R: >
-             Choose the diagram labels
-
-    - name: likelihood
-      title: ML likelihood approach
-      type: List
-      options:
-        - name: normal 
-          title: Normal
-        - name:  wishart
-          title: Wishart
-          
-      default: normal
-      description:
-          R: >
-             Choose the diagram labels
-
-
-#### variances and covariances ###
-
-    - name: varcov
-      title: Select pairs
-      type: Pairs
-      description:
-          R: >
-            a list of lists specifying the  covariances that
-            need to be estimated
-
-    - name: constraints
-      title: Insert contraints or defined parameters
-      type: Array
-      default: []
-      template:
-          type: String
-      description:
-          R: >
-            a list of lists specifying the models random effects.          
-
 
 ...

@@ -1,9 +1,11 @@
 title: Structural Equation Modeling
 name: semljgui
-jus: '2.0'
+jus: '3.0'
+stage: 0
 compilerMode: tame
 events:
-     update: './gui.events::update' 
+  update: './gui.events::update'
+
 children:
   - type: VariableSupplier
     persistentItems: true
@@ -31,7 +33,7 @@ children:
               children:
                 - type: TextBox
                   events:
-                       change: './gui.events::onChange_latentName'
+                    change: './gui.events::onChange_latentName'
                   valueKey:
                     - label
                   borderless: true
@@ -41,9 +43,8 @@ children:
                 - type: VariablesListBox
                   valueFilter: unique
                   events:
-                       listItemAdded: './gui.events::onChange_items_changed'
-                       listItemRemoved: './gui.events::onChange_items_changed'
-  
+                    listItemAdded: './gui.events::onChange_items_changed'
+                    listItemRemoved: './gui.events::onChange_items_changed'
                   valueKey:
                     - vars
                   name: blockList
@@ -62,15 +63,14 @@ children:
             events:
               listItemAdded: './gui.events::onChange_items_changed'
               listItemRemoved: './gui.events::onChange_items_changed'
-
             template:
               type: LayoutBox
               margin: normal
               children:
                 - type: TextBox
                   events:
-                       change: './gui.events::onChange_latentName'
-                
+                    change: './gui.events::onChange_latentName'
+
                   valueKey:
                     - label
                   borderless: true
@@ -80,8 +80,8 @@ children:
                 - type: VariablesListBox
                   valueFilter: unique
                   events:
-                     listItemAdded: './gui.events::onChange_items_changed'
-                     listItemRemoved: './gui.events::onChange_items_changed'
+                    listItemAdded: './gui.events::onChange_items_changed'
+                    listItemRemoved: './gui.events::onChange_items_changed'
                   valueKey:
                     - vars
                   name: blockList
@@ -97,9 +97,9 @@ children:
             isTarget: true
             itemDropBehaviour: overwrite
 
-
+  ### Endogenous models =======================================================
   - type: CollapseBox
-    label: Endogenous Models
+    label: Endogenous models
     collapsed: true
     stretchFactor: 1
     children:
@@ -144,11 +144,12 @@ children:
                           events:
                             change: './gui.events::onChange_endogenousTerms'
                           template:
-                             type: TermLabel
+                            type: TermLabel
 
 
+  ### Variances and covariances ===============================================
   - type: CollapseBox
-    label: Variances and Covariances
+    label: Variances and covariances
     collapsed: true
     stretchFactor: 1
     children:
@@ -157,39 +158,37 @@ children:
         style: inline
         stretchFactor: 1
         children:
+          - type: VariableSupplier
+            name: varcovSupplier
+            populate: manual
+            persistentItems: true
+            stretchFactor: 1
+            events:
+              change: './gui.events::onChange_varcovSupplier'
+              update: './gui.events::onChange_varcovSupplier'
+            children:
+              - type: TargetLayoutBox
+                label: Select pairs
+                children:
+                  - type: VariablesListBox
+                    name: varcov
+                    fullRowSelect: true
+                    isTarget: true
+                    events:
+                      change: './gui.events::onChange_varcov'
+                    columns:
+                      - name: i1
+                        stretchFactor: 1
+                        template:
+                          type: VariableLabel
+                      - name: i2
+                        stretchFactor: 1
+                        template:
+                          type: VariableLabel
 
-               - type: VariableSupplier
-                 name: varcovSupplier
-                 populate: manual
-                 persistentItems: true
-                 stretchFactor: 1
-                 events:
-                     change: './gui.events::onChange_varcovSupplier'
-                     update: './gui.events::onChange_varcovSupplier'
-                 children:
-                     - type: TargetLayoutBox
-                       label: Select pairs
-                       children:
-                             - type: VariablesListBox
-                               name: varcov
-                               fullRowSelect: true
-                               isTarget: true
-                               events:
-                                       change: './gui.events::onChange_varcov'
- 
-                               columns:
-                                    - name: i1
-                                      stretchFactor: 1
-                                      template:
-                                           type: VariableLabel
-                                    - name: i2
-                                      stretchFactor: 1
-                                      template:
-                                           type: VariableLabel
-
-
+  ### Custom model setttings ==================================================
   - type: CollapseBox
-    label: Custom Model Settings
+    label: Custom model settings
     collapsed: true
     stretchFactor: 1
     children:
@@ -206,7 +205,7 @@ children:
                   - type: ListBox
                     name: constraints
                     events:
-                                 change: './gui.events::onChange_constraints'
+                      change: './gui.events::onChange_constraints'
                     height: large
                     addButton: Add directive
                     selectable: true
@@ -224,27 +223,10 @@ children:
                           height: auto
                           ghostText: write here
 
-          - type: LayoutBox
-            margin: large
-            style: inline
 
-            children:
-              - type: Label
-                label: Information
-                children:
-                  - type: LayoutBox
-                    margin: large
-                    children:
-                      - type: CheckBox
-                        name: showlabels
-                      - type: CheckBox
-                        name: constraints_examples
-
-
-
-
+  ### Model options ===========================================================
   - type: CollapseBox
-    label: Model Options
+    label: Model options
     collapsed: true
     stretchFactor: 1
     children:
@@ -271,8 +253,10 @@ children:
                 name: scoretest
               - type: CheckBox
                 name: cumscoretest
+
+  ## Parameter options ========================================================
   - type: CollapseBox
-    label: Parameters Options
+    label: Parameter options
     collapsed: true
     stretchFactor: 1
     children:
@@ -376,8 +360,130 @@ children:
                 name: cov_x
               - type: CheckBox
                 name: cov_y
+
+
+  ### Multi-group analyses ====================================================
   - type: CollapseBox
-    label: Path Diagram
+    label: Multi-group analyses
+    collapsed: true
+    stretchFactor: 1
+    style: list
+    children:
+      - type: LayoutBox
+        margin: large
+        style: list
+        children:
+          - type: Label
+            label: Equality constraints
+          - type: LayoutBox
+            margin: large
+            style: inline
+            children:
+              - type: LayoutBox
+                margin: large
+                style: list
+                children:
+                  - type: CheckBox
+                    name: eq_loadings
+                  - type: CheckBox
+                    name: eq_intercepts
+                  - type: CheckBox
+                    name: eq_means
+              - type: LayoutBox
+                margin: large
+                style: list
+                children:
+                  - type: CheckBox
+                    name: eq_thresholds 
+                  - type: CheckBox
+                    name: eq_residuals
+                  - type: CheckBox
+                    name: eq_residual.covariances
+              - type: LayoutBox
+                margin: large
+                style: list
+                children:
+                  - type: CheckBox
+                    name: eq_regressions
+                  - type: CheckBox
+                    name: eq_lv.variances
+                  - type: CheckBox
+                    name: eq_lv.covariances
+
+
+  ### Output options ==========================================================
+  - type: CollapseBox
+    label: Output options
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: LayoutBox
+            margin: large
+            style: list
+            children:
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: Label
+                    label: Information
+                  - type: CheckBox
+                    name: showlabels
+                  - type: CheckBox
+                    name: constraints_examples
+              - type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                  - type: LayoutBox
+                    margin: large
+                    style: list
+                    children:
+                      - type: Label
+                        label: Additional outputs
+                      - type: CheckBox
+                        name: outputAdditionalFitMeasures
+                      - type: CheckBox
+                        name: outputRSquared
+                      - type: CheckBox
+                        name: outputMardiasCoefficients
+                  - type: LayoutBox
+                    margin: large
+                    style: list
+                    children:
+                      - type: Label
+                        label: Covariances and correlations
+                      - type: CheckBox    
+                        name: outputObservedCovariances
+                      - type: CheckBox
+                        name: outputImpliedCovariances
+                      - type: CheckBox
+                        name: outputResidualCovariances
+                  - type: LayoutBox
+                    margin: large
+                    style: list
+                    children:
+                      - type: Label
+                        label: Modification indices
+                      - type: CheckBox
+                        name: outputModificationIndices
+                        children:
+                          - type: CheckBox
+                            name: miHideLow
+                            enable: (outputModificationIndices)
+                            children:
+                            - type: TextBox
+                              name: miThreshold
+                              format: number
+                              enable: (miHideLow)
+
+  ### Path diagram ============================================================
+  - type: CollapseBox
+    label: Path diagram
     collapsed: true
     stretchFactor: 1
     style: list
