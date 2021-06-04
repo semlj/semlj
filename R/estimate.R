@@ -210,7 +210,6 @@ Estimate <- R6::R6Class("Estimate",
                             if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
                               nmeVar = lavaan::lavNames(self$model, 'ov');
                               numVar = length(nmeVar);
-                              #self$tab_covcorr <- matrix(, nrow = 0, ncol=numVar + 1, dimnames=list(list(), c('type', nmeVar)));
                               
                               obsCov = lavaan::inspect(self$model, "observed")$cov;
                               fitCov = lavaan::inspect(self$model,   "fitted")$cov;
@@ -226,8 +225,7 @@ Estimate <- R6::R6Class("Estimate",
                                 ## the need names() to return something
                                 df<-as.data.frame(obsCvC)
                                 df$type="Observed"
-                                self$tab_covcorr<-df
-
+                                self$tab_covcorrObserved<-df
                               }
                               if (self$options$outputImpliedCovariances)  { 
                                 fitCrr = cov2cor(fitCov);
@@ -237,8 +235,6 @@ Estimate <- R6::R6Class("Estimate",
                                 df<-as.data.frame(fitCvC)
                                 df$type="Implied"
                                 self$tab_covcorrImplied<-df
-                                
-
                               }
                               if (self$options$outputResidualCovariances) {
                                 # calculates the difference between observed and fitted correlations since
@@ -255,12 +251,11 @@ Estimate <- R6::R6Class("Estimate",
                                 
                               }
                               if (self$options$outpuCombineCovariances) {
-                                self$tab_covcorrCombined<-rbind(self$tab_covcorr,self$tab_covcorrImplied,self$tab_covcorrResidual)
-                                self$tab_covcorr<-NULL
+                                self$tab_covcorrCombined<-rbind(self$tab_covcorrObserved,self$tab_covcorrImplied,self$tab_covcorrResidual)
+                                self$tab_covcorrObserved<-NULL
                                 self$tab_covcorrImplied<-NULL
                                 self$tab_covcorrResidual<-NULL
                               }
-
 
                               mark('finished tab_covcorr');
                             }

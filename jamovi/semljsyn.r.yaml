@@ -5,12 +5,6 @@ jrs: '1.0'
 
 
 items:
-  # objects to store information to keep
-  - name: prev_options
-    type: Property
-    description: Object to store the previous options in
-    visible: (FALSE)
-
   - name: model
     type: Property
     description: The underlying `lavaan` object
@@ -37,6 +31,20 @@ items:
         combineBelow: true
     refs: semlj
     
+  - name: contraintsnotes
+    type: Table
+    visible: (constraints_examples)
+    title: "Syntax examples"
+    columns:
+      - name: info
+        type: text
+        title: Aim
+      - name: example
+        type: text
+        title: Example
+      - name: com
+        type: text
+        title: Outcome
 
 
   # Overall Tests
@@ -453,7 +461,12 @@ items:
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)
     items:
     #     variable number of rows and columns
-    - name: covcorr
+    #
+    #     APPLIES TO ALL TABLES BELOW: For some reason the jamovi function to add columns in R does
+    #     not allow to add on the right of the last column. So we define a bogus invisible column
+    #     on the left of which all the new columns will go
+    
+    - name: covcorrObserved
       title: Observed covariances (lower triangle) and correlations (upper triangle) 
       type: Table
       visible: false    
@@ -465,20 +478,6 @@ items:
         - multigroup
         - code
       columns:
-#     ## uncertain as to whether implement a group distinction for the correlations
-#     ## the table is already busy enough      
-#     
-      # We should think how to deal with multigroup here
-#     - name: lgroup
-#       title: Group
-#       type: text
-#       visible: (multigroup)
-#       combineBelow: true
-
-# For some reason the jamovi function to add columns in R does not allow to add on the
-# right of the last column. So we define a bogus invisible column on the left of which all the
-# new columns will go
-
       - name: bogus
         title: ""
         type: text
@@ -539,8 +538,6 @@ items:
         type: text
         visible: false
 
-
-
   # Modification indices
   - name: modgroup
     title: "Modifcation indices"
@@ -591,21 +588,6 @@ items:
           title: sEPC (nox)
           type: number
           format: zto
-
-  - name: contraintsnotes
-    type: Table
-    visible: (constraints_examples)
-    title: "Syntax examples"
-    columns:
-      - name: info
-        type: text
-        title: Aim
-      - name: example
-        type: text
-        title: Example
-      - name: com
-        type: text
-        title: Outcome
 
 
   # Path model

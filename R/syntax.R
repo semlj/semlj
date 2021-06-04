@@ -33,7 +33,7 @@ Syntax <- R6::R6Class(
               tab_otherFit=NULL,
               tab_Rsquared=NULL,
               tab_mardia=NULL,
-              tab_covcorr=NULL,
+              tab_covcorrObserved=NULL,
               tab_covcorrImplied=NULL,                          
               tab_covcorrResidual=NULL,
               tab_covcorrCombined=NULL,
@@ -268,7 +268,7 @@ Syntax <- R6::R6Class(
               tab<-tab[,c(.length+1,1:.length)]
               
               if (self$options$outputObservedCovariances) {
-                self$tab_covcorr<-tab 
+                self$tab_covcorrObserved<-tab 
               }
               if (self$options$outputImpliedCovariances) {
                 self$tab_covcorrImplied<-tab 
@@ -278,18 +278,11 @@ Syntax <- R6::R6Class(
               }
               
               if (self$options$outpuCombineCovariances) {
-                self$tab_covcorrCombined<-rbind(self$tab_covcorr,self$tab_covcorrImplied,self$tab_covcorrResidual)
-                self$tab_covcorr<-NULL
+                self$tab_covcorrCombined<-rbind(self$tab_covcorrObserved,self$tab_covcorrImplied,self$tab_covcorrResidual)
+                self$tab_covcorrObserved<-NULL
                 self$tab_covcorrImplied<-NULL
                 self$tab_covcorrResidual<-NULL
               }
-              
-              
-              
-              
-              
-              
-              
 
             },
             ### compute indirect effects if required by the user

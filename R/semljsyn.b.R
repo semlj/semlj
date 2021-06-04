@@ -61,13 +61,13 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             ### prepare intercepts ###
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
-                 j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
+                j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
 
 
             ### additional output ###
-            if (is.something(lav_machine$tab_covcorr)) {
-                   j.expand_table(self$results$group_covariances$covcorr,lav_machine$tab_covcorr)
-                   j.init_table(self$results$group_covariances$covcorr,lav_machine$tab_covcorr)
+            if (is.something(lav_machine$tab_covcorrObserved)) {
+                j.expand_table(self$results$group_covariances$covcorrObserved,lav_machine$tab_covcorrObserved)
+                j.init_table(self$results$group_covariances$covcorrObserved,lav_machine$tab_covcorrObserved)
             }
 
             if (is.something(lav_machine$tab_covcorrImplied)) {
@@ -178,11 +178,11 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
     
             ### loadings vars and covars ####
-            if (is.something(lav_machine$tab_covcorr)) {
+            if (is.something(lav_machine$tab_covcorrObserved)) {
                 
-                table<-self$results$group_covariances$covcorr
-                obj<-lav_machine$tab_covcorr
-                j.fill_table(table,obj,spaceby="type") 
+                table<-self$results$group_covariances$covcorrObserved
+                obj<-lav_machine$tab_covcorrObserved
+                j.fill_table(table,obj)
 
             }
             

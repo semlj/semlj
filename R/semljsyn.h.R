@@ -516,18 +516,16 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "semljsynResults",
     inherit = jmvcore::Group,
     active = list(
-        prev_options = function() private$..prev_options,
         model = function() private$..model,
         info = function() private$.items[["info"]],
+        contraintsnotes = function() private$.items[["contraintsnotes"]],
         fit = function() private$.items[["fit"]],
         models = function() private$.items[["models"]],
         add_outputs = function() private$.items[["add_outputs"]],
         group_covariances = function() private$.items[["group_covariances"]],
         modgroup = function() private$.items[["modgroup"]],
-        contraintsnotes = function() private$.items[["contraintsnotes"]],
         pathgroup = function() private$.items[["pathgroup"]]),
     private = list(
-        ..prev_options = NA,
         ..model = NA),
     public=list(
         initialize=function(options) {
@@ -535,7 +533,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Structural Equation Modelling")
-            private$..prev_options <- NULL
             private$..model <- NULL
             self$add(jmvcore::Table$new(
                 options=options,
@@ -559,6 +556,24 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `title`="", 
                         `combineBelow`=TRUE)),
                 refs="semlj"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="contraintsnotes",
+                visible="(constraints_examples)",
+                title="Syntax examples",
+                columns=list(
+                    list(
+                        `name`="info", 
+                        `type`="text", 
+                        `title`="Aim"),
+                    list(
+                        `name`="example", 
+                        `type`="text", 
+                        `title`="Example"),
+                    list(
+                        `name`="com", 
+                        `type`="text", 
+                        `title`="Outcome"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -1053,7 +1068,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    covcorr = function() private$.items[["covcorr"]],
+                    covcorrObserved = function() private$.items[["covcorrObserved"]],
                     covcorrImplied = function() private$.items[["covcorrImplied"]],
                     covcorrResidual = function() private$.items[["covcorrResidual"]],
                     covcorrCombined = function() private$.items[["covcorrCombined"]]),
@@ -1066,7 +1081,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Covariances and correlations")
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="covcorr",
+                            name="covcorrObserved",
                             title="Observed covariances (lower triangle) and correlations (upper triangle)",
                             visible=FALSE,
                             clearWith=list(
@@ -1198,24 +1213,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="sEPC (nox)", 
                                     `type`="number", 
                                     `format`="zto"))))}))$new(options=options))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="contraintsnotes",
-                visible="(constraints_examples)",
-                title="Syntax examples",
-                columns=list(
-                    list(
-                        `name`="info", 
-                        `type`="text", 
-                        `title`="Aim"),
-                    list(
-                        `name`="example", 
-                        `type`="text", 
-                        `title`="Example"),
-                    list(
-                        `name`="com", 
-                        `type`="text", 
-                        `title`="Outcome"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -1278,7 +1275,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="message", 
                                     `type`="text", 
                                     `title`="Model diagram notes"))))}))$new(options=options))},
-        .setPrev_options=function(x) private$..prev_options <- x,
         .setModel=function(x) private$..model <- x))
 
 semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -1367,9 +1363,9 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param diag_abbrev Choose the diagram labels
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$prev_options} \tab \tab \tab \tab \tab Object to store the previous options in \cr
 #'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$constraints} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
@@ -1381,12 +1377,11 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$add_outputs$otherFit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$Rsquared} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$mardia} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$group_covariances$covcorr} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+#'   \code{results$group_covariances$covcorrObserved} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$group_covariances$covcorrImplied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$group_covariances$covcorrResidual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$group_covariances$covcorrCombined} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$modgroup$modInd} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
 #' }
