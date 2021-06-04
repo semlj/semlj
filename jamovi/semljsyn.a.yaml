@@ -415,6 +415,12 @@ options:
       type: Bool
       title: "residual"
       default: false
+
+    - name: outpuCombineCovariances
+      type: Bool
+      title: "combined tables"
+      default: false
+
       
      # NOT IMPLEMENTED YET (JASP-SEM)
      # The lavResiduals() gives more extensive information about the residuals. Per default, it will print both raw and

@@ -225,6 +225,7 @@ Estimate <- R6::R6Class("Estimate",
                                 ## The fill.table() functions accepts data.frames or named vector, not matrix 
                                 ## the need names() to return something
                                 df<-as.data.frame(obsCvC)
+                                df$type="Observed"
                                 self$tab_covcorr<-df
 
                               }
@@ -234,6 +235,7 @@ Estimate <- R6::R6Class("Estimate",
                                 fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
                                 fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
                                 df<-as.data.frame(fitCvC)
+                                df$type="Implied"
                                 self$tab_covcorrImplied<-df
                                 
 
@@ -248,8 +250,15 @@ Estimate <- R6::R6Class("Estimate",
                                 resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
                                 resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
                                 df<-as.data.frame(resCvC)
+                                df$type="Residual"
                                 self$tab_covcorrResidual<-df
                                 
+                              }
+                              if (self$options$outpuCombineCovariances) {
+                                self$tab_covcorr<-rbind(self$tab_covcorr,self$tab_covcorrImplied)
+                                self$tab_covcorr<-rbind(self$tab_covcorr,self$tab_covcorrResidual)
+                                self$tab_covcorrImplied<-NULL
+                                self$tab_covcorrResidual<-NULL
                               }
 
 

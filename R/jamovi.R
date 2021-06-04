@@ -122,7 +122,6 @@ j.expand_table<-function(table,obj,types="text", superTitle=NULL,append=FALSE) {
       .types<-gsub("integer","number",.types)
       .types<-gsub("factor","text",.types)
   } else {
-    mark("exp",obj)
     .names<-obj
     if (length(types)==1)
          .types<-rep(types,length(obj))
@@ -163,10 +162,12 @@ j.fill_table<-function(table,obj, fixNA=TRUE,append=FALSE,spaceby=NULL,start=1) 
        FUNC(i+last,t)
    }
   if (is.something(spaceby)) {
-    col<-obj[,spaceby]
-    rows<-unlist(lapply(unique(col),function(x) min(which(col==x))))
-    for (j in rows)
-      table$addFormat(rowNo=j+last,col=1,jmvcore::Cell.BEGIN_GROUP)
+          if ((spaceby %in% names(obj))) {
+              col<-obj[,spaceby]
+              rows<-unlist(lapply(unique(col),function(x) min(which(col==x))))
+              for (j in rows)
+              table$addFormat(rowNo=j+last,col=1,jmvcore::Cell.BEGIN_GROUP)
+          }
   }
   table$setVisible(TRUE)
 }

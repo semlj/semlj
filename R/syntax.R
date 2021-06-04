@@ -276,6 +276,12 @@ Syntax <- R6::R6Class(
                 self$tab_covcorrResidual<-tab[,c(.length+1,1:.length)] 
               }
               
+              if (self$options$outpuCombineCovariances) {
+                self$tab_covcorr<-rbind(self$tab_covcorr,self$tab_covcorrImplied)
+                self$tab_covcorr<-rbind(self$tab_covcorr,self$tab_covcorrResidual)
+                self$tab_covcorrImplied<-NULL
+                self$tab_covcorrResidual<-NULL
+              }
               
               
               

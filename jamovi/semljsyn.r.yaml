@@ -456,7 +456,7 @@ items:
     - name: covcorr
       title: Observed covariances (lower triangle) and correlations (upper triangle) 
       type: Table
-      visible: (outputObservedCovariances)    
+      visible: false    
       description: A covariance / correlation matrix table.
       clearWith:
         - ciType
@@ -487,7 +487,7 @@ items:
     - name: covcorrImplied
       title: Fitted covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: (outputImpliedCovariances)      
+      visible: false      
       description: A covariance / correlation matrix table.
       clearWith:
         - ciType
@@ -504,7 +504,7 @@ items:
     - name: covcorrResidual
       title: Residual covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: (outputResidualCovariances)      
+      visible: false      
       description: A covariance / correlation matrix table.
       clearWith:
         - ciType

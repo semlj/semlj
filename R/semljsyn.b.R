@@ -65,19 +65,26 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
 
             ### additional output ###
-            if (self$options$outputObservedCovariances) {
+            if (is.something(lav_machine$tab_covcorr)) {
                    j.expand_table(self$results$group_covariances$covcorr,lav_machine$tab_covcorr)
                    j.init_table(self$results$group_covariances$covcorr,lav_machine$tab_covcorr)
             }
-            if (self$options$outputImpliedCovariances) {
+
+            if (is.something(lav_machine$tab_covcorrImplied)) {
                 j.expand_table(self$results$group_covariances$covcorrImplied,lav_machine$tab_covcorrImplied)
                 j.init_table(self$results$group_covariances$covcorrImplied,lav_machine$tab_covcorrImplied)
             }
-            if (self$options$outputResidualCovariances) {
+            if (is.something(lav_machine$tab_covcorrResidual)) {
                 j.expand_table(self$results$group_covariances$covcorrResidual,lav_machine$tab_covcorrResidual)
                 j.init_table(self$results$group_covariances$covcorrResidual,lav_machine$tab_covcorrResidual)
             }
             
+            if (self$options$outpuCombineCovariances) {
+                table<-self$results$group_covariances$covcorr
+                table$addColumn(name = "type", title = "type", index = 1, type="text")
+                table$setTitle("Covariances (lower triangle) and correlations (upper triangle)")
+            }
+                
             ################
             
             private$.lav_machine<-lav_machine
@@ -171,15 +178,15 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
     
             ### loadings vars and covars ####
-            if (self$options$outputObservedCovariances) {
+            if (is.something(lav_machine$tab_covcorr)) {
                 
                 table<-self$results$group_covariances$covcorr
                 obj<-lav_machine$tab_covcorr
-                j.fill_table(table,obj) 
+                j.fill_table(table,obj,spaceby="type") 
 
             }
             
-            if (self$options$outputImpliedCovariances) {
+            if (is.something(lav_machine$tab_covcorrImplied)) {
                 
                 table<-self$results$group_covariances$covcorrImplied
                 obj<-lav_machine$tab_covcorrImplied
@@ -187,7 +194,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 
             }
             
-            if (self$options$outputResidualCovariances) {
+            if (is.something(lav_machine$tab_covcorrResidual)) {
                 
                 table<-self$results$group_covariances$covcorrResidual
                 obj<-lav_machine$tab_covcorrResidual

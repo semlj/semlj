@@ -45,6 +45,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             outputObservedCovariances = FALSE,
             outputImpliedCovariances = FALSE,
             outputResidualCovariances = FALSE,
+            outpuCombineCovariances = FALSE,
             outputModificationIndices = FALSE,
             miHideLow = FALSE,
             miThreshold = 10,
@@ -249,6 +250,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "outputResidualCovariances",
                 outputResidualCovariances,
                 default=FALSE)
+            private$..outpuCombineCovariances <- jmvcore::OptionBool$new(
+                "outpuCombineCovariances",
+                outpuCombineCovariances,
+                default=FALSE)
             private$..outputModificationIndices <- jmvcore::OptionBool$new(
                 "outputModificationIndices",
                 outputModificationIndices,
@@ -382,6 +387,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..outputObservedCovariances)
             self$.addOption(private$..outputImpliedCovariances)
             self$.addOption(private$..outputResidualCovariances)
+            self$.addOption(private$..outpuCombineCovariances)
             self$.addOption(private$..outputModificationIndices)
             self$.addOption(private$..miHideLow)
             self$.addOption(private$..miThreshold)
@@ -436,6 +442,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         outputObservedCovariances = function() private$..outputObservedCovariances$value,
         outputImpliedCovariances = function() private$..outputImpliedCovariances$value,
         outputResidualCovariances = function() private$..outputResidualCovariances$value,
+        outpuCombineCovariances = function() private$..outpuCombineCovariances$value,
         outputModificationIndices = function() private$..outputModificationIndices$value,
         miHideLow = function() private$..miHideLow$value,
         miThreshold = function() private$..miThreshold$value,
@@ -489,6 +496,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..outputObservedCovariances = NA,
         ..outputImpliedCovariances = NA,
         ..outputResidualCovariances = NA,
+        ..outpuCombineCovariances = NA,
         ..outputModificationIndices = NA,
         ..miHideLow = NA,
         ..miThreshold = NA,
@@ -1059,7 +1067,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="covcorr",
                             title="Observed covariances (lower triangle) and correlations (upper triangle)",
-                            visible="(outputObservedCovariances)",
+                            visible=FALSE,
                             clearWith=list(
                                 "ciType",
                                 "cov_y",
@@ -1076,7 +1084,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="covcorrImplied",
                             title="Fitted covariances (lower triangle) and correlations (upper triangle)",
-                            visible="(outputImpliedCovariances)",
+                            visible=FALSE,
                             clearWith=list(
                                 "ciType",
                                 "cov_y",
@@ -1093,7 +1101,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="covcorrResidual",
                             title="Residual covariances (lower triangle) and correlations (upper triangle)",
-                            visible="(outputResidualCovariances)",
+                            visible=FALSE,
                             clearWith=list(
                                 "ciType",
                                 "cov_y",
@@ -1317,6 +1325,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param outputObservedCovariances .
 #' @param outputImpliedCovariances .
 #' @param outputResidualCovariances .
+#' @param outpuCombineCovariances .
 #' @param outputModificationIndices .
 #' @param miHideLow .
 #' @param miThreshold .
@@ -1406,6 +1415,7 @@ semljsyn <- function(
     outputObservedCovariances = FALSE,
     outputImpliedCovariances = FALSE,
     outputResidualCovariances = FALSE,
+    outpuCombineCovariances = FALSE,
     outputModificationIndices = FALSE,
     miHideLow = FALSE,
     miThreshold = 10,
@@ -1470,6 +1480,7 @@ semljsyn <- function(
         outputObservedCovariances = outputObservedCovariances,
         outputImpliedCovariances = outputImpliedCovariances,
         outputResidualCovariances = outputResidualCovariances,
+        outpuCombineCovariances = outpuCombineCovariances,
         outputModificationIndices = outputModificationIndices,
         miHideLow = miHideLow,
         miThreshold = miThreshold,

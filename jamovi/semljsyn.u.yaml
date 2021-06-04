@@ -264,6 +264,10 @@ children:
                         name: outputImpliedCovariances
                       - type: CheckBox
                         name: outputResidualCovariances
+                      - type: CheckBox
+                        name: outpuCombineCovariances
+                        
+                        
                   - type: LayoutBox
                     margin: large
                     style: list
