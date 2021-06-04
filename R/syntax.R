@@ -176,7 +176,7 @@ Syntax <- R6::R6Class(
                   .lav_structure$type<-ifelse(.lav_structure$free>0,"Free","Fixed")
               ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
                   if (is.something(self$multigroup)) {
-  #                      levs<-c(self$multigroup$levels,"All")
+                        levs<-c(self$multigroup$levels,"All")
                        .lav_structure$group<-ifelse(.lav_structure$group==0,length(levs)+1,.lav_structure$group)
                        .lav_structure$lgroup<-levs[.lav_structure$group]
                    } else
