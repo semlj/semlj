@@ -255,8 +255,8 @@ Estimate <- R6::R6Class("Estimate",
                                 
                               }
                               if (self$options$outpuCombineCovariances) {
-                                self$tab_covcorr<-rbind(self$tab_covcorr,self$tab_covcorrImplied)
-                                self$tab_covcorr<-rbind(self$tab_covcorr,self$tab_covcorrResidual)
+                                self$tab_covcorrCombined<-rbind(self$tab_covcorr,self$tab_covcorrImplied,self$tab_covcorrResidual)
+                                self$tab_covcorr<-NULL
                                 self$tab_covcorrImplied<-NULL
                                 self$tab_covcorrResidual<-NULL
                               }

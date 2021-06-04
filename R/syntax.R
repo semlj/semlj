@@ -35,7 +35,8 @@ Syntax <- R6::R6Class(
               tab_mardia=NULL,
               tab_covcorr=NULL,
               tab_covcorrImplied=NULL,                          
-              tab_covcorrResidual=NULL,                          
+              tab_covcorrResidual=NULL,
+              tab_covcorrCombined=NULL,
               tab_modInd=NULL,
               structure=NULL,
               options=NULL,
@@ -263,22 +264,22 @@ Syntax <- R6::R6Class(
               tab<-as.data.frame(matrix(0,ncol=.length,nrow=.length))
               names(tab)<-self$observed
               
+              tab$Variable<-self$observed
+              tab<-tab[,c(.length+1,1:.length)]
+              
               if (self$options$outputObservedCovariances) {
-                tab$Variable<-self$observed
-                self$tab_covcorr<-tab[,c(.length+1,1:.length)] 
+                self$tab_covcorr<-tab 
               }
               if (self$options$outputImpliedCovariances) {
-                tab$Variable<-self$observed
-                self$tab_covcorrImplied<-tab[,c(.length+1,1:.length)] 
+                self$tab_covcorrImplied<-tab 
               }
               if (self$options$outputResidualCovariances) {
-                tab$Variable<-self$observed
-                self$tab_covcorrResidual<-tab[,c(.length+1,1:.length)] 
+                self$tab_covcorrResidual<-tab 
               }
               
               if (self$options$outpuCombineCovariances) {
-                self$tab_covcorr<-rbind(self$tab_covcorr,self$tab_covcorrImplied)
-                self$tab_covcorr<-rbind(self$tab_covcorr,self$tab_covcorrResidual)
+                self$tab_covcorrCombined<-rbind(self$tab_covcorr,self$tab_covcorrImplied,self$tab_covcorrResidual)
+                self$tab_covcorr<-NULL
                 self$tab_covcorrImplied<-NULL
                 self$tab_covcorrResidual<-NULL
               }

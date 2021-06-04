@@ -79,10 +79,10 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 j.init_table(self$results$group_covariances$covcorrResidual,lav_machine$tab_covcorrResidual)
             }
             
-            if (self$options$outpuCombineCovariances) {
-                table<-self$results$group_covariances$covcorr
-                table$addColumn(name = "type", title = "type", index = 1, type="text")
-                table$setTitle("Covariances (lower triangle) and correlations (upper triangle)")
+            if (is.something(lav_machine$tab_covcorrCombined)) {
+                j.expand_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined,append=T)
+                j.init_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined)
+                
             }
                 
             ################
@@ -199,6 +199,13 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 table<-self$results$group_covariances$covcorrResidual
                 obj<-lav_machine$tab_covcorrResidual
                 j.fill_table(table,obj) 
+                
+            }
+            if (is.something(lav_machine$tab_covcorrCombined)) {
+                
+                table<-self$results$group_covariances$covcorrCombined
+                obj<-lav_machine$tab_covcorrCombined
+                j.fill_table(table,obj,spaceby="type") 
                 
             }
             

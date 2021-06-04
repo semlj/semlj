@@ -1055,7 +1055,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 active = list(
                     covcorr = function() private$.items[["covcorr"]],
                     covcorrImplied = function() private$.items[["covcorrImplied"]],
-                    covcorrResidual = function() private$.items[["covcorrResidual"]]),
+                    covcorrResidual = function() private$.items[["covcorrResidual"]],
+                    covcorrCombined = function() private$.items[["covcorrCombined"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -1109,6 +1110,28 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "multigroup",
                                 "code"),
                             columns=list(
+                                list(
+                                    `name`="bogus", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `visible`=FALSE))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="covcorrCombined",
+                            title="Covariances (lower triangle) and correlations (upper triangle)",
+                            visible=FALSE,
+                            clearWith=list(
+                                "ciType",
+                                "cov_y",
+                                "data",
+                                "multigroup",
+                                "code"),
+                            columns=list(
+                                list(
+                                    `name`="type", 
+                                    `title`="Type", 
+                                    `type`="text", 
+                                    `visible`=TRUE),
                                 list(
                                     `name`="bogus", 
                                     `title`="", 
@@ -1361,6 +1384,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$group_covariances$covcorr} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$group_covariances$covcorrImplied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$group_covariances$covcorrResidual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+#'   \code{results$group_covariances$covcorrCombined} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$modgroup$modInd} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr

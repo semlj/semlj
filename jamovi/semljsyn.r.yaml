@@ -518,6 +518,28 @@ items:
         type: text
         visible: false
 
+    - name: covcorrCombined
+      title: Covariances (lower triangle) and correlations (upper triangle)
+      type: Table
+      visible: false      
+      description: A covariance / correlation matrix table.
+      clearWith:
+        - ciType
+        - cov_y
+        - data
+        - multigroup
+        - code
+      columns:
+      - name: type
+        title: "Type"
+        type: text
+        visible: true
+      - name: bogus
+        title: ""
+        type: text
+        visible: false
+
+
 
   # Modification indices
   - name: modgroup
