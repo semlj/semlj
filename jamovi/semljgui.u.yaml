@@ -381,6 +381,27 @@ children:
                 name: cov_x
               - type: CheckBox
                 name: cov_y
+          - type: LayoutBox
+            margin: large
+            children:
+              - type: CheckBox
+                name: eq_loadings
+              - type: CheckBox
+                name: eq_intercepts
+              - type: CheckBox
+                name: eq_residuals
+              - type: CheckBox
+                name: eq_residual.covariances
+              - type: CheckBox
+                name: eq_means
+              - type: CheckBox
+                name: eq_thresholds
+              - type: CheckBox
+                name: eq_regressions
+              - type: CheckBox
+                name: eq_lv.variances
+              - type: CheckBox
+                name: eq_lv.covariances
   - type: CollapseBox
     label: Path Diagram
     collapsed: true
