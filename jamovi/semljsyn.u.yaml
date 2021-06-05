@@ -183,9 +183,11 @@ children:
             children:
               - type: Label
                 label: Factorial variable for multi-group analysis
+                margin: large
               - type: TextBox
                 name: multigroup
                 stretchFactor: 1
+                margin: none
                 format: string
   ### (b) Equality constraints (three columns) --------------------------------
           - type: Label
@@ -209,7 +211,7 @@ children:
                 style: list
                 children:
                   - type: CheckBox
-                    name: eq_thresholds 
+                    name: eq_thresholds
                   - type: CheckBox
                     name: eq_residuals
                   - type: CheckBox
@@ -275,7 +277,7 @@ children:
                     children:
                       - type: Label
                         label: Covariances and correlations
-                      - type: CheckBox    
+                      - type: CheckBox
                         name: outputObservedCovariances
                       - type: CheckBox
                         name: outputImpliedCovariances
@@ -319,7 +321,7 @@ children:
             margin: large
             stretchFactor: 1
             style: inline
-            children:        
+            children:
               - type: CheckBox
                 name: diagram
                 style: inline
@@ -343,7 +345,7 @@ children:
                                 enable: (diagram)
                               - type: CheckBox
                                 name: diag_intercepts
-                                enable: (diagram)                    
+                                enable: (diagram)
   ### (b) Paths ---------------------------------------------------------------
           - type: LayoutBox
             margin: large
@@ -397,7 +399,7 @@ children:
                 margin: large
                 stretchFactor: 1
                 style: list
-                children:        
+                children:
                   - type: Label
                     label: Nodes
                     margin: large

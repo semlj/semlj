@@ -8,10 +8,10 @@ refs:
       url: 'https://semlj.github.io/'
    lavaan:
       type: 'article'
-      author: Rosseel, Y. 
+      author: Rosseel, Y.
       year: 2019
       title: 'lavaan: An R Package for Structural Equation Modeling'
-      publisher: 'Journal of Statistical Software, 48(2), 1-36' 
+      publisher: 'Journal of Statistical Software, 48(2), 1-36'
       url: 'http://www.jstatsoft.org/v48/i02/'
    semplot:
       type: "software"

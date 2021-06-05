@@ -30,7 +30,7 @@ items:
         title: ""
         combineBelow: true
     refs: semlj
-    
+
   - name: contraintsnotes
     type: Table
     visible: (constraints_examples)
@@ -168,7 +168,7 @@ items:
     type: Group
     visible: false
     items:
-  
+
       # Parameter estimates ---------------------------------------------------
       - name: coefficients
         title: Parameter estimates
@@ -409,7 +409,7 @@ items:
       - name: otherFit
         title: 'Other fit indices'
         type: Table
-        visible: (outputAdditionalFitMeasures)      
+        visible: (outputAdditionalFitMeasures)
 #       description:
         clearWith:
         rows: 5
@@ -442,7 +442,7 @@ items:
         title: "Mardia's coefficients"
         type: Table
 #       description: 
-        visible: (outputMardiasCoefficients)      
+        visible: (outputMardiasCoefficients)
         clearWith:
         rows: 2
         columns:
@@ -465,21 +465,21 @@ items:
           title: p
           type: number
           format: zto,pvalue
-      
+
 
   # Covariances and correlations ==============================================
   - name: group_covariances
     title: "Covariances and correlations"
-    type: Group    
+    type: Group
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)
     items:
 
     # all tables below have variable number of rows and columns
     # Observed covariances and correlations -----------------------------------
     - name: covcorrObserved
-      title: Observed covariances (lower triangle) and correlations (upper triangle) 
+      title: Observed covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: false    
+      visible: false
       description: A covariance / correlation matrix table.
       clearWith:
         - ciType
@@ -496,7 +496,7 @@ items:
     - name: covcorrImplied
       title: Fitted covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: false      
+      visible: false
       description: A covariance / correlation matrix table.
       clearWith:
         - ciType
@@ -513,7 +513,7 @@ items:
     - name: covcorrResidual
       title: Residual covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: false      
+      visible: false
       description: A covariance / correlation matrix table.
       clearWith:
         - ciType
@@ -531,7 +531,7 @@ items:
     - name: covcorrCombined
       title: Covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: false      
+      visible: false
       description: A covariance / correlation matrix table.
       clearWith:
         - ciType
@@ -543,7 +543,7 @@ items:
       - name: variable
         title: ""
         type: text
-        combineBelow: true   
+        combineBelow: true
       - name: type
         title: ""
         type: text
@@ -564,7 +564,7 @@ items:
       - name: modInd
         title: 'Modification indices'
         type: Table
-        visible: (outputModificationIndices)     
+        visible: (outputModificationIndices)
 #       description:
         notes:
           EPC: expected parameter changes and their standardized forms (sEPC); for latent variables (LV),
@@ -586,7 +586,7 @@ items:
         - name: epc
           title: EPC
           type: number
-          format: zto        
+          format: zto
         - name: sepc.lv
           title: sEPC (LV)
           type: number
@@ -650,7 +650,7 @@ items:
             - diag_intercepts
           refs: semplot
 
-    # Path diagram notes ------------------------------------------------------             
+    # Path diagram notes ------------------------------------------------------
       - name: notes
         type: Table
         title: ""

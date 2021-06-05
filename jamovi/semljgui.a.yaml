@@ -12,7 +12,7 @@ options:
       type: Data
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     - name: code
       default: |
@@ -21,7 +21,7 @@ options:
       hidden: true
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     # Interface for selecting latent variables and the grouping variable ======
     - name: endogenous
@@ -91,8 +91,7 @@ options:
 #      default: dataraw
 #      description:
 #          R: >
-#             TO ADD     
-#           
+#             TO ADD
 #    - name: samplesize
 #      title: "– Sample size"
 #      hidden: true
@@ -100,21 +99,21 @@ options:
 #      default: 0
 #      description:
 #          R: >
-#             TO ADD     
+#             TO ADD
 
 
     ### OPTIONS #########
 
     ### Endogenous models =====================================================
     - name: endogenousTerms
-      title: Endogenous Latent Vars Models  
+      title: Endogenous Latent Vars Models
       type: Array
       default: [[]]
       template:
           type: Terms
       description:
           R: >
-            a list of lists specifying the models for with the mediators as dependent variables.          
+            a list of lists specifying the models for with the mediators as dependent variables.
 
     ### Variances and covariances =============================================
     - name: varcov
@@ -135,7 +134,7 @@ options:
           type: String
       description:
           R: >
-            a list of lists specifying the models random effects.          
+            a list of lists specifying the models random effects
 
     ### Model options =========================================================
     ### (a) Estimation --------------------------------------------------------
@@ -157,7 +156,7 @@ options:
         - name: ULS
           title: Unweighted Least Squares
 #       - name: PML
-#         title: "Pairwise maximum likelihood"          
+#         title: "Pairwise maximum likelihood"
       default: ML
       description:
           R: >
@@ -167,7 +166,7 @@ options:
       title: ML likelihood approach
       type: List
       options:
-        - name: normal 
+        - name: normal
           title: Normal
         - name:  wishart
           title: Wishart
@@ -175,7 +174,7 @@ options:
       description:
           R: >
              TO ADD
-    
+
     # TO BE INCLUDED? (available in JASP-SEM)
 #   - name: std.ov
 #     type: Bool
@@ -183,7 +182,7 @@ options:
 #     default: false
 #     description:
 #         R: >
-#            TO ADD     
+#            TO ADD
 
     ### (b) Constraint Tests --------------------------------------------------
     - name: scoretest
@@ -192,7 +191,7 @@ options:
       default: true
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     - name: cumscoretest
       type: Bool
@@ -200,7 +199,7 @@ options:
       default: false
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     # TO BE INCLUDED?
 #   - name: factorStandardisation
@@ -217,7 +216,7 @@ options:
 #         title: "None"
 #      description:
 #          R: >
-#             TO ADD     
+#             TO ADD
 #   - name: meanstructure
 #     type: Bool
 #     title: "Include mean structure"
@@ -231,9 +230,9 @@ options:
 #     default: false
 #     description:
 #         R: >
-#            TO ADD     
+#            TO ADD
 
-    
+
     ### Parameter options =====================================================
     ### (a) Standard errors ---------------------------------------------------
     - name: se
@@ -343,14 +342,14 @@ options:
     ### (f) Miscellaneous -----------------------------------------------------
     # TO-DO: find a better name than miscellaneous; perhaps: Constraints
     - name: cov_x
-#   - name: fixed.x (lavOpt)  
+#   - name: fixed.x (lavOpt)
       title: Fix exogenous covariates
       type: Bool
       default: true
       description:
           R: >
             `TRUE` (default) or `FALSE`, fix exogenous covariates
-    
+
     - name: cov_y
       title: Correlated y
       type: Bool
@@ -424,7 +423,7 @@ options:
 #          R: >
 #            `TRUE` (default) or `FALSE`, TO BE ADDED
 
-      
+
     ### Multigroup options / equality constraints =============================
     #   For the GUI-version, the GUI-element multigroup is part of the inter-
     #   face to elect variables
@@ -562,7 +561,7 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing observed, model-implied and residual values for each variable combination underneath each other)
-    
+
 
     ### (c) Modification indices ----------------------------------------------
     - name: outputModificationIndices
@@ -583,7 +582,7 @@ options:
       type: Number
       title: "Threshold"
       default: 10
-      min: 0      
+      min: 0
       description:
           R: >
             numeric (default: 10), set a threshold the modification indices must exceed in order to be shown

@@ -12,7 +12,7 @@ options:
       type: Data
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     - name: code
       default: |
@@ -21,7 +21,7 @@ options:
       hidden: true
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     # Interface for syntax input ==============================================
     - name: syntax
@@ -56,8 +56,7 @@ options:
 #      default: dataraw
 #      description:
 #          R: >
-#             TO ADD     
-#           
+#             TO ADD
 #    - name: samplesize
 #      title: "– Sample size"
 #      hidden: true
@@ -65,7 +64,7 @@ options:
 #      default: 0
 #      description:
 #          R: >
-#             TO ADD     
+#             TO ADD
 
 
     ### OPTIONS #########
@@ -90,7 +89,7 @@ options:
         - name: ULS
           title: Unweighted Least Squares
 #       - name: PML
-#         title: "Pairwise maximum likelihood"          
+#         title: "Pairwise maximum likelihood"
       default: ML
       description:
           R: >
@@ -100,7 +99,7 @@ options:
       title: ML likelihood approach
       type: List
       options:
-        - name: normal 
+        - name: normal
           title: Normal
         - name:  wishart
           title: Wishart
@@ -108,7 +107,7 @@ options:
       description:
           R: >
              TO ADD
-    
+
     # TO BE INCLUDED? (available in JASP-SEM)
 #   - name: std.ov
 #     type: Bool
@@ -116,7 +115,7 @@ options:
 #     default: false
 #     description:
 #         R: >
-#            TO ADD     
+#            TO ADD
 
     ### (b) Constraint Tests --------------------------------------------------
     - name: scoretest
@@ -125,7 +124,7 @@ options:
       default: true
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     - name: cumscoretest
       type: Bool
@@ -133,7 +132,7 @@ options:
       default: false
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     # TO BE INCLUDED?
 #   - name: factorStandardisation
@@ -150,7 +149,7 @@ options:
 #         title: "None"
 #      description:
 #          R: >
-#             TO ADD     
+#             TO ADD
 #   - name: meanstructure
 #     type: Bool
 #     title: "Include mean structure"
@@ -164,9 +163,9 @@ options:
 #     default: false
 #     description:
 #         R: >
-#            TO ADD     
+#            TO ADD
 
-    
+
     ### Parameter options =====================================================
     ### (a) Standard errors ---------------------------------------------------
     - name: se
@@ -276,14 +275,14 @@ options:
     ### (f) Miscellaneous -----------------------------------------------------
     # TO-DO: find a better name than miscellaneous; perhaps: Constraints
     - name: cov_x
-#   - name: fixed.x (lavOpt)  
+#   - name: fixed.x (lavOpt)
       title: Fix exogenous covariates
       type: Bool
       default: true
       description:
           R: >
             `TRUE` (default) or `FALSE`, fix exogenous covariates
-    
+
     - name: cov_y
       title: Correlated y
       type: Bool
@@ -357,14 +356,14 @@ options:
 #          R: >
 #            `TRUE` (default) or `FALSE`, TO BE ADDED
 
-      
+
     ### Multigroup options / equality constraints =============================
     - name: multigroup
-      title: Multigroup Analysis Factor
+      title: ""
       type: String
       description:
           R: >
-            string (default=""), the separate models (one for each level / group in the variable) are fit, instead of fitting the same model for the whole dataset (all groups)      
+            string (default=""), the separate models (one for each level / group in the variable) are fit, instead of fitting the same model for the whole dataset (all groups)
     # TO ADD: change text field into drop-down / list box
 #    - name: multigroup
 #      title: ""
@@ -375,7 +374,7 @@ options:
 #      default: no_choice
 #      description:
 #          R: >
-#            string (default=""), the separate models (one for each level / group in the variable) are fit, instead of fitting the same model for the whole dataset (all groups)      
+#            string (default=""), the separate models (one for each level / group in the variable) are fit, instead of fitting the same model for the whole dataset (all groups)
     - name: eq_loadings
       type: Bool
       title: "Loadings"
@@ -509,7 +508,6 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing observed, model-implied and residual values for each variable combination underneath each other)
-    
 
     ### (c) Modification indices ----------------------------------------------
     - name: outputModificationIndices
@@ -530,7 +528,7 @@ options:
       type: Number
       title: "Threshold"
       default: 10
-      min: 0      
+      min: 0
       description:
           R: >
             numeric (default: 10), set a threshold the modification indices must exceed in order to be shown
