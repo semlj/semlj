@@ -44,27 +44,26 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             lav_machine<-Estimate$new(self$options,data_machine)
             plot_machine<-Plotter$new(self$options,data_machine,lav_machine,self$results$pathgroup)
             
-            ### fill the info table ###
+            ### (prepare the) Model info ======================================
             j.init_table(self$results$info,lav_machine$tab_info)
 
-            #### parameter fit indices table ####
+            #### (prepare the) Fit indices ====================================
             j.init_table(self$results$fit$indices,"",ci=T,ciroot="rmsea.",ciformat='RMSEA {}% CI',ciwidth=self$options$ciWidth)
 
-            #### parameter estimates table ####
+            #### (prepare the) Parameter estimates table ======================
             j.init_table(self$results$models$coefficients,lav_machine$tab_coefficients,ci=T,ciwidth=self$options$ciWidth)
 
-            #### loadings table ####
+            #### (prepare the) loadings table ####
             j.init_table(self$results$models$loadings,lav_machine$tab_loadings,ci=T,ciwidth=self$options$ciWidth)
             
-            ### prepare defined params ###
+            ### (prepare the) defined params ###
             j.init_table(self$results$models$defined,lav_machine$tab_defined,ci=T,ciwidth=self$options$ciWidth)
 
-            ### prepare intercepts ###
+            ### (prepare the) intercepts ###
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
                 j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
 
-
-            ### additional output ###
+            ### (prepare the) Covariances and correlations ====================
             if (is.something(lav_machine$tab_covcorrObserved)) {
                 j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved, append=TRUE)
                 j.init_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
@@ -110,73 +109,66 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             warns<-lav_machine$warnings
 
-            ## fit info
+            ### Fit info ======================================================
             j.fill_table(self$results$info,lav_machine$tab_info)
             j.add_warnings(self$results$info,lav_machine)
 
-            ## stop if error
-             
+            ### stop if error
             if (is.something(lav_machine$errors)) {
-              stop(paste(lav_machine$errors,collapse = "; "))
-            } 
+                stop(paste(lav_machine$errors,collapse = "; "))
+            }
             
-            ## fit indices
+            ### Fit indices ===================================================
             self$results$fit$indices$setRow(rowNo=1,lav_machine$tab_fitindices)
              
-            ## fit test
+            ### Fit test ======================================================
             j.fill_table(self$results$fit$main,lav_machine$tab_fit,append=T)
 
-            ## constraints fit test
+            ### Constraints fit test ==========================================
             j.fill_table(self$results$fit$constraints, lav_machine$tab_constfit, append=T, spaceby="type")
             j.add_warnings(self$results$fit$constraints,lav_machine)
 
-            ### parameters estimates ####
+            ### Parameters estimates ==========================================
             j.fill_table(self$results$models$coefficients,lav_machine$tab_coefficients)
 
-            ### loadings table ####
+            ### Loadings table ================================================
             j.fill_table(self$results$models$loadings,lav_machine$tab_loadings)
              
             j.fill_table(self$results$models$defined,lav_machine$tab_defined)
             j.add_warnings(self$results$models$defined,lav_machine,"defined")
             
-            
             if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts)) {
                j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
             }
 
-
-            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts)) {
-                j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
-            }
-
-            # Additional fit measures (1): User model versus baseline model
+            ### Additional fit measures (1): User model versus baseline model =
             if (self$options$outputAdditionalFitMeasures) {
                 j.fill_table(self$results$add_outputs$compModelBsl,lav_machine$tab_compModelBsl)
             }
 
-            # Additional fit measures (2): Other Fit Indices
+            ### Additional fit measures (2): Other Fit Indices ================
             if (self$options$outputAdditionalFitMeasures) {
                 j.fill_table(self$results$add_outputs$otherFit,lav_machine$tab_otherFit)
             }
             
-            # R² measures
+            ### R² measures ===================================================
             if (self$options$outputRSquared) {
                 j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
             }
             
-            # Mardia's coefficients
+            ### Mardia's coefficients =========================================
             if (self$options$outputMardiasCoefficients) {
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)
             }
 
 
-            # Modification indices
+            ### Modification indices ==========================================
             if (self$options$outputModificationIndices) {
                 j.fill_table(self$results$modgroup$modInd,lav_machine$tab_modInd,append=T)
                 j.add_warnings(self$results$modgroup$modInd,lav_machine,"tab_modInd")
             }
     
-            ### loadings vars and covars ####
+            ### Covariances and correlations ==================================
             if (is.something(lav_machine$tab_covcorrObserved)) {
                 table<-self$results$group_covariances$covcorrObserved
                 obj<-lav_machine$tab_covcorrObserved
@@ -201,7 +193,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 j.fill_table(table, obj, spaceby="variable")
             }
             
-            ## diagrams
+            ### Path diagrams =================================================
             private$.plot_machine$preparePlots()   
             if (is.something(private$.plot_machine$warnings$diagram)) {
                  for (i in seq_along(private$.plot_machine$warnings$diagram))
@@ -276,8 +268,9 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
         },
 
-## at the moment no "syntax mode" is produced. I do not think that this module will be 
-## useful in R, so the there's no need to output it's R syntax
+        ### at the moment no "syntax mode" is produced. I do not think that this
+        ### module will be useful in R, so the there's no need to output it's R
+        ### syntax
         .sourcifyOption = function(option) {
             return("")
         }
