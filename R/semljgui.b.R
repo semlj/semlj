@@ -62,21 +62,21 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             ### (prepare the) Covariances and correlations ====================
             if (is.something(lav_machine$tab_covcorrObserved)) {
-                j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved, append=TRUE)
+                j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
                 j.init_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
             }
 
             if (is.something(lav_machine$tab_covcorrImplied)) {
-                j.expand_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied, append=TRUE)
+                j.expand_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied)
                 j.init_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied)
             }
             if (is.something(lav_machine$tab_covcorrResidual)) {
-                j.expand_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual, append=TRUE)
+                j.expand_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual)
                 j.init_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual)
             }
             
             if (is.something(lav_machine$tab_covcorrCombined)) {
-                j.expand_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined, append=TRUE)
+                j.expand_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined)
                 j.init_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined)
             }
                 
