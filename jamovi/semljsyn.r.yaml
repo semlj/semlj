@@ -11,7 +11,7 @@ items:
     visible: (FALSE)
 
 
-  # Model overview and examples 
+  # Model overview and examples ===============================================
   - name: info
     title: Models Info
     type: Table
@@ -47,7 +47,7 @@ items:
         title: Outcome
 
 
-  # Overall Tests
+  # Overall Tests =============================================================
   - name: fit
     title: "Overall Tests"
     type: Group
@@ -55,8 +55,10 @@ items:
     clearWith:
       - code
     items:
+
+      # Model tests -----------------------------------------------------------
       - name: main
-        title: Model Tests
+        title: Model tests
         type: Table
         clearWith:
           - ciType
@@ -77,8 +79,10 @@ items:
             type: number
             format: zto,pvalue
 
+      # Constraints score tests -----------------------------------------------
+      # OUTPUT DOESN'T SEEM TO BE IMPLEMENTED YET
       - name: constraints
-        title: Constraints Score Tests
+        title: Constraints score tests
         type: Table
         visible: false
         clearWith:
@@ -111,8 +115,9 @@ items:
             type: number
             format: zto,pvalue
 
+      # Fit indices -----------------------------------------------------------
       - name: indices
-        title: Fit Indices
+        title: Fit indices
         type: Table
         clearWith:
           - endogenous
@@ -156,14 +161,17 @@ items:
             type: number
             format: zto,pvalue
 
-  # Estimates
+
+  # Estimates =================================================================
   - name: models
     title: "Estimates"
     type: Group
     visible: false
     items:
+  
+      # Parameter estimates ---------------------------------------------------
       - name: coefficients
-        title: Parameter Estimates
+        title: Parameter estimates
         type: Table
         refs: lavaan
         clearWith:
@@ -214,8 +222,9 @@ items:
             type: number
             format: zto,pvalue
 
+      # Measurement model -----------------------------------
       - name: loadings
-        title: Measurement Model
+        title: Measurement model
         type: Table
         visible: false
         clearWith:
@@ -267,7 +276,9 @@ items:
             type: number
             format: zto,pvalue
 
-# UNCLEAR TO WHICH GROUP THEY SHALL BELONG
+      # Intercepts ------------------------------------------------------------
+      # UNCLEAR TO WHICH GROUP THE TABLE SHALL BELONG
+      # DON'T SEEM TO BE IMPLEMENTED YET
       - name: intercepts
         title: Intercepts
         type: Table
@@ -318,8 +329,9 @@ items:
             type: number
             format: zto
 
+      # Defined parameters ----------------------------------------------------
       - name: defined
-        title: Defined Parameters
+        title: Defined parameters
         type: Table
         visible: false
         clearWith:
@@ -370,13 +382,14 @@ items:
             format: zto,pvalue
 
 
-  # Additional outputs
+  # Additional outputs ========================================================
   - name: add_outputs
     title: "Additional outputs"
     type: Group
     visible: (outputAdditionalFitMeasures || outputRSquared || outputMardiasCoefficients)
     items:
-      # Additional fit measures (1): User model versus baseline model
+
+      # Additional fit measures (1): User model versus baseline model ---------
       - name: compModelBsl
         title: 'User model versus baseline model'
         type: Table
@@ -392,9 +405,9 @@ items:
             title: Model
             type: number
             format: zto
-      # Additional fit measures (2): Other Fit Indices
+      # Additional fit measures (2): Other fit indices ------------------------
       - name: otherFit
-        title: 'Other Fit Indices'
+        title: 'Other fit indices'
         type: Table
         visible: (outputAdditionalFitMeasures)      
 #       description:
@@ -408,7 +421,7 @@ items:
             title: Model
             type: number
 
-      # R² measures
+      # R² measures -----------------------------------------------------------
       - name: Rsquared
         title: 'R²-values of the endogenous variables'
         type: Table
@@ -424,7 +437,7 @@ items:
             title: R²
             type: number
 
-      # Mardia's coefficients
+      # Mardia's coefficients -------------------------------------------------
       - name: mardia
         title: "Mardia's coefficients"
         type: Table
@@ -454,13 +467,15 @@ items:
           format: zto,pvalue
       
 
-  # Covariances and correlations
+  # Covariances and correlations ==============================================
   - name: group_covariances
     title: "Covariances and correlations"
     type: Group    
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)
     items:
-    #     variable number of rows and columns
+
+    # all tables below have variable number of rows and columns
+    # Observed covariances and correlations -----------------------------------
     - name: covcorrObserved
       title: Observed covariances (lower triangle) and correlations (upper triangle) 
       type: Table
@@ -477,6 +492,7 @@ items:
         title: ""
         type: text
 
+    # Model-implied / fitted covariances and correlations ---------------------
     - name: covcorrImplied
       title: Fitted covariances (lower triangle) and correlations (upper triangle)
       type: Table
@@ -493,6 +509,7 @@ items:
         title: ""
         type: text
 
+    # Residual covariances and correlations -----------------------------------
     - name: covcorrResidual
       title: Residual covariances (lower triangle) and correlations (upper triangle)
       type: Table
@@ -509,6 +526,8 @@ items:
         title: ""
         type: text
 
+    # Combined covariances and correlations (sorted by variable; observed,
+    # implied, residual within a cell -----------------------------------------
     - name: covcorrCombined
       title: Covariances (lower triangle) and correlations (upper triangle)
       type: Table
@@ -529,7 +548,8 @@ items:
         title: ""
         type: text
 
-  # Modification indices
+
+  # Modification indices ======================================================
   - name: modgroup
     title: "Modifcation indices"
     type: Group
@@ -581,7 +601,7 @@ items:
           format: zto
 
 
-  # Path model
+  # Path model ================================================================
   - name: pathgroup
     type: Group
     title: Path Model
@@ -601,8 +621,10 @@ items:
       - diag_paths
       - dia_intercepts
     items:
+
+    # Path diagrams -----------------------------------------------------------
       - name: diagrams
-        title: Path Diagrams
+        title: Path diagrams
         type: Array
         description: an array of path diagrams
         visible: (diagram)
@@ -627,7 +649,8 @@ items:
             - diag_paths
             - diag_intercepts
           refs: semplot
-             
+
+    # Path diagram notes ------------------------------------------------------             
       - name: notes
         type: Table
         title: ""
