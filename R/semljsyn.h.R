@@ -1092,10 +1092,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
-                                    `name`="bogus", 
+                                    `name`="variable", 
                                     `title`="", 
-                                    `type`="text", 
-                                    `visible`=FALSE))))
+                                    `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="covcorrImplied",
@@ -1109,10 +1108,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
-                                    `name`="bogus", 
+                                    `name`="variable", 
                                     `title`="", 
-                                    `type`="text", 
-                                    `visible`=FALSE))))
+                                    `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="covcorrResidual",
@@ -1126,10 +1124,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
-                                    `name`="bogus", 
+                                    `name`="variable", 
                                     `title`="", 
-                                    `type`="text", 
-                                    `visible`=FALSE))))
+                                    `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="covcorrCombined",
@@ -1143,15 +1140,14 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
-                                    `name`="type", 
-                                    `title`="Type", 
-                                    `type`="text", 
-                                    `visible`=TRUE),
-                                list(
-                                    `name`="bogus", 
+                                    `name`="variable", 
                                     `title`="", 
                                     `type`="text", 
-                                    `visible`=FALSE))))}))$new(options=options))
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="type", 
+                                    `title`="", 
+                                    `type`="text"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(

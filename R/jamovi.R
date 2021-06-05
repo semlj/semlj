@@ -60,8 +60,8 @@ fromb64<- function(x,...) UseMethod(".fromb64")
 
 bogusfromb64<-function(obj,ref=NULL) fromb64(obj,ref=ref)
 
-######### tables #########
 
+######### tables #########
 
 j.init_table<-function(table,obj,ci=FALSE,ciroot="",ciformat="{}% Confidence Intervals",ciwidth,indent=NULL) {
 
@@ -88,34 +88,31 @@ j.init_table<-function(table,obj,ci=FALSE,ciroot="",ciformat="{}% Confidence Int
     rows<-trows[indent]
     for (j in rows)
       table$addFormat(rowKey=j,col=1,jmvcore::Cell.INDENTED)
-  }
-  
-  table$setVisible(TRUE)
-  
+  }  
+  table$setVisible(TRUE) 
 }
-j.init_table_append<-function(table,obj, indent=NULL) {
+
+j.init_table_append<-function(table, obj, indent=NULL) {
   
-  last<-table$rowCount
+  last <- table$rowCount
   for (i in seq_along(obj)) 
-    table$addRow(rowKey=last+i,obj[[i]])
+    table$addRow(rowKey=last+i, obj[[i]])
   
   if (!is.null(indent)) {
-    trows<-1:i
-    rows<-trows[indent]
+    trows <- 1:i
+    rows <- trows[indent]
     for (j in rows)
       table$addFormat(rowKey=last+j,col=1,jmvcore::Cell.INDENTED)
   }
-  
 }
 
 ## add columns to a table
-j.expand_table<-function(table,obj,types="text", superTitle=NULL,append=FALSE) {
+j.expand_table <- function(table, obj, types="text", superTitle=NULL, append=FALSE) {
   
-  j<-0
-  if (append) {
-    j<-length(table$columns)-1
-  }
-  if (inherits(obj,"data.frame")) {
+  j <- 0
+  if (append) { j <- length(table$columns) - 1 }
+  
+  if (inherits(obj, "data.frame")) {
       .names<-names(obj)
       .types<-unlist(lapply(obj,class))
       .types<-gsub("numeric","number",.types)
@@ -128,19 +125,18 @@ j.expand_table<-function(table,obj,types="text", superTitle=NULL,append=FALSE) {
     }
 
   for (i in seq_along(.names)) {
-    table$addColumn(name = .names[[i]], title = .names[[i]], index = (i+j), superTitle = superTitle, type=.types[i])
+#   table$addColumn(name = .names[[i]], title = .names[[i]], index = (i+j), superTitle = superTitle, type=.types[i])
+    table$addColumn(name = .names[[i]], title = .names[[i]], superTitle = superTitle, type=.types[i])
   }
-  
-  
-  
+  str(table)  
 }
 
-j.fill_table<-function(table,obj, fixNA=TRUE,append=FALSE,spaceby=NULL,start=1) {
+j.fill_table<-function(table,obj, fixNA=TRUE, append=FALSE, spaceby=NULL, start=1) {
 
   if (!is.something(obj))
     return()
   
-  last<-start-1
+  last <- start-1
   if (append)  last<-table$rowCount
   
   FUNC<-function(i,w) table$setRow(rowNo=i,w)
@@ -161,7 +157,8 @@ j.fill_table<-function(table,obj, fixNA=TRUE,append=FALSE,spaceby=NULL,start=1) 
          t[which(is.na(t))]<-""
        FUNC(i+last,t)
    }
-  if (is.something(spaceby)) {
+   
+   if (is.something(spaceby)) {
           if ((spaceby %in% names(obj))) {
               col<-obj[,spaceby]
               rows<-unlist(lapply(unique(col),function(x) min(which(col==x))))

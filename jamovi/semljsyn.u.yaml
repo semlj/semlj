@@ -295,76 +295,205 @@ children:
       - type: LayoutBox
         margin: large
         stretchFactor: 1
-        style: inline
-        children:
-          - type: CheckBox
-            name: diagram
-          - type: Label
-            label: Paths
+        style: list
+        children:        
+          - type: LayoutBox
             margin: large
-            style: list
-            children:
-              - type: RadioButton
-                name: diag_paths_est
-                optionName: diag_paths
-                optionPart: est
-                enable: (diagram)
-              - type: RadioButton
-                name: diag_paths_stand
-                optionName: diag_paths
-                optionPart: stand
-                enable: (diagram)
-              - type: RadioButton
-                name: diag_paths_name
-                optionName: diag_paths
-                optionPart: name
-                enable: (diagram)
-              - type: RadioButton
-                name: diag_paths_hide
-                optionName: diag_paths
-                optionPart: hide
-                enable: (diagram)
-          - type: Label
-            label: Show
-            margin: large
-            style: list
-            children:
+            stretchFactor: 1
+            style: inline
+            children:        
               - type: CheckBox
-                name: diag_resid
-                enable: (diagram)
-              - type: CheckBox
-                name: diag_intercepts
-                enable: (diagram)
-      - type: LayoutBox
-        margin: large
-        stretchFactor: 1
-        style: inline
-        children:
-          - type: Label
-            label: Layout
+                name: diagram
+                style: inline
+                children:
+                  - type: LayoutBox
+                    margin: none
+                    stretchFactor: 1
+                    style: list
+                    children:
+                      - type: Label
+                        label: Path diagram
+                        style: list
+                        children:
+                          - type: LayoutBox
+                            margin: none
+                            stretchFactor: 1
+                            style: inline
+                            children:
+                              - type: CheckBox
+                                name: diag_resid
+                                enable: (diagram)
+                              - type: CheckBox
+                                name: diag_intercepts
+                                enable: (diagram)                    
+
+          - type: LayoutBox
             margin: large
-            style: list
-            children:
-              - type: ComboBox
-                name: diag_type
-                enable: (diagram)
-              - type: ComboBox
-                name: diag_rotate
-                enable: (diagram)
-          - type: Label
-            label: Nodes
-            margin: large
-            style: list
-            children:
-              - type: ComboBox
-                name: diag_labsize
-                enable: (diagram)
-              - type: ComboBox
-                name: diag_shape_man
-                enable: (diagram)
-              - type: ComboBox
-                name: diag_shape_lat
-                enable: (diagram)
-              - type: ComboBox
-                name: diag_abbrev
-                enable: (diagram)
+            stretchFactor: 1
+            style: inline
+            children:        
+
+              - type: Label
+                label: Paths
+                margin: large
+                style: list
+                children:
+                   - type: RadioButton
+                     name: diag_paths_est
+                     optionName: diag_paths
+                     optionPart: est
+                     enable: (diagram)
+                   - type: RadioButton
+                     name: diag_paths_stand
+                     optionName: diag_paths
+                     optionPart: stand
+                     enable: (diagram)
+                   - type: RadioButton
+                     name: diag_paths_name
+                     optionName: diag_paths
+                     optionPart: name
+                     enable: (diagram)
+                   - type: RadioButton
+                     name: diag_paths_hide
+                     optionName: diag_paths
+                     optionPart: hide
+                     enable: (diagram)
+
+              - type: LayoutBox
+                margin: large
+                stretchFactor: 1
+                style: list
+                children:        
+                  - type: Label
+                    label: Layout
+                    margin: large
+                    style: list
+                    children:
+                      - type: ComboBox
+                        name: diag_type
+                        enable: (diagram)
+                      - type: ComboBox
+                        name: diag_rotate
+                        enable: (diagram)
+
+              - type: LayoutBox
+                margin: large
+                stretchFactor: 1
+                style: list
+                children:        
+                  - type: Label
+                    label: Nodes
+                    margin: large
+                    style: list
+                    children:
+                      - type: ComboBox
+                        name: diag_labsize
+                        enable: (diagram)
+                      - type: ComboBox
+                        name: diag_shape_man
+                        enable: (diagram)
+                      - type: ComboBox
+                        name: diag_shape_lat
+                        enable: (diagram)
+                      - type: ComboBox
+                        name: diag_abbrev
+                        enable: (diagram)
+                
+#  - type: CollapseBox
+#    label: Path diagram
+#    collapsed: true
+#    stretchFactor: 1
+#    style: list
+#    children:
+#      - type: CheckBox
+#        name: diagram
+#        children:
+#          - type: LayoutBox
+#            margin: large
+#            stretchFactor: 1
+#            style: list
+#            children:
+#              - type: Label
+#                label: Path diagram
+#                style: inline
+#                children:
+#                  - type: CheckBox
+#                    name: diag_resid
+#                    enable: (diagram)
+#                  - type: CheckBox
+#                    name: diag_intercepts
+#                    enable: (diagram)                    
+
+#              - type: Label
+#                label: Paths
+#                margin: large
+#                style: inline
+#                children:
+#                  - type: RadioButton
+#                    name: diag_paths_est
+#                    optionName: diag_paths
+#                    optionPart: est
+#                    enable: (diagram)
+#                  - type: RadioButton
+#                    name: diag_paths_stand
+#                    optionName: diag_paths
+#                    optionPart: stand
+#                    enable: (diagram)
+#                  - type: RadioButton
+#                    name: diag_paths_name
+#                    optionName: diag_paths
+#                    optionPart: name
+#                    enable: (diagram)
+#                  - type: RadioButton
+#                    name: diag_paths_hide
+#                    optionName: diag_paths
+#                    optionPart: hide
+#                    enable: (diagram)
+
+#              - type: Label
+#                label: Layout
+#                margin: large
+#                style: inline
+#                children:
+#                  - type: LayoutBox
+#                    margin: none
+#                    stretchFactor: 1
+#                    style: inline
+#                    children:                
+#                      - type: ComboBox
+#                        name: diag_type
+#                        enable: (diagram)
+#                      - type: ComboBox
+#                        name: diag_rotate
+#                        enable: (diagram)
+
+#              - type: Label
+#                label: Nodes
+#                margin: large
+#                style: list
+#                children:
+#                  - type: LayoutBox
+#                    margin: small
+#                    stretchFactor: 1
+#                    style: inline
+#                    children:
+#                      - type: LayoutBox
+#                        margin: small
+#                        style: list
+#                        children:
+#                          - type: ComboBox
+#                            name: diag_labsize
+#                            enable: (diagram)
+#                          - type: ComboBox
+#                            name: diag_abbrev
+#                            enable: (diagram)
+#                      - type: LayoutBox
+#                        margin: small
+#                        style: list
+#                        children:                    
+#                          - type: ComboBox
+#                            name: diag_shape_man
+#                            enable: (diagram)
+#                          - type: ComboBox
+#                            name: diag_shape_lat
+#                            enable: (diagram)

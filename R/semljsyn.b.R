@@ -66,23 +66,22 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             ### additional output ###
             if (is.something(lav_machine$tab_covcorrObserved)) {
-                j.expand_table(self$results$group_covariances$covcorrObserved,lav_machine$tab_covcorrObserved)
-                j.init_table(self$results$group_covariances$covcorrObserved,lav_machine$tab_covcorrObserved)
+                j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved, append=TRUE)
+                j.init_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
             }
 
             if (is.something(lav_machine$tab_covcorrImplied)) {
-                j.expand_table(self$results$group_covariances$covcorrImplied,lav_machine$tab_covcorrImplied)
-                j.init_table(self$results$group_covariances$covcorrImplied,lav_machine$tab_covcorrImplied)
+                j.expand_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied, append=TRUE)
+                j.init_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied)
             }
             if (is.something(lav_machine$tab_covcorrResidual)) {
-                j.expand_table(self$results$group_covariances$covcorrResidual,lav_machine$tab_covcorrResidual)
-                j.init_table(self$results$group_covariances$covcorrResidual,lav_machine$tab_covcorrResidual)
+                j.expand_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual, append=TRUE)
+                j.init_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual)
             }
             
             if (is.something(lav_machine$tab_covcorrCombined)) {
-                j.expand_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined,append=T)
+                j.expand_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined, append=TRUE)
                 j.init_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined)
-                
             }
                 
             ################
@@ -128,7 +127,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             j.fill_table(self$results$fit$main,lav_machine$tab_fit,append=T)
 
             ## constraints fit test
-            j.fill_table(self$results$fit$constraints,lav_machine$tab_constfit,append=T, spaceby="type")
+            j.fill_table(self$results$fit$constraints, lav_machine$tab_constfit, append=T, spaceby="type")
             j.add_warnings(self$results$fit$constraints,lav_machine)
 
             ### parameters estimates ####
@@ -179,34 +178,27 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
             ### loadings vars and covars ####
             if (is.something(lav_machine$tab_covcorrObserved)) {
-                
                 table<-self$results$group_covariances$covcorrObserved
                 obj<-lav_machine$tab_covcorrObserved
-                j.fill_table(table,obj)
-
+                j.fill_table(table, obj)
             }
             
             if (is.something(lav_machine$tab_covcorrImplied)) {
-                
                 table<-self$results$group_covariances$covcorrImplied
                 obj<-lav_machine$tab_covcorrImplied
-                j.fill_table(table,obj) 
-                
+                j.fill_table(table, obj) 
             }
             
             if (is.something(lav_machine$tab_covcorrResidual)) {
-                
                 table<-self$results$group_covariances$covcorrResidual
                 obj<-lav_machine$tab_covcorrResidual
-                j.fill_table(table,obj) 
-                
+                j.fill_table(table, obj) 
             }
+
             if (is.something(lav_machine$tab_covcorrCombined)) {
-                
                 table<-self$results$group_covariances$covcorrCombined
                 obj<-lav_machine$tab_covcorrCombined
-                j.fill_table(table,obj,spaceby="type") 
-                
+                j.fill_table(table, obj, spaceby="variable")
             }
             
             ## diagrams

@@ -461,11 +461,6 @@ items:
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)
     items:
     #     variable number of rows and columns
-    #
-    #     APPLIES TO ALL TABLES BELOW: For some reason the jamovi function to add columns in R does
-    #     not allow to add on the right of the last column. So we define a bogus invisible column
-    #     on the left of which all the new columns will go
-    
     - name: covcorrObserved
       title: Observed covariances (lower triangle) and correlations (upper triangle) 
       type: Table
@@ -478,10 +473,9 @@ items:
         - multigroup
         - code
       columns:
-      - name: bogus
+      - name: variable
         title: ""
         type: text
-        visible: false
 
     - name: covcorrImplied
       title: Fitted covariances (lower triangle) and correlations (upper triangle)
@@ -495,10 +489,9 @@ items:
         - multigroup
         - code
       columns:
-      - name: bogus
+      - name: variable
         title: ""
         type: text
-        visible: false
 
     - name: covcorrResidual
       title: Residual covariances (lower triangle) and correlations (upper triangle)
@@ -512,10 +505,9 @@ items:
         - multigroup
         - code
       columns:
-      - name: bogus
+      - name: variable
         title: ""
         type: text
-        visible: false
 
     - name: covcorrCombined
       title: Covariances (lower triangle) and correlations (upper triangle)
@@ -529,14 +521,13 @@ items:
         - multigroup
         - code
       columns:
-      - name: type
-        title: "Type"
-        type: text
-        visible: true
-      - name: bogus
+      - name: variable
         title: ""
         type: text
-        visible: false
+        combineBelow: true   
+      - name: type
+        title: ""
+        type: text
 
   # Modification indices
   - name: modgroup

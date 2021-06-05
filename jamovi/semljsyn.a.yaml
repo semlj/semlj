@@ -418,7 +418,7 @@ options:
 
     - name: outpuCombineCovariances
       type: Bool
-      title: "combined tables"
+      title: "combined into one table"
       default: false
 
       
@@ -448,7 +448,7 @@ options:
 
     ### (5) Path diagram ####
     - name: diagram
-      title: Path Diagram
+      title: ""
       type: Bool
       default: false
       description:
@@ -473,7 +473,7 @@ options:
              Choose the diagram labels
 
     - name: diag_resid
-      title: Residuals
+      title: show residuals
       type: Bool
       default: false
       description:
@@ -481,7 +481,7 @@ options:
             `TRUE` or `FALSE` (default), produce a path diagram
 
     - name: diag_intercepts
-      title: Intercepts
+      title: show intercepts
       type: Bool
       default: false
       description:

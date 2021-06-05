@@ -215,7 +215,7 @@ Estimate <- R6::R6Class("Estimate",
                               fitCov = lavaan::inspect(self$model,   "fitted")$cov;
                               # TO-DO: Implement standardized residuals (cov.z instead of cov)
                               resCov = lavaan::lavResiduals(self$model, type="raw")$cov;
-                              
+
                               if (self$options$outputObservedCovariances) {
                                 obsCrr = cov2cor(obsCov);
                                 obsCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
@@ -223,18 +223,14 @@ Estimate <- R6::R6Class("Estimate",
                                 obsCvC[upper.tri(obsCvC, diag=FALSE)] = obsCrr[upper.tri(obsCrr, diag=FALSE)];
                                 ## The fill.table() functions accepts data.frames or named vector, not matrix 
                                 ## the need names() to return something
-                                df<-as.data.frame(obsCvC)
-                                df$type="Observed"
-                                self$tab_covcorrObserved<-df
+                                self$tab_covcorrObserved <- cbind(variable=nmeVar, type="observed", as.data.frame(obsCvC));
                               }
                               if (self$options$outputImpliedCovariances)  { 
                                 fitCrr = cov2cor(fitCov);
                                 fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
                                 fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
                                 fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
-                                df<-as.data.frame(fitCvC)
-                                df$type="Implied"
-                                self$tab_covcorrImplied<-df
+                                self$tab_covcorrImplied <- cbind(variable=nmeVar, type="implied", as.data.frame(fitCvC));
                               }
                               if (self$options$outputResidualCovariances) {
                                 # calculates the difference between observed and fitted correlations since
@@ -245,16 +241,16 @@ Estimate <- R6::R6Class("Estimate",
                                 resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
                                 resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
                                 resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
-                                df<-as.data.frame(resCvC)
-                                df$type="Residual"
-                                self$tab_covcorrResidual<-df
+                                self$tab_covcorrResidual <- cbind(variable=nmeVar, type="residual", as.data.frame(resCvC));
                                 
                               }
                               if (self$options$outpuCombineCovariances) {
-                                self$tab_covcorrCombined<-rbind(self$tab_covcorrObserved,self$tab_covcorrImplied,self$tab_covcorrResidual)
-                                self$tab_covcorrObserved<-NULL
-                                self$tab_covcorrImplied<-NULL
-                                self$tab_covcorrResidual<-NULL
+                                dfCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
+                                self$tab_covcorrCombined <- dfCombined[order(dfCombined$variable), ];
+#                               self$tab_covcorrCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
+                                self$tab_covcorrObserved <- NULL;
+                                self$tab_covcorrImplied  <- NULL;
+                                self$tab_covcorrResidual <- NULL;
                               }
 
                               mark('finished tab_covcorr');
