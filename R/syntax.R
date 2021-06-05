@@ -19,6 +19,7 @@ Syntax <- R6::R6Class(
           inherit = Dispatch,
           public=list(
               endogenous=NULL,
+              observed=NULL,
               lav_terms=NULL,
               lav_structure=NULL,
               tab_coefficients=NULL,
@@ -32,7 +33,10 @@ Syntax <- R6::R6Class(
               tab_otherFit=NULL,
               tab_Rsquared=NULL,
               tab_mardia=NULL,
-              tab_covcorr=NULL,
+              tab_covcorrObserved=NULL,
+              tab_covcorrImplied=NULL,                          
+              tab_covcorrResidual=NULL,
+              tab_covcorrCombined=NULL,
               tab_modInd=NULL,
               structure=NULL,
               options=NULL,
@@ -40,14 +44,10 @@ Syntax <- R6::R6Class(
               indirect_names=NULL,
               models=NULL,
               initialize=function(options,datamatic) {
-                
                 astring<-options$code
-                reg<-"[=~:+\n]"
-                avec<-stringr::str_split(astring,reg)[[1]]
-                avec<-avec[sapply(avec, function(a) a!="")]
-                vars<-sapply(avec, function(a) stringr::str_remove(a,'.?[*]'))
-                
-                super$initialize(options=options,vars=vars)
+                super$initialize(options=options,vars=datamatic$vars)
+
+                self$observed<-datamatic$observed
                 self$multigroup=datamatic$multigroup
 
                 # check_* check the input options and produces tables and list with names
@@ -177,7 +177,7 @@ Syntax <- R6::R6Class(
                   .lav_structure$type<-ifelse(.lav_structure$free>0,"Free","Fixed")
               ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
                   if (is.something(self$multigroup)) {
-  #                      levs<-c(self$multigroup$levels,"All")
+                        levs<-c(self$multigroup$levels,"All")
                        .lav_structure$group<-ifelse(.lav_structure$group==0,length(levs)+1,.lav_structure$group)
                        .lav_structure$lgroup<-levs[.lav_structure$group]
                    } else
@@ -259,9 +259,23 @@ Syntax <- R6::R6Class(
                 }
               }
               
+              #### additional output ####
+              .length <- length(self$observed)
+              tab <- as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$observed)));
               
+              if (self$options$outputObservedCovariances) { self$tab_covcorrObserved <- tab };
+              if (self$options$outputImpliedCovariances)  { self$tab_covcorrImplied  <- tab };
+              if (self$options$outputResidualCovariances) { self$tab_covcorrResidual <- tab };
+              
+              if (self$options$outpuCombineCovariances) {
+                self$tab_covcorrCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
+                self$tab_covcorrObserved <- NULL
+                self$tab_covcorrImplied  <- NULL
+                self$tab_covcorrResidual <- NULL
+              }
 
             },
+
             ### compute indirect effects if required by the user
             .indirect=function() {
 

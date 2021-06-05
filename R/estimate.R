@@ -16,7 +16,7 @@ Estimate <- R6::R6Class("Estimate",
                           tab_otherFit=NULL,
                           tab_Rsquared=NULL,
                           tab_mardia=NULL,
-                          tab_covcorr=NULL,                          
+                          
                           tab_modInd=NULL,
                           ciwidth=NULL,
                           initialize=function(options,datamatic) {
@@ -185,53 +185,52 @@ Estimate <- R6::R6Class("Estimate",
                             if (self$options$outputRSquared) {
                               ginfo('begin tab_r2')
                               RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE);
-                              mark(RSqEst)
                               RSqEst = RSqEst[RSqEst$op == "r2",];
                               if (nrow(RSqEst) > 0) { 
                                 self$tab_Rsquared<- RSqEst;
                               };
                               mark('finished tab_r2');
-                              mark(self$tab_r2);
                             }
 
                             # Mardia's coefficients
-                            if (FALSE) {
                             if (self$options$outputMardiasCoefficients) {
                               mark('begin tab_mardia');
-                              mrdSkw = semTools::mardiaSkew(self$data[,lavaan::lavaanNames(self$model)]);
-                              mrdKrt = semTools::mardiaKurtosis(self$data[,lavaan::lavaanNames(self$model)]);
+                              mrdSkw = semTools::mardiaSkew(data[,lavaan::lavaanNames(self$model)]);
+                              mrdKrt = semTools::mardiaKurtosis(data[,lavaan::lavaanNames(self$model)]);
                               
                               mark('before adding to tab_mardia')
-                              self$tab_mardia <- list(list(name = "Skewness", coeff=mrdSkw[[1]], as.list(mrdSkw[2:4])),
-                                                      list(name = "Kurtosis", coeff=mrdKrt[[1]], as.list(mrdKrt[2:3])));
-                              mark('finished tab_mardia');                            
-                            }
+                              abit<-unlist(mrdSkw[2:4])
+                              bbit<-unlist(mrdKrt[2:3])
+                              self$tab_mardia <- list(list(name = "Skewness", coeff=mrdSkw[[1]], z="", chi=abit[[1]],df=abit[[2]],p=abit[[3]]),
+                                                      list(name = "Kurtosis", coeff=mrdKrt[[1]], z=bbit[[1]],chi="",df="",p=bbit[[2]])
+                                                      );
                             }
 
                             # covariances and correlations
                             if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
                               nmeVar = lavaan::lavNames(self$model, 'ov');
                               numVar = length(nmeVar);
-                              self$tab_covcorr <- matrix(, nrow = 0, ncol=numVar + 1, dimnames=list(list(), c('type', nmeVar)));
                               
                               obsCov = lavaan::inspect(self$model, "observed")$cov;
                               fitCov = lavaan::inspect(self$model,   "fitted")$cov;
                               # TO-DO: Implement standardized residuals (cov.z instead of cov)
                               resCov = lavaan::lavResiduals(self$model, type="raw")$cov;
-                              
+
                               if (self$options$outputObservedCovariances) {
                                 obsCrr = cov2cor(obsCov);
                                 obsCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
                                 obsCvC[lower.tri(obsCvC, diag=TRUE)]  = obsCov[lower.tri(obsCov, diag=TRUE)];
                                 obsCvC[upper.tri(obsCvC, diag=FALSE)] = obsCrr[upper.tri(obsCrr, diag=FALSE)];
-                                self$tab_covcorr = rbind(self$tab_covcorr, cbind(rep("observed", numVar), obsCvC));
+                                ## The fill.table() functions accepts data.frames or named vector, not matrix 
+                                ## the need names() to return something
+                                self$tab_covcorrObserved <- cbind(variable=nmeVar, type="observed", as.data.frame(obsCvC));
                               }
                               if (self$options$outputImpliedCovariances)  { 
                                 fitCrr = cov2cor(fitCov);
                                 fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
                                 fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
                                 fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
-                                self$tab_covcorr = rbind(self$tab_covcorr, cbind(rep("fitted",   numVar), fitCvC));
+                                self$tab_covcorrImplied <- cbind(variable=nmeVar, type="implied", as.data.frame(fitCvC));
                               }
                               if (self$options$outputResidualCovariances) {
                                 # calculates the difference between observed and fitted correlations since
@@ -242,14 +241,18 @@ Estimate <- R6::R6Class("Estimate",
                                 resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
                                 resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
                                 resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
-                                self$tab_covcorr = rbind(self$tab_covcorr, cbind(rep("residual", numVar), resCvC));
+                                self$tab_covcorrResidual <- cbind(variable=nmeVar, type="residual", as.data.frame(resCvC));
+                                
+                              }
+                              if (self$options$outpuCombineCovariances) {
+                                dfCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
+                                self$tab_covcorrCombined <- dfCombined[order(dfCombined$variable), ];
+#                               self$tab_covcorrCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
+                                self$tab_covcorrObserved <- NULL;
+                                self$tab_covcorrImplied  <- NULL;
+                                self$tab_covcorrResidual <- NULL;
                               }
 
-                              # if the number of rows is larger than the number of variables, several cov. / corr. outputs
-                              # were chosen and they have to be sorted after the variable name in order to show them properly in the table
-                              if (nrow(self$tab_covcorr) > numVar) self$tab_covcorr = self$tab_covcorr[order(rownames(self$tab_covcorr)), ];
-
-                              mark(self$tab_covcorr);
                               mark('finished tab_covcorr');
                             }
 
@@ -263,7 +266,7 @@ Estimate <- R6::R6Class("Estimate",
                               if (nrow(modRes) > 0) {
                                 self$tab_modInd = modRes[order(modRes$mi, decreasing=TRUE), ];
                               } else {
-                                self$warnings = list(topic="mi", message='No modification indices above threshold.');
+                                self$warnings = list(topic="tab_modInd", message='No modification indices above threshold.');
                                 self$tab_modInd = NULL;
                               }
                               mark('finished tab_modInd');

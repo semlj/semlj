@@ -393,6 +393,12 @@ options:
       type: Bool
       title: "residual"
       default: false
+
+    - name: outpuCombineCovariances
+      type: Bool
+      title: "combined into one table"
+      default: false
+
       
      # NOT IMPLEMENTED YET (JASP-SEM)
      # The lavResiduals() gives more extensive information about the residuals. Per default, it will print both raw and
@@ -420,7 +426,7 @@ options:
 
     ### Path diagram ==========================================================
     - name: diagram
-      title: Path Diagram
+      title: ""
       type: Bool
       default: false
       description:
@@ -445,7 +451,7 @@ options:
              Choose the diagram labels
 
     - name: diag_resid
-      title: Residuals
+      title: show residuals
       type: Bool
       default: false
       description:
@@ -453,7 +459,7 @@ options:
             `TRUE` or `FALSE` (default), produce a path diagram
 
     - name: diag_intercepts
-      title: Intercepts
+      title: show intercepts
       type: Bool
       default: false
       description:
