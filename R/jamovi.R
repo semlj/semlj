@@ -110,7 +110,6 @@ j.init_table_append<-function(table, obj, indent=NULL) {
 j.expand_table <- function(table, obj, types="text", superTitle=NULL) {
   
 # if (append) { j <- length(table$columns) - 1 } else { j <- 0 }
-  
   if (inherits(obj, "data.frame")) {
       .names<-names(obj)
       .types<-unlist(lapply(obj,class))
@@ -127,7 +126,6 @@ j.expand_table <- function(table, obj, types="text", superTitle=NULL) {
     table$addColumn(name = .names[[i]], title = .names[[i]], superTitle = superTitle, type=.types[i])
 #   table$addColumn(name = .names[[i]], title = .names[[i]], index = (i+j), superTitle = superTitle, type=.types[i])
   }
-  str(table)  
 }
 
 j.fill_table<-function(table,obj, fixNA=TRUE, append=FALSE, spaceby=NULL, start=1) {

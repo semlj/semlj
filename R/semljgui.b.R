@@ -157,37 +157,28 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$outputMardiasCoefficients) {
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)
             }
+    
+            ### Covariances and correlations ==================================
+            if (is.something(lav_machine$tab_covcorrObserved)) {
+                j.fill_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved);
+            }
+            
+            if (is.something(lav_machine$tab_covcorrImplied)) {
+                j.fill_table(self$results$group_covariances$covcorrImplied,  lav_machine$tab_covcorrImplied);
+            }
+            
+            if (is.something(lav_machine$tab_covcorrResidual)) {
+                j.fill_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual); 
+            }
 
+            if (is.something(lav_machine$tab_covcorrCombined)) {
+                j.fill_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined, spaceby="variable")
+            }
 
             ### Modification indices ==========================================
             if (self$options$outputModificationIndices) {
                 j.fill_table(self$results$modgroup$modInd,lav_machine$tab_modInd,append=T)
                 j.add_warnings(self$results$modgroup$modInd,lav_machine,"tab_modInd")
-            }
-    
-            ### Covariances and correlations ==================================
-            if (is.something(lav_machine$tab_covcorrObserved)) {
-                table<-self$results$group_covariances$covcorrObserved
-                obj<-lav_machine$tab_covcorrObserved
-                j.fill_table(table, obj)
-            }
-            
-            if (is.something(lav_machine$tab_covcorrImplied)) {
-                table<-self$results$group_covariances$covcorrImplied
-                obj<-lav_machine$tab_covcorrImplied
-                j.fill_table(table, obj) 
-            }
-            
-            if (is.something(lav_machine$tab_covcorrResidual)) {
-                table<-self$results$group_covariances$covcorrResidual
-                obj<-lav_machine$tab_covcorrResidual
-                j.fill_table(table, obj) 
-            }
-
-            if (is.something(lav_machine$tab_covcorrCombined)) {
-                table<-self$results$group_covariances$covcorrCombined
-                obj<-lav_machine$tab_covcorrCombined
-                j.fill_table(table, obj, spaceby="variable")
             }
             
             ### Path diagrams =================================================

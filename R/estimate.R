@@ -215,8 +215,8 @@ Estimate <- R6::R6Class("Estimate",
                               
                               FUNK1 <- function(vec, invS) { as.numeric(t(as.matrix(vec)) %*% invS %*% as.matrix(vec)) };
                               MK_Cf <- sum(sapply(cntDta, FUNK1, invS=invS) ^ 2) / nObs;
-	                      MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
-	                      MK_p  <- pnorm(-abs(MK_z)) * 2;
+                              MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
+                              MK_p  <- pnorm(-abs(MK_z)) * 2;
                               
                               mark('before adding to tab_mardia')
                               self$tab_mardia <- list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
