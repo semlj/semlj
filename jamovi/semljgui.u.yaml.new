@@ -222,9 +222,44 @@ children:
                           borderless: true
                           height: auto
                           ghostText: write here
+<<<<<<< HEAD
 
 
   ### Model options ===========================================================
+=======
+          - type: LayoutBox
+            margin: large
+            style: inline
+            children:
+              - type: Label
+                label: Information
+                children:
+                  - type: LayoutBox
+                    margin: large
+                    children:
+                      - type: CheckBox
+                        name: showlabels
+                      - type: CheckBox
+                        name: constraints_examples
+                      - type: CheckBox
+                        name: outputAdditionalFitMeasures
+                      - type: CheckBox
+                        name: outputRSquared
+                      - type: CheckBox
+                        name: outputMardiasCoefficients
+                      - type: CheckBox
+                        name: outputObservedCovariances
+                      - type: CheckBox
+                        name: outputImpliedCovariances
+                      - type: CheckBox
+                        name: outputResidualCovariances
+                      - type: CheckBox
+                        name: outpuCombineCovariances
+                      - type: CheckBox
+                        name: outputModificationIndices
+                      - type: CheckBox
+                        name: miHideLow
+>>>>>>> 58e5a0c089205cfdc21f7848075a7696c2b9fafd
   - type: CollapseBox
     label: Model options
     collapsed: true
@@ -255,8 +290,17 @@ children:
                 name: scoretest
               - type: CheckBox
                 name: cumscoretest
+<<<<<<< HEAD
 
   ## Parameter options ========================================================
+=======
+  - type: LayoutBox
+    margin: large
+    children:
+      - type: TextBox
+        name: miThreshold
+        format: number
+>>>>>>> 58e5a0c089205cfdc21f7848075a7696c2b9fafd
   - type: CollapseBox
     label: Parameter options
     collapsed: true
@@ -368,17 +412,46 @@ children:
                 name: cov_x
               - type: CheckBox
                 name: cov_y
+<<<<<<< HEAD
 
 
   ### Multi-group analyses ====================================================
   - type: CollapseBox
     label: Multi-group analyses
+=======
+          - type: LayoutBox
+            margin: large
+            children:
+              - type: CheckBox
+                name: eq_loadings
+              - type: CheckBox
+                name: eq_intercepts
+              - type: CheckBox
+                name: eq_residuals
+              - type: CheckBox
+                name: eq_residual.covariances
+              - type: CheckBox
+                name: eq_means
+              - type: CheckBox
+                name: eq_thresholds
+              - type: CheckBox
+                name: eq_regressions
+              - type: CheckBox
+                name: eq_lv.variances
+              - type: CheckBox
+                name: eq_lv.covariances
+
+  ### Path diagram ============================================================
+  - type: CollapseBox
+    label: Path diagram
+>>>>>>> 58e5a0c089205cfdc21f7848075a7696c2b9fafd
     collapsed: true
     stretchFactor: 1
     style: list
     children:
       - type: LayoutBox
         margin: large
+<<<<<<< HEAD
         style: list
         children:
   ### (a) Equality constraints (three columns) --------------------------------
@@ -430,10 +503,18 @@ children:
         margin: large
         style: inline
         children:
+=======
+        stretchFactor: 1
+        style: list
+        children:
+  ### (a) Path diagram --------------------------------------------------------
+>>>>>>> 58e5a0c089205cfdc21f7848075a7696c2b9fafd
           - type: LayoutBox
             margin: large
-            style: list
+            stretchFactor: 1
+            style: inline
             children:
+<<<<<<< HEAD
               - type: LayoutBox
                 margin: large
                 style: inline
@@ -514,6 +595,8 @@ children:
             stretchFactor: 1
             style: inline
             children:
+=======
+>>>>>>> 58e5a0c089205cfdc21f7848075a7696c2b9fafd
               - type: CheckBox
                 name: diagram
                 style: inline
