@@ -261,17 +261,18 @@ Syntax <- R6::R6Class(
               
               #### additional output ####
               .length <- length(self$observed)
-              tab <- as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$observed)));
+              tab <- cbind(variable=self$observed, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
               
               if (self$options$outputObservedCovariances) { self$tab_covcorrObserved <- tab };
               if (self$options$outputImpliedCovariances)  { self$tab_covcorrImplied  <- tab };
               if (self$options$outputResidualCovariances) { self$tab_covcorrResidual <- tab };
               
               if (self$options$outpuCombineCovariances) {
-                self$tab_covcorrCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
-                self$tab_covcorrObserved <- NULL
-                self$tab_covcorrImplied  <- NULL
-                self$tab_covcorrResidual <- NULL
+                tab <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
+                self$tab_covcorrCombined <- tab[order(tab$variable), ];
+                self$tab_covcorrObserved <- NULL;
+                self$tab_covcorrImplied  <- NULL;
+                self$tab_covcorrResidual <- NULL;
               }
 
             },
