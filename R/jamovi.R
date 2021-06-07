@@ -107,10 +107,9 @@ j.init_table_append<-function(table, obj, indent=NULL) {
 }
 
 ## add columns to a table
-j.expand_table <- function(table, obj, types="text", superTitle=NULL, append=FALSE) {
+j.expand_table <- function(table, obj, types="text", superTitle=NULL) {
   
-  j <- 0
-  if (append) { j <- length(table$columns) - 1 }
+# if (append) { j <- length(table$columns) - 1 } else { j <- 0 }
   
   if (inherits(obj, "data.frame")) {
       .names<-names(obj)
@@ -125,8 +124,8 @@ j.expand_table <- function(table, obj, types="text", superTitle=NULL, append=FAL
     }
 
   for (i in seq_along(.names)) {
-#   table$addColumn(name = .names[[i]], title = .names[[i]], index = (i+j), superTitle = superTitle, type=.types[i])
     table$addColumn(name = .names[[i]], title = .names[[i]], superTitle = superTitle, type=.types[i])
+#   table$addColumn(name = .names[[i]], title = .names[[i]], index = (i+j), superTitle = superTitle, type=.types[i])
   }
   str(table)  
 }

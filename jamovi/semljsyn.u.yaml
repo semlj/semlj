@@ -28,6 +28,7 @@ children:
         margin: large
         style: inline
         children:
+  ### (a) Estimation ----------------------------------------------------------
           - type: Label
             label: Estimation
             margin: large
@@ -38,8 +39,9 @@ children:
               - type: ComboBox
                 name: likelihood
                 enable: '(estimator:ML)'
+  ### (b) Constraints tests ---------------------------------------------------
           - type: Label
-            label: Constraints Tests
+            label: Constraints tests
             margin: large
             style: list
             children:
@@ -58,6 +60,7 @@ children:
         margin: large
         style: inline
         children:
+  ### (a) Standard errors -----------------------------------------------------
           - type: Label
             label: Standard Errors
             margin: large
@@ -79,21 +82,9 @@ children:
                 name: se_boot
                 optionName: se
                 optionPart: boot
+  ### (b) Bootstrap settings --------------------------------------------------
           - type: Label
-            label: Confidence Intervals
-            margin: large
-            style: list
-            children:
-              - type: CheckBox
-                name: ci
-              - type: TextBox
-                name: ciWidth
-                label: Interval
-                suffix: '%'
-                format: number
-                enable: (ci)
-          - type: Label
-            label: Bootstrap C.I.
+            label: Bootstrap settings
             margin: large
             style: list
             children:
@@ -121,10 +112,25 @@ children:
                 name: bootN
                 format: number
                 enable: '(se:boot)'
+  ### (c) Confidence Intervals ------------------------------------------------
+          - type: Label
+            label: Confidence Intervals
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: ci
+              - type: TextBox
+                name: ciWidth
+                label: Interval
+                suffix: '%'
+                format: number
+                enable: (ci)
       - type: LayoutBox
         margin: large
         style: inline
         children:
+  ### (d) Estimates -----------------------------------------------------------
           - type: Label
             label: Estimates
             margin: large
@@ -136,6 +142,7 @@ children:
                 name: showintercepts
               - type: CheckBox
                 name: indirect
+  ### (e) Latent scale --------------------------------------------------------
           - type: Label
             label: Latent scale
             margin: large
@@ -145,6 +152,7 @@ children:
                 name: auto.fix.first
               - type: CheckBox
                 name: std.lv
+  ### (f) Miscellaneous -------------------------------------------------------
           - type: Label
             label: Miscellaneous
             margin: large
@@ -167,15 +175,21 @@ children:
         margin: large
         style: list
         children:
+  ### (a) Multi-group variable ------------------------------------------------
           - type: LayoutBox
             margin: large
-            style: list
+            style: inline
             stretchFactor: 1
             children:
+              - type: Label
+                label: Factorial variable for multi-group analysis
+                margin: large
               - type: TextBox
                 name: multigroup
                 stretchFactor: 1
+                margin: none
                 format: string
+  ### (b) Equality constraints (three columns) --------------------------------
           - type: Label
             label: Equality constraints
           - type: LayoutBox
@@ -197,7 +211,7 @@ children:
                 style: list
                 children:
                   - type: CheckBox
-                    name: eq_thresholds 
+                    name: eq_thresholds
                   - type: CheckBox
                     name: eq_residuals
                   - type: CheckBox
@@ -232,6 +246,7 @@ children:
                 margin: large
                 style: inline
                 children:
+  ### (a) Information ---------------------------------------------------------
                   - type: Label
                     label: Information
                   - type: CheckBox
@@ -242,6 +257,7 @@ children:
                 margin: large
                 style: inline
                 children:
+  ### (b) Additional outputs --------------------------------------------------
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -254,13 +270,14 @@ children:
                         name: outputRSquared
                       - type: CheckBox
                         name: outputMardiasCoefficients
+  ### (c) Covariances and correlations ----------------------------------------
                   - type: LayoutBox
                     margin: large
                     style: list
                     children:
                       - type: Label
                         label: Covariances and correlations
-                      - type: CheckBox    
+                      - type: CheckBox
                         name: outputObservedCovariances
                       - type: CheckBox
                         name: outputImpliedCovariances
@@ -268,8 +285,7 @@ children:
                         name: outputResidualCovariances
                       - type: CheckBox
                         name: outpuCombineCovariances
-                        
-                        
+  ### (d) Modification indices ------------------------------------------------
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -299,12 +315,13 @@ children:
         margin: large
         stretchFactor: 1
         style: list
-        children:        
+        children:
+  ### (a) Path diagram --------------------------------------------------------
           - type: LayoutBox
             margin: large
             stretchFactor: 1
             style: inline
-            children:        
+            children:
               - type: CheckBox
                 name: diagram
                 style: inline
@@ -328,14 +345,13 @@ children:
                                 enable: (diagram)
                               - type: CheckBox
                                 name: diag_intercepts
-                                enable: (diagram)                    
-
+                                enable: (diagram)
+  ### (b) Paths ---------------------------------------------------------------
           - type: LayoutBox
             margin: large
             stretchFactor: 1
             style: inline
-            children:        
-
+            children:
               - type: Label
                 label: Paths
                 margin: large
@@ -361,12 +377,12 @@ children:
                      optionName: diag_paths
                      optionPart: hide
                      enable: (diagram)
-
+  ### (c) Layout --------------------------------------------------------------
               - type: LayoutBox
                 margin: large
                 stretchFactor: 1
                 style: list
-                children:        
+                children:
                   - type: Label
                     label: Layout
                     margin: large
@@ -378,12 +394,12 @@ children:
                       - type: ComboBox
                         name: diag_rotate
                         enable: (diagram)
-
+  ### (d) Nodes ---------------------------------------------------------------
               - type: LayoutBox
                 margin: large
                 stretchFactor: 1
                 style: list
-                children:        
+                children:
                   - type: Label
                     label: Nodes
                     margin: large
@@ -401,102 +417,3 @@ children:
                       - type: ComboBox
                         name: diag_abbrev
                         enable: (diagram)
-                
-#  - type: CollapseBox
-#    label: Path diagram
-#    collapsed: true
-#    stretchFactor: 1
-#    style: list
-#    children:
-#      - type: CheckBox
-#        name: diagram
-#        children:
-#          - type: LayoutBox
-#            margin: large
-#            stretchFactor: 1
-#            style: list
-#            children:
-#              - type: Label
-#                label: Path diagram
-#                style: inline
-#                children:
-#                  - type: CheckBox
-#                    name: diag_resid
-#                    enable: (diagram)
-#                  - type: CheckBox
-#                    name: diag_intercepts
-#                    enable: (diagram)                    
-
-#              - type: Label
-#                label: Paths
-#                margin: large
-#                style: inline
-#                children:
-#                  - type: RadioButton
-#                    name: diag_paths_est
-#                    optionName: diag_paths
-#                    optionPart: est
-#                    enable: (diagram)
-#                  - type: RadioButton
-#                    name: diag_paths_stand
-#                    optionName: diag_paths
-#                    optionPart: stand
-#                    enable: (diagram)
-#                  - type: RadioButton
-#                    name: diag_paths_name
-#                    optionName: diag_paths
-#                    optionPart: name
-#                    enable: (diagram)
-#                  - type: RadioButton
-#                    name: diag_paths_hide
-#                    optionName: diag_paths
-#                    optionPart: hide
-#                    enable: (diagram)
-
-#              - type: Label
-#                label: Layout
-#                margin: large
-#                style: inline
-#                children:
-#                  - type: LayoutBox
-#                    margin: none
-#                    stretchFactor: 1
-#                    style: inline
-#                    children:                
-#                      - type: ComboBox
-#                        name: diag_type
-#                        enable: (diagram)
-#                      - type: ComboBox
-#                        name: diag_rotate
-#                        enable: (diagram)
-
-#              - type: Label
-#                label: Nodes
-#                margin: large
-#                style: list
-#                children:
-#                  - type: LayoutBox
-#                    margin: small
-#                    stretchFactor: 1
-#                    style: inline
-#                    children:
-#                      - type: LayoutBox
-#                        margin: small
-#                        style: list
-#                        children:
-#                          - type: ComboBox
-#                            name: diag_labsize
-#                            enable: (diagram)
-#                          - type: ComboBox
-#                            name: diag_abbrev
-#                            enable: (diagram)
-#                      - type: LayoutBox
-#                        margin: small
-#                        style: list
-#                        children:                    
-#                          - type: ComboBox
-#                            name: diag_shape_man
-#                            enable: (diagram)
-#                          - type: ComboBox
-#                            name: diag_shape_lat
-#                            enable: (diagram)

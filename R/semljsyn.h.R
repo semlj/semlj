@@ -50,12 +50,12 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             miHideLow = FALSE,
             miThreshold = 10,
             diagram = FALSE,
-            diag_paths = "est",
             diag_resid = FALSE,
             diag_intercepts = FALSE,
-            diag_labsize = "medium",
-            diag_rotate = "2",
+            diag_paths = "est",
             diag_type = "tree",
+            diag_rotate = "2",
+            diag_labsize = "medium",
             diag_shape_man = "rectangle",
             diag_shape_lat = "circle",
             diag_abbrev = "5", ...) {
@@ -271,6 +271,14 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "diagram",
                 diagram,
                 default=FALSE)
+            private$..diag_resid <- jmvcore::OptionBool$new(
+                "diag_resid",
+                diag_resid,
+                default=FALSE)
+            private$..diag_intercepts <- jmvcore::OptionBool$new(
+                "diag_intercepts",
+                diag_intercepts,
+                default=FALSE)
             private$..diag_paths <- jmvcore::OptionList$new(
                 "diag_paths",
                 diag_paths,
@@ -280,14 +288,25 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "name",
                     "hide"),
                 default="est")
-            private$..diag_resid <- jmvcore::OptionBool$new(
-                "diag_resid",
-                diag_resid,
-                default=FALSE)
-            private$..diag_intercepts <- jmvcore::OptionBool$new(
-                "diag_intercepts",
-                diag_intercepts,
-                default=FALSE)
+            private$..diag_type <- jmvcore::OptionList$new(
+                "diag_type",
+                diag_type,
+                options=list(
+                    "tree",
+                    "tree2",
+                    "circle",
+                    "circle2",
+                    "spring"),
+                default="tree")
+            private$..diag_rotate <- jmvcore::OptionList$new(
+                "diag_rotate",
+                diag_rotate,
+                options=list(
+                    "1",
+                    "2",
+                    "3",
+                    "4"),
+                default="2")
             private$..diag_labsize <- jmvcore::OptionList$new(
                 "diag_labsize",
                 diag_labsize,
@@ -297,25 +316,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "large",
                     "vlarge"),
                 default="medium")
-            private$..diag_rotate <- jmvcore::OptionList$new(
-                "diag_rotate",
-                diag_rotate,
-                options=list(
-                    "2",
-                    "1",
-                    "4",
-                    "3"),
-                default="2")
-            private$..diag_type <- jmvcore::OptionList$new(
-                "diag_type",
-                diag_type,
-                options=list(
-                    "tree",
-                    "circle",
-                    "circle2",
-                    "tree2",
-                    "spring"),
-                default="tree")
             private$..diag_shape_man <- jmvcore::OptionList$new(
                 "diag_shape_man",
                 diag_shape_man,
@@ -392,12 +392,12 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..miHideLow)
             self$.addOption(private$..miThreshold)
             self$.addOption(private$..diagram)
-            self$.addOption(private$..diag_paths)
             self$.addOption(private$..diag_resid)
             self$.addOption(private$..diag_intercepts)
-            self$.addOption(private$..diag_labsize)
-            self$.addOption(private$..diag_rotate)
+            self$.addOption(private$..diag_paths)
             self$.addOption(private$..diag_type)
+            self$.addOption(private$..diag_rotate)
+            self$.addOption(private$..diag_labsize)
             self$.addOption(private$..diag_shape_man)
             self$.addOption(private$..diag_shape_lat)
             self$.addOption(private$..diag_abbrev)
@@ -447,12 +447,12 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         miHideLow = function() private$..miHideLow$value,
         miThreshold = function() private$..miThreshold$value,
         diagram = function() private$..diagram$value,
-        diag_paths = function() private$..diag_paths$value,
         diag_resid = function() private$..diag_resid$value,
         diag_intercepts = function() private$..diag_intercepts$value,
-        diag_labsize = function() private$..diag_labsize$value,
-        diag_rotate = function() private$..diag_rotate$value,
+        diag_paths = function() private$..diag_paths$value,
         diag_type = function() private$..diag_type$value,
+        diag_rotate = function() private$..diag_rotate$value,
+        diag_labsize = function() private$..diag_labsize$value,
         diag_shape_man = function() private$..diag_shape_man$value,
         diag_shape_lat = function() private$..diag_shape_lat$value,
         diag_abbrev = function() private$..diag_abbrev$value),
@@ -501,12 +501,12 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..miHideLow = NA,
         ..miThreshold = NA,
         ..diagram = NA,
-        ..diag_paths = NA,
         ..diag_resid = NA,
         ..diag_intercepts = NA,
-        ..diag_labsize = NA,
-        ..diag_rotate = NA,
+        ..diag_paths = NA,
         ..diag_type = NA,
+        ..diag_rotate = NA,
+        ..diag_labsize = NA,
         ..diag_shape_man = NA,
         ..diag_shape_lat = NA,
         ..diag_abbrev = NA)
@@ -592,7 +592,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="main",
-                            title="Model Tests",
+                            title="Model tests",
                             clearWith=list(
                                 "ciType",
                                 "cov_y",
@@ -618,7 +618,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="constraints",
-                            title="Constraints Score Tests",
+                            title="Constraints score tests",
                             visible=FALSE,
                             clearWith=list(
                                 "ciType",
@@ -659,7 +659,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="indices",
-                            title="Fit Indices",
+                            title="Fit indices",
                             clearWith=list(
                                 "endogenous",
                                 "covs",
@@ -726,7 +726,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="coefficients",
-                            title="Parameter Estimates",
+                            title="Parameter estimates",
                             refs="lavaan",
                             clearWith=list(
                                 "ciType",
@@ -789,7 +789,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="loadings",
-                            title="Measurement Model",
+                            title="Measurement model",
                             visible=FALSE,
                             clearWith=list(
                                 "ciType",
@@ -912,7 +912,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="defined",
-                            title="Defined Parameters",
+                            title="Defined parameters",
                             visible=FALSE,
                             clearWith=list(
                                 "ciType",
@@ -1004,7 +1004,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="otherFit",
-                            title="Other Fit Indices",
+                            title="Other fit indices",
                             visible="(outputAdditionalFitMeasures)",
                             clearWith=NULL,
                             rows=5,
@@ -1092,8 +1092,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
-<<<<<<< HEAD
-=======
                                     `name`="variable", 
                                     `title`="", 
                                     `type`="text"))))
@@ -1147,7 +1145,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="text", 
                                     `combineBelow`=TRUE),
                                 list(
->>>>>>> 58fd58e7f95050c86b7c9e1ff8e978196d09f8ac
                                     `name`="type", 
                                     `title`="", 
                                     `type`="text"))))}))$new(options=options))
@@ -1241,7 +1238,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Array$new(
                             options=options,
                             name="diagrams",
-                            title="Path Diagrams",
+                            title="Path diagrams",
                             visible="(diagram)",
                             template=jmvcore::Image$new(
                                 options=options,
@@ -1299,8 +1296,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' Structural Equation Models
 #'
 #' 
-#' @param data .
-#' @param code .
+#' @param data TO ADD
+#' @param code TO ADD
 #' @param syntax .
 #' @param fonts .
 #' @param vars .
@@ -1310,10 +1307,12 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param scoretest TO ADD
 #' @param cumscoretest TO ADD
 #' @param se TO ADD
-#' @param bootci Choose the confidence interval type
+#' @param bootci choose the confidence interval type ("perc" - percentiles
+#'   [default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic"
+#'   - basic)
 #' @param bootN number of bootstrap samples for estimating confidence
 #'   intervals
-#' @param ci .
+#' @param ci \code{TRUE} or \code{FALSE} (default), show confidence intervals
 #' @param ciWidth a number between 50 and 99.9 (default: 95) specifying the
 #'   confidence interval width for the parameter estimates
 #' @param intercepts \code{TRUE} or \code{FALSE} (default), show intercepts
@@ -1325,41 +1324,86 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cov_x \code{TRUE} (default) or \code{FALSE}, fix exogenous
 #'   covariates
 #' @param cov_y \code{TRUE} (default) or \code{FALSE}, TO ADD
-#' @param multigroup .
-#' @param eq_loadings .
-#' @param eq_intercepts .
-#' @param eq_residuals .
-#' @param eq_residual.covariances .
-#' @param eq_means .
-#' @param eq_thresholds .
-#' @param eq_regressions .
-#' @param eq_lv.variances .
-#' @param eq_lv.covariances .
-#' @param showlabels .
-#' @param constraints_examples .
-#' @param outputAdditionalFitMeasures .
-#' @param outputRSquared .
-#' @param outputMardiasCoefficients .
-#' @param outputObservedCovariances .
-#' @param outputImpliedCovariances .
-#' @param outputResidualCovariances .
-#' @param outpuCombineCovariances .
-#' @param outputModificationIndices .
-#' @param miHideLow .
-#' @param miThreshold .
+#' @param multigroup string (default=""), the separate models (one for each
+#'   level / group in the variable) are fit, instead of fitting the same model
+#'   for the whole dataset (all groups)
+#' @param eq_loadings \code{TRUE} or \code{FALSE} (default), constrain the
+#'   factor loadings to be equal across groups (when conducting multi-group
+#'   analyses)
+#' @param eq_intercepts \code{TRUE} or \code{FALSE} (default), constrain the
+#'   intercepts of the observed variables to be equal across groups (when
+#'   conducting multi-group analyses)
+#' @param eq_residuals \code{TRUE} or \code{FALSE} (default), constrain the
+#'   residual variances of the observed variables to be equal across groups
+#'   (when conducting multi-group analyses)
+#' @param eq_residual.covariances \code{TRUE} or \code{FALSE} (default),
+#'   constrain the residual covariances of the observed variables to be equal
+#'   across groups (when conducting multi-group analyses)
+#' @param eq_means \code{TRUE} or \code{FALSE} (default), constrain the
+#'   intercepts / means of the latent variables to be equal across groups (when
+#'   conducting multi-group analyses)
+#' @param eq_thresholds \code{TRUE} or \code{FALSE} (default), constrain the
+#'   sample-based thresholds (means for continuous observed mvariables) to be
+#'   equal across groups (when conducting multi-group analyses)
+#' @param eq_regressions \code{TRUE} or \code{FALSE} (default), constrain all
+#'   regression coefficients in the model to be equal across groups (when
+#'   conducting multi-group analyses)
+#' @param eq_lv.variances \code{TRUE} or \code{FALSE} (default), constrain the
+#'   (residual) variances of the latent variables to be equal across groups
+#'   (when conducting multi-group analyses)
+#' @param eq_lv.covariances \code{TRUE} or \code{FALSE} (default), constrain
+#'   the (residual) covariances of the latent variables to be equal across
+#'   groups (when conducting multi-group analyses)
+#' @param showlabels \code{TRUE} or \code{FALSE} (default), show the labels of
+#'   the parameters in the model
+#' @param constraints_examples \code{TRUE} or \code{FALSE} (default), show
+#'   examples of the lavaan model syntax
+#' @param outputAdditionalFitMeasures \code{TRUE} or \code{FALSE} (default),
+#'   show additional fit measures (e.g., CFI, TLI, etc.)
+#' @param outputRSquared \code{TRUE} or \code{FALSE} (default), show R²-values
+#'   for the endogenous variables
+#' @param outputMardiasCoefficients \code{TRUE} or \code{FALSE} (default),
+#'   show Mardia's coefficients for multivariate skewness and kurtosis
+#' @param outputObservedCovariances \code{TRUE} or \code{FALSE} (default),
+#'   show the covariances and correlations between the observed values of the
+#'   (manifest) variables
+#' @param outputImpliedCovariances \code{TRUE} or \code{FALSE} (default), show
+#'   the covariances and correlations between the model-implied / fitted values
+#'   of the (manifest) variables
+#' @param outputResidualCovariances \code{TRUE} or \code{FALSE} (default),
+#'   show the covariances and correlations between the residuals of the
+#'   (manifest) variables
+#' @param outpuCombineCovariances \code{TRUE} or \code{FALSE} (default),
+#'   combine the (up to) three covariance / correlation tables into one table
+#'   (i.e., showing observed, model-implied and residual values for each
+#'   variable combination underneath each other)
+#' @param outputModificationIndices \code{TRUE} or \code{FALSE} (default),
+#'   show modification indices for if certain terms were removed from the model
+#' @param miHideLow \code{TRUE} or \code{FALSE} (default), hide modification
+#'   indices below a certain threshold
+#' @param miThreshold numeric (default: 10), set a threshold the modification
+#'   indices must exceed in order to be shown
 #' @param diagram \code{TRUE} or \code{FALSE} (default), produce a path
 #'   diagram
-#' @param diag_paths Choose the diagram labels
-#' @param diag_resid \code{TRUE} or \code{FALSE} (default), produce a path
-#'   diagram
-#' @param diag_intercepts \code{TRUE} or \code{FALSE} (default), produce a
-#'   path diagram
-#' @param diag_labsize Choose the diagram labels
-#' @param diag_rotate Choose the diagram labels
-#' @param diag_type Choose the diagram labels
-#' @param diag_shape_man Choose the diagram labels
-#' @param diag_shape_lat Choose the diagram labels
-#' @param diag_abbrev Choose the diagram labels
+#' @param diag_resid \code{TRUE} or \code{FALSE} (default), show the residuals
+#'   (for the observed variables)
+#' @param diag_intercepts \code{TRUE} or \code{FALSE} (default), show the
+#'   variable intercepts
+#' @param diag_paths Choose the values shown along the paths ("est" [coeffic.,
+#'   default], "stand" [betas], "name" [labels], "hide" [nothing])
+#' @param diag_type Choose the layout of the path diagram ("tree" [default],
+#'   "tree2", "circle", "circle2", "spring")
+#' @param diag_rotate Choose the rotation of the path diagram (placement of
+#'   the exog. variables; "1": top, "2": left (default), "3": bottom, "4":
+#'   right)
+#' @param diag_labsize Choose the node size for the variables (default:
+#'   "medium")
+#' @param diag_shape_man Choose the shape for the manifest variables (default:
+#'   "rectangle")
+#' @param diag_shape_lat Choose the shape for the latent variables (default:
+#'   "circle")
+#' @param diag_abbrev Choose the length (characters) of the variable name
+#'   abbreviations (default: 5)
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
@@ -1438,12 +1482,12 @@ semljsyn <- function(
     miHideLow = FALSE,
     miThreshold = 10,
     diagram = FALSE,
-    diag_paths = "est",
     diag_resid = FALSE,
     diag_intercepts = FALSE,
-    diag_labsize = "medium",
-    diag_rotate = "2",
+    diag_paths = "est",
     diag_type = "tree",
+    diag_rotate = "2",
+    diag_labsize = "medium",
     diag_shape_man = "rectangle",
     diag_shape_lat = "circle",
     diag_abbrev = "5") {
@@ -1503,12 +1547,12 @@ semljsyn <- function(
         miHideLow = miHideLow,
         miThreshold = miThreshold,
         diagram = diagram,
-        diag_paths = diag_paths,
         diag_resid = diag_resid,
         diag_intercepts = diag_intercepts,
-        diag_labsize = diag_labsize,
-        diag_rotate = diag_rotate,
+        diag_paths = diag_paths,
         diag_type = diag_type,
+        diag_rotate = diag_rotate,
+        diag_labsize = diag_labsize,
         diag_shape_man = diag_shape_man,
         diag_shape_lat = diag_shape_lat,
         diag_abbrev = diag_abbrev)

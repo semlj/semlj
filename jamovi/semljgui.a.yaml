@@ -17,7 +17,7 @@ options:
       type: String
       hidden: true
 
-    # Interface for selecting latent variables and the grouping variable 
+    # Interface for selecting latent variables and the grouping variable ======
     - name: endogenous
       type: Array
       default:
@@ -85,8 +85,7 @@ options:
 #      default: dataraw
 #      description:
 #          R: >
-#             TO ADD     
-#           
+#             TO ADD
 #    - name: samplesize
 #      title: "– Sample size"
 #      hidden: true
@@ -94,21 +93,21 @@ options:
 #      default: 0
 #      description:
 #          R: >
-#             TO ADD     
+#             TO ADD
 
 
     ### OPTIONS #########
 
     ### Endogenous models =====================================================
     - name: endogenousTerms
-      title: Endogenous Latent Vars Models  
+      title: Endogenous Latent Variable Models
       type: Array
       default: [[]]
       template:
           type: Terms
       description:
           R: >
-            a list of lists specifying the models for with the mediators as dependent variables.          
+            a list of lists specifying the models for with the mediators as dependent variables.
 
     ### Variances and covariances =============================================
     - name: varcov
@@ -129,10 +128,10 @@ options:
           type: String
       description:
           R: >
-            a list of lists specifying the models random effects.          
+            a list of lists specifying the models random effects
 
     ### Model options =========================================================
-    #   (a) Estimation
+    ### (a) Estimation --------------------------------------------------------
     - name: estimator
       title: Method
       type: List
@@ -151,7 +150,7 @@ options:
         - name: ULS
           title: Unweighted Least Squares
 #       - name: PML
-#         title: "Pairwise maximum likelihood"          
+#         title: "Pairwise maximum likelihood"
       default: ML
       description:
           R: >
@@ -161,7 +160,7 @@ options:
       title: ML likelihood approach
       type: List
       options:
-        - name: normal 
+        - name: normal
           title: Normal
         - name:  wishart
           title: Wishart
@@ -169,21 +168,24 @@ options:
       description:
           R: >
              TO ADD
-    
+
     # TO BE INCLUDED? (available in JASP-SEM)
 #   - name: std.ov
 #     type: Bool
 #     title: "Standardize variables before estimation"
 #     default: false
+#     description:
+#         R: >
+#            TO ADD
 
-    #   (b) Constraint Tests --------------------------------------------------
+    ### (b) Constraint Tests --------------------------------------------------
     - name: scoretest
       type: Bool
       title: Univariate
       default: true
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     - name: cumscoretest
       type: Bool
@@ -191,7 +193,7 @@ options:
       default: false
       description:
           R: >
-             TO ADD     
+             TO ADD
 
     # TO BE INCLUDED?
 #   - name: factorStandardisation
@@ -206,19 +208,27 @@ options:
 #         title: "Effects coding"
 #       - name: none
 #         title: "None"
-
+#      description:
+#          R: >
+#             TO ADD
 #   - name: meanstructure
 #     type: Bool
 #     title: "Include mean structure"
 #     default: false
-
+#     description:
+#         R: >
+#            TO ADD
 #   - name: orthogonal
 #     type: Bool
 #     title: "Assume factors uncorrelated"
 #     default: false
-    
+#     description:
+#         R: >
+#            TO ADD
+
+
     ### Parameter options =====================================================
-    #   (a) Standard errors ---------------------------------------------------
+    ### (a) Standard errors ---------------------------------------------------
     - name: se
       title: Standard errors
       type: List
@@ -236,24 +246,23 @@ options:
           R: >
             TO ADD
 
-    #   (b) Bootstrap options -------------------------------------------------
+    ### (b) Bootstrap options -------------------------------------------------
     - name: bootci
       title: Bootstrap C.I
       type: List
       options:
         - name: perc
-          title: Percentiles
+          title: percentiles
         - name: bca.simple
-          title: Adjusted bias corrected
+          title: adjusted bias-corrected
         - name: norm
-          title: Normal
+          title: normal
         - name: basic
-          title: Basic
+          title: basic
       default: perc
       description:
           R: >
-            Choose the confidence interval type
-
+            choose the confidence interval type ("perc" - percentiles [default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic" - basic)
     - name: bootN
       title: Bootstrap Rep.
       type: Number
@@ -263,12 +272,14 @@ options:
           R: >
             number of bootstrap samples for estimating confidence intervals
 
-    #   (c) Confidence intervals ----------------------------------------------
+    ### (c) Confidence intervals ----------------------------------------------
     - name: ci
       title: Show
       type: Bool
       default: true
-
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show confidence intervals
     - name: ciWidth
       title: Confidence level
       type: Number
@@ -280,7 +291,7 @@ options:
             a number between 50 and 99.9 (default: 95) specifying the confidence
             interval width for the parameter estimates
 
-    #   (d) Estimates ---------------------------------------------------------
+    ### (d) Estimates ---------------------------------------------------------
     - name: intercepts
       title: Estimates intercepts
       type: Bool
@@ -305,7 +316,7 @@ options:
           R: >
             `TRUE` or `FALSE` (default), show intercepts
 
-    #   (e) Latent scale ------------------------------------------------------
+    ### (e) Latent scale ------------------------------------------------------
     - name: auto.fix.first
       title: Fix first indicator
       type: Bool
@@ -313,7 +324,6 @@ options:
       description:
           R: >
             `TRUE` or `FALSE`
-
     - name: std.lv
       title: Standardized
       type: Bool
@@ -322,17 +332,17 @@ options:
           R: >
             `TRUE` or `FALSE`
 
-    #   (f) Miscellaneous -----------------------------------------------------
+    ### (f) Miscellaneous -----------------------------------------------------
     # TO-DO: find a better name than miscellaneous; perhaps: Constraints
     - name: cov_x
-#   - name: fixed.x (lavOpt)  
+#   - name: fixed.x (lavOpt)
       title: Fix exogenous covariates
       type: Bool
       default: true
       description:
           R: >
             `TRUE` (default) or `FALSE`, fix exogenous covariates
-    
+
     - name: cov_y
       title: Correlated y
       type: Bool
@@ -346,48 +356,67 @@ options:
 #      type: Bool
 #      title: "Fix manifest intercepts to zero"
 #      default: false
-
+#      description:
+#          R: >
+#            `TRUE` or `FALSE` (default), TO BE ADDED
 #    - name: int.lv.fixed
 #      type: Bool
 #      title: "Fix latent intercepts to zero"
 #      default: false
-
+#      description:
+#          R: >
+#            `TRUE` or `FALSE` (default), TO BE ADDED
 #    - name: auto.fix.single
 #      type: Bool
 #      title: "Omit residual single indicator"
 #      default: true
-
+#      description:
+#          R: >
+#            `TRUE` (default) or `FALSE`, TO BE ADDED
 #    - name: auto.var
 #      type: Bool
 #      title: "Include residual variances"
 #      default: true
-
+#      description:
+#          R: >
+#            `TRUE` (default) or `FALSE`, TO BE ADDED
 #    - name: auto.cov.lv.x
 #      type: Bool
 #      title: "Correlate exogenous latents"
 #      default: true
-
+#      description:
+#          R: >
+#            `TRUE` (default) or `FALSE`, TO BE ADDED
 #    - name: auto.cov.y
 #      type: Bool
 #      title: "Correlate dependent variables"
 #      default: true
-
+#      description:
+#          R: >
+#            `TRUE` (default) or `FALSE`, TO BE ADDED
 #    - name: auto.th
 #      type: Bool
 #      title: "Add thresholds"
 #      default: true
-
+#      description:
+#          R: >
+#            `TRUE` (default) or `FALSE`, TO BE ADDED
 #    - name: auto.delta
 #      type: Bool
 #      title: "Add scaling parameters"
 #      default: true
-
+#      description:
+#          R: >
+#            `TRUE` (default) or `FALSE`, TO BE ADDED
 #    - name: auto.efa
 #      type: Bool
 #      title: "Constrain EFA blocks"
 #      default: true
-     
-      
+#      description:
+#          R: >
+#            `TRUE` (default) or `FALSE`, TO BE ADDED
+
+
     ### Multigroup options / equality constraints =============================
     #   For the GUI-version, the GUI-element multigroup is part of the inter-
     #   face to elect variables
@@ -396,38 +425,65 @@ options:
       type: Bool
       title: "Loadings"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), constrain the factor loadings to be equal across groups (when conducting multi-group analyses)
     - name: eq_intercepts
       type: Bool
       title: "Intercepts"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), constrain the intercepts of the observed variables to be equal across groups (when conducting multi-group analyses)
     - name: eq_residuals
       type: Bool
       title: "Residuals"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), constrain the residual variances of the observed variables to be equal across groups (when conducting multi-group analyses)
     - name: eq_residual.covariances
       type: Bool
       title: "Residual covariances"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), constrain the residual covariances of the observed variables to be equal across groups (when conducting multi-group analyses)
     - name: eq_means
       type: Bool
       title: "Means"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), constrain the intercepts / means of the latent variables to be equal across groups (when conducting multi-group analyses)
     - name: eq_thresholds
       type: Bool
       title: "Threshold"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), constrain the sample-based thresholds (means for continuous observed mvariables) to be equal across groups (when conducting multi-group analyses)
     - name: eq_regressions
       type: Bool
       title: "Regressions"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), constrain all regression coefficients in the model to be equal across groups (when conducting multi-group analyses)
     - name: eq_lv.variances
       type: Bool
       title: "Latent variances"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), constrain the (residual) variances of the latent variables to be equal across groups (when conducting multi-group analyses)
     - name: eq_lv.covariances
       type: Bool
       title: "Latent covariances"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), constrain the (residual) covariances of the latent variables to be equal across groups (when conducting multi-group analyses)
 
 
     ### Output options ========================================================
@@ -435,77 +491,121 @@ options:
       type: Bool
       title: Show parameters labels
       default: false
-
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show the labels of the parameters in the model
     - name: constraints_examples
       type: Bool
       title: Show syntax examples
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show examples of the lavaan model syntax
 
-    #   (a) Additional outputs ------------------------------------------------
+    ### (a) Additional outputs ------------------------------------------------
     - name: outputAdditionalFitMeasures
       type: Bool
       title: "Additional fit measures"
       default: false
-
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show additional fit measures (e.g., CFI, TLI, etc.)
     - name: outputRSquared
       type: Bool
       title: "R² (endogenous vars.)"
       default: false
-      
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show R²-values for the endogenous variables
     - name: outputMardiasCoefficients
       type: Bool
       title: "Mardia's coefficients"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show Mardia's coefficients for multivariate skewness and kurtosis
 
-    #   (b) Covariances and correlations --------------------------------------
+    ### (b) Covariances and correlations --------------------------------------
     - name: outputObservedCovariances
       type: Bool
       title: "observed"
       default: false
-
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show the covariances and correlations between the observed values of the (manifest) variables
     - name: outputImpliedCovariances
       type: Bool
       title: "model-implied (fitted)"
       default: false
-
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show the covariances and correlations between the model-implied / fitted values of the (manifest) variables
     - name: outputResidualCovariances
       type: Bool
       title: "residual"
       default: false
-      
-     # NOT IMPLEMENTED YET (JASP-SEM)
-     # The lavResiduals() gives more extensive information about the residuals. Per default, it will print both raw and
-     # standardized residuals, as well as several summary statistics (including the SRMR and the unbiased SRMR).
-#    - name: outputStandardizedResiduals
-#      type: Bool
-#      title: "Standardized residuals"
-#      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show the covariances and correlations between the residuals of the (manifest) variables
+    - name: outpuCombineCovariances
+      type: Bool
+      title: "combined into one table"
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing observed, model-implied and residual values for each variable combination underneath each other)
 
-    #   (c) Modification indices (grouped / indented) -------------------------
+
+    ### (c) Modification indices ----------------------------------------------
     - name: outputModificationIndices
       type: Bool
       title: "Modification indices"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show modification indices for if certain terms were removed from the model
     - name: miHideLow
       type: Bool
       title: "Hide low indices"
       default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), hide modification indices below a certain threshold
     - name: miThreshold
       type: Number
       title: "Threshold"
       default: 10
-      min: 0      
+      min: 0
+      description:
+          R: >
+            numeric (default: 10), set a threshold the modification indices must exceed in order to be shown
 
 
     ### Path diagram ==========================================================
+    ### (a) Enable diagram, residuals and intercept ---------------------------
     - name: diagram
-      title: Path Diagram
+      title: ""
       type: Bool
       default: false
       description:
           R: >
             `TRUE` or `FALSE` (default), produce a path diagram
+    - name: diag_resid
+      title: show residuals
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show the residuals (for the observed variables)
+    - name: diag_intercepts
+      title: show intercepts
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show the variable intercepts
 
+    ### (b) Paths -------------------------------------------------------------
     - name: diag_paths
       title: Paths Labels
       type: List
@@ -521,77 +621,61 @@ options:
       default: est
       description:
           R: >
-             Choose the diagram labels
+             Choose the values shown along the paths ("est" [coeffic., default], "stand" [betas], "name" [labels], "hide" [nothing])
 
-    - name: diag_resid
-      title: Residuals
-      type: Bool
-      default: false
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), produce a path diagram
-
-    - name: diag_intercepts
-      title: Intercepts
-      type: Bool
-      default: false
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), produce a path diagram
-
-    - name: diag_labsize
-      title: Node Size
-      type: List
-      options:
-        - name:  small
-          title: Small
-        - name: medium
-          title: Medium
-        - name: large
-          title: Large
-        - name: vlarge
-          title: Very Large
-      default: medium
-      description:
-          R: >
-             Choose the diagram labels
-
-    - name: diag_rotate
-      title: Rotate
-      type: List
-      options:
-        - name: "2"
-          title: Exog. left
-        - name:  "1"
-          title: Exog. top
-        - name: "4"
-          title: Exog. right
-        - name: "3"
-          title: Exog. bottom
-      default: "2"
-      description:
-          R: >
-             Choose the diagram labels
-
+    ### (c) Layout ------------------------------------------------------------
     - name: diag_type
       title: Type
       type: List
       options:
         - name:  "tree"
+          title: Tree-like
+        - name:  "tree2"
           title: Tree-like alt.
         - name: "circle"
-          title: Circle
+          title: Circular
         - name: "circle2"
-          title: Circle alt.
-        - name:  "tree2"
-          title: Tree-like
+          title: Circular alt.
         - name: "spring"
           title: Spring
       default: "tree"
       description:
           R: >
-             Choose the diagram labels
+             Choose the layout of the path diagram ("tree" [default], "tree2", "circle", "circle2", "spring")
+    - name: diag_rotate
+      title: Rotate
+      type: List
+      options:
+        - name: "1"
+          title: Exog. top
+        - name: "2"
+          title: Exog. left
+        - name: "3"
+          title: Exog. bottom
+        - name: "4"
+          title: Exog. right
+      default: "2"
+      description:
+          R: >
+             Choose the rotation of the path diagram (placement of the exog. variables; "1": top, "2": left (default), "3": bottom, "4": right)
 
+    ### (d) Nodes -------------------------------------------------------------
+    - name: diag_labsize
+      title: Node Size
+      type: List
+      options:
+        - name: "small"
+          title: Small
+        - name: "medium"
+          title: Medium
+        - name: "large"
+          title: Large
+        - name: "vlarge"
+          title: Very Large
+      default: "medium"
+      description:
+          R: >
+             Choose the node size for the variables (default: "medium")
     - name: diag_shape_man
       title: Manifest shapes
       type: List
@@ -609,8 +693,7 @@ options:
       default: "rectangle"
       description:
           R: >
-             Choose the diagram labels
-
+             Choose the shape for the manifest variables (default: "rectangle")
     - name: diag_shape_lat
       title: Latent shapes
       type: List
@@ -628,8 +711,7 @@ options:
       default: "circle"
       description:
           R: >
-             Choose the diagram labels
-
+             Choose the shape for the latent variables (default: "circle")
     - name: diag_abbrev
       title: Abbreviate
       type: List
@@ -649,6 +731,6 @@ options:
       default: "5"
       description:
           R: >
-             Choose the diagram labels
+             Choose the length (characters) of the variable name abbreviations (default: 5)
 
 ...

@@ -16,7 +16,10 @@ Estimate <- R6::R6Class("Estimate",
                           tab_otherFit=NULL,
                           tab_Rsquared=NULL,
                           tab_mardia=NULL,
-                          
+                          tab_covcorrObserved=NULL,
+                          tab_covcorrImplied=NULL,
+                          tab_covcorrResidual=NULL,
+                          tab_covcorrCombined=NULL,
                           tab_modInd=NULL,
                           ciwidth=NULL,
                           initialize=function(options,datamatic) {
@@ -195,15 +198,29 @@ Estimate <- R6::R6Class("Estimate",
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
                               mark('begin tab_mardia');
-                              mrdSkw = semTools::mardiaSkew(data[,lavaan::lavaanNames(self$model)]);
-                              mrdKrt = semTools::mardiaKurtosis(data[,lavaan::lavaanNames(self$model)]);
+                              
+                              # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
+                              # that are already contained in the lavaan model-fit
+                              nVar = length(self$model@Data@ov$name);
+                              nObs = self$model@Data@nobs[[1]];
+                              cntDta = as.list(data.frame(t(sweep(self$model@Data@X[[1]], 2, self$model@SampleStats@mean[[1]]))));
+                              invS = self$model@SampleStats@icov[[1]] / nObs * (nObs - 1);
+
+                              FUN_S1 <- function(vec1, vec2, invS)     { as.numeric(t(as.matrix(vec1)) %*% invS %*% as.matrix(vec2)) };
+                              FUN_S2 <- function(vec1, listVec2, invS) { sapply(listVec2, FUN_S1, vec1=vec1, invS=invS) };
+                              MS_Cf  <- sum(sapply(cntDta, FUN_S2, listVec2=cntDta, invS=invS) ^ 3) / (nObs ^ 2);
+                              MS_chi <- nObs * MS_Cf / 6;
+                              MS_df  <- nVar * (nVar + 1) * (nVar + 2) / 6;
+                              MS_p   <- pchisq(MS_chi, df = MS_df, lower.tail = FALSE);
+                              
+                              FUNK1 <- function(vec, invS) { as.numeric(t(as.matrix(vec)) %*% invS %*% as.matrix(vec)) };
+                              MK_Cf <- sum(sapply(cntDta, FUNK1, invS=invS) ^ 2) / nObs;
+	                      MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
+	                      MK_p  <- pnorm(-abs(MK_z)) * 2;
                               
                               mark('before adding to tab_mardia')
-                              abit<-unlist(mrdSkw[2:4])
-                              bbit<-unlist(mrdKrt[2:3])
-                              self$tab_mardia <- list(list(name = "Skewness", coeff=mrdSkw[[1]], z="", chi=abit[[1]],df=abit[[2]],p=abit[[3]]),
-                                                      list(name = "Kurtosis", coeff=mrdKrt[[1]], z=bbit[[1]],chi="",df="",p=bbit[[2]])
-                                                      );
+                              self$tab_mardia <- list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
+                                                      list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
                             }
 
                             # covariances and correlations
