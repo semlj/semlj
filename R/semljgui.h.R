@@ -585,6 +585,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="info",
                 title="Models Info",
+                refs="semlj",
                 clearWith=list(
                     "code"),
                 columns=list(
@@ -601,8 +602,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="specs", 
                         `type`="text", 
                         `title`="", 
-                        `combineBelow`=TRUE)),
-                refs="semlj"))
+                        `combineBelow`=TRUE))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="contraintsnotes",
@@ -1083,6 +1083,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="mardia",
                             title="Mardia's coefficients",
+                            refs="semtools",
                             visible="(outputMardiasCoefficients)",
                             clearWith=NULL,
                             rows=2,
@@ -1286,6 +1287,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="diagrams",
                             title="Path diagrams",
+                            refs="semplot",
                             visible="(diagram)",
                             template=jmvcore::Image$new(
                                 options=options,
@@ -1306,8 +1308,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     "diag_labsize",
                                     "diag_resid",
                                     "diag_paths",
-                                    "diag_intercepts"),
-                                refs="semplot")))
+                                    "diag_intercepts"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="notes",
