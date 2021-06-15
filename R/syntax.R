@@ -109,7 +109,7 @@ Syntax <- R6::R6Class(
             .lavaan_syntax=function() {
                   f<-glue::glue_collapse(unlist(self$models),sep = " ; ")
                   i<-glue::glue_collapse(unlist(private$.lav_indirect),sep = " ; ")
-
+mark(paste(f,i, sep=";"))
                   paste(f,i, sep=";")
             },
             ## lavaanify the information available to obtain a info table representing the parameters structure.

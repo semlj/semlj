@@ -2,7 +2,7 @@ const syntax = {
     measures: function(vars) {
       var astring="";
       var terms="";
-        for(let i = 0; i < vars.length; i++) {
+      for(let i = 0; i < vars.length; i++) {
           if (vars[i].vars===undefined | vars[i].vars===null)
                continue;
           if (vars[i].vars.length===0)
@@ -39,13 +39,13 @@ const syntax = {
     this.lav_syntax+=astring;
     },
     constraints: function(alist) {
-    var astring="";
-    for(let i = 0; i < alist.length; i++) {
-          astring+=alist[i]+'\n ';
-    }
-    this.lav_syntax+=astring;
       
-      
+      var astring="";
+      for(let i = 0; i < alist.length; i++) {
+          if (alist[i]!==null)
+              astring+=' '+alist[i]+'  \n ';
+      }
+      this.lav_syntax+=astring;
     }
 
 };

@@ -179,7 +179,6 @@ var cleanEndogenousTerms= function(ui,context) {
     prepareEndogenousTerms(ui,context);
     var endogenous = getLabels(context.cloneArray(ui.endogenous.value(), []));
     var endogenousTerms = context.cloneArray(ui.endogenousTerms.value(),[]);
-    console.log(endogenousTerms)
 
     for (var i = 0; i < endogenous.length; i++) {
         endogenousTerms[i]=removeFromList(endogenous[i],endogenousTerms[i],context,1);
@@ -188,8 +187,7 @@ var cleanEndogenousTerms= function(ui,context) {
 
     var endogenousSupplierList = context.cloneArray(context.itemsToValues(ui.endogenousSupplier.value()),[]);
     var diff = context.findChanges("endogenousSupplierList",endogenousSupplierList,context);
-    console.log(endogenousTerms)
-    console.log(diff)
+    
     if (diff.hasChanged) {
       for (var i = 0; i < endogenous.length; i++) 
            for (var j = 0; j < diff.removed.length; j++) {
