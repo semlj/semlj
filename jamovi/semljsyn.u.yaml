@@ -7,7 +7,6 @@ events:
   loaded: './main::loaded'
   update: './main::update'
   remoteDataChanged: './main::onDataChanged'
-
 children:
   - type: LayoutBox
     stretchFactor: 1
@@ -17,8 +16,6 @@ children:
         name: syntax
         events:
           creating: './main::editor_creating'
-
-  ### Model options ===========================================================
   - type: CollapseBox
     label: Model options
     collapsed: true
@@ -28,7 +25,6 @@ children:
         margin: large
         style: inline
         children:
-  ### (a) Estimation ----------------------------------------------------------
           - type: Label
             label: Estimation
             margin: large
@@ -38,8 +34,7 @@ children:
                 name: estimator
               - type: ComboBox
                 name: likelihood
-                enable: '(estimator:ML)'
-  ### (b) Constraints tests ---------------------------------------------------
+                enable: (estimator:ML || estimator:PML)
           - type: Label
             label: Constraints tests
             margin: large
@@ -50,7 +45,6 @@ children:
               - type: CheckBox
                 name: cumscoretest
 
-  ## Parameter options ========================================================
   - type: CollapseBox
     label: Parameter options
     collapsed: true
@@ -60,7 +54,6 @@ children:
         margin: large
         style: inline
         children:
-  ### (a) Standard errors -----------------------------------------------------
           - type: Label
             label: Standard Errors
             margin: large
@@ -82,7 +75,6 @@ children:
                 name: se_boot
                 optionName: se
                 optionPart: boot
-  ### (b) Bootstrap settings --------------------------------------------------
           - type: Label
             label: Bootstrap settings
             margin: large
@@ -112,59 +104,69 @@ children:
                 name: bootN
                 format: number
                 enable: '(se:boot)'
-  ### (c) Confidence Intervals ------------------------------------------------
-          - type: Label
-            label: Confidence Intervals
+          - type: LayoutBox
             margin: large
             style: list
             children:
-              - type: CheckBox
-                name: ci
-              - type: TextBox
-                name: ciWidth
-                label: Interval
-                suffix: '%'
-                format: number
-                enable: (ci)
+              - type: Label
+                label: Confidence Intervals
+                margin: large
+                style: list
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: CheckBox
+                        name: ci
+                        margin: none
+                      - type: TextBox
+                        name: ciWidth
+                        label: Interval
+                        suffix: '%'
+                        format: number
+                        enable: (ci)
+              - type: Label
+                label: Constraints
+                margin: large
+                style: list
+                children:
+                  - type: CheckBox
+                    name: cov_x
+                  - type: CheckBox
+                    name: cov_y
       - type: LayoutBox
         margin: large
         style: inline
         children:
-  ### (d) Estimates -----------------------------------------------------------
           - type: Label
             label: Estimates
             margin: large
             style: list
             children:
               - type: CheckBox
-                name: intercepts
-              - type: CheckBox
-                name: showintercepts
+                name: meanstructure
+                children:
+                  - type: CheckBox
+                    name: intercepts
+                    enable: (meanstructure)
               - type: CheckBox
                 name: indirect
-  ### (e) Latent scale --------------------------------------------------------
           - type: Label
-            label: Latent scale
+            label: Scale / standardize variables
             margin: large
             style: list
             children:
+              - type: RadioButton
+                name: std_lv_first
+                optionName: std_lv
+                optionPart: fix_first
+              - type: RadioButton
+                name: std_lv_res
+                optionName: std_lv
+                optionPart: std_res
               - type: CheckBox
-                name: auto.fix.first
-              - type: CheckBox
-                name: std.lv
-  ### (f) Miscellaneous -------------------------------------------------------
-          - type: Label
-            label: Miscellaneous
-            margin: large
-            style: list
-            children:
-              - type: CheckBox
-                name: cov_x
-              - type: CheckBox
-                name: cov_y
+                name: std_ov
 
-
-  ### Multi-group analyses ====================================================
   - type: CollapseBox
     label: Multi-group analyses
     collapsed: true
@@ -175,7 +177,6 @@ children:
         margin: large
         style: list
         children:
-  ### (a) Multi-group variable ------------------------------------------------
           - type: LayoutBox
             margin: large
             style: inline
@@ -189,7 +190,6 @@ children:
                 stretchFactor: 1
                 margin: none
                 format: string
-  ### (b) Equality constraints (three columns) --------------------------------
           - type: Label
             label: Equality constraints
           - type: LayoutBox
@@ -227,8 +227,6 @@ children:
                   - type: CheckBox
                     name: eq_lv.covariances
 
-
-  ### Output options ==========================================================
   - type: CollapseBox
     label: Output options
     collapsed: true
@@ -246,7 +244,6 @@ children:
                 margin: large
                 style: inline
                 children:
-  ### (a) Information ---------------------------------------------------------
                   - type: Label
                     label: Information
                   - type: CheckBox
@@ -257,7 +254,6 @@ children:
                 margin: large
                 style: inline
                 children:
-  ### (b) Additional outputs --------------------------------------------------
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -270,7 +266,6 @@ children:
                         name: outputRSquared
                       - type: CheckBox
                         name: outputMardiasCoefficients
-  ### (c) Covariances and correlations ----------------------------------------
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -285,7 +280,6 @@ children:
                         name: outputResidualCovariances
                       - type: CheckBox
                         name: outpuCombineCovariances
-  ### (d) Modification indices ------------------------------------------------
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -299,12 +293,11 @@ children:
                             name: miHideLow
                             enable: (outputModificationIndices)
                             children:
-                            - type: TextBox
-                              name: miThreshold
-                              format: number
-                              enable: (miHideLow)
+                              - type: TextBox
+                                name: miThreshold
+                                format: number
+                                enable: (miHideLow)
 
-  ### Path diagram ============================================================
   - type: CollapseBox
     label: Path diagram
     collapsed: true
@@ -316,7 +309,6 @@ children:
         stretchFactor: 1
         style: list
         children:
-  ### (a) Path diagram --------------------------------------------------------
           - type: LayoutBox
             margin: large
             stretchFactor: 1
@@ -345,8 +337,7 @@ children:
                                 enable: (diagram)
                               - type: CheckBox
                                 name: diag_intercepts
-                                enable: (diagram)
-  ### (b) Paths ---------------------------------------------------------------
+                                enable: (diagram && meanstructure)
           - type: LayoutBox
             margin: large
             stretchFactor: 1
@@ -357,27 +348,26 @@ children:
                 margin: large
                 style: list
                 children:
-                   - type: RadioButton
-                     name: diag_paths_est
-                     optionName: diag_paths
-                     optionPart: est
-                     enable: (diagram)
-                   - type: RadioButton
-                     name: diag_paths_stand
-                     optionName: diag_paths
-                     optionPart: stand
-                     enable: (diagram)
-                   - type: RadioButton
-                     name: diag_paths_name
-                     optionName: diag_paths
-                     optionPart: name
-                     enable: (diagram)
-                   - type: RadioButton
-                     name: diag_paths_hide
-                     optionName: diag_paths
-                     optionPart: hide
-                     enable: (diagram)
-  ### (c) Layout --------------------------------------------------------------
+                  - type: RadioButton
+                    name: diag_paths_est
+                    optionName: diag_paths
+                    optionPart: est
+                    enable: (diagram)
+                  - type: RadioButton
+                    name: diag_paths_stand
+                    optionName: diag_paths
+                    optionPart: stand
+                    enable: (diagram)
+                  - type: RadioButton
+                    name: diag_paths_name
+                    optionName: diag_paths
+                    optionPart: name
+                    enable: (diagram)
+                  - type: RadioButton
+                    name: diag_paths_hide
+                    optionName: diag_paths
+                    optionPart: hide
+                    enable: (diagram)
               - type: LayoutBox
                 margin: large
                 stretchFactor: 1
@@ -394,7 +384,6 @@ children:
                       - type: ComboBox
                         name: diag_rotate
                         enable: (diagram)
-  ### (d) Nodes ---------------------------------------------------------------
               - type: LayoutBox
                 margin: large
                 stretchFactor: 1

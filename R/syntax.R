@@ -107,59 +107,70 @@ Syntax <- R6::R6Class(
             },
             ### collapse the informations in the private lists of terms and constraints and produce a lavaan syntax string
             .lavaan_syntax=function() {
-                  f<-glue::glue_collapse(unlist(self$models),sep = " ; ")
-                  i<-glue::glue_collapse(unlist(private$.lav_indirect),sep = " ; ")
-mark(paste(f,i, sep=";"))
-                  paste(f,i, sep=";")
+                  f <- glue::glue_collapse(unlist(self$models), sep = "; ")
+                  i <- glue::glue_collapse(unlist(private$.lav_indirect), sep = "; ")
+mark(paste(f,i, sep="; "))
+                  paste(f,i, sep="; ")
             },
             ## lavaanify the information available to obtain a info table representing the parameters structure.
             ## That is, the parameter names, labels, 
 
-            .make_structure=function() {
-  
-                lavoptions<-list(
-                model=private$.lavaan_syntax(),
-                int.ov.free = self$options$intercepts, 
-                auto.cov.y = self$options$cov_y,
-                fixed.x=self$options$cov_x,
-                int.lv.free=FALSE,
-                std.lv = self$options$std.lv,
-                auto.fix.first = self$options$auto.fix.first, 
-                auto.fix.single = TRUE, 
-                auto.var = TRUE, 
-                auto.cov.lv.x = TRUE, 
-                auto.efa = TRUE, 
-                auto.th = TRUE, 
-                auto.delta = TRUE, 
-                meanstructure = FALSE  
-              )
-                ### semPaths has trouble with some multigroups diagram when meanstructure is FALSE
-              if (is.something(self$multigroup)) {
-                    lavoptions[["ngroups"]]<-self$multigroup$nlevels
-                    lavoptions[["meanstructure"]]<-TRUE
-                    
+            .make_structure = function() {
+
+                lavoptions <- list(
+                  model = private$.lavaan_syntax(),
+                  meanstructure = self$options$meanstructure,           # 'default' for sem + cfa, TRUE for growth (default: FALSE; 'default' is FALSE in most cases)
+                  int.ov.free = self$options$intercepts,                # TRUE for sem + cfa, FALSE for growth (default: TRUE)
+                  int.lv.free = FALSE,                                  # TRUE for grwoth, FALSE for sem + cfa - to be implemented as option
+                  # auto.fix.first - see below                          # TRUE (unless std.lv = TRUE) for sem + cfa + growth
+                  # std.lv - see below                                  # 
+                  auto.fix.single = TRUE,                               # TRUE for sem + cfa + growth - to be implemented as option
+                  auto.var = TRUE,                                      # TRUE for sem + cfa + growth - to be implemented as option
+                  auto.cov.lv.x =TRUE,                                  # TRUE for sem + cfa + growth - to be implemented as option
+                  auto.efa = TRUE,                                      # TRUE for sem + cfa + growth - to be implemented as option
+                  auto.th = TRUE,                                       # TRUE for sem + cfa + growth - to be implemented as option
+                  auto.delta = TRUE,                                    # TRUE for sem + cfa + growth - to be implemented as option
+                  auto.cov.y = self$options$cov_y,                      # TRUE for sem + cfa + growth (default: TRUE)
+                  fixed.x = self$options$cov_x
+
+                  # TO-DO (1): implemented as option
+                  # int.lv.free, auto.fix.single, auto.var, auto.cov.lv.x, auto.efa, auto.th, auto.delta
+                  # TO-DO (2): further arguments included in JASP-SEM
+                  # int.lv.fixed int.ov.fixed mimic orthogonal
+                )
+
+                # std_lv - standardize latent variables
+                # (setting both to FALSE leads to the SE's not being estimated, setting both to TRUE 
+                if (self$options$std_lv == "fix_first") {
+                  lavoptions[["auto.fix.first"]] <- TRUE
+                  lavoptions[["std.lv"]]         <- FALSE
+                } else if (self$options$std_lv == "std_res") {
+                  lavoptions[["auto.fix.first"]] <- FALSE
+                  lavoptions[["std.lv"]]         <- TRUE
+                }
+
+                ### semPaths has trouble with some multigroups diagram when meanstructure is FALSE                
+                if (is.something(self$multigroup)) {
+                  lavoptions[["ngroups"]] <- self$multigroup$nlevels
+                  lavoptions[["meanstructure"]] <- TRUE
                 }
               
-              results<-try_hard({
-                do.call(lavaan::lavaanify, lavoptions)
-              })
-              self$warnings<-list(topic="info",message=results$warning)
-              self$errors<-results$error
-              if (is.something(self$errors))
-                stop(paste(self$errors,collapse = "\n"))
-              
+                results <- try_hard({ do.call(lavaan::lavaanify, lavoptions) })
+                self$warnings <- list(topic="info", message = results$warning)
+                self$errors <- results$error
+                if (is.something(self$errors))
+                  stop(paste(self$errors, collapse = "\n"))
 
-              private$.lav_structure<-results$obj
-              ## if not user defined, create easy labels to be used by the user in constraints and defined parameters  
-              ## we want to be sure that we do not interfere with user ability to use p* as custom label
-              ulabels<-private$.lav_structure$label
-              def<-ulabels!=""
-              plabels<-setdiff(paste0("p",1:(length(ulabels)*2)),ulabels[def])
-              plabels[which(def)]<-ulabels[def]
-              labels<-plabels[1:length(ulabels)]
-              private$.lav_structure$label<-labels
-
-            },            
+                private$.lav_structure <- results$obj
+                ## if not user defined, create easy labels to be used by the user in constraints and defined parameters  
+                ## we want to be sure that we do not interfere with user ability to use p* as custom label
+                ulabels <- private$.lav_structure$label
+                def <- ulabels!=""
+                plabels <- setdiff(paste0("p", 1:(length(ulabels) * 2)), ulabels[def])
+                plabels[which(def)] <- ulabels[def]
+                labels <- plabels[1:length(ulabels)]
+                private$.lav_structure$label <- labels
+            },
 
             ### here we create the tables we need for init results. Those tables contains the information needed to init the results tables
             ### ideally, there should be one publich table for each results table, but a few table cannot be defined before

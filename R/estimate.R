@@ -28,14 +28,14 @@ Estimate <- R6::R6Class("Estimate",
                           },
                           estimate = function(data) {
                             
-                            ## prepare the options based on Syntax definitions
-                            
+                            ## prepare the options based on Syntax definitions                           
                             lavoptions <- list(model = private$.lav_structure, 
                                              data = data,
+                                             estimator = self$options$estimator,
+                                             likelihood = self$options$likelihood,
                                              se=self$options$se,
                                              bootstrap=self$options$bootN,
-                                             estimator=self$options$estimator
-                                             
+                                             std.ov = self$options$std_ov
                             )
 
                             if (is.something(self$multigroup)) {
@@ -44,18 +44,10 @@ Estimate <- R6::R6Class("Estimate",
                               # TO-DO: test eq_-options
                               nmeOpt = names(self$options);
                               nmeEql = nmeOpt[grep("^eq_", nmeOpt)];
-#                             lavoptions[["group.equal"]] <- gsub("eq_", "", nmeEql[unlist(mget(nmeEql, envir=self$options))]));
+                              lavoptions[["group.equal"]] <- gsub("eq_", "", nmeEql[unlist(mget(nmeEql, envir=self$options))]);
+                              mark(lavoptions[["group.equal"]]);
                             }
-
-                            if (self$options$estimator == "ML") {
-                              lavoptions[["likelihood"]] <- self$options$likelihood
-                            }
-
-                            # TO-DO: add further model options
-                            # iterate through the names and check for matches with lavOpt, update lavOpt if matching
-                            # should be the following variables: auto.cov.lv.x auto.cov.y auto.delta auto.efa auto.fix.single auto.th auto.var
-                            #   bootstrap estimator fixed.x int.lv.fixed int.ov.fixed meanstructure mimic orthogonal se std.ov
-                            
+                                                        
                             ## estimate the models
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
                             
@@ -153,9 +145,9 @@ Estimate <- R6::R6Class("Estimate",
                               }
                             } # end of checking constraints
 
-                            mark('before SJ');
                             # additional fit measures
                             if (self$options$outputAdditionalFitMeasures) {                            
+                              mark('begin addFit');
                               # (1) User model versus baseline model
                               alist<-list()
                               alist[[length(alist) + 1]]  <- list(name = "Comparative Fit Index (CFI)",                statistics = ff[["cfi"]]);
@@ -186,7 +178,7 @@ Estimate <- R6::R6Class("Estimate",
 
                             # R²
                             if (self$options$outputRSquared) {
-                              ginfo('begin tab_r2')
+                              mark('begin tab_r2');
                               RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE);
                               RSqEst = RSqEst[RSqEst$op == "r2",];
                               if (nrow(RSqEst) > 0) { 
@@ -269,7 +261,6 @@ Estimate <- R6::R6Class("Estimate",
                                 self$tab_covcorrImplied  <- NULL;
                                 self$tab_covcorrResidual <- NULL;
                               }
-
                               mark('finished tab_covcorr');
                             }
 

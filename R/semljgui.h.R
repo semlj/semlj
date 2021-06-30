@@ -16,7 +16,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 list()),
             varcov = NULL,
             constraints = list(),
-            estimator = "ML",
+            estimator = "default",
             likelihood = "normal",
             scoretest = TRUE,
             cumscoretest = FALSE,
@@ -25,12 +25,12 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             bootN = 1000,
             ci = TRUE,
             ciWidth = 95,
-            intercepts = TRUE,
-            showintercepts = TRUE,
+            meanstructure = FALSE,
+            intercepts = FALSE,
             indirect = FALSE,
-            auto.fix.first = TRUE,
-            std.lv = FALSE,
-            cov_x = TRUE,
+            std_lv = "fix_first",
+            std_ov = FALSE,
+            cov_x = FALSE,
             cov_y = TRUE,
             eq_loadings = FALSE,
             eq_intercepts = FALSE,
@@ -144,16 +144,19 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "estimator",
                 estimator,
                 options=list(
+                    "default",
                     "ML",
+                    "PML",
                     "GLS",
                     "WLS",
                     "DWLS",
                     "ULS"),
-                default="ML")
+                default="default")
             private$..likelihood <- jmvcore::OptionList$new(
                 "likelihood",
                 likelihood,
                 options=list(
+                    "default",
                     "normal",
                     "wishart"),
                 default="normal")
@@ -198,30 +201,33 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 min=50,
                 max=99.9,
                 default=95)
+            private$..meanstructure <- jmvcore::OptionBool$new(
+                "meanstructure",
+                meanstructure,
+                default=FALSE)
             private$..intercepts <- jmvcore::OptionBool$new(
                 "intercepts",
                 intercepts,
-                default=TRUE)
-            private$..showintercepts <- jmvcore::OptionBool$new(
-                "showintercepts",
-                showintercepts,
-                default=TRUE)
+                default=FALSE)
             private$..indirect <- jmvcore::OptionBool$new(
                 "indirect",
                 indirect,
                 default=FALSE)
-            private$..auto.fix.first <- jmvcore::OptionBool$new(
-                "auto.fix.first",
-                auto.fix.first,
-                default=TRUE)
-            private$..std.lv <- jmvcore::OptionBool$new(
-                "std.lv",
-                std.lv,
+            private$..std_lv <- jmvcore::OptionList$new(
+                "std_lv",
+                std_lv,
+                options=list(
+                    "fix_first",
+                    "std_res"),
+                default="fix_first")
+            private$..std_ov <- jmvcore::OptionBool$new(
+                "std_ov",
+                std_ov,
                 default=FALSE)
             private$..cov_x <- jmvcore::OptionBool$new(
                 "cov_x",
                 cov_x,
-                default=TRUE)
+                default=FALSE)
             private$..cov_y <- jmvcore::OptionBool$new(
                 "cov_y",
                 cov_y,
@@ -408,11 +414,11 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..bootN)
             self$.addOption(private$..ci)
             self$.addOption(private$..ciWidth)
+            self$.addOption(private$..meanstructure)
             self$.addOption(private$..intercepts)
-            self$.addOption(private$..showintercepts)
             self$.addOption(private$..indirect)
-            self$.addOption(private$..auto.fix.first)
-            self$.addOption(private$..std.lv)
+            self$.addOption(private$..std_lv)
+            self$.addOption(private$..std_ov)
             self$.addOption(private$..cov_x)
             self$.addOption(private$..cov_y)
             self$.addOption(private$..eq_loadings)
@@ -464,11 +470,11 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         bootN = function() private$..bootN$value,
         ci = function() private$..ci$value,
         ciWidth = function() private$..ciWidth$value,
+        meanstructure = function() private$..meanstructure$value,
         intercepts = function() private$..intercepts$value,
-        showintercepts = function() private$..showintercepts$value,
         indirect = function() private$..indirect$value,
-        auto.fix.first = function() private$..auto.fix.first$value,
-        std.lv = function() private$..std.lv$value,
+        std_lv = function() private$..std_lv$value,
+        std_ov = function() private$..std_ov$value,
         cov_x = function() private$..cov_x$value,
         cov_y = function() private$..cov_y$value,
         eq_loadings = function() private$..eq_loadings$value,
@@ -519,11 +525,11 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..bootN = NA,
         ..ci = NA,
         ..ciWidth = NA,
+        ..meanstructure = NA,
         ..intercepts = NA,
-        ..showintercepts = NA,
         ..indirect = NA,
-        ..auto.fix.first = NA,
-        ..std.lv = NA,
+        ..std_lv = NA,
+        ..std_ov = NA,
         ..cov_x = NA,
         ..cov_y = NA,
         ..eq_loadings = NA,
@@ -955,7 +961,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="pvalue", 
                                     `title`="p", 
                                     `type`="number", 
-                                    `format`="zto"))))
+                                    `format`="zto,pvalue"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="defined",
@@ -1344,40 +1350,83 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' Structural Equation Models
 #'
 #' 
-#' @param data .
-#' @param code .
-#' @param endogenous a list containing named lists that define the
-#'   \code{label} of the latent variables and the \code{vars} that belong to
-#'   that latent
-#' @param exogenous a list containing named lists that define the \code{label}
-#'   of the latent variables and the \code{vars} that belong to that latent
-#' @param multigroup factor defining groups for multigroup analysis
-#' @param endogenousTerms a list of lists specifying the models for with the
+#' @param data TO ADD
+#' @param code TO ADD
+#' @param endogenous A list containing named lists that define the
+#'   \code{label} of the latent endogenous variable(s) and the \code{vars} that
+#'   belong to that latent.
+#' @param exogenous A list containing named lists that define the \code{label}
+#'   of the latent exogenous variables and the \code{vars} that belong to that
+#'   latent.
+#' @param multigroup Factor defining groups for multigroup analysis.
+#' @param endogenousTerms A list of lists specifying the models for with the
 #'   mediators as dependent variables.
-#' @param varcov a list of lists specifying the  covariances that need to be
-#'   estimated
-#' @param constraints a list of lists specifying the models random effects
-#' @param estimator TO ADD
-#' @param likelihood TO ADD
+#' @param varcov A list of lists specifying the  covariances that need to be
+#'   estimated.
+#' @param constraints A list of lists specifying the models random effects.
+#' @param estimator The estimator to be used. Can be one of the following:
+#'   "ML" for maximum likelihood, "GLS" for (normal theory) generalized least
+#'   squares, "WLS" for weighted least squares (sometimes called ADF
+#'   estimation), "ULS" for unweighted least squares, "DWLS" for diagonally
+#'   weighted least squares, and "DLS" for distributionally-weighted least
+#'   squares. These are the main options that affect the estimation. For
+#'   convenience, the "ML" option can be extended as "MLM", "MLMV", "MLMVS",
+#'   "MLF", and "MLR". The estimation will still be plain "ML", but now with
+#'   robust standard errors and a robust (scaled) test statistic. For "MLM",
+#'   "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem");
+#'   for "MLF", standard errors are based on first-order derivatives
+#'   (information = "first.order"); for "MLR", `Huber-White' robust standard
+#'   errors are used (se="robust.huber.white"). In addition, "MLM" will compute
+#'   a Satorra-Bentler scaled (mean adjusted) test statistic
+#'   (test="satorra.bentler"), "MLMVS" will compute a mean and variance adjusted
+#'   test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV"
+#'   will compute a mean and variance adjusted test statistic (scaled and
+#'   shifted) (test="scaled.shifted"), and "MLR" will compute a test statistic
+#'   which is asymptotically equivalent to the Yuan-Bentler T2-star test
+#'   statistic (test="yuan.bentler.mplus"). Analogously, the estimators "WLSM"
+#'   and "WLSMV" imply the "DWLS" estimator (not the "WLS" estimator) with
+#'   robust standard errors and a mean or mean and variance adjusted test
+#'   statistic. Estimators "ULSM" and "ULSMV" imply the "ULS" estimator with
+#'   robust standard errors and a mean or mean and variance adjusted test
+#'   statistic.
+#' @param likelihood Only relevant for ML estimation. If "wishart", the
+#'   wishart likelihood approach is used. In this approach, the covariance
+#'   matrix has been divided by N-1, and both standard errors and test
+#'   statistics are based on N-1. If "normal", the normal likelihood approach is
+#'   used. Here, the covariance matrix has been divided by N, and both standard
+#'   errors and test statistics are based on N. If "default", it depends on the
+#'   mimic option: if mimic="lavaan" or mimic="Mplus", normal likelihood is
+#'   used; otherwise, wishart likelihood is used.
 #' @param scoretest TO ADD
 #' @param cumscoretest TO ADD
 #' @param se TO ADD
-#' @param bootci choose the confidence interval type ("perc" - percentiles
+#' @param bootci Choose the confidence interval type ("perc" - percentiles
 #'   [default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic"
-#'   - basic)
-#' @param bootN number of bootstrap samples for estimating confidence
-#'   intervals
+#'   - basic).
+#' @param bootN The number of bootstrap samples for estimating confidence
+#'   intervals.
 #' @param ci \code{TRUE} or \code{FALSE} (default), show confidence intervals
-#' @param ciWidth a number between 50 and 99.9 (default: 95) specifying the
-#'   confidence interval width for the parameter estimates
-#' @param intercepts \code{TRUE} or \code{FALSE} (default), show intercepts
-#' @param showintercepts \code{TRUE} or \code{FALSE} (default), show
-#'   intercepts
-#' @param indirect \code{TRUE} or \code{FALSE} (default), show intercepts
-#' @param auto.fix.first \code{TRUE} or \code{FALSE}
-#' @param std.lv \code{TRUE} or \code{FALSE}
-#' @param cov_x \code{TRUE} (default) or \code{FALSE}, fix exogenous
-#'   covariates
+#' @param ciWidth A number between 50 and 99.9 (default: 95) specifying the
+#'   confidence interval width for the parameter estimates.
+#' @param meanstructure If TRUE, the means of the observed variables enter the
+#'   model. Required for calculating the intercepts of the estimates.
+#' @param intercepts \code{TRUE} or \code{FALSE} (default), calculate and show
+#'   the intercepts of the parameter estimates
+#' @param indirect \code{TRUE} or \code{FALSE} (default), TO ADD
+#' @param std_lv If \code{fix_first} (default), the factor loading of the
+#'   first indicator is set to 1.0 for every latent variable. If \code{std_res},
+#'   the metric of each latent variable is determined by fixing their (residual)
+#'   variances to 1.0. If there are multiple groups, "std_res" is chosen and
+#'   "loadings" is included in the group.label argument, then only the latent
+#'   variances i of the first group will be fixed to 1.0, while the latent
+#'   variances of other groups are set free.
+#' @param std_ov If TRUE, all observed variables are standardized before
+#'   entering the analysis.
+#' @param cov_x If \code{TRUE}, the exogenous covariates are considered fixed
+#'   variables and the means, variances and covariances of these variables are
+#'   fixed to their sample values. If \code{FALSE}, they are considered random,
+#'   and the means, variances and covariances are free parameters. If "default",
+#'   the value is set depending on the mimic option.
 #' @param cov_y \code{TRUE} (default) or \code{FALSE}, TO ADD
 #' @param eq_loadings \code{TRUE} or \code{FALSE} (default), constrain the
 #'   factor loadings to be equal across groups (when conducting multi-group
@@ -1424,7 +1473,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   of the (manifest) variables
 #' @param outputResidualCovariances \code{TRUE} or \code{FALSE} (default),
 #'   show the covariances and correlations between the residuals of the
-#'   (manifest) variables
+#'   (manifest) variables.
 #' @param outpuCombineCovariances \code{TRUE} or \code{FALSE} (default),
 #'   combine the (up to) three covariance / correlation tables into one table
 #'   (i.e., showing observed, model-implied and residual values for each
@@ -1432,30 +1481,30 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param outputModificationIndices \code{TRUE} or \code{FALSE} (default),
 #'   show modification indices for if certain terms were removed from the model
 #' @param miHideLow \code{TRUE} or \code{FALSE} (default), hide modification
-#'   indices below a certain threshold
-#' @param miThreshold numeric (default: 10), set a threshold the modification
-#'   indices must exceed in order to be shown
+#'   indices below a certain threshold.
+#' @param miThreshold Numeric (default: 10), set a threshold the modification
+#'   indices must exceed in order to be shown.
 #' @param diagram \code{TRUE} or \code{FALSE} (default), produce a path
-#'   diagram
+#'   diagram.
 #' @param diag_resid \code{TRUE} or \code{FALSE} (default), show the residuals
-#'   (for the observed variables)
+#'   (for the observed variables).
 #' @param diag_intercepts \code{TRUE} or \code{FALSE} (default), show the
-#'   variable intercepts
+#'   variable intercepts.
 #' @param diag_paths Choose the values shown along the paths ("est" [coeffic.,
-#'   default], "stand" [betas], "name" [labels], "hide" [nothing])
+#'   default], "stand" [betas], "name" [labels], "hide" [nothing]).
 #' @param diag_type Choose the layout of the path diagram ("tree" [default],
-#'   "tree2", "circle", "circle2", "spring")
+#'   "tree2", "circle", "circle2", "spring").
 #' @param diag_rotate Choose the rotation of the path diagram (placement of
 #'   the exog. variables; "1": top, "2": left (default), "3": bottom, "4":
-#'   right)
+#'   right).
 #' @param diag_labsize Choose the node size for the variables (default:
-#'   "medium")
+#'   "medium").
 #' @param diag_shape_man Choose the shape for the manifest variables (default:
-#'   "rectangle")
+#'   "rectangle").
 #' @param diag_shape_lat Choose the shape for the latent variables (default:
-#'   "circle")
+#'   "circle").
 #' @param diag_abbrev Choose the length (characters) of the variable name
-#'   abbreviations (default: 5)
+#'   abbreviations (default: 5).
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
@@ -1500,7 +1549,7 @@ semljgui <- function(
                 list()),
     varcov,
     constraints = list(),
-    estimator = "ML",
+    estimator = "default",
     likelihood = "normal",
     scoretest = TRUE,
     cumscoretest = FALSE,
@@ -1509,12 +1558,12 @@ semljgui <- function(
     bootN = 1000,
     ci = TRUE,
     ciWidth = 95,
-    intercepts = TRUE,
-    showintercepts = TRUE,
+    meanstructure = FALSE,
+    intercepts = FALSE,
     indirect = FALSE,
-    auto.fix.first = TRUE,
-    std.lv = FALSE,
-    cov_x = TRUE,
+    std_lv = "fix_first",
+    std_ov = FALSE,
+    cov_x = FALSE,
     cov_y = TRUE,
     eq_loadings = FALSE,
     eq_intercepts = FALSE,
@@ -1576,11 +1625,11 @@ semljgui <- function(
         bootN = bootN,
         ci = ci,
         ciWidth = ciWidth,
+        meanstructure = meanstructure,
         intercepts = intercepts,
-        showintercepts = showintercepts,
         indirect = indirect,
-        auto.fix.first = auto.fix.first,
-        std.lv = std.lv,
+        std_lv = std_lv,
+        std_ov = std_ov,
         cov_x = cov_x,
         cov_y = cov_y,
         eq_loadings = eq_loadings,

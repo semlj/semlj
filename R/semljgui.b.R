@@ -57,7 +57,7 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             j.init_table(self$results$models$defined,lav_machine$tab_defined,ci=T,ciwidth=self$options$ciWidth)
 
             ### (prepare the) intercepts ###
-            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts))
+            if (self$options$intercepts & !is.null(lav_machine$tab_intercepts))
                 j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
 
             ### (prepare the) Covariances and correlations ====================
@@ -134,7 +134,7 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             j.fill_table(self$results$models$defined,lav_machine$tab_defined)
             j.add_warnings(self$results$models$defined,lav_machine,"defined")
             
-            if (self$options$showintercepts & !is.null(lav_machine$tab_intercepts)) {
+            if (self$options$intercepts & !is.null(lav_machine$tab_intercepts)) {
                j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
             }
 

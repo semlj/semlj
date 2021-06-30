@@ -75,30 +75,42 @@ options:
       title: Method
       type: List
       options:
-        # TO BE INCLUDED? (available in JASP-SEM)
-#       - name: default
-#         title: "Auto"
+        - name: default
+          title: "Auto"
         - name:  ML
-          title: Maximum Likelihood
+          title: "Maximum Likelihood"
+        - name: PML
+          title: "Pairwise maximum likelihood"
         - name: GLS
-          title: Generalized Least Squares
+          title: "Generalized Least Squares"
         - name: WLS
-          title: Weighted Least Squares
+          title: "Weighted Least Squares"
         - name: DWLS
-          title: Diagonally weighted Least Squares
+          title: "Diagonally weighted Least Squares"
         - name: ULS
-          title: Unweighted Least Squares
-#       - name: PML
-#         title: "Pairwise maximum likelihood"
-      default: ML
+          title: "Unweighted Least Squares"
+      default: default
       description:
           R: >
-             TO ADD
+             The estimator to be used. Can be one of the following: "ML" for maximum likelihood, "GLS" for (normal theory) generalized least squares,
+             "WLS" for weighted least squares (sometimes called ADF estimation), "ULS" for unweighted least squares, "DWLS" for diagonally weighted
+             least squares, and "DLS" for distributionally-weighted least squares. These are the main options that affect the estimation. For convenience,
+             the "ML" option can be extended as "MLM", "MLMV", "MLMVS", "MLF", and "MLR". The estimation will still be plain "ML", but now with robust
+             standard errors and a robust (scaled) test statistic. For "MLM", "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem");
+             for "MLF", standard errors are based on first-order derivatives (information = "first.order"); for "MLR", `Huber-White' robust standard errors
+             are used (se="robust.huber.white"). In addition, "MLM" will compute a Satorra-Bentler scaled (mean adjusted) test statistic (test="satorra.bentler"),
+             "MLMVS" will compute a mean and variance adjusted test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV" will compute a mean and
+             variance adjusted test statistic (scaled and shifted) (test="scaled.shifted"), and "MLR" will compute a test statistic which is asymptotically
+             equivalent to the Yuan-Bentler T2-star test statistic (test="yuan.bentler.mplus"). Analogously, the estimators "WLSM" and "WLSMV" imply the
+             "DWLS" estimator (not the "WLS" estimator) with robust standard errors and a mean or mean and variance adjusted test statistic. Estimators
+             "ULSM" and "ULSMV" imply the "ULS" estimator with robust standard errors and a mean or mean and variance adjusted test statistic.
 
     - name: likelihood
       title: ML likelihood approach
       type: List
       options:
+        - name: default
+          title: Default        
         - name: normal
           title: Normal
         - name:  wishart
@@ -106,16 +118,10 @@ options:
       default: normal
       description:
           R: >
-             TO ADD
-
-    # TO BE INCLUDED? (available in JASP-SEM)
-#   - name: std.ov
-#     type: Bool
-#     title: "Standardize variables before estimation"
-#     default: false
-#     description:
-#         R: >
-#            TO ADD
+             Only relevant for ML estimation. If "wishart", the wishart likelihood approach is used. In this approach, the covariance matrix has been divided
+             by N-1, and both standard errors and test statistics are based on N-1. If "normal", the normal likelihood approach is used. Here, the covariance
+             matrix has been divided by N, and both standard errors and test statistics are based on N. If "default", it depends on the mimic option:
+             if mimic="lavaan" or mimic="Mplus", normal likelihood is used; otherwise, wishart likelihood is used.
 
     ### (b) Constraint Tests --------------------------------------------------
     - name: scoretest
@@ -134,29 +140,6 @@ options:
           R: >
              TO ADD
 
-    # TO BE INCLUDED?
-#   - name: factorStandardisation
-#     title: "Factor scaling"
-#     type: List
-#     options:
-#       - name: auto.fix.first
-#         title: "Factor loadings"
-#       - name: std.lv
-#         title: "Factor variance"
-#       - name: effect.coding
-#         title: "Effects coding"
-#       - name: none
-#         title: "None"
-#      description:
-#          R: >
-#             TO ADD
-#   - name: meanstructure
-#     type: Bool
-#     title: "Include mean structure"
-#     default: false
-#     description:
-#         R: >
-#            TO ADD
 #   - name: orthogonal
 #     type: Bool
 #     title: "Assume factors uncorrelated"
@@ -169,8 +152,8 @@ options:
     ### Parameter options =====================================================
     ### (a) Standard errors ---------------------------------------------------
     - name: se
-      title: Standard errors
       type: List
+      title: Standard errors
       options:
         - name: standard
           title: Standard
@@ -183,7 +166,7 @@ options:
       default: standard
       description:
           R: >
-            TO ADD
+             TO ADD
 
     ### (b) Bootstrap options -------------------------------------------------
     - name: bootci
@@ -201,7 +184,7 @@ options:
       default: perc
       description:
           R: >
-            choose the confidence interval type ("perc" - percentiles [default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic" - basic)
+             Choose the confidence interval type ("perc" - percentiles [default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic" - basic).
     - name: bootN
       title: Bootstrap Rep.
       type: Number
@@ -209,11 +192,11 @@ options:
       default: 1000
       description:
           R: >
-            number of bootstrap samples for estimating confidence intervals
+             The number of bootstrap samples for estimating confidence intervals.
 
     ### (c) Confidence intervals ----------------------------------------------
     - name: ci
-      title: Show
+      title: ""
       type: Bool
       default: true
       description:
@@ -227,69 +210,94 @@ options:
       default: 95
       description:
           R: >
-            a number between 50 and 99.9 (default: 95) specifying the confidence
-            interval width for the parameter estimates
+             A number between 50 and 99.9 (default: 95) specifying the confidence
+             interval width for the parameter estimates.
 
     ### (d) Estimates ---------------------------------------------------------
-    - name: intercepts
-      title: Estimates intercepts
+    - name: meanstructure
       type: Bool
-      default: true
+      title: Mean structure
+      default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), show intercepts
+             If TRUE, the means of the observed variables enter the model. Required for calculating the intercepts of
+             the estimates.
 
-    - name: showintercepts
-      title: Show intercepts estimates
+    - name: intercepts
       type: Bool
-      default: true
+      title: Intercepts of the estimates
+      default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), show intercepts
+            `TRUE` or `FALSE` (default), calculate and show the intercepts of the parameter estimates
 
     - name: indirect
+      type: Bool
       title: Indirect Effects
-      type: Bool
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), show intercepts
+            `TRUE` or `FALSE` (default), TO ADD
 
-    ### (e) Latent scale ------------------------------------------------------
-    - name: auto.fix.first
-      title: Fix first indicator
-      type: Bool
-      default: true
+    ### (e) Scale / standardize variables -------------------------------------
+    - name: std_lv
+      title: Scale / stand. latent vars.
+      type: List
+      options:
+        - name: fix_first
+          title: "Latent vars.: Fix first indicator (to 1)"
+        - name: std_res
+          title: "Latent vars.: Fix residual variances (to 1)"
+      default: fix_first
       description:
           R: >
-            `TRUE` or `FALSE`
+             If `fix_first` (default), the factor loading of the first indicator is set to 1.0 for every latent variable.
+             If `std_res`, the metric of each latent variable is determined by fixing their (residual) variances to 1.0.
+             If there are multiple groups, "std_res" is chosen and "loadings" is included in the group.label argument,
+             then only the latent variances i of the first group will be fixed to 1.0, while the latent variances of other
+             groups are set free.
 
-    - name: std.lv
-      title: Standardized
+#   - name: effect.coding
+#     title: Effects coding
+#     type: Bool
+#     default: false
+#     description:
+#         R: >
+#           Can be logical or character string. If logical and `TRUE`, this implies effect.coding = c("loadings", "intercepts").
+#           If logical and `FALSE`, it is set equal to the empty string. If "loadings" is included, equality constraints are
+#           used so that the average of the factor loadings (per latent variable) equals 1. Note that this should not be used
+#           together with std.lv = TRUE. If "intercepts" is included, equality constraints are used so that the sum of the
+#           intercepts (belonging to the indicators of a single latent variable) equals zero. As a result, the latent mean will
+#           be freely estimated and usually equal the average of the means of the involved indicators.
+
+    - name: std_ov
       type: Bool
+      title: "Observed vars.: Standardize before estimation"
       default: false
       description:
           R: >
-            `TRUE` or `FALSE`
+             If TRUE, all observed variables are standardized before entering the analysis.
 
     ### (f) Miscellaneous -----------------------------------------------------
     # TO-DO: find a better name than miscellaneous; perhaps: Constraints
+    # lavOption: fixed.x
     - name: cov_x
-#   - name: fixed.x (lavOpt)
-      title: Fix exogenous covariates
       type: Bool
-      default: true
+      title: Fix exogenous covariates
+      default: false
       description:
           R: >
-            `TRUE` (default) or `FALSE`, fix exogenous covariates
+             If `TRUE`, the exogenous covariates are considered fixed variables and the means, variances and covariances of these
+             variables are fixed to their sample values. If `FALSE`, they are considered random, and the means, variances and
+             covariances are free parameters. If "default", the value is set depending on the mimic option.
 
     - name: cov_y
+      type: Bool    
       title: Correlated y
-      type: Bool
       default: true
       description:
           R: >
-            `TRUE` (default) or `FALSE`, TO ADD
+             `TRUE` (default) or `FALSE`, TO ADD
 
     #   FURTHER OPTIONS (included in JASP-SEM)
 #    - name: int.ov.fixed
@@ -375,6 +383,7 @@ options:
 #      description:
 #          R: >
 #            string (default=""), the separate models (one for each level / group in the variable) are fit, instead of fitting the same model for the whole dataset (all groups)
+
     - name: eq_loadings
       type: Bool
       title: "Loadings"
@@ -500,14 +509,16 @@ options:
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), show the covariances and correlations between the residuals of the (manifest) variables
+             `TRUE` or `FALSE` (default), show the covariances and correlations between the residuals of the (manifest) variables.
     - name: outpuCombineCovariances
       type: Bool
       title: "combined into one table"
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing observed, model-implied and residual values for each variable combination underneath each other)
+             `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing
+             observed, model-implied and residual values for each variable combination underneath each other)
+
 
     ### (c) Modification indices ----------------------------------------------
     - name: outputModificationIndices
@@ -523,7 +534,7 @@ options:
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), hide modification indices below a certain threshold
+             `TRUE` or `FALSE` (default), hide modification indices below a certain threshold.
     - name: miThreshold
       type: Number
       title: "Threshold"
@@ -531,7 +542,7 @@ options:
       min: 0
       description:
           R: >
-            numeric (default: 10), set a threshold the modification indices must exceed in order to be shown
+             Numeric (default: 10), set a threshold the modification indices must exceed in order to be shown.
 
 
     ### Path diagram ==========================================================
@@ -542,21 +553,21 @@ options:
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), produce a path diagram
+             `TRUE` or `FALSE` (default), produce a path diagram.
     - name: diag_resid
       title: show residuals
       type: Bool
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), show the residuals (for the observed variables)
+             `TRUE` or `FALSE` (default), show the residuals (for the observed variables).
     - name: diag_intercepts
       title: show intercepts
       type: Bool
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), show the variable intercepts
+             `TRUE` or `FALSE` (default), show the variable intercepts.
 
     ### (b) Paths -------------------------------------------------------------
     - name: diag_paths
@@ -574,7 +585,7 @@ options:
       default: est
       description:
           R: >
-             Choose the values shown along the paths ("est" [coeffic., default], "stand" [betas], "name" [labels], "hide" [nothing])
+             Choose the values shown along the paths ("est" [coeffic., default], "stand" [betas], "name" [labels], "hide" [nothing]).
 
     ### (c) Layout ------------------------------------------------------------
     - name: diag_type
@@ -594,7 +605,7 @@ options:
       default: "tree"
       description:
           R: >
-             Choose the layout of the path diagram ("tree" [default], "tree2", "circle", "circle2", "spring")
+             Choose the layout of the path diagram ("tree" [default], "tree2", "circle", "circle2", "spring").
     - name: diag_rotate
       title: Rotate
       type: List
@@ -610,7 +621,7 @@ options:
       default: "2"
       description:
           R: >
-             Choose the rotation of the path diagram (placement of the exog. variables; "1": top, "2": left (default), "3": bottom, "4": right)
+             Choose the rotation of the path diagram (placement of the exog. variables; "1": top, "2": left (default), "3": bottom, "4": right).
 
     ### (d) Nodes -------------------------------------------------------------
     - name: diag_labsize
@@ -628,7 +639,7 @@ options:
       default: "medium"
       description:
           R: >
-             Choose the node size for the variables (default: "medium")
+             Choose the node size for the variables (default: "medium").
     - name: diag_shape_man
       title: Manifest shapes
       type: List
@@ -646,7 +657,7 @@ options:
       default: "rectangle"
       description:
           R: >
-             Choose the shape for the manifest variables (default: "rectangle")
+             Choose the shape for the manifest variables (default: "rectangle").
     - name: diag_shape_lat
       title: Latent shapes
       type: List
@@ -664,7 +675,7 @@ options:
       default: "circle"
       description:
           R: >
-             Choose the shape for the latent variables (default: "circle")
+             Choose the shape for the latent variables (default: "circle").
     - name: diag_abbrev
       title: Abbreviate
       type: List
@@ -684,6 +695,6 @@ options:
       default: "5"
       description:
           R: >
-             Choose the length (characters) of the variable name abbreviations (default: 5)
+             Choose the length (characters) of the variable name abbreviations (default: 5).
 
 ...

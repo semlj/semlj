@@ -284,8 +284,6 @@ items:
             format: zto,pvalue
 
       # Intercepts ------------------------------------------------------------
-      # UNCLEAR TO WHICH GROUP THE TABLE SHALL BELONG
-      # DON'T SEEM TO BE IMPLEMENTED YET
       - name: intercepts
         title: Intercepts
         type: Table
@@ -335,7 +333,7 @@ items:
           - name: pvalue
             title: "p"
             type: number
-            format: zto
+            format: zto,pvalue
 
       # Defined parameters ----------------------------------------------------
       - name: defined
