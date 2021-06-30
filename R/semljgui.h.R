@@ -17,7 +17,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             varcov = NULL,
             constraints = list(),
             estimator = "default",
-            likelihood = "normal",
+            likelihood = "default",
             scoretest = TRUE,
             cumscoretest = FALSE,
             se = "standard",
@@ -159,7 +159,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "default",
                     "normal",
                     "wishart"),
-                default="normal")
+                default="default")
             private$..scoretest <- jmvcore::OptionBool$new(
                 "scoretest",
                 scoretest,
@@ -1550,7 +1550,7 @@ semljgui <- function(
     varcov,
     constraints = list(),
     estimator = "default",
-    likelihood = "normal",
+    likelihood = "default",
     scoretest = TRUE,
     cumscoretest = FALSE,
     se = "standard",

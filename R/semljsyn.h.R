@@ -12,7 +12,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             vars = NULL,
             toggle = FALSE,
             estimator = "default",
-            likelihood = "normal",
+            likelihood = "default",
             scoretest = TRUE,
             cumscoretest = FALSE,
             se = "standard",
@@ -112,7 +112,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "default",
                     "normal",
                     "wishart"),
-                default="normal")
+                default="default")
             private$..scoretest <- jmvcore::OptionBool$new(
                 "scoretest",
                 scoretest,
@@ -1493,7 +1493,7 @@ semljsyn <- function(
     vars,
     toggle = FALSE,
     estimator = "default",
-    likelihood = "normal",
+    likelihood = "default",
     scoretest = TRUE,
     cumscoretest = FALSE,
     se = "standard",
