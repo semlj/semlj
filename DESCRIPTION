@@ -6,7 +6,7 @@ Author:
   - Marcello Gallucci
   - Sebastian Jentschke
 Maintainer: Marcello Gallucci <mcfanda@gmail.com>
-Description: Structural equation model based on lavaan, with jamovi output style and functions.
+Description: Structural equation models based on lavaan, with jamovi output style and functions.
              Provides access to lavaan estimation with options for executing most common tasks
              in SEM analysis. Path diagrams can also be requested.
 License: GPL-2
