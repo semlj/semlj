@@ -1,7 +1,7 @@
 # SEMLj: A Suite for Structural Equation Models for jamovi
 
 jamovi SEM
-version > 0.7.*
+version > 0.2.*
 
 
 # Docs and help
