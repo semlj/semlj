@@ -5,22 +5,18 @@ jrs: '1.0'
 
 
 items:
-  # objects to store information to keep
-  - name: prev_options
-    type: Property
-    description: Object to store the previous options in
-    visible: (FALSE)
-
   - name: model
     type: Property
     description: The underlying `lavaan` object
     visible: (FALSE)
 
 
-  # Model overview and examples 
+  # Model overview and examples ===============================================
   - name: info
     title: Models Info
     type: Table
+#   description: 
+    refs: semlj    
     clearWith:
       - code
     columns:
@@ -35,10 +31,10 @@ items:
         type: text
         title: ""
         combineBelow: true
-    refs: semlj
-    
+
   - name: contraintsnotes
     type: Table
+#   description:     
     visible: (constraints_examples)
     title: "Syntax examples"
     columns:
@@ -53,7 +49,7 @@ items:
         title: Outcome
 
 
-  # Overall Tests
+  # Overall Tests =============================================================
   - name: fit
     title: "Overall Tests"
     type: Group
@@ -61,9 +57,12 @@ items:
     clearWith:
       - code
     items:
+
+      # Model tests -----------------------------------------------------------
       - name: main
-        title: Model Tests
+        title: Model tests
         type: Table
+#       description: 
         clearWith:
           - ciType
           - cov_y
@@ -83,9 +82,12 @@ items:
             type: number
             format: zto,pvalue
 
+      # Constraints score tests -----------------------------------------------
+      # OUTPUT DOESN'T SEEM TO BE IMPLEMENTED YET
       - name: constraints
-        title: Constraints Score Tests
+        title: Constraints score tests
         type: Table
+#       description: 
         visible: false
         clearWith:
           - ciType
@@ -117,9 +119,11 @@ items:
             type: number
             format: zto,pvalue
 
+      # Fit indices -----------------------------------------------------------
       - name: indices
-        title: Fit Indices
+        title: Fit indices
         type: Table
+#       description: 
         clearWith:
           - endogenous
           - covs
@@ -162,15 +166,19 @@ items:
             type: number
             format: zto,pvalue
 
-  # Estimates
+
+  # Estimates =================================================================
   - name: models
     title: "Estimates"
     type: Group
     visible: false
     items:
+
+      # Parameter estimates ---------------------------------------------------
       - name: coefficients
-        title: Parameter Estimates
+        title: Parameter estimates
         type: Table
+#       description: 
         refs: lavaan
         clearWith:
           - ciType
@@ -220,9 +228,11 @@ items:
             type: number
             format: zto,pvalue
 
+      # Measurement model -----------------------------------
       - name: loadings
-        title: Measurement Model
+        title: Measurement model
         type: Table
+#       description: 
         visible: false
         clearWith:
           - ciType
@@ -273,10 +283,11 @@ items:
             type: number
             format: zto,pvalue
 
-# UNCLEAR TO WHICH GROUP THEY SHALL BELONG
+      # Intercepts ------------------------------------------------------------
       - name: intercepts
         title: Intercepts
         type: Table
+#       description: 
         visible: false
         clearWith:
           - ciType
@@ -322,11 +333,13 @@ items:
           - name: pvalue
             title: "p"
             type: number
-            format: zto
+            format: zto,pvalue
 
+      # Defined parameters ----------------------------------------------------
       - name: defined
-        title: Defined Parameters
+        title: Defined parameters
         type: Table
+#       description: 
         visible: false
         clearWith:
           - ciType
@@ -376,28 +389,14 @@ items:
             format: zto,pvalue
 
 
-  # Additional outputs
+  # Additional outputs ========================================================
   - name: add_outputs
     title: "Additional outputs"
     type: Group
     visible: (outputAdditionalFitMeasures || outputRSquared || outputMardiasCoefficients)
     items:
-      # Additional fit measures (1)
-      - name: testBslModel
-        title: 'Model test baseline model'
-        type: Table
-#       description:
-        visible: (outputAdditionalFitMeasures)
-        clearWith:
-        rows: 4 
-        columns:
-          - name: name
-            title: ""
-            type: text
-          - name: statistics
-            title: Model
-            type: number
-      # Additional fit measures (2)
+
+      # Additional fit measures (1): User model versus baseline model ---------
       - name: compModelBsl
         title: 'User model versus baseline model'
         type: Table
@@ -413,14 +412,14 @@ items:
             title: Model
             type: number
             format: zto
-      # Additional fit measures (3)
-      - name: infCrit
-        title: 'Loglikelihood and Information Criteria'
+      # Additional fit measures (2): Other fit indices ------------------------
+      - name: otherFit
+        title: 'Other fit indices'
         type: Table
 #       description:
         visible: (outputAdditionalFitMeasures)
         clearWith:
-        rows: 6
+        rows: 5
         columns:
           - name: name
             title: ""
@@ -429,9 +428,9 @@ items:
             title: Model
             type: number
 
-      # R² measures
+      # R² measures -----------------------------------------------------------
       - name: Rsquared
-        title: 'R-Squared'
+        title: 'R²-values of the endogenous variables'
         type: Table
 #       description:
         visible: (outputRSquared)
@@ -445,12 +444,13 @@ items:
             title: R²
             type: number
 
-      # Mardia's coefficients
+      # Mardia's coefficients -------------------------------------------------
       - name: mardia
         title: "Mardia's coefficients"
         type: Table
-#       description: 
-        visible: (outputMardiasCoefficients)      
+#       description:
+        refs: semtools
+        visible: (outputMardiasCoefficients)
         clearWith:
         rows: 2
         columns:
@@ -473,71 +473,91 @@ items:
           title: p
           type: number
           format: zto,pvalue
-      
 
-  # Covariances and correlations
+
+  # Covariances and correlations ==============================================
   - name: group_covariances
     title: "Covariances and correlations"
-    type: Group    
+    type: Group
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)
     items:
-      - name: correlations
-        title: Variances and Covariances
-        type: Table
-#       description:
-        visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances)
-        clearWith:
-          - ciType
-          - cov_y
-          - data
-          - multigroup
-          - code
-        columns:
-          - name: lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
-          - name: lhs
-            title: "Variable 1"
-            type: text
-          - name:  rhs
-            title: "Variable 2"
-            type: text
-          - name: est
-            title: "Estimate"
-            type: number
-          - name: se
-            title: "SE"
-            type: number
-          - name: ci.lower
-            type: number
-            title: Lower
-            visible: (ci)
-          - name: ci.upper
-            type: number
-            title: Upper
-            visible: (ci)
-          - name: std.all
-            type: number
-            title: β
-          - name: z
-            title: "z"
-            type: number
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-          - name: type
-            title: "Type"
-            type: text
+
+    # all tables below have variable number of rows and columns
+    # Observed covariances and correlations -----------------------------------
+    - name: covcorrObserved
+      title: Observed covariances (lower triangle) and correlations (upper triangle)
+      type: Table
+      visible: false
+      description: A covariance / correlation matrix table.
+      clearWith:
+        - ciType
+        - cov_y
+        - data
+        - multigroup
+        - code
+      columns:
+      - name: variable
+        title: ""
+        type: text
+
+    # Model-implied / fitted covariances and correlations ---------------------
+    - name: covcorrImplied
+      title: Fitted covariances (lower triangle) and correlations (upper triangle)
+      type: Table
+      visible: false
+      description: A covariance / correlation matrix table.
+      clearWith:
+        - ciType
+        - cov_y
+        - data
+        - multigroup
+        - code
+      columns:
+      - name: variable
+        title: ""
+        type: text
+
+    # Residual covariances and correlations -----------------------------------
+    - name: covcorrResidual
+      title: Residual covariances (lower triangle) and correlations (upper triangle)
+      type: Table
+      visible: false
+      description: A covariance / correlation matrix table.
+      clearWith:
+        - ciType
+        - cov_y
+        - data
+        - multigroup
+        - code
+      columns:
+      - name: variable
+        title: ""
+        type: text
+
+    # Combined covariances and correlations (sorted by variable; observed,
+    # implied, residual within a cell -----------------------------------------
+    - name: covcorrCombined
+      title: Covariances (lower triangle) and correlations (upper triangle)
+      type: Table
+      visible: false
+      description: A covariance / correlation matrix table.
+      clearWith:
+        - ciType
+        - cov_y
+        - data
+        - multigroup
+        - code
+      columns:
+      - name: variable
+        title: ""
+        type: text
+        combineBelow: true
+      - name: type
+        title: ""
+        type: text
 
 
-  # Modification indices
+  # Modification indices ======================================================
   - name: modgroup
     title: "Modifcation indices"
     type: Group
@@ -549,10 +569,10 @@ items:
       - multigroup
       - code
     items:
-      - name: modifIndic
+      - name: modInd
         title: 'Modification indices'
         type: Table
-        visible: (outputModificationIndices)     
+        visible: (outputModificationIndices)
 #       description:
         notes:
           EPC: expected parameter changes and their standardized forms (sEPC); for latent variables (LV),
@@ -574,7 +594,7 @@ items:
         - name: epc
           title: EPC
           type: number
-          format: zto        
+          format: zto
         - name: sepc.lv
           title: sEPC (LV)
           type: number
@@ -589,7 +609,7 @@ items:
           format: zto
 
 
-  # Path model
+  # Path model ================================================================
   - name: pathgroup
     type: Group
     title: Path Model
@@ -609,10 +629,13 @@ items:
       - diag_paths
       - dia_intercepts
     items:
+
+    # Path diagrams -----------------------------------------------------------
       - name: diagrams
-        title: Path Diagrams
+        title: Path diagrams
         type: Array
         description: an array of path diagrams
+        refs: semplot        
         visible: (diagram)
         template:
           title: $key
@@ -634,11 +657,12 @@ items:
             - diag_resid
             - diag_paths
             - diag_intercepts
-          refs: semplot
-             
+
+    # Path diagram notes ------------------------------------------------------
       - name: notes
         type: Table
         title: ""
+#       description:
         visible: false
         columns:
           - name: message

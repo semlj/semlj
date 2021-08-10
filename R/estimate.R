@@ -12,26 +12,30 @@ Estimate <- R6::R6Class("Estimate",
                           tab_fit=NULL,
                           tab_fitindices=NULL,
                           tab_constfit=NULL,
-#                         tab_addFit=NULL,
-#                         tab_r2=NULL,
-#                         tab_mardia=NULL,
-#                         tab_covcorr=NULL,
-#                         tab_modInd=NULL,
+                          tab_compModelBsl=NULL,
+                          tab_otherFit=NULL,
+                          tab_Rsquared=NULL,
+                          tab_mardia=NULL,
+                          tab_covcorrObserved=NULL,
+                          tab_covcorrImplied=NULL,
+                          tab_covcorrResidual=NULL,
+                          tab_covcorrCombined=NULL,
+                          tab_modInd=NULL,
                           ciwidth=NULL,
                           initialize=function(options,datamatic) {
                             super$initialize(options=options,datamatic=datamatic)
                             self$ciwidth <- options$ciWidth/100
                           },
-                          estimate=function(data) {
+                          estimate = function(data) {
                             
-                            ## prepare the options based on Syntax definitions
-                            
+                            ## prepare the options based on Syntax definitions                           
                             lavoptions <- list(model = private$.lav_structure, 
                                              data = data,
+                                             estimator = self$options$estimator,
+                                             likelihood = self$options$likelihood,
                                              se=self$options$se,
                                              bootstrap=self$options$bootN,
-                                             estimator=self$options$estimator
-                                             
+                                             std.ov = self$options$std_ov
                             )
 
                             if (is.something(self$multigroup)) {
@@ -40,23 +44,15 @@ Estimate <- R6::R6Class("Estimate",
                               # TO-DO: test eq_-options
                               nmeOpt = names(self$options);
                               nmeEql = nmeOpt[grep("^eq_", nmeOpt)];
-#                             lavoptions[["group.equal"]] <- gsub("eq_", "", nmeEql[unlist(mget(nmeEql, envir=self$options))]));
+                              lavoptions[["group.equal"]] <- gsub("eq_", "", nmeEql[unlist(mget(nmeEql, envir=self$options))]);
+                              mark(lavoptions[["group.equal"]]);
                             }
-
-                            if (self$options$estimator == "ML") {
-                              lavoptions[["likelihood"]] <- self$options$likelihood
-                            }
-
-                            # TO-DO: add further model options
-                            # iterate through the names and check for matches with lavOpt, update lavOpt if matching
-                            # should be the following variables: auto.cov.lv.x auto.cov.y auto.delta auto.efa auto.fix.single auto.th auto.var
-                            #   bootstrap estimator fixed.x int.lv.fixed int.ov.fixed meanstructure mimic orthogonal se std.ov
-                            
+                                                        
                             ## estimate the models
-                            results <- try_hard({do.call(lavaan::lavaan, lavoptions) })
+                            results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
                             
                             ## check if warnings or errors are produced
-                            self$warnings <- list(topic="info",message=results$warning)
+                            self$warnings <- list(topic="info", message=results$warning)
                             self$errors <- results$error
                             
                             if (is.something(self$errors))
@@ -149,17 +145,11 @@ Estimate <- R6::R6Class("Estimate",
                               }
                             } # end of checking constraints
 
-                            ginfo('before SJ');
                             # additional fit measures
-                            if (self$options$outputAdditionalFitMeasures) {
-                              alist <- list()
-                              # (1) Model test baseline model
-                              alist[[length(alist) + 1]]  <- list(name = "Minimum Function Test Statistic",            statistics = ff[["fmin"]]);
-#                             alist[[length(alist) + 1]]  <- list(name = "χ²",                                         statistics = ff[["chisq"]]);
-#                             alist[[length(alist) + 1]]  <- list(name = "Degrees of freedom",                         statistics = ff[["df"]]);
-#                             alist[[length(alist) + 1]]  <- list(name = "p",                                          statistics = ff[["pvalue"]]);
-
-                              # (2) User model versus baseline model
+                            if (self$options$outputAdditionalFitMeasures) {                            
+                              mark('begin addFit');
+                              # (1) User model versus baseline model
+                              alist<-list()
                               alist[[length(alist) + 1]]  <- list(name = "Comparative Fit Index (CFI)",                statistics = ff[["cfi"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Tucker-Lewis Index (TLI)",                   statistics = ff[["tli"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Non-normed Fit Index (NNFI)", statistics = ff[["nnfi"]]);
@@ -168,89 +158,126 @@ Estimate <- R6::R6Class("Estimate",
                               alist[[length(alist) + 1]]  <- list(name = "Bollen's Relative Fit Index (RFI)",          statistics = ff[["rfi"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Bollen's Incremental Fit Index (IFI)",       statistics = ff[["ifi"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Relative Noncentrality Index (RNI)",         statistics = ff[["rni"]]);
-
-                              # (3) Loglikelihood and Information Criteria
-                              alist[[length(alist) + 1]]  <- list(name = "Loglikelihood user model (H0)",              statistics = ff[["logl"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "Loglikelihood unrestricted model (H1)",      statistics = ff[["unrestricted.logl"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "Number of free parameters",                  statistics = ff[["npar"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "Akaike Information Criterion (AIC)",         statistics = ff[["aic"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "Bayesian Information Criterion (BIC)",       statistics = ff[["bic"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "Sample-size adjusted Bayesian (BIC)",        statistics = ff[["bic2"]]);
-
-                              # (4) Root Mean Square Error of Approximation
-                              alist[[length(alist) + 1]]  <- list(name = "Root Mean Square Error of Approximation",    statistics = ff[["rmsea"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "lower boundary of the 90% CI",               statistics = ff[["rmsea.ci.lower"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "upper boundary of the 90% CI",               statistics = ff[["rmsea.ci.upper"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "p-value RMSEA <= 0.05",                      statistics = ff[["rmsea.pvalue"]]);
-
-                              # (5) Standardized Root Mean Square Residual
-                              alist[[length(alist) + 1]]  <- list(name = "Root Mean Square Residual",                  statistics = ff[["rmr"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "Root Mean Square Residual (no mean)",        statistics = ff[["rmr_nomean"]]);
-                              alist[[length(alist) + 1]]  <- list(name = "Standardized Root Mean Square Residual",     statistics = ff[["srmr"]]);
-
-                              # (6) Other Fit Indices
+                              self$tab_compModelBsl<-alist
+                              
+                              # (2) Other Fit Indices
+                              alist<-list();
                               alist[[length(alist) + 1]]  <- list(name = "Hoelter Critical N (CN), α=0.05",            statistics = ff[["cn_05"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Hoelter Critical N (CN), α=0.01",            statistics = ff[["cn_01"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Goodness of Fit Index (GFI)",                statistics = ff[["gfi"]]);
                               alist[[length(alist) + 1]]  <- list(name = "Parsimony Goodness of Fit Index (GFI)",      statistics = ff[["pgfi"]]);
                               alist[[length(alist) + 1]]  <- list(name = "McDonald Fit Index (MFI)",                   statistics = ff[["mfi"]]);
-
-                              alist[[length(alist) + 1]]  <- list(name = "",                                           statistics = "");
-                              # other measures that are not implemented yet: "srmr_bentler", "srmr_bentler_nomean", "crmr", "crmr_nomean", "srmr_mplus", "srmr_mplus_nomean"
-                              #                                              "agfi", "ecvi"
-                              self$tab_addFit <- alist;
-                              ginfo('finished tab_addFit');
+                              self$tab_otherFit <- alist;
+                              
+                              # other measures that are not implemented yet: "rmr", "rmr_nomean", "srmr_bentler", "srmr_bentler_nomean", "crmr", "crmr_nomean",
+                              #                                              "srmr_mplus", "srmr_mplus_nomean", "agfi", "ecvi"
+                              # most of them are some form of Root Mean Squared Residual measures
+                              mark('finished addFit');
                             }
                             
 
                             # R²
                             if (self$options$outputRSquared) {
-                              ginfo('begin tab_r2')
-                              RSqEst = lavaan::parameterEstimates(fit, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE);
-                              RSqEst = RSqEst[RSqEst$op == "r2", 3:4];
+                              mark('begin tab_r2');
+                              RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE);
+                              RSqEst = RSqEst[RSqEst$op == "r2",];
                               if (nrow(RSqEst) > 0) { 
-                                self$tab_r2 <- as.list(RSqEst);
+                                self$tab_Rsquared<- RSqEst;
                               };
-                              ginfo('finished tab_r2');
-                              ginfo(str(self$tab_r2));
+                              mark('finished tab_r2');
                             }
-                            
 
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
-                              ginfo('begin tab_mardia');
-                              mrdSkw = semTools::mardiaSkew(self$data[,lavaan::lavaanNames(fit)]);
-                              mrdKrt = semTools::mardiaKurtosis(self$data[,lavaan::lavaanNames(fit)]);
+                              mark('begin tab_mardia');
                               
-                              ginfo('before adding to tab_mardia')
-                              self$tab_mardia <- list(list(name = "Skewness", coeff=mrdSkw[[1]], as.list(mrdSkw[2:4])),
-                                                      list(name = "Kurtosis", coeff=mrdKrt[[1]], as.list(mrdKrt[2:3])));
-                              ginfo('finished tab_mardia');                            
+                              # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
+                              # that are already contained in the lavaan model-fit
+                              nVar = length(self$model@Data@ov$name);
+                              nObs = self$model@Data@nobs[[1]];
+                              cntDta = as.list(data.frame(t(sweep(self$model@Data@X[[1]], 2, self$model@SampleStats@mean[[1]]))));
+                              invS = self$model@SampleStats@icov[[1]] / nObs * (nObs - 1);
+
+                              FUN_S1 <- function(vec1, vec2, invS)     { as.numeric(t(as.matrix(vec1)) %*% invS %*% as.matrix(vec2)) };
+                              FUN_S2 <- function(vec1, listVec2, invS) { sapply(listVec2, FUN_S1, vec1=vec1, invS=invS) };
+                              MS_Cf  <- sum(sapply(cntDta, FUN_S2, listVec2=cntDta, invS=invS) ^ 3) / (nObs ^ 2);
+                              MS_chi <- nObs * MS_Cf / 6;
+                              MS_df  <- nVar * (nVar + 1) * (nVar + 2) / 6;
+                              MS_p   <- pchisq(MS_chi, df = MS_df, lower.tail = FALSE);
+                              
+                              FUNK1 <- function(vec, invS) { as.numeric(t(as.matrix(vec)) %*% invS %*% as.matrix(vec)) };
+                              MK_Cf <- sum(sapply(cntDta, FUNK1, invS=invS) ^ 2) / nObs;
+                              MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
+                              MK_p  <- pnorm(-abs(MK_z)) * 2;
+                              
+                              mark('before adding to tab_mardia')
+                              self$tab_mardia <- list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
+                                                      list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
                             }
 
                             # covariances and correlations
-#                            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
-#                              self$tab_covcorr <- NULL
-#                              if (nrow(self$tab_covcorr) == 0) self$tab_covcorr <- NULL
-#                            }
+                            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
+                              nmeVar = lavaan::lavNames(self$model, 'ov');
+                              numVar = length(nmeVar);
+                              
+                              obsCov = lavaan::inspect(self$model, "observed")$cov;
+                              fitCov = lavaan::inspect(self$model,   "fitted")$cov;
+                              # TO-DO: Implement standardized residuals (cov.z instead of cov)
+                              resCov = lavaan::lavResiduals(self$model, type="raw")$cov;
+
+                              if (self$options$outputObservedCovariances) {
+                                obsCrr = cov2cor(obsCov);
+                                obsCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                obsCvC[lower.tri(obsCvC, diag=TRUE)]  = obsCov[lower.tri(obsCov, diag=TRUE)];
+                                obsCvC[upper.tri(obsCvC, diag=FALSE)] = obsCrr[upper.tri(obsCrr, diag=FALSE)];
+                                ## The fill.table() functions accepts data.frames or named vector, not matrix 
+                                ## the need names() to return something
+                                self$tab_covcorrObserved <- cbind(variable=nmeVar, type="observed", as.data.frame(obsCvC));
+                              }
+                              if (self$options$outputImpliedCovariances)  { 
+                                fitCrr = cov2cor(fitCov);
+                                fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
+                                fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
+                                self$tab_covcorrImplied <- cbind(variable=nmeVar, type="implied", as.data.frame(fitCvC));
+                              }
+                              if (self$options$outputResidualCovariances) {
+                                # calculates the difference between observed and fitted correlations since
+                                # using cov2cor(resCov) almost invariably ends in having 0 or NA entries in the
+                                # main diagonal (given the small size of the residuals)
+                                # TO-DO: check whether the values have to be Fisher z-transformed before subtracting
+                                resCrr = cov2cor(obsCov) - cov2cor(fitCov);
+                                resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
+                                resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
+                                self$tab_covcorrResidual <- cbind(variable=nmeVar, type="residual", as.data.frame(resCvC));
+                                
+                              }
+                              if (self$options$outpuCombineCovariances) {
+                                dfCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
+                                self$tab_covcorrCombined <- dfCombined[order(dfCombined$variable), ];
+#                               self$tab_covcorrCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
+                                self$tab_covcorrObserved <- NULL;
+                                self$tab_covcorrImplied  <- NULL;
+                                self$tab_covcorrResidual <- NULL;
+                              }
+                              mark('finished tab_covcorr');
+                            }
 
                             # modification indices
                             if (self$options$outputModificationIndices) {
-                              ginfo('begin tab_modInd');
-                              modRes = lavaan::modificationIndices(fit);
+                              mark('begin tab_modInd');
+                              modRes = lavaan::modificationIndices(self$model);
                               if (self$options$miHideLow) {
                                 modRes = modRes[modRes$mi > self$options$miThreshold, ];
                               }
-                              modRes = modRes[order(modRes$mi, decreasing=TRUE), ];
                               if (nrow(modRes) > 0) {
-                                alist = list();
-                                for (r in seq(nrow(modRes))) { alist[[r]] <- as.list(modRes[r, !is.na(modRes[r, ])]) }
+                                self$tab_modInd = modRes[order(modRes$mi, decreasing=TRUE), ];
                               } else {
-                                alist[[1]] <- list(lhs='No modification indices above threshold.');
+                                self$warnings = list(topic="tab_modInd", message='No modification indices above threshold.');
+                                self$tab_modInd = NULL;
                               }
-                              ginfo(str(slist));
-                              self$tab_modInd <- alist;
-                              ginfo('finished tab_modInd');
+                              mark('finished tab_modInd');
                             }
                             
                             ginfo("Estimation is done...")
@@ -258,4 +285,3 @@ Estimate <- R6::R6Class("Estimate",
 
               ) # end of private
 )  # end of class
-

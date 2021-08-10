@@ -7,7 +7,6 @@ events:
   loaded: './main::loaded'
   update: './main::update'
   remoteDataChanged: './main::onDataChanged'
-
 children:
   - type: LayoutBox
     stretchFactor: 1
@@ -17,7 +16,6 @@ children:
         name: syntax
         events:
           creating: './main::editor_creating'
-
   - type: CollapseBox
     label: Model options
     collapsed: true
@@ -36,9 +34,9 @@ children:
                 name: estimator
               - type: ComboBox
                 name: likelihood
-                enable: '(estimator:ML)'
+                enable: (estimator:ML || estimator:PML)
           - type: Label
-            label: Constraints Tests
+            label: Constraints tests
             margin: large
             style: list
             children:
@@ -78,20 +76,7 @@ children:
                 optionName: se
                 optionPart: boot
           - type: Label
-            label: Confidence Intervals
-            margin: large
-            style: list
-            children:
-              - type: CheckBox
-                name: ci
-              - type: TextBox
-                name: ciWidth
-                label: Interval
-                suffix: '%'
-                format: number
-                enable: (ci)
-          - type: Label
-            label: Bootstrap C.I.
+            label: Bootstrap settings
             margin: large
             style: list
             children:
@@ -119,6 +104,36 @@ children:
                 name: bootN
                 format: number
                 enable: '(se:boot)'
+          - type: LayoutBox
+            margin: large
+            style: list
+            children:
+              - type: Label
+                label: Confidence Intervals
+                margin: large
+                style: list
+                children:
+                  - type: LayoutBox
+                    style: inline
+                    children:
+                      - type: CheckBox
+                        name: ci
+                        margin: none
+                      - type: TextBox
+                        name: ciWidth
+                        label: Interval
+                        suffix: '%'
+                        format: number
+                        enable: (ci)
+              - type: Label
+                label: Constraints
+                margin: large
+                style: list
+                children:
+                  - type: CheckBox
+                    name: cov_x
+                  - type: CheckBox
+                    name: cov_y
       - type: LayoutBox
         margin: large
         style: inline
@@ -129,29 +144,28 @@ children:
             style: list
             children:
               - type: CheckBox
-                name: intercepts
-              - type: CheckBox
-                name: showintercepts
+                name: meanstructure
+                children:
+                  - type: CheckBox
+                    name: intercepts
+                    enable: (meanstructure)
               - type: CheckBox
                 name: indirect
           - type: Label
-            label: Latent scale
+            label: Scale / standardize variables
             margin: large
             style: list
             children:
+              - type: RadioButton
+                name: std_lv_first
+                optionName: std_lv
+                optionPart: fix_first
+              - type: RadioButton
+                name: std_lv_res
+                optionName: std_lv
+                optionPart: std_res
               - type: CheckBox
-                name: auto.fix.first
-              - type: CheckBox
-                name: std.lv
-          - type: Label
-            label: Miscellaneous
-            margin: large
-            style: list
-            children:
-              - type: CheckBox
-                name: cov_x
-              - type: CheckBox
-                name: cov_y
+                name: std_ov
 
   - type: CollapseBox
     label: Multi-group analyses
@@ -165,12 +179,16 @@ children:
         children:
           - type: LayoutBox
             margin: large
-            style: list
+            style: inline
             stretchFactor: 1
             children:
+              - type: Label
+                label: Factorial variable for multi-group analysis
+                margin: large
               - type: TextBox
                 name: multigroup
                 stretchFactor: 1
+                margin: none
                 format: string
           - type: Label
             label: Equality constraints
@@ -180,38 +198,34 @@ children:
             children:
               - type: LayoutBox
                 margin: large
-                style: inline
+                style: list
                 children:
-                  - type: LayoutBox
-                    margin: large
-                    style: list
-                    children:
-                      - type: CheckBox
-                        name: eq_loadings
-                      - type: CheckBox
-                        name: eq_intercepts
-                      - type: CheckBox
-                        name: eq_means
-                  - type: LayoutBox
-                    margin: large
-                    style: list
-                    children:
-                      - type: CheckBox
-                        name: eq_thresholds 
-                      - type: CheckBox
-                        name: eq_residuals
-                      - type: CheckBox
-                        name: eq_residual.covariances
-                  - type: LayoutBox
-                    margin: large
-                    style: list
-                    children:
-                      - type: CheckBox
-                        name: eq_regressions
-                      - type: CheckBox
-                        name: eq_lv.variances
-                      - type: CheckBox
-                        name: eq_lv.covariances
+                  - type: CheckBox
+                    name: eq_loadings
+                  - type: CheckBox
+                    name: eq_intercepts
+                  - type: CheckBox
+                    name: eq_means
+              - type: LayoutBox
+                margin: large
+                style: list
+                children:
+                  - type: CheckBox
+                    name: eq_thresholds
+                  - type: CheckBox
+                    name: eq_residuals
+                  - type: CheckBox
+                    name: eq_residual.covariances
+              - type: LayoutBox
+                margin: large
+                style: list
+                children:
+                  - type: CheckBox
+                    name: eq_regressions
+                  - type: CheckBox
+                    name: eq_lv.variances
+                  - type: CheckBox
+                    name: eq_lv.covariances
 
   - type: CollapseBox
     label: Output options
@@ -231,7 +245,7 @@ children:
                 style: inline
                 children:
                   - type: Label
-                    label: Labels and examples
+                    label: Information
                   - type: CheckBox
                     name: showlabels
                   - type: CheckBox
@@ -258,12 +272,14 @@ children:
                     children:
                       - type: Label
                         label: Covariances and correlations
-                      - type: CheckBox    
+                      - type: CheckBox
                         name: outputObservedCovariances
                       - type: CheckBox
                         name: outputImpliedCovariances
                       - type: CheckBox
                         name: outputResidualCovariances
+                      - type: CheckBox
+                        name: outpuCombineCovariances
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -277,10 +293,10 @@ children:
                             name: miHideLow
                             enable: (outputModificationIndices)
                             children:
-                            - type: TextBox
-                              name: miThreshold
-                              format: number
-                              enable: (miHideLow)
+                              - type: TextBox
+                                name: miThreshold
+                                format: number
+                                enable: (miHideLow)
 
   - type: CollapseBox
     label: Path diagram
@@ -291,76 +307,102 @@ children:
       - type: LayoutBox
         margin: large
         stretchFactor: 1
-        style: inline
+        style: list
         children:
-          - type: CheckBox
-            name: diagram
-          - type: Label
-            label: Paths
+          - type: LayoutBox
             margin: large
-            style: list
-            children:
-              - type: RadioButton
-                name: diag_paths_est
-                optionName: diag_paths
-                optionPart: est
-                enable: (diagram)
-              - type: RadioButton
-                name: diag_paths_stand
-                optionName: diag_paths
-                optionPart: stand
-                enable: (diagram)
-              - type: RadioButton
-                name: diag_paths_name
-                optionName: diag_paths
-                optionPart: name
-                enable: (diagram)
-              - type: RadioButton
-                name: diag_paths_hide
-                optionName: diag_paths
-                optionPart: hide
-                enable: (diagram)
-          - type: Label
-            label: Show
-            margin: large
-            style: list
+            stretchFactor: 1
+            style: inline
             children:
               - type: CheckBox
-                name: diag_resid
-                enable: (diagram)
-              - type: CheckBox
-                name: diag_intercepts
-                enable: (diagram)
-      - type: LayoutBox
-        margin: large
-        stretchFactor: 1
-        style: inline
-        children:
-          - type: Label
-            label: Layout
+                name: diagram
+                style: inline
+                children:
+                  - type: LayoutBox
+                    margin: none
+                    stretchFactor: 1
+                    style: list
+                    children:
+                      - type: Label
+                        label: Path diagram
+                        style: list
+                        children:
+                          - type: LayoutBox
+                            margin: none
+                            stretchFactor: 1
+                            style: inline
+                            children:
+                              - type: CheckBox
+                                name: diag_resid
+                                enable: (diagram)
+                              - type: CheckBox
+                                name: diag_intercepts
+                                enable: (diagram && meanstructure)
+          - type: LayoutBox
             margin: large
-            style: list
+            stretchFactor: 1
+            style: inline
             children:
-              - type: ComboBox
-                name: diag_type
-                enable: (diagram)
-              - type: ComboBox
-                name: diag_rotate
-                enable: (diagram)
-          - type: Label
-            label: Nodes
-            margin: large
-            style: list
-            children:
-              - type: ComboBox
-                name: diag_labsize
-                enable: (diagram)
-              - type: ComboBox
-                name: diag_shape_man
-                enable: (diagram)
-              - type: ComboBox
-                name: diag_shape_lat
-                enable: (diagram)
-              - type: ComboBox
-                name: diag_abbrev
-                enable: (diagram)
+              - type: Label
+                label: Paths
+                margin: large
+                style: list
+                children:
+                  - type: RadioButton
+                    name: diag_paths_est
+                    optionName: diag_paths
+                    optionPart: est
+                    enable: (diagram)
+                  - type: RadioButton
+                    name: diag_paths_stand
+                    optionName: diag_paths
+                    optionPart: stand
+                    enable: (diagram)
+                  - type: RadioButton
+                    name: diag_paths_name
+                    optionName: diag_paths
+                    optionPart: name
+                    enable: (diagram)
+                  - type: RadioButton
+                    name: diag_paths_hide
+                    optionName: diag_paths
+                    optionPart: hide
+                    enable: (diagram)
+              - type: LayoutBox
+                margin: large
+                stretchFactor: 1
+                style: list
+                children:
+                  - type: Label
+                    label: Layout
+                    margin: large
+                    style: list
+                    children:
+                      - type: ComboBox
+                        name: diag_type
+                        enable: (diagram)
+                      - type: ComboBox
+                        name: diag_rotate
+                        enable: (diagram)
+              - type: LayoutBox
+                margin: large
+                stretchFactor: 1
+                style: list
+                children:
+                  - type: Label
+                    label: Nodes
+                    margin: large
+                    style: list
+                    children:
+                      - type: ComboBox
+                        name: diag_labsize
+                        enable: (diagram)
+                      - type: ComboBox
+                        name: diag_shape_man
+                        enable: (diagram)
+                      - type: ComboBox
+                        name: diag_shape_lat
+                        enable: (diagram)
+                      - type: ComboBox
+                        name: diag_abbrev
+                        enable: (diagram)
