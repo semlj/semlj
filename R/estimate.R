@@ -44,17 +44,16 @@ Estimate <- R6::R6Class("Estimate",
                               lavoptions[["group"]] <- self$multigroup$var
                               lavoptions[["group.label"]] <- self$multigroup$levels
                               # TO-DO: test eq_-options
-                              nmeOpt = names(self$options);
-                              nmeEql = nmeOpt[grep("^eq_", nmeOpt)];
-                              lavoptions[["group.equal"]] <- gsub("eq_", "", nmeEql[unlist(mget(nmeEql, envir=self$options))]);
+#                              nmeOpt = names(self$options);
+#                              nmeEql = nmeOpt[grep("^eq_", nmeOpt)];
+#                              lavoptions[["group.equal"]] <- gsub("eq_", "", nmeEql[unlist(mget(nmeEql, envir=self$options))]);
                             }
                             ## estimate the models
-                            ginfo("Estimating the model")
+                            ginfo("Estimating the model...")
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
                             ## check if warnings or errors are produced
                             self$warnings <- list(topic="info", message=results$warning)
                             self$errors <- results$error
-                            
                             if (is.something(self$errors))
                                 return(self$errors)
                             
@@ -73,6 +72,7 @@ Estimate <- R6::R6Class("Estimate",
                              ## we need to be sure to keep `<~` operator ##
                              op<-gsub("<~","&",.lav_structure$op, fixed = T)
                              sel <- grep("==|<|>",op,invert = T)
+                             ## select coefficients
                             .lav_structure <- .lav_structure[sel,]
                             ## make some change to render the results
                             .lav_params$free <- (.lav_structure$free>0)
@@ -97,7 +97,7 @@ Estimate <- R6::R6Class("Estimate",
                             ### collect intercepts
                             self$tab_intercepts <- .lav_params[.lav_params$op == "~1",]
                             if (nrow(self$tab_intercepts) == 0) self$tab_intercepts <- NULL
-                            
+                           
                             #### fit tests ###
                             alist <- list()
                             ff <- lavaan::fitmeasures(self$model)
@@ -184,13 +184,16 @@ Estimate <- R6::R6Class("Estimate",
 
                             # R²
                             if (self$options$outputRSquared) {
-                              ginfo('begin tab_r2');
-                              RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE);
-                              RSqEst = RSqEst[RSqEst$op == "r2",];
-                              if (nrow(RSqEst) > 0) { 
-                                self$tab_Rsquared<- RSqEst;
-                              };
-                              ginfo('finished tab_r2');
+                              ginfo('begin tab_r2')
+                              RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE)
+                              RSqEst = RSqEst[RSqEst$op == "r2",]
+                              ### for some reasons, multigroup r2 are identified by block and not group
+                              RSqEst$group<-RSqEst$block
+                              if (nrow(RSqEst) > 0) {
+                                RSqEst<-private$.fix_groups_labels(RSqEst)
+                                self$tab_Rsquared<- RSqEst
+                              }
+                              ginfo('finished tab_r2')
                             }
 
                             # Mardia's coefficients
@@ -278,7 +281,9 @@ Estimate <- R6::R6Class("Estimate",
                                 modRes = modRes[modRes$mi > self$options$miThreshold, ];
                               }
                               if (nrow(modRes) > 0) {
-                                self$tab_modInd = modRes[order(modRes$mi, decreasing=TRUE), ];
+                                modRes<-modRes[order(modRes$mi, decreasing=TRUE), ]
+                                modRes<-private$.fix_groups_labels(modRes)
+                                self$tab_modInd = modRes 
                               } else {
                                 self$warnings = list(topic="tab_modInd", message='No modification indices above threshold.');
                                 self$tab_modInd = NULL;

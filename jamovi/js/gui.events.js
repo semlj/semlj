@@ -9,6 +9,7 @@ const events = {
       updateSuppliers(ui,this);
       cleanEndogenousTerms(ui,this);
       update_syntax(ui,this); 
+
     },
 
     onChange_items_changed: function(ui) {
@@ -62,6 +63,10 @@ const events = {
       
     },
 
+     onChange_multigroup: function(ui) {
+       console.log("Multigroup changed");
+
+     },
      onEvent_nothing: function(ui) {
       console.log("I did not do anything");
     }

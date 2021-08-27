@@ -110,7 +110,6 @@ Syntax <- R6::R6Class(
             .lavaan_syntax=function() {
                   f <- glue::glue_collapse(unlist(self$models), sep = "; ")
                   i <- glue::glue_collapse(unlist(private$.lav_indirect), sep = "; ")
-mark(paste(f,i, sep="; "))
                   paste(f,i, sep="; ")
             },
             ## lavaanify the information available to obtain a info table representing the parameters structure.
@@ -188,13 +187,8 @@ mark(paste(f,i, sep="; "))
               ## fill some info to make nicer tables
                   .lav_structure$type<-ifelse(.lav_structure$free>0,"Free","Fixed")
               ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
-                  if (is.something(self$multigroup)) {
-                        levs<-c(self$multigroup$levels,"All")
-                       .lav_structure$group<-ifelse(.lav_structure$group==0,length(levs)+1,.lav_structure$group)
-                       .lav_structure$lgroup<-levs[.lav_structure$group]
-                   } else
-                        .lav_structure$lgroup<-"1"
-              
+                  .lav_structure<-private$.fix_groups_labels(.lav_structure)
+
               ### self$structure containts all parameters with. Useful for children to refer to parameters properties
               ### .lav_structure is not a tab_* which will be displayed in results
                   
@@ -291,6 +285,17 @@ mark(paste(f,i, sep="; "))
                 self$tab_covcorrResidual <- NULL;
               }
 
+            },
+            .fix_groups_labels=function(table) {
+              
+                ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
+                if (is.something(self$multigroup)) {
+                      levs<-c(self$multigroup$levels,"All")
+                      table$group<-ifelse(table$group==0,length(levs)+1,table$group)
+                      table$lgroup<-levs[table$group]
+                } else
+                  table$lgroup<-"1"
+                table
             },
 
             ### compute indirect effects if required by the user

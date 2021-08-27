@@ -190,6 +190,8 @@ children:
                 stretchFactor: 1
                 margin: none
                 format: string
+                events:
+                   change: './gui.events::onChange_multigroup'
           - type: Label
             label: Equality constraints
           - type: LayoutBox

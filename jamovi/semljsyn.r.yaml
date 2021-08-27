@@ -493,6 +493,14 @@ items:
         clearWith:
 #       variable number of rows
         columns:
+          - name:  lgroup
+            title: Group
+            type: text
+            visible: (multigroup)
+          - name: label
+            title: Label
+            type: text
+            visible: (showlabels)
           - name: rhs
             title: "Variable"
             type: text
@@ -635,34 +643,39 @@ items:
             all variables (all), and latent and observed variables except for the exogenous observed variables (nox)
 #       variable number of rows
         columns:
-        - name: lhs
-          title: ""
-          type: text
-        - name: op
-          title: ""
-          type: text
-        - name: rhs
-          title: ""
-          type: text
-        - name: mi
-          title: Modif. index
-          type: number
-        - name: epc
-          title: EPC
-          type: number
-          format: zto
-        - name: sepc.lv
-          title: sEPC (LV)
-          type: number
-          format: zto
-        - name: sepc.all
-          title: sEPC (all)
-          type: number
-          format: zto
-        - name: sepc.nox
-          title: sEPC (nox)
-          type: number
-          format: zto
+          - name:  lgroup
+            title: Group
+            type: text
+            visible: (multigroup)
+          - name: lhs
+            title: ""
+            type: text
+          - name: op
+            title: ""
+            type: text
+          - name: rhs
+            title: ""
+            type: text
+          - name: mi
+            title: Modif. index
+            type: number
+          - name: epc
+            title: EPC
+            type: number
+            format: zto
+          - name: sepc.lv
+            title: sEPC (LV)
+            type: number
+            format: zto
+          - name: sepc.all
+            title: sEPC (all)
+            type: number
+            format: zto
+          - name: sepc.nox
+            title: sEPC (nox)
+            type: number
+            format: zto
+
 
 
   # Path model ================================================================
