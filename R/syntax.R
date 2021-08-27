@@ -24,6 +24,7 @@ Syntax <- R6::R6Class(
               lav_structure=NULL,
               tab_coefficients=NULL,
               tab_loadings=NULL,
+              tab_composites=NULL,
               tab_covariances=NULL,
               tab_intercepts=NULL,
               tab_defined=NULL,
@@ -208,6 +209,9 @@ mark(paste(f,i, sep="; "))
               
               self$tab_loadings<-.lav_structure[.lav_structure$op=="=~",]
               
+              ### tab_composites contains loadings from observed to formative vars
+              
+              self$tab_composites<-.lav_structure[.lav_structure$op=="<~",]
               
               ### tab_covariances contains variances and covariances
               self$tab_covariances<-.lav_structure[.lav_structure$op=="~~",]
@@ -231,7 +235,8 @@ mark(paste(f,i, sep="; "))
               self$tab_info<-alist
               
               # tab constraints
-              sel<-grep("==|<|>",.lav_structure$op)
+              op<-gsub("<~","&",.lav_structure$op,fixed=TRUE)
+              sel<-grep("==|<|>",op)
               const<-.lav_structure[sel,]
               if (nrow(const)>0)
                  self$tab_constfit<-const

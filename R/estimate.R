@@ -28,16 +28,18 @@ Estimate <- R6::R6Class("Estimate",
                           },
                           estimate = function(data) {
                             
-                            ## prepare the options based on Syntax definitions                           
+                            ## prepare the options based on Syntax definitions
+                            ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
+                            ##       is not considered by lavaan(). We passed again and it works
                             lavoptions <- list(model = private$.lav_structure, 
                                              data = data,
-                                             estimator = self$options$estimator,
+                                             estimator  = self$options$estimator,
                                              likelihood = self$options$likelihood,
-                                             se=self$options$se,
-                                             bootstrap=self$options$bootN,
-                                             std.ov = self$options$std_ov
+                                             se         = self$options$se,
+                                             bootstrap  = self$options$bootN,
+                                             std.ov     = self$options$std_ov,
+                                             fixed.x    = self$options$cov_x
                             )
-
                             if (is.something(self$multigroup)) {
                               lavoptions[["group"]] <- self$multigroup$var
                               lavoptions[["group.label"]] <- self$multigroup$levels
@@ -45,12 +47,10 @@ Estimate <- R6::R6Class("Estimate",
                               nmeOpt = names(self$options);
                               nmeEql = nmeOpt[grep("^eq_", nmeOpt)];
                               lavoptions[["group.equal"]] <- gsub("eq_", "", nmeEql[unlist(mget(nmeEql, envir=self$options))]);
-                              mark(lavoptions[["group.equal"]]);
                             }
-                                                        
                             ## estimate the models
+                            ginfo("Estimating the model")
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
-                            
                             ## check if warnings or errors are produced
                             self$warnings <- list(topic="info", message=results$warning)
                             self$errors <- results$error
@@ -70,7 +70,9 @@ Estimate <- R6::R6Class("Estimate",
                             
                             ## we need some info initialized by Syntax regarding the parameters properties
                             .lav_structure <- private$.lav_structure
-                             sel <- grep("==|<|>",.lav_structure$op,invert = T)
+                             ## we need to be sure to keep `<~` operator ##
+                             op<-gsub("<~","&",.lav_structure$op, fixed = T)
+                             sel <- grep("==|<|>",op,invert = T)
                             .lav_structure <- .lav_structure[sel,]
                             ## make some change to render the results
                             .lav_params$free <- (.lav_structure$free>0)
@@ -80,6 +82,9 @@ Estimate <- R6::R6Class("Estimate",
 
                             ## collect loadings table
                             self$tab_loadings <- .lav_params[.lav_params$op == "=~",]
+
+                            ## collect composites table
+                            self$tab_composites <- .lav_params[.lav_params$op == "<~",]
                             
                             ## collect variances and covariances table
                             self$tab_covariances <- .lav_params[.lav_params$op == "~~",]
@@ -119,7 +124,8 @@ Estimate <- R6::R6Class("Estimate",
                             
                             # checking constraints
                             if (is.something(self$tab_constfit)) {
-                              check <- sapply(self$tab_constfit$op,function(con) length(grep("<|>",con))>0,simplify = T)
+                              op<-self$tab_constfit$op
+                              check <- sapply(op,function(con) length(grep("<|>",con))>0,simplify = T)
                               if (any(check)) {
                                 self$warnings <- list(topic="constraints",message=WARNS[["scoreineq"]])
                               } else {
@@ -147,7 +153,7 @@ Estimate <- R6::R6Class("Estimate",
 
                             # additional fit measures
                             if (self$options$outputAdditionalFitMeasures) {                            
-                              mark('begin addFit');
+                              ginfo('begin addFit');
                               # (1) User model versus baseline model
                               alist<-list()
                               alist[[length(alist) + 1]]  <- list(name = "Comparative Fit Index (CFI)",                statistics = ff[["cfi"]]);
@@ -172,24 +178,24 @@ Estimate <- R6::R6Class("Estimate",
                               # other measures that are not implemented yet: "rmr", "rmr_nomean", "srmr_bentler", "srmr_bentler_nomean", "crmr", "crmr_nomean",
                               #                                              "srmr_mplus", "srmr_mplus_nomean", "agfi", "ecvi"
                               # most of them are some form of Root Mean Squared Residual measures
-                              mark('finished addFit');
+                              ginfo('finished addFit');
                             }
                             
 
                             # R²
                             if (self$options$outputRSquared) {
-                              mark('begin tab_r2');
+                              ginfo('begin tab_r2');
                               RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE);
                               RSqEst = RSqEst[RSqEst$op == "r2",];
                               if (nrow(RSqEst) > 0) { 
                                 self$tab_Rsquared<- RSqEst;
                               };
-                              mark('finished tab_r2');
+                              ginfo('finished tab_r2');
                             }
 
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
-                              mark('begin tab_mardia');
+                              ginfo('begin tab_mardia');
                               
                               # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
                               # that are already contained in the lavaan model-fit
@@ -210,7 +216,7 @@ Estimate <- R6::R6Class("Estimate",
                               MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
                               MK_p  <- pnorm(-abs(MK_z)) * 2;
                               
-                              mark('before adding to tab_mardia')
+                              ginfo('before adding to tab_mardia')
                               self$tab_mardia <- list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
                                                       list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
                             }
@@ -261,12 +267,12 @@ Estimate <- R6::R6Class("Estimate",
                                 self$tab_covcorrImplied  <- NULL;
                                 self$tab_covcorrResidual <- NULL;
                               }
-                              mark('finished tab_covcorr');
+                              ginfo('finished tab_covcorr');
                             }
 
                             # modification indices
                             if (self$options$outputModificationIndices) {
-                              mark('begin tab_modInd');
+                              ginfo('begin tab_modInd');
                               modRes = lavaan::modificationIndices(self$model);
                               if (self$options$miHideLow) {
                                 modRes = modRes[modRes$mi > self$options$miThreshold, ];
@@ -277,7 +283,7 @@ Estimate <- R6::R6Class("Estimate",
                                 self$warnings = list(topic="tab_modInd", message='No modification indices above threshold.');
                                 self$tab_modInd = NULL;
                               }
-                              mark('finished tab_modInd');
+                              ginfo('finished tab_modInd');
                             }
                             
                             ginfo("Estimation is done...")

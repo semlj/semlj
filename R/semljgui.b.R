@@ -18,7 +18,6 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .ready=NULL,
         .init = function() {
             ginfo("init")
-            
             ### output some syntax examples if required by the user####
             
             if (self$options$constraints_examples) {
@@ -52,7 +51,12 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             #### (prepare the) loadings table ####
             j.init_table(self$results$models$loadings,lav_machine$tab_loadings,ci=T,ciwidth=self$options$ciWidth)
+
+            #### (prepare the) composites table ####
+            j.init_table(self$results$models$composites,lav_machine$tab_composites,ci=T,ciwidth=self$options$ciWidth)
             
+            
+                        
             ### (prepare the) defined params ###
             j.init_table(self$results$models$defined,lav_machine$tab_defined,ci=T,ciwidth=self$options$ciWidth)
 
@@ -130,6 +134,11 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             ### Loadings table ================================================
             j.fill_table(self$results$models$loadings,lav_machine$tab_loadings)
+            
+            
+            ### composites table ================================================
+            j.fill_table(self$results$models$composites,lav_machine$tab_composites)
+            
              
             j.fill_table(self$results$models$defined,lav_machine$tab_defined)
             j.add_warnings(self$results$models$defined,lav_machine,"defined")

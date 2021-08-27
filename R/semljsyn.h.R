@@ -720,6 +720,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 active = list(
                     coefficients = function() private$.items[["coefficients"]],
                     loadings = function() private$.items[["loadings"]],
+                    composites = function() private$.items[["composites"]],
                     intercepts = function() private$.items[["intercepts"]],
                     defined = function() private$.items[["defined"]]),
                 private = list(),
@@ -819,6 +820,70 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="lhs", 
                                     `title`="Latent", 
+                                    `type`="text", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Observed", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="Estimate", 
+                                    `type`="number"),
+                                list(
+                                    `name`="se", 
+                                    `title`="SE", 
+                                    `type`="number"),
+                                list(
+                                    `name`="ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(ci)"),
+                                list(
+                                    `name`="ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(ci)"),
+                                list(
+                                    `name`="std.all", 
+                                    `type`="number", 
+                                    `title`="\u03B2"),
+                                list(
+                                    `name`="z", 
+                                    `title`="z", 
+                                    `type`="number"),
+                                list(
+                                    `name`="pvalue", 
+                                    `title`="p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="composites",
+                            title="Composites",
+                            visible=FALSE,
+                            clearWith=list(
+                                "ciType",
+                                "contrasts",
+                                "cov_y",
+                                "data",
+                                "multigroup",
+                                "code"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="label", 
+                                    `title`="Label", 
+                                    `type`="text", 
+                                    `visible`="(showlabels)"),
+                                list(
+                                    `name`="lhs", 
+                                    `title`="Formative", 
                                     `type`="text", 
                                     `combineBelow`=TRUE),
                                 list(
@@ -1463,6 +1528,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$coefficients} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$loadings} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$models$composites} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$compModelBsl} \tab \tab \tab \tab \tab a table \cr
