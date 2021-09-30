@@ -44,9 +44,7 @@ Estimate <- R6::R6Class("Estimate",
                               lavoptions[["group"]] <- self$multigroup$var
                               lavoptions[["group.label"]] <- self$multigroup$levels
                               # TO-DO: test eq_-options
-#                              nmeOpt = names(self$options);
-#                              nmeEql = nmeOpt[grep("^eq_", nmeOpt)];
-#                              lavoptions[["group.equal"]] <- gsub("eq_", "", nmeEql[unlist(mget(nmeEql, envir=self$options))]);
+                              # this is dealt with in syntax.R
                             }
                             ## estimate the models
                             ginfo("Estimating the model...")
@@ -84,7 +82,8 @@ Estimate <- R6::R6Class("Estimate",
                             self$tab_loadings <- .lav_params[.lav_params$op == "=~",]
 
                             ## collect composites table
-                            self$tab_composites <- .lav_params[.lav_params$op == "<~",]
+                            if (is.something(self$tab_composites))
+                                  self$tab_composites <- .lav_params[.lav_params$op == "<~",]
                             
                             ## collect variances and covariances table
                             self$tab_covariances <- .lav_params[.lav_params$op == "~~",]
@@ -143,11 +142,14 @@ Estimate <- R6::R6Class("Estimate",
                                   tab$cumulative$type <- "Cumulative"
                                   self$tab_constfit <- rbind(self$tab_constfit,tab$cumulative)
                                 }
+                                self$tab_constfit$lhs<-sapply(self$tab_constfit$lhs,function(st) ifelse(grepl("^.p\\d+\\.$",st),gsub(".","",st,fixed=T),st))
+                                self$tab_constfit$rhs<-sapply(self$tab_constfit$rhs,function(st) ifelse(grepl("^.p\\d+\\.$",st),gsub(".","",st,fixed=T),st))
+                                
                                 self$tab_fit[[length(self$tab_fit)+1]] <- list(label="Constraints Score Test",
                                                                      chisq=tab$test$X2,
                                                                      df=tab$test$df,
                                                                      pvalue=tab$test$p.value)
-                                
+
                               }
                             } # end of checking constraints
 

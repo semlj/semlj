@@ -10,6 +10,16 @@ if(length(options$code) == 0 | options$code=="") {
     return(result)
   } 
 
-  
+  if ("endogenousTerms" %in% names(options)) {
+     if (length(unlist(options$endogenousTerms))==0) {
+       result$ready <- FALSE
+       result$report <- TRUE
+       result$reason <- glue::glue("Please define a structural relationship")
+       return(result)
+       
+     }
+  }
+     
+    
   return(result)
 }

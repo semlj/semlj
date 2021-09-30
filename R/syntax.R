@@ -50,7 +50,6 @@ Syntax <- R6::R6Class(
 
                 self$observed<-datamatic$observed
                 self$multigroup=datamatic$multigroup
-
                 # check_* check the input options and produces tables and list with names
                 ### prepare list of models for lavaan
                 private$.check_models()
@@ -103,6 +102,17 @@ Syntax <- R6::R6Class(
               synt<-stringr::str_replace_all(synt, "[\r]" , "")
               avec<-stringr::str_split(synt,"\n")[[1]]
               avec<-avec[sapply(avec, function(a) a!="")]
+              avec<-avec[grep("#",avec,fixed = T,invert = T)]
+              
+              # here we check if the user used .pN. labels and warn if that is the case 
+              check<-stringr::str_extract(avec, ".p\\d+\\.")
+              check<-check[!unlist(sapply(check,is.na))]
+              if (length(check)>0)
+                for (st in check) {
+                  msg<-glue::glue(DP_WARNS[[".p."]],x=st)
+                  self$warnings<-list(topic="info",message=msg)
+                }
+              
               self$models<-avec
 
             },
@@ -153,8 +163,20 @@ Syntax <- R6::R6Class(
                 if (is.something(self$multigroup)) {
                   lavoptions[["ngroups"]] <- self$multigroup$nlevels
                   lavoptions[["meanstructure"]] <- TRUE
+                  group.equal<-c()
+                  if (self$options$eq_loadings) group.equal<-c(group.equal,"loadings")
+                  if (self$options$eq_intercepts) group.equal<-c(group.equal,"intercepts")
+                  if (self$options$eq_means) group.equal<-c(group.equal,"means")
+                  if (self$options$eq_thresholds) group.equal<-c(group.equal,"thresholds")
+                  if (self$options$eq_regressions) group.equal<-c(group.equal,"regressions")
+                  if (self$options$eq_residuals) group.equal<-c(group.equal,"residuals")
+                  if (self$options$eq_residual.covariances) group.equal<-c(group.equal,"residual.covariances")
+                  if (self$options$eq_lv.variances) group.equal<-c(group.equal,"lv.variances")
+                  if (self$options$eq_lv.variances) group.equal<-c(group.equal,"lv.covariances")
+                  if (length(group.equal)>0)
+                        lavoptions[["group.equal"]]<-group.equal
+                  
                 }
-              
                 results <- try_hard({ do.call(lavaan::lavaanify, lavoptions) })
                 self$warnings <- list(topic="info", message = results$warning)
                 self$errors <- results$error
@@ -163,13 +185,25 @@ Syntax <- R6::R6Class(
 
                 private$.lav_structure <- results$obj
                 ## if not user defined, create easy labels to be used by the user in constraints and defined parameters  
-                ## we want to be sure that we do not interfere with user ability to use p* as custom label
+                ## we want to be sure that we nicify only lavaan plabels and not user defined
                 ulabels <- private$.lav_structure$label
+                tvec<-gsub(" ","",ulabels)
+                check<-grep("^\\p\\d+$",tvec)
+                if (length(check)>0)
+                  for (i in check) {
+                    st<-tvec[[i]]
+                    msg<-glue::glue(DP_WARNS[["p"]],x=st)
+                    self$warnings<-list(topic="info",message=msg)
+                  }
+                
                 def <- ulabels!=""
-                plabels <- setdiff(paste0("p", 1:(length(ulabels) * 2)), ulabels[def])
-                plabels[which(def)] <- ulabels[def]
-                labels <- plabels[1:length(ulabels)]
+                labels<-private$.lav_structure$plabel
+                labels[def]<-ulabels[def]
+                # nicify lavaan .pN. labels
+                whichp<-grepl("^.p\\d+\\.$",labels)
+                labels[whichp]<-gsub(".","",labels[whichp],fixed=T)
                 private$.lav_structure$label <- labels
+
             },
 
             ### here we create the tables we need for init results. Those tables contains the information needed to init the results tables
@@ -205,11 +239,12 @@ Syntax <- R6::R6Class(
               
               ### tab_composites contains loadings from observed to formative vars
               
-              self$tab_composites<-.lav_structure[.lav_structure$op=="<~",]
+              .tab_composites<-.lav_structure[.lav_structure$op=="<~",]
+              if (nrow(.tab_composites)>0)
+                    self$tab_composites<-.tab_composites
               
               ### tab_covariances contains variances and covariances
               self$tab_covariances<-.lav_structure[.lav_structure$op=="~~",]
-              
               ### intercepts table
               self$tab_intercepts<-.lav_structure[.lav_structure$op=="~1",]
               if (nrow(self$tab_intercepts)==0) self$tab_intercepts<-NULL

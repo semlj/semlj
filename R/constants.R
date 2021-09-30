@@ -48,7 +48,7 @@ SY_EXAMPLES[[5]]<-list("info"="Estimate  variables covariances",example="y1~~x1"
 SY_EXAMPLES[[6]]<-list("info"="Estimate covariances involving interactions",example="x1:x2~~x3",com="The interaction term x1:x2 and x3 variable covariance is set free. Direct path should not be set")
 
 
-CONT_NOTE<-"Not user defined labels are in the form `pN`, where `N` is a number. 
+CONT_NOTE<-"Automatic parameters labels are in the form `pN`, where `N` is a number. 
 The parameter labels can be found in the results tables. Please be sure to have the options `Show parameters labels` selected."
 
 WARNS<-list()
@@ -61,6 +61,12 @@ WARNS[["noreserved"]]<-"`{var}` label is reserved for indirect effects. Using it
 DATA_WARNS<-list()
 DATA_WARNS[["fac_to_cont"]]<-"Warming: continuous variable are defined as factor. Please make sure that each is a continuous variable."
 DATA_WARNS[["cont_to_fac"]]<-"Warning: variable coerced to factor"
+
+## defined parameters warnings
+DP_WARNS<-list()
+DP_WARNS[[".p."]]<-"Warming: {x} is a reserved word (.pN.) for parameters labels. Please change it to avoid confusion with automatic parameters labels."
+DP_WARNS[["p"]]<-"Warming: {x} is a reserved word (pN) for parameters labels. Please change it to avoid confusion with automatic parameters labels."
+
 
 ERRS<-list()
 ERRS[["nolatent"]]<-"Latent variables are not allowed in pathj. Please use another  SEM module"
