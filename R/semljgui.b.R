@@ -175,15 +175,15 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
     
             ### Covariances and correlations ==================================
             if (is.something(lav_machine$tab_covcorrObserved)) {
-                j.fill_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
+                j.fill_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved,,spaceby="lgroup")
             }
             
             if (is.something(lav_machine$tab_covcorrImplied)) {
-                j.fill_table(self$results$group_covariances$covcorrImplied,  lav_machine$tab_covcorrImplied);
+                j.fill_table(self$results$group_covariances$covcorrImplied,  lav_machine$tab_covcorrImplied,spaceby="lgroup")
             }
             
             if (is.something(lav_machine$tab_covcorrResidual)) {
-                j.fill_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual); 
+                j.fill_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual,spaceby="lgroup") 
             }
 
             if (is.something(lav_machine$tab_covcorrCombined)) {

@@ -1310,6 +1310,12 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
                                     `name`="variable", 
                                     `title`="", 
                                     `type`="text"))))
@@ -1326,6 +1332,12 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "code"),
                             columns=list(
                                 list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
                                     `name`="variable", 
                                     `title`="", 
                                     `type`="text"))))
@@ -1341,6 +1353,12 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "multigroup",
                                 "code"),
                             columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
                                 list(
                                     `name`="variable", 
                                     `title`="", 

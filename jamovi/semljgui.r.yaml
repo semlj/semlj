@@ -641,6 +641,11 @@ items:
         - multigroup
         - code
       columns:
+      - name: lgroup
+        title: Group
+        type: text
+        visible: (multigroup)
+        combineBelow: true
       - name: variable
         title: ""
         type: text
@@ -658,6 +663,11 @@ items:
         - multigroup
         - code
       columns:
+      - name: lgroup
+        title: Group
+        type: text
+        visible: (multigroup)
+        combineBelow: true
       - name: variable
         title: ""
         type: text
@@ -676,6 +686,11 @@ items:
         - multigroup
         - code
       columns:
+      - name: lgroup
+        title: Group
+        type: text
+        visible: (multigroup)
+        combineBelow: true
       - name: variable
         title: ""
         type: text
