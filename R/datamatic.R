@@ -11,7 +11,7 @@ Datamatic <- R6::R6Class(
       reg<-"[=~:+\n]"
       avec<-stringr::str_split(astring,reg)[[1]]
       avec<-avec[sapply(avec, function(a) a!="")]
-      vars<-sapply(avec, function(a) trimws(stringr::str_remove(a,'.?[*]')))
+      vars<-sapply(avec, function(a) trimws(stringr::str_remove(a,'.*[\\*]')))
       vars<-vars[grep("#",vars,fixed=T,invert = T)]
       super$initialize(options=options,vars=vars)
       mg<-options$multigroup
@@ -55,7 +55,6 @@ Datamatic <- R6::R6Class(
           self$multigroup<-list(var=var,levels=levels,nlevels=length(levels))
         }
         self$observed<-intersect(self$vars,names(data))
-
       }
      
    ) #end of private

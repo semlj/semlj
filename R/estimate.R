@@ -231,36 +231,71 @@ Estimate <- R6::R6Class("Estimate",
                               nmeVar = lavaan::lavNames(self$model, 'ov');
                               numVar = length(nmeVar);
                               
-                              obsCov = lavaan::inspect(self$model, "observed")$cov;
-                              fitCov = lavaan::inspect(self$model,   "fitted")$cov;
+                              all_obsCov = lavaan::inspect(self$model, "observed")
+                              # we always want a list of matrices, so the results will be ok
+                              # for multigroup or not
+                              if ("cov" %in% names(all_obsCov))
+                                   all_obsCov<-list("1"=all_obsCov)
+                              
+                              all_fitCov = lavaan::inspect(self$model,   "fitted")
+                              if ("cov" %in% names(all_fitCov))
+                                   all_fitCov<-list("1"=all_fitCov)
+                              
+                              
                               # TO-DO: Implement standardized residuals (cov.z instead of cov)
-                              resCov = lavaan::lavResiduals(self$model, type="raw")$cov;
+                              all_resCov = lavaan::lavResiduals(self$model, type="raw");
+                              if ("cov" %in% names(all_resCov))
+                                all_resCov<-list("1"=all_resCov)
+                              
 
                               if (self$options$outputObservedCovariances) {
-                                obsCrr = cov2cor(obsCov);
-                                obsCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                obsCvC[lower.tri(obsCvC, diag=TRUE)]  = obsCov[lower.tri(obsCov, diag=TRUE)];
-                                obsCvC[upper.tri(obsCvC, diag=FALSE)] = obsCrr[upper.tri(obsCrr, diag=FALSE)];
-                                ## The fill.table() functions accepts data.frames or named vector, not matrix 
-                                ## the need names() to return something
+                                obsCvClist<-list()
+                                for (i in seq_along(all_obsCov)) {
+                                      obsCov<-all_obsCov[[i]]$cov
+                                      obsCrr = stats::cov2cor(obsCov);
+                                      obsCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                      obsCvC[lower.tri(obsCvC, diag=TRUE)]  = obsCov[lower.tri(obsCov, diag=TRUE)];
+                                      obsCvC[upper.tri(obsCvC, diag=FALSE)] = obsCrr[upper.tri(obsCrr, diag=FALSE)];
+                                      obsCvClist[[length(obsCvClist)+1]]<-obsCvC
+                                }
+                                obsCvC<-do.call("rbind",obsCvClist)
                                 self$tab_covcorrObserved <- cbind(variable=nmeVar, type="observed", as.data.frame(obsCvC));
+                                
                               }
+                              
+                              
                               if (self$options$outputImpliedCovariances)  { 
-                                fitCrr = cov2cor(fitCov);
-                                fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
-                                fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
+                                fitCvClist<-list()
+                                for (i in seq_along(all_fitCov)) {
+                                  fitCov<-all_fitCov[[i]]$cov
+                                  fitCrr = cov2cor(fitCov);
+                                  fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                  fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
+                                  fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
+                                  fitCvClist[[length(fitCvClist)+1]]<-fitCvC
+                                }
+                                fitCvC<-do.call("rbind",fitCvClist)
                                 self$tab_covcorrImplied <- cbind(variable=nmeVar, type="implied", as.data.frame(fitCvC));
+                                
                               }
                               if (self$options$outputResidualCovariances) {
                                 # calculates the difference between observed and fitted correlations since
                                 # using cov2cor(resCov) almost invariably ends in having 0 or NA entries in the
                                 # main diagonal (given the small size of the residuals)
                                 # TO-DO: check whether the values have to be Fisher z-transformed before subtracting
-                                resCrr = cov2cor(obsCov) - cov2cor(fitCov);
-                                resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
-                                resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
+                                resCvClist<-list()
+                                for (i in seq_along(all_obsCov)) {
+                                    obsCov<-all_obsCov[[i]]$cov
+                                    fitCov<-all_fitCov[[i]]$cov 
+                                    resCov<-all_resCov[[i]]$cov
+                                    resCrr = cov2cor(obsCov) - cov2cor(fitCov);
+                                    resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                    resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
+                                    resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
+                                    resCvClist[[length(resCvClist)+1]]<-resCvC
+                                    
+                                }
+                                resCvC<-do.call("rbind",resCvClist)
                                 self$tab_covcorrResidual <- cbind(variable=nmeVar, type="residual", as.data.frame(resCvC));
                                 
                               }

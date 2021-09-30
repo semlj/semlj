@@ -308,9 +308,19 @@ Syntax <- R6::R6Class(
               .length <- length(self$observed)
               tab <- cbind(variable=self$observed, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
               
+              
+              if (is.something(self$multigroup)) {
+                k<-self$multigroup$nlevels
+                tab<-as.data.frame(do.call(rbind,lapply(1:k ,function(a) tab)))
+                names(tab)<-c("variable",self$observed)
+                tab$lgroup<-rep(self$multigroup$levels,each=length(self$observed))
+              } else
+                tab$lgroup<-0
+
               if (self$options$outputObservedCovariances) { self$tab_covcorrObserved <- tab };
               if (self$options$outputImpliedCovariances)  { self$tab_covcorrImplied  <- tab };
               if (self$options$outputResidualCovariances) { self$tab_covcorrResidual <- tab };
+              
               
               if (self$options$outpuCombineCovariances) {
                 tab <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);

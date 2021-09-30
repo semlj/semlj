@@ -768,6 +768,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     coefficients = function() private$.items[["coefficients"]],
                     loadings = function() private$.items[["loadings"]],
                     composites = function() private$.items[["composites"]],
+                    covariances = function() private$.items[["covariances"]],
                     intercepts = function() private$.items[["intercepts"]],
                     defined = function() private$.items[["defined"]]),
                 private = list(),
@@ -936,6 +937,72 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="rhs", 
                                     `title`="Observed", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="Estimate", 
+                                    `type`="number"),
+                                list(
+                                    `name`="se", 
+                                    `title`="SE", 
+                                    `type`="number"),
+                                list(
+                                    `name`="ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(ci)"),
+                                list(
+                                    `name`="ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(ci)"),
+                                list(
+                                    `name`="std.all", 
+                                    `type`="number", 
+                                    `title`="\u03B2"),
+                                list(
+                                    `name`="z", 
+                                    `title`="z", 
+                                    `type`="number"),
+                                list(
+                                    `name`="pvalue", 
+                                    `title`="p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="covariances",
+                            title="Variances and Covariances",
+                            clearWith=list(
+                                "endogenous",
+                                "covs",
+                                "factors",
+                                "ciType",
+                                "contrasts",
+                                "cov_y",
+                                "constraints",
+                                "data",
+                                "multigroup",
+                                "varcov"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="label", 
+                                    `title`="Label", 
+                                    `type`="text", 
+                                    `visible`="(showlabels)"),
+                                list(
+                                    `name`="lhs", 
+                                    `title`="Variable 1", 
+                                    `type`="text"),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Variable 2", 
                                     `type`="text"),
                                 list(
                                     `name`="est", 
@@ -1220,6 +1287,12 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "multigroup",
                                 "code"),
                             columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
                                 list(
                                     `name`="variable", 
                                     `title`="", 
@@ -1596,6 +1669,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$models$coefficients} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$loadings} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$composites} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$models$covariances} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$compModelBsl} \tab \tab \tab \tab \tab a table \cr
