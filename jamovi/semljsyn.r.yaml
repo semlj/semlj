@@ -193,6 +193,12 @@ items:
             type: text
             visible: (multigroup)
             combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
+            combineBelow: true
+
           - name: label
             title: Label
             type: text
@@ -241,11 +247,17 @@ items:
           - data
           - multigroup
           - code
+          - cluster
         columns:
           - name: lgroup
             title: Group
             type: text
             visible: (multigroup)
+            combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -301,6 +313,11 @@ items:
             type: text
             visible: (multigroup)
             combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
+            combineBelow: true
           - name: label
             title: Label
             type: text
@@ -353,12 +370,17 @@ items:
                   - data
                   - multigroup
                   - varcov
-                  
+                  - cluster
         columns:
                     - name: lgroup
                       title: Group
                       type: text
                       visible: (multigroup)
+                      combineBelow: true
+                    - name: level
+                      title: Level
+                      type: text
+                      visible: (cluster)
                       combineBelow: true
 
                     - name: label
@@ -410,11 +432,17 @@ items:
           - data
           - multigroup
           - code
+          - cluster
         columns:
           - name: lgroup
             title: Group
             type: text
             visible: (multigroup)
+            combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -449,6 +477,7 @@ items:
             title: "p"
             type: number
             format: zto,pvalue
+
 
       # Defined parameters ----------------------------------------------------
       - name: defined
@@ -556,10 +585,12 @@ items:
             title: Group
             type: text
             visible: (multigroup)
-          - name: label
-            title: Label
+          - name: level
+            title: Level
             type: text
-            visible: (showlabels)
+            visible: (cluster)
+            combineBelow: true
+
           - name: rhs
             title: "Variable"
             type: text
@@ -618,12 +649,19 @@ items:
         - data
         - multigroup
         - code
+        - cluster
       columns:
       - name: lgroup
         title: Group
         type: text
         visible: (multigroup)
         combineBelow: true
+      - name: level
+        title: Level
+        type: text
+        visible: (cluster)
+        combineBelow: true
+
       - name: variable
         title: ""
         type: text
@@ -640,11 +678,17 @@ items:
         - data
         - multigroup
         - code
+        - cluster
       columns:
       - name: lgroup
         title: Group
         type: text
         visible: (multigroup)
+        combineBelow: true
+      - name: level
+        title: Level
+        type: text
+        visible: (cluster)
         combineBelow: true
       - name: variable
         title: ""
@@ -662,12 +706,19 @@ items:
         - data
         - multigroup
         - code
+        - cluster
       columns:
       - name: lgroup
         title: Group
         type: text
         visible: (multigroup)
         combineBelow: true
+      - name: level
+        title: Level
+        type: text
+        visible: (cluster)
+        combineBelow: true
+
       - name: variable
         title: ""
         type: text
@@ -685,11 +736,17 @@ items:
         - data
         - multigroup
         - code
+        - cluster
       columns:
       - name: lgroup
         title: Group
         type: text
         visible: (multigroup)
+        combineBelow: true
+      - name: level
+        title: Level
+        type: text
+        visible: (cluster)
         combineBelow: true
       - name: variable
         title: ""

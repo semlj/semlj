@@ -16,7 +16,6 @@ options:
 
     - name: code
       default: |
-          
       type: String
       hidden: true
       description:
@@ -66,19 +65,10 @@ options:
             A list containing named lists that define the `label` of the latent exogenous variables and
             the `vars` that belong to that latent.
 
-    - name: multigroup
-      title: Multigroup Analysis Factor
-      type: Variable
-      suggested:
-        - nominal
-        - ordinal
-      permitted:
-        - factor
-      default:
-      description:
-          R: Factor defining groups for multigroup analysis.
 
-    # TO ADD?: input format
+
+
+#    # TO ADD?: input format
 #    - name: inputformat
 #      title: "Input data format"
 #      hidden: true
@@ -283,7 +273,7 @@ options:
     - name: meanstructure
       type: Bool
       title: Mean structure
-      default: false
+      default: true
       description:
           R: >
              If TRUE, the means of the observed variables enter the model. Required for calculating the intercepts of
@@ -344,7 +334,8 @@ options:
           R: >
              If TRUE, all observed variables are standardized before entering the analysis.
 
-    ### (f) Miscellaneous -----------------------------------------------------
+
+#    # (f) Miscellaneous 
     # TO-DO: find a better name than miscellaneous; perhaps: Constraints
     # lavOption: fixed.x
     - name: cov_x
@@ -431,7 +422,33 @@ options:
 #            `TRUE` (default) or `FALSE`, TO BE ADDED
 
 
+##   we need this also in GUI otherwise the syntax machine does not work. We do not use it (yet)
+##   so we keep it hidden
+    - name: cluster
+      default: ""
+      type: String
+      hidden: true
+      description:
+          R: >
+             Not used in gui
+
+
     ### Multigroup options / equality constraints =============================
+    
+    - name: multigroup
+      title: Multigroup Analysis Factor
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+      default:
+      description:
+          R: Factor defining groups for multigroup analysis.
+
+
+    
     #   For the GUI-version, the GUI-element multigroup is part of the inter-
     #   face to elect variables
 

@@ -174,6 +174,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### Mardia's coefficients =========================================
             if (self$options$outputMardiasCoefficients) {
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)
+                j.add_warnings(self$results$add_outputs$mardia, lav_machine, "tab_mardia")
+                
             }
     
             ### Covariances and correlations ==================================

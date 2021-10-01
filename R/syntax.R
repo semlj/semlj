@@ -42,14 +42,16 @@ Syntax <- R6::R6Class(
               structure=NULL,
               options=NULL,
               multigroup=NULL,
+              cluster=NULL,
               indirect_names=NULL,
               models=NULL,
               initialize=function(options,datamatic) {
                 astring<-options$code
                 super$initialize(options=options,vars=datamatic$vars)
 
-                self$observed<-datamatic$observed
-                self$multigroup=datamatic$multigroup
+                self$observed    <- datamatic$observed
+                self$multigroup  <- datamatic$multigroup
+                self$cluster     <- datamatic$cluster
                 # check_* check the input options and produces tables and list with names
                 ### prepare list of models for lavaan
                 private$.check_models()
@@ -309,14 +311,29 @@ Syntax <- R6::R6Class(
               tab <- cbind(variable=self$observed, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
               
               
+              ### in case we have multilevel, we expect the matrix to be replicated
+              ### for within and between
+              
+              if (is.something(self$cluster)) {
+                tab<-as.data.frame(rbind(tab,tab))
+                names(tab)<-c("variable",self$observed)
+                tab$level<-rep(c("within","between"),each=length(self$observed))
+              } else
+                tab$level<-""
+              
+              ### in case we have multigroup, we expect the matrix to be replicated
+              ### for each group. This should go after multilevel, because in case of both 
+              ### multilevel and multigroup, the matrices will be within-between for each group
               if (is.something(self$multigroup)) {
+                len<-dim(tab)[1]
                 k<-self$multigroup$nlevels
                 tab<-as.data.frame(do.call(rbind,lapply(1:k ,function(a) tab)))
                 names(tab)<-c("variable",self$observed)
-                tab$lgroup<-rep(self$multigroup$levels,each=length(self$observed))
+                tab$lgroup<-rep(self$multigroup$levels,each=len)
               } else
                 tab$lgroup<-0
 
+              
               if (self$options$outputObservedCovariances) { self$tab_covcorrObserved <- tab };
               if (self$options$outputImpliedCovariances)  { self$tab_covcorrImplied  <- tab };
               if (self$options$outputResidualCovariances) { self$tab_covcorrResidual <- tab };

@@ -11,7 +11,6 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 list(label="Endogenous1", vars=list())),
             exogenous = list(
                 list(label="Exogenous1", vars=list())),
-            multigroup = NULL,
             endogenousTerms = list(
                 list()),
             varcov = NULL,
@@ -25,13 +24,15 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             bootN = 1000,
             ci = TRUE,
             ciWidth = 95,
-            meanstructure = FALSE,
+            meanstructure = TRUE,
             intercepts = FALSE,
             indirect = FALSE,
             std_lv = "fix_first",
             std_ov = FALSE,
             cov_x = FALSE,
             cov_y = TRUE,
+            cluster = "",
+            multigroup = NULL,
             eq_loadings = FALSE,
             eq_intercepts = FALSE,
             eq_residuals = FALSE,
@@ -113,15 +114,6 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "continuous"),
                             permitted=list(
                                 "numeric")))))
-            private$..multigroup <- jmvcore::OptionVariable$new(
-                "multigroup",
-                multigroup,
-                suggested=list(
-                    "nominal",
-                    "ordinal"),
-                permitted=list(
-                    "factor"),
-                default=NULL)
             private$..endogenousTerms <- jmvcore::OptionArray$new(
                 "endogenousTerms",
                 endogenousTerms,
@@ -204,7 +196,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..meanstructure <- jmvcore::OptionBool$new(
                 "meanstructure",
                 meanstructure,
-                default=FALSE)
+                default=TRUE)
             private$..intercepts <- jmvcore::OptionBool$new(
                 "intercepts",
                 intercepts,
@@ -232,6 +224,20 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cov_y",
                 cov_y,
                 default=TRUE)
+            private$..cluster <- jmvcore::OptionString$new(
+                "cluster",
+                cluster,
+                default="",
+                hidden=TRUE)
+            private$..multigroup <- jmvcore::OptionVariable$new(
+                "multigroup",
+                multigroup,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor"),
+                default=NULL)
             private$..eq_loadings <- jmvcore::OptionBool$new(
                 "eq_loadings",
                 eq_loadings,
@@ -401,7 +407,6 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..code)
             self$.addOption(private$..endogenous)
             self$.addOption(private$..exogenous)
-            self$.addOption(private$..multigroup)
             self$.addOption(private$..endogenousTerms)
             self$.addOption(private$..varcov)
             self$.addOption(private$..constraints)
@@ -421,6 +426,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..std_ov)
             self$.addOption(private$..cov_x)
             self$.addOption(private$..cov_y)
+            self$.addOption(private$..cluster)
+            self$.addOption(private$..multigroup)
             self$.addOption(private$..eq_loadings)
             self$.addOption(private$..eq_intercepts)
             self$.addOption(private$..eq_residuals)
@@ -457,7 +464,6 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         code = function() private$..code$value,
         endogenous = function() private$..endogenous$value,
         exogenous = function() private$..exogenous$value,
-        multigroup = function() private$..multigroup$value,
         endogenousTerms = function() private$..endogenousTerms$value,
         varcov = function() private$..varcov$value,
         constraints = function() private$..constraints$value,
@@ -477,6 +483,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         std_ov = function() private$..std_ov$value,
         cov_x = function() private$..cov_x$value,
         cov_y = function() private$..cov_y$value,
+        cluster = function() private$..cluster$value,
+        multigroup = function() private$..multigroup$value,
         eq_loadings = function() private$..eq_loadings$value,
         eq_intercepts = function() private$..eq_intercepts$value,
         eq_residuals = function() private$..eq_residuals$value,
@@ -512,7 +520,6 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..code = NA,
         ..endogenous = NA,
         ..exogenous = NA,
-        ..multigroup = NA,
         ..endogenousTerms = NA,
         ..varcov = NA,
         ..constraints = NA,
@@ -532,6 +539,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..std_ov = NA,
         ..cov_x = NA,
         ..cov_y = NA,
+        ..cluster = NA,
+        ..multigroup = NA,
         ..eq_loadings = NA,
         ..eq_intercepts = NA,
         ..eq_residuals = NA,
@@ -1529,7 +1538,6 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param exogenous A list containing named lists that define the \code{label}
 #'   of the latent exogenous variables and the \code{vars} that belong to that
 #'   latent.
-#' @param multigroup Factor defining groups for multigroup analysis.
 #' @param endogenousTerms A list of lists specifying the models for with the
 #'   mediators as dependent variables.
 #' @param varcov A list of lists specifying the  covariances that need to be
@@ -1599,6 +1607,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   and the means, variances and covariances are free parameters. If "default",
 #'   the value is set depending on the mimic option.
 #' @param cov_y \code{TRUE} (default) or \code{FALSE}, TO ADD
+#' @param cluster Not used in gui
+#' @param multigroup Factor defining groups for multigroup analysis.
 #' @param eq_loadings \code{TRUE} or \code{FALSE} (default), constrain the
 #'   factor loadings to be equal across groups (when conducting multi-group
 #'   analyses)
@@ -1717,7 +1727,6 @@ semljgui <- function(
                 list(label="Endogenous1", vars=list())),
     exogenous = list(
                 list(label="Exogenous1", vars=list())),
-    multigroup = NULL,
     endogenousTerms = list(
                 list()),
     varcov,
@@ -1731,13 +1740,15 @@ semljgui <- function(
     bootN = 1000,
     ci = TRUE,
     ciWidth = 95,
-    meanstructure = FALSE,
+    meanstructure = TRUE,
     intercepts = FALSE,
     indirect = FALSE,
     std_lv = "fix_first",
     std_ov = FALSE,
     cov_x = FALSE,
     cov_y = TRUE,
+    cluster = "",
+    multigroup = NULL,
     eq_loadings = FALSE,
     eq_intercepts = FALSE,
     eq_residuals = FALSE,
@@ -1785,7 +1796,6 @@ semljgui <- function(
         code = code,
         endogenous = endogenous,
         exogenous = exogenous,
-        multigroup = multigroup,
         endogenousTerms = endogenousTerms,
         varcov = varcov,
         constraints = constraints,
@@ -1805,6 +1815,8 @@ semljgui <- function(
         std_ov = std_ov,
         cov_x = cov_x,
         cov_y = cov_y,
+        cluster = cluster,
+        multigroup = multigroup,
         eq_loadings = eq_loadings,
         eq_intercepts = eq_intercepts,
         eq_residuals = eq_residuals,

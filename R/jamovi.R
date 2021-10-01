@@ -93,7 +93,6 @@ j.init_table<-function(table,obj,ci=FALSE,ciroot="",ciformat="{}% Confidence Int
     if ((spaceby %in% names(obj))) {
       col<-obj[,spaceby]
       rows<-unlist(lapply(unique(col),function(x) min(which(col==x))))
-      mark("spacying by",rows)
       for (j in rows)
         table$addFormat(rowNo=j,col=1,jmvcore::Cell.BEGIN_GROUP)
     }
@@ -170,7 +169,6 @@ j.fill_table<-function(table,obj, fixNA=TRUE, append=FALSE, spaceby=NULL, start=
           if ((spaceby %in% names(obj))) {
               col<-obj[,spaceby]
               rows<-unlist(lapply(unique(col),function(x) min(which(col==x))))
-              mark("spacying by",rows)
               for (j in rows)
               table$addFormat(rowNo=j+last,col=1,jmvcore::Cell.BEGIN_GROUP)
           }

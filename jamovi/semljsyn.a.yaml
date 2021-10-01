@@ -217,7 +217,7 @@ options:
     - name: meanstructure
       type: Bool
       title: Mean structure
-      default: false
+      default: true
       description:
           R: >
              If TRUE, the means of the observed variables enter the model. Required for calculating the intercepts of
@@ -364,6 +364,45 @@ options:
 #          R: >
 #            `TRUE` (default) or `FALSE`, TO BE ADDED
 
+
+##### multilevel models =====================================================
+    
+    - name: cluster
+      title: ""
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+      default:
+      description:
+          R: Factor defining cluster in multilevel analysis.
+
+    ### (b) show icc --------------------------------------------------
+    - name: ml_icc
+      type: Bool
+      title: ICC
+      default: true
+      description:
+          R: >
+             show intra-class correlations
+
+    - name: ml_means
+      type: Bool
+      title: Between-Within Means
+      default: false
+      description:
+          R: >
+             unrestricted (h1) within and between means 
+
+    - name: ml_covariances
+      type: Bool
+      title: Between-Within Covariances
+      default: false
+      description:
+          R: >
+             unrestricted (h1) within and between covariances
 
     ### Multigroup options / equality constraints =============================
     - name: multigroup

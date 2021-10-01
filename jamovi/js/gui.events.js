@@ -67,6 +67,11 @@ const events = {
        console.log("Multigroup changed");
 
      },
+      onChange_cluster: function(ui) {
+       console.log("Multilevel cluster changed");
+
+     },
+
      onEvent_nothing: function(ui) {
       console.log("I did not do anything");
     }

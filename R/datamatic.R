@@ -6,6 +6,7 @@ Datamatic <- R6::R6Class(
   public=list(
     multigroup=NULL,
     observed=NULL,
+    cluster=NULL,
     initialize=function(options,data) {
       astring<-options$code
       reg<-"[=~:+\n]"
@@ -19,6 +20,12 @@ Datamatic <- R6::R6Class(
              if(trimws(mg)=="")
                    mg<-NULL
       self$multigroup=mg
+      ml<-options$cluster
+      if (is.character(ml))
+        if(trimws(ml)=="")
+          ml<-NULL
+      self$cluster=ml
+      
       private$.inspect_data(data)
       
 

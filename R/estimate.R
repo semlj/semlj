@@ -46,6 +46,10 @@ Estimate <- R6::R6Class("Estimate",
                               # TO-DO: test eq_-options
                               # this is dealt with in syntax.R
                             }
+                            if (is.something(self$cluster)) {
+                              lavoptions[["cluster"]] <- self$cluster
+                            }
+                            
                             ## estimate the models
                             ginfo("Estimating the model...")
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
@@ -197,13 +201,19 @@ Estimate <- R6::R6Class("Estimate",
                               }
                               ginfo('finished tab_r2')
                             }
+                            
+                            ### we wrap the following computation into try_hard() so if something
+                            ### goes wrong with multilevel or multigroup, the module 
+                            ### does not stop
 
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
+                              
                               ginfo('begin tab_mardia');
                               
                               # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
                               # that are already contained in the lavaan model-fit
+                              results<-try_hard({
                               nVar = length(self$model@Data@ov$name);
                               nObs = self$model@Data@nobs[[1]];
                               cntDta = as.list(data.frame(t(sweep(self$model@Data@X[[1]], 2, self$model@SampleStats@mean[[1]]))));
@@ -222,8 +232,14 @@ Estimate <- R6::R6Class("Estimate",
                               MK_p  <- pnorm(-abs(MK_z)) * 2;
                               
                               ginfo('before adding to tab_mardia')
-                              self$tab_mardia <- list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
+                              list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
                                                       list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
+                              }
+                              )
+                              # we put any issue in self$warnings (and not self$errors) so the module does not stop
+                              self$warnings<-list(topic="tab_mardia",message=results$warning)
+                              self$warnings<-list(topic="tab_mardia",message=results$error)
+                              self$tab_mardia <- results$object
                             }
 
                             # covariances and correlations
@@ -233,20 +249,26 @@ Estimate <- R6::R6Class("Estimate",
                               
                               all_obsCov = lavaan::inspect(self$model, "observed")
                               # we always want a list of matrices, so the results will be ok
-                              # for multigroup or not
+                              # for multigroup and multilevel or standard models
                               if ("cov" %in% names(all_obsCov))
                                    all_obsCov<-list("1"=all_obsCov)
-                              
+
                               all_fitCov = lavaan::inspect(self$model,   "fitted")
                               if ("cov" %in% names(all_fitCov))
                                    all_fitCov<-list("1"=all_fitCov)
                               
                               
                               # TO-DO: Implement standardized residuals (cov.z instead of cov)
-                              all_resCov = lavaan::lavResiduals(self$model, type="raw");
-                              if ("cov" %in% names(all_resCov))
-                                all_resCov<-list("1"=all_resCov)
-                              
+
+                              ### this is not implemented in lavaan for multilevel, so we
+                              ### wrapped into try_hard() just in case
+                              results<-try_hard({
+                                .all_resCov = lavaan::lavResiduals(self$model, type="raw");
+                                if ("cov" %in% names(.all_resCov))
+                                  all_resCov<-list("1"=.all_resCov)
+                                -all_resCov
+                              })
+                              all_resCov<-results$object
 
                               if (self$options$outputObservedCovariances) {
                                 obsCvClist<-list()
@@ -286,11 +308,15 @@ Estimate <- R6::R6Class("Estimate",
                                 resCvClist<-list()
                                 for (i in seq_along(all_obsCov)) {
                                     obsCov<-all_obsCov[[i]]$cov
-                                    fitCov<-all_fitCov[[i]]$cov 
-                                    resCov<-all_resCov[[i]]$cov
+                                    fitCov<-all_fitCov[[i]]$cov
                                     resCrr = cov2cor(obsCov) - cov2cor(fitCov);
                                     resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                    resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
+                                    ## since in multilevel model resCov is not yet
+                                    ## implemented, we use it only if available
+                                    if (is.something(all_resCov)) {
+                                        resCov<-all_resCov[[i]]$cov
+                                        resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
+                                    }
                                     resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
                                     resCvClist[[length(resCvClist)+1]]<-resCvC
                                     
