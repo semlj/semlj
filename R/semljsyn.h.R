@@ -30,7 +30,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cluster = NULL,
             ml_icc = TRUE,
             ml_means = FALSE,
-            ml_covariances = FALSE,
             multigroup = NULL,
             eq_loadings = FALSE,
             eq_intercepts = FALSE,
@@ -44,7 +43,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             showlabels = FALSE,
             constraints_examples = FALSE,
             outputAdditionalFitMeasures = FALSE,
-            outputRSquared = FALSE,
+            r2 = "none",
             outputMardiasCoefficients = FALSE,
             outputObservedCovariances = FALSE,
             outputImpliedCovariances = FALSE,
@@ -206,10 +205,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "ml_means",
                 ml_means,
                 default=FALSE)
-            private$..ml_covariances <- jmvcore::OptionBool$new(
-                "ml_covariances",
-                ml_covariances,
-                default=FALSE)
             private$..multigroup <- jmvcore::OptionString$new(
                 "multigroup",
                 multigroup)
@@ -261,10 +256,15 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "outputAdditionalFitMeasures",
                 outputAdditionalFitMeasures,
                 default=FALSE)
-            private$..outputRSquared <- jmvcore::OptionBool$new(
-                "outputRSquared",
-                outputRSquared,
-                default=FALSE)
+            private$..r2 <- jmvcore::OptionList$new(
+                "r2",
+                r2,
+                options=list(
+                    "none",
+                    "all",
+                    "endo",
+                    "all"),
+                default="none")
             private$..outputMardiasCoefficients <- jmvcore::OptionBool$new(
                 "outputMardiasCoefficients",
                 outputMardiasCoefficients,
@@ -403,7 +403,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cluster)
             self$.addOption(private$..ml_icc)
             self$.addOption(private$..ml_means)
-            self$.addOption(private$..ml_covariances)
             self$.addOption(private$..multigroup)
             self$.addOption(private$..eq_loadings)
             self$.addOption(private$..eq_intercepts)
@@ -417,7 +416,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showlabels)
             self$.addOption(private$..constraints_examples)
             self$.addOption(private$..outputAdditionalFitMeasures)
-            self$.addOption(private$..outputRSquared)
+            self$.addOption(private$..r2)
             self$.addOption(private$..outputMardiasCoefficients)
             self$.addOption(private$..outputObservedCovariances)
             self$.addOption(private$..outputImpliedCovariances)
@@ -462,7 +461,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cluster = function() private$..cluster$value,
         ml_icc = function() private$..ml_icc$value,
         ml_means = function() private$..ml_means$value,
-        ml_covariances = function() private$..ml_covariances$value,
         multigroup = function() private$..multigroup$value,
         eq_loadings = function() private$..eq_loadings$value,
         eq_intercepts = function() private$..eq_intercepts$value,
@@ -476,7 +474,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         showlabels = function() private$..showlabels$value,
         constraints_examples = function() private$..constraints_examples$value,
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
-        outputRSquared = function() private$..outputRSquared$value,
+        r2 = function() private$..r2$value,
         outputMardiasCoefficients = function() private$..outputMardiasCoefficients$value,
         outputObservedCovariances = function() private$..outputObservedCovariances$value,
         outputImpliedCovariances = function() private$..outputImpliedCovariances$value,
@@ -520,7 +518,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cluster = NA,
         ..ml_icc = NA,
         ..ml_means = NA,
-        ..ml_covariances = NA,
         ..multigroup = NA,
         ..eq_loadings = NA,
         ..eq_intercepts = NA,
@@ -534,7 +531,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..showlabels = NA,
         ..constraints_examples = NA,
         ..outputAdditionalFitMeasures = NA,
-        ..outputRSquared = NA,
+        ..r2 = NA,
         ..outputMardiasCoefficients = NA,
         ..outputObservedCovariances = NA,
         ..outputImpliedCovariances = NA,
@@ -1184,6 +1181,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     compModelBsl = function() private$.items[["compModelBsl"]],
                     otherFit = function() private$.items[["otherFit"]],
                     Rsquared = function() private$.items[["Rsquared"]],
+                    ml_icc = function() private$.items[["ml_icc"]],
                     mardia = function() private$.items[["mardia"]]),
                 private = list(),
                 public=list(
@@ -1230,6 +1228,32 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="Rsquared",
                             title="R\u00B2-values of the endogenous variables",
                             visible="(outputRSquared)",
+                            clearWith=NULL,
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)"),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="R\u00B2", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="ml_icc",
+                            title="Intra-class correlations",
+                            visible=FALSE,
                             clearWith=NULL,
                             columns=list(
                                 list(
@@ -1646,7 +1670,6 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cluster Factor defining cluster in multilevel analysis.
 #' @param ml_icc show intra-class correlations
 #' @param ml_means unrestricted (h1) within and between means
-#' @param ml_covariances unrestricted (h1) within and between covariances
 #' @param multigroup string (default=""), the separate models (one for each
 #'   level / group in the variable) are fit, instead of fitting the same model
 #'   for the whole dataset (all groups)
@@ -1683,8 +1706,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   examples of the lavaan model syntax
 #' @param outputAdditionalFitMeasures \code{TRUE} or \code{FALSE} (default),
 #'   show additional fit measures (e.g., CFI, TLI, etc.)
-#' @param outputRSquared \code{TRUE} or \code{FALSE} (default), show R²-values
-#'   for the endogenous variables
+#' @param r2 .
 #' @param outputMardiasCoefficients \code{TRUE} or \code{FALSE} (default),
 #'   show Mardia's coefficients for multivariate skewness and kurtosis
 #' @param outputObservedCovariances \code{TRUE} or \code{FALSE} (default),
@@ -1744,6 +1766,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$add_outputs$compModelBsl} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$otherFit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$Rsquared} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$add_outputs$ml_icc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$mardia} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$group_covariances$covcorrObserved} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$group_covariances$covcorrImplied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
@@ -1787,7 +1810,6 @@ semljsyn <- function(
     cluster = NULL,
     ml_icc = TRUE,
     ml_means = FALSE,
-    ml_covariances = FALSE,
     multigroup,
     eq_loadings = FALSE,
     eq_intercepts = FALSE,
@@ -1801,7 +1823,7 @@ semljsyn <- function(
     showlabels = FALSE,
     constraints_examples = FALSE,
     outputAdditionalFitMeasures = FALSE,
-    outputRSquared = FALSE,
+    r2 = "none",
     outputMardiasCoefficients = FALSE,
     outputObservedCovariances = FALSE,
     outputImpliedCovariances = FALSE,
@@ -1859,7 +1881,6 @@ semljsyn <- function(
         cluster = cluster,
         ml_icc = ml_icc,
         ml_means = ml_means,
-        ml_covariances = ml_covariances,
         multigroup = multigroup,
         eq_loadings = eq_loadings,
         eq_intercepts = eq_intercepts,
@@ -1873,7 +1894,7 @@ semljsyn <- function(
         showlabels = showlabels,
         constraints_examples = constraints_examples,
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,
-        outputRSquared = outputRSquared,
+        r2 = r2,
         outputMardiasCoefficients = outputMardiasCoefficients,
         outputObservedCovariances = outputObservedCovariances,
         outputImpliedCovariances = outputImpliedCovariances,

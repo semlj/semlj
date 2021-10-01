@@ -45,6 +45,7 @@ Syntax <- R6::R6Class(
               cluster=NULL,
               indirect_names=NULL,
               models=NULL,
+              customgroups=FALSE,
               initialize=function(options,datamatic) {
                 astring<-options$code
                 super$initialize(options=options,vars=datamatic$vars)
@@ -114,7 +115,13 @@ Syntax <- R6::R6Class(
                   msg<-glue::glue(DP_WARNS[[".p."]],x=st)
                   self$warnings<-list(topic="info",message=msg)
                 }
+
+              # here we check if the user used custom group names 
+              check<-any(stringr::str_detect(tolower(gsub(" ","",avec)), "^group:(?!\\=)"))
+              if (check)
+                  self$customgroups<-TRUE
               
+
               self$models<-avec
 
             },
@@ -205,7 +212,6 @@ Syntax <- R6::R6Class(
                 whichp<-grepl("^.p\\d+\\.$",labels)
                 labels[whichp]<-gsub(".","",labels[whichp],fixed=T)
                 private$.lav_structure$label <- labels
-
             },
 
             ### here we create the tables we need for init results. Those tables contains the information needed to init the results tables
@@ -309,6 +315,7 @@ Syntax <- R6::R6Class(
               #### additional output ####
               .length <- length(self$observed)
               tab <- cbind(variable=self$observed, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
+              names(tab)<-c("variable",self$observed)
               
               
               ### in case we have multilevel, we expect the matrix to be replicated
@@ -316,7 +323,6 @@ Syntax <- R6::R6Class(
               
               if (is.something(self$cluster)) {
                 tab<-as.data.frame(rbind(tab,tab))
-                names(tab)<-c("variable",self$observed)
                 tab$level<-rep(c("within","between"),each=length(self$observed))
               } else
                 tab$level<-""
@@ -328,17 +334,14 @@ Syntax <- R6::R6Class(
                 len<-dim(tab)[1]
                 k<-self$multigroup$nlevels
                 tab<-as.data.frame(do.call(rbind,lapply(1:k ,function(a) tab)))
-                names(tab)<-c("variable",self$observed)
                 tab$lgroup<-rep(self$multigroup$levels,each=len)
               } else
                 tab$lgroup<-0
-
               
               if (self$options$outputObservedCovariances) { self$tab_covcorrObserved <- tab };
               if (self$options$outputImpliedCovariances)  { self$tab_covcorrImplied  <- tab };
               if (self$options$outputResidualCovariances) { self$tab_covcorrResidual <- tab };
-              
-              
+
               if (self$options$outpuCombineCovariances) {
                 tab <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
                 self$tab_covcorrCombined <- tab[order(tab$variable), ];
@@ -350,11 +353,17 @@ Syntax <- R6::R6Class(
             },
             .fix_groups_labels=function(table) {
               
+
                 ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
                 if (is.something(self$multigroup)) {
-                      levs<-c(self$multigroup$levels,"All")
-                      table$group<-ifelse(table$group==0,length(levs)+1,table$group)
-                      table$lgroup<-levs[table$group]
+                      if (self$customgroups) {
+                               table$lgroup=table$group
+                      } else {
+                               levs<-c(self$multigroup$levels,"All")
+                               table$group<-ifelse(table$group==0,length(levs)+1,table$group)
+                               table$lgroup<-levs[table$group]
+                        
+                      }
                 } else
                   table$lgroup<-"1"
                 table

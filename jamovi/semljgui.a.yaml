@@ -541,13 +541,20 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), show additional fit measures (e.g., CFI, TLI, etc.)
-    - name: outputRSquared
-      type: Bool
-      title: "R² (endogenous vars.)"
-      default: false
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), show R²-values for the endogenous variables
+    - name: r2
+      type: List
+      options:
+        - name:  none
+          title: None
+        - name:  all
+          title: All
+        - name:  endo
+          title: Endogenous
+        - name:  all
+          title: All
+      default: none
+
+
     - name: outputMardiasCoefficients
       type: Bool
       title: "Mardia's coefficients"

@@ -164,10 +164,8 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
             
             ### R² measures ===================================================
-            if (self$options$outputRSquared) {
                 j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
-            }
-            
+
             ### Mardia's coefficients =========================================
             if (self$options$outputMardiasCoefficients) {
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)

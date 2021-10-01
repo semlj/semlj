@@ -537,7 +537,7 @@ items:
   - name: add_outputs
     title: "Additional outputs"
     type: Group
-    visible: (outputAdditionalFitMeasures || outputRSquared || outputMardiasCoefficients)
+    visible: (outputAdditionalFitMeasures || (r2) || outputMardiasCoefficients || ml_icc)
     items:
 
       # Additional fit measures (1): User model versus baseline model ---------
@@ -578,6 +578,31 @@ items:
         type: Table
 #       description:
         visible: (outputRSquared)
+        clearWith:
+#       variable number of rows
+        columns:
+          - name:  lgroup
+            title: Group
+            type: text
+            visible: (multigroup)
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
+            combineBelow: true
+
+          - name: rhs
+            title: "Variable"
+            type: text
+          - name: est
+            title: R²
+            type: number
+
+      - name: ml_icc
+        title: 'Intra-class correlations'
+        type: Table
+#       description:
+        visible: false
         clearWith:
 #       variable number of rows
         columns:

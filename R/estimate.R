@@ -46,8 +46,12 @@ Estimate <- R6::R6Class("Estimate",
                               # TO-DO: test eq_-options
                               # this is dealt with in syntax.R
                             }
+                            ## if we have a multilevel, we need to pass the cluster
+                            ## and some options
                             if (is.something(self$cluster)) {
                               lavoptions[["cluster"]] <- self$cluster
+                              lavoptions[["h1"]] <- TRUE
+                              
                             }
                             
                             ## estimate the models
@@ -189,16 +193,28 @@ Estimate <- R6::R6Class("Estimate",
                             
 
                             # R²
-                            if (self$options$outputRSquared) {
+                            ### if seems that lavaan 0.6.9 fails to produce the R2 with parameterEstimates()
+                            ### for for multilevel model with multigroup. But it gives the R2 with inspect()
+                            ### however, it is hard to understand what they are (no labels are procuded)
+                            ### for the moment, we compute the R2 from scratch. Following lavaan, we compute
+                            ### the R2 for any variable for which the variance is estimated (I think is overdue, 
+                            ### let's keep it like lavaan does)
+                            
+                            if (self$options$r2!="none") {
                               ginfo('begin tab_r2')
-                              RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE)
-                              RSqEst = RSqEst[RSqEst$op == "r2",]
-                              ### for some reasons, multigroup r2 are identified by block and not group
-                              RSqEst$group<-RSqEst$block
-                              if (nrow(RSqEst) > 0) {
-                                RSqEst<-private$.fix_groups_labels(RSqEst)
-                                self$tab_Rsquared<- RSqEst
-                              }
+                                     tab<-private$.lav_structure
+                                     # first, standardize the estimate and compute the R2
+                                     tab$est<-1-lavaan:::lav_standardize_all(self$model)
+                                     # collect the variances (the actual r2)
+                                     tab<-private$.fix_groups_labels(tab[tab$op=="~~",])
+                                     ## prune out the useless r2 if requested
+                                     if (self$options$r2=="endo") {
+                                       rendo<-private$.lav_structure$lhs[private$.lav_structure$op=="~"]
+                                       tab<-tab[tab$lhs %in% rendo,]
+                                     }
+
+                                     self$tab_Rsquared<- tab
+
                               ginfo('finished tab_r2')
                             }
                             
@@ -209,8 +225,7 @@ Estimate <- R6::R6Class("Estimate",
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
                               
-                              ginfo('begin tab_mardia');
-                              
+
                               # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
                               # that are already contained in the lavaan model-fit
                               results<-try_hard({
@@ -231,7 +246,6 @@ Estimate <- R6::R6Class("Estimate",
                               MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
                               MK_p  <- pnorm(-abs(MK_z)) * 2;
                               
-                              ginfo('before adding to tab_mardia')
                               list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
                                                       list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
                               }
@@ -239,9 +253,8 @@ Estimate <- R6::R6Class("Estimate",
                               # we put any issue in self$warnings (and not self$errors) so the module does not stop
                               self$warnings<-list(topic="tab_mardia",message=results$warning)
                               self$warnings<-list(topic="tab_mardia",message=results$error)
-                              self$tab_mardia <- results$object
+                              self$tab_mardia <- results$obj
                             }
-
                             # covariances and correlations
                             if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
                               nmeVar = lavaan::lavNames(self$model, 'ov');
@@ -256,8 +269,7 @@ Estimate <- R6::R6Class("Estimate",
                               all_fitCov = lavaan::inspect(self$model,   "fitted")
                               if ("cov" %in% names(all_fitCov))
                                    all_fitCov<-list("1"=all_fitCov)
-                              
-                              
+
                               # TO-DO: Implement standardized residuals (cov.z instead of cov)
 
                               ### this is not implemented in lavaan for multilevel, so we
@@ -268,7 +280,7 @@ Estimate <- R6::R6Class("Estimate",
                                   all_resCov<-list("1"=.all_resCov)
                                 -all_resCov
                               })
-                              all_resCov<-results$object
+                              all_resCov<-results$obj
 
                               if (self$options$outputObservedCovariances) {
                                 obsCvClist<-list()

@@ -45,7 +45,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             showlabels = FALSE,
             constraints_examples = FALSE,
             outputAdditionalFitMeasures = FALSE,
-            outputRSquared = FALSE,
+            r2 = "none",
             outputMardiasCoefficients = FALSE,
             outputObservedCovariances = FALSE,
             outputImpliedCovariances = FALSE,
@@ -286,10 +286,15 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "outputAdditionalFitMeasures",
                 outputAdditionalFitMeasures,
                 default=FALSE)
-            private$..outputRSquared <- jmvcore::OptionBool$new(
-                "outputRSquared",
-                outputRSquared,
-                default=FALSE)
+            private$..r2 <- jmvcore::OptionList$new(
+                "r2",
+                r2,
+                options=list(
+                    "none",
+                    "all",
+                    "endo",
+                    "all"),
+                default="none")
             private$..outputMardiasCoefficients <- jmvcore::OptionBool$new(
                 "outputMardiasCoefficients",
                 outputMardiasCoefficients,
@@ -440,7 +445,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showlabels)
             self$.addOption(private$..constraints_examples)
             self$.addOption(private$..outputAdditionalFitMeasures)
-            self$.addOption(private$..outputRSquared)
+            self$.addOption(private$..r2)
             self$.addOption(private$..outputMardiasCoefficients)
             self$.addOption(private$..outputObservedCovariances)
             self$.addOption(private$..outputImpliedCovariances)
@@ -497,7 +502,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         showlabels = function() private$..showlabels$value,
         constraints_examples = function() private$..constraints_examples$value,
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
-        outputRSquared = function() private$..outputRSquared$value,
+        r2 = function() private$..r2$value,
         outputMardiasCoefficients = function() private$..outputMardiasCoefficients$value,
         outputObservedCovariances = function() private$..outputObservedCovariances$value,
         outputImpliedCovariances = function() private$..outputImpliedCovariances$value,
@@ -553,7 +558,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..showlabels = NA,
         ..constraints_examples = NA,
         ..outputAdditionalFitMeasures = NA,
-        ..outputRSquared = NA,
+        ..r2 = NA,
         ..outputMardiasCoefficients = NA,
         ..outputObservedCovariances = NA,
         ..outputImpliedCovariances = NA,
@@ -1215,7 +1220,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="Rsquared",
                             title="R\u00B2-values of the endogenous variables",
-                            visible="(outputRSquared)",
+                            visible=FALSE,
                             clearWith=NULL,
                             columns=list(
                                 list(
@@ -1642,8 +1647,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   examples of the lavaan model syntax
 #' @param outputAdditionalFitMeasures \code{TRUE} or \code{FALSE} (default),
 #'   show additional fit measures (e.g., CFI, TLI, etc.)
-#' @param outputRSquared \code{TRUE} or \code{FALSE} (default), show R²-values
-#'   for the endogenous variables
+#' @param r2 .
 #' @param outputMardiasCoefficients \code{TRUE} or \code{FALSE} (default),
 #'   show Mardia's coefficients for multivariate skewness and kurtosis
 #' @param outputObservedCovariances \code{TRUE} or \code{FALSE} (default),
@@ -1761,7 +1765,7 @@ semljgui <- function(
     showlabels = FALSE,
     constraints_examples = FALSE,
     outputAdditionalFitMeasures = FALSE,
-    outputRSquared = FALSE,
+    r2 = "none",
     outputMardiasCoefficients = FALSE,
     outputObservedCovariances = FALSE,
     outputImpliedCovariances = FALSE,
@@ -1829,7 +1833,7 @@ semljgui <- function(
         showlabels = showlabels,
         constraints_examples = constraints_examples,
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,
-        outputRSquared = outputRSquared,
+        r2 = r2,
         outputMardiasCoefficients = outputMardiasCoefficients,
         outputObservedCovariances = outputObservedCovariances,
         outputImpliedCovariances = outputImpliedCovariances,

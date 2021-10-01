@@ -269,8 +269,6 @@ children:
                     name: ml_icc
                   - type: CheckBox
                     name: ml_means
-                  - type: CheckBox
-                    name: ml_covariances
 
 
   - type: CollapseBox
@@ -304,14 +302,35 @@ children:
                     margin: large
                     style: list
                     children:
-                      - type: Label
-                        label: Additional outputs
-                      - type: CheckBox
-                        name: outputAdditionalFitMeasures
-                      - type: CheckBox
-                        name: outputRSquared
-                      - type: CheckBox
-                        name: outputMardiasCoefficients
+                        - type: LayoutBox
+                          margin: large
+                          style: list
+                          children:
+                                - type: Label
+                                  label: Additional outputs
+                                - type: CheckBox
+                                  name: outputAdditionalFitMeasures
+                                - type: CheckBox
+                                  name: outputMardiasCoefficients
+                        - type: LayoutBox
+                          margin: large
+                          style: list
+                          children:
+                                 - type: Label
+                                   label: R-squared
+                                 - type: RadioButton
+                                   name: r2_none
+                                   optionName: r2
+                                   optionPart: none
+                                 - type: RadioButton
+                                   name: r2_endo
+                                   optionName: r2
+                                   optionPart: endo
+                                 - type: RadioButton
+                                   name: r2_all
+                                   optionName: r2
+                                   optionPart: all
+
                   - type: LayoutBox
                     margin: large
                     style: list
