@@ -6,11 +6,11 @@ version > 0.2.*
 
 # Docs and help
 
-Help and examples can be found at [PATHj page](https://semlj.github.io/)
+Help and examples can be found at [SEMLj page](https://semlj.github.io/)
 
 # Install in jamovi
 
-Please install [jamovi](https://www.jamovi.org/download.html) and run it. Select the jamovi modules library and install PATHj from there
+Please install [jamovi](https://www.jamovi.org/download.html) and run it. Select the jamovi modules library and install SEMLj from there
 
 
 <center>

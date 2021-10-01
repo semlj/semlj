@@ -46,14 +46,6 @@ Estimate <- R6::R6Class("Estimate",
                               # TO-DO: test eq_-options
                               # this is dealt with in syntax.R
                             }
-                            ## if we have a multilevel, we need to pass the cluster
-                            ## and some options
-                            if (is.something(self$cluster)) {
-                              lavoptions[["cluster"]] <- self$cluster
-                              lavoptions[["h1"]] <- TRUE
-                              
-                            }
-                            
                             ## estimate the models
                             ginfo("Estimating the model...")
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
@@ -193,42 +185,25 @@ Estimate <- R6::R6Class("Estimate",
                             
 
                             # R²
-                            ### if seems that lavaan 0.6.9 fails to produce the R2 with parameterEstimates()
-                            ### for for multilevel model with multigroup. But it gives the R2 with inspect()
-                            ### however, it is hard to understand what they are (no labels are procuded)
-                            ### for the moment, we compute the R2 from scratch. Following lavaan, we compute
-                            ### the R2 for any variable for which the variance is estimated (I think is overdue, 
-                            ### let's keep it like lavaan does)
-                            
-                            if (self$options$r2!="none") {
+                            if (self$options$outputRSquared) {
                               ginfo('begin tab_r2')
-                                     tab<-private$.lav_structure
-                                     # first, standardize the estimate and compute the R2
-                                     tab$est<-1-lavaan:::lav_standardize_all(self$model)
-                                     # collect the variances (the actual r2)
-                                     tab<-private$.fix_groups_labels(tab[tab$op=="~~",])
-                                     ## prune out the useless r2 if requested
-                                     if (self$options$r2=="endo") {
-                                       rendo<-private$.lav_structure$lhs[private$.lav_structure$op=="~"]
-                                       tab<-tab[tab$lhs %in% rendo,]
-                                     }
-
-                                     self$tab_Rsquared<- tab
-
+                              RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE)
+                              RSqEst = RSqEst[RSqEst$op == "r2",]
+                              ### for some reasons, multigroup r2 are identified by block and not group
+                              RSqEst$group<-RSqEst$block
+                              if (nrow(RSqEst) > 0) {
+                                RSqEst<-private$.fix_groups_labels(RSqEst)
+                                self$tab_Rsquared<- RSqEst
+                              }
                               ginfo('finished tab_r2')
                             }
-                            
-                            ### we wrap the following computation into try_hard() so if something
-                            ### goes wrong with multilevel or multigroup, the module 
-                            ### does not stop
 
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
+                              ginfo('begin tab_mardia');
                               
-
                               # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
                               # that are already contained in the lavaan model-fit
-                              results<-try_hard({
                               nVar = length(self$model@Data@ov$name);
                               nObs = self$model@Data@nobs[[1]];
                               cntDta = as.list(data.frame(t(sweep(self$model@Data@X[[1]], 2, self$model@SampleStats@mean[[1]]))));
@@ -246,15 +221,11 @@ Estimate <- R6::R6Class("Estimate",
                               MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
                               MK_p  <- pnorm(-abs(MK_z)) * 2;
                               
-                              list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
+                              ginfo('before adding to tab_mardia')
+                              self$tab_mardia <- list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
                                                       list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
-                              }
-                              )
-                              # we put any issue in self$warnings (and not self$errors) so the module does not stop
-                              self$warnings<-list(topic="tab_mardia",message=results$warning)
-                              self$warnings<-list(topic="tab_mardia",message=results$error)
-                              self$tab_mardia <- results$obj
                             }
+
                             # covariances and correlations
                             if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
                               nmeVar = lavaan::lavNames(self$model, 'ov');
@@ -262,25 +233,14 @@ Estimate <- R6::R6Class("Estimate",
                               
                               all_obsCov = lavaan::inspect(self$model, "observed")
                               # we always want a list of matrices, so the results will be ok
-                              # for multigroup and multilevel or standard models
+                              # for multigroup or not
                               if ("cov" %in% names(all_obsCov))
-                                   all_obsCov<-list("1"=all_obsCov)
-
-                              all_fitCov = lavaan::inspect(self$model,   "fitted")
-                              if ("cov" %in% names(all_fitCov))
-                                   all_fitCov<-list("1"=all_fitCov)
-
+                                 all_obsCov<-list("1"=all_obsCov)
+                              
+                              fitCov = lavaan::inspect(self$model,   "fitted")
                               # TO-DO: Implement standardized residuals (cov.z instead of cov)
-
-                              ### this is not implemented in lavaan for multilevel, so we
-                              ### wrapped into try_hard() just in case
-                              results<-try_hard({
-                                .all_resCov = lavaan::lavResiduals(self$model, type="raw");
-                                if ("cov" %in% names(.all_resCov))
-                                  all_resCov<-list("1"=.all_resCov)
-                                -all_resCov
-                              })
-                              all_resCov<-results$obj
+                              resCov = lavaan::lavResiduals(self$model, type="raw");
+                              
 
                               if (self$options$outputObservedCovariances) {
                                 obsCvClist<-list()
@@ -294,46 +254,25 @@ Estimate <- R6::R6Class("Estimate",
                                 }
                                 obsCvC<-do.call("rbind",obsCvClist)
                                 self$tab_covcorrObserved <- cbind(variable=nmeVar, type="observed", as.data.frame(obsCvC));
-                                
                               }
                               
                               
                               if (self$options$outputImpliedCovariances)  { 
-                                fitCvClist<-list()
-                                for (i in seq_along(all_fitCov)) {
-                                  fitCov<-all_fitCov[[i]]$cov
-                                  fitCrr = cov2cor(fitCov);
-                                  fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                  fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
-                                  fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
-                                  fitCvClist[[length(fitCvClist)+1]]<-fitCvC
-                                }
-                                fitCvC<-do.call("rbind",fitCvClist)
+                                fitCrr = cov2cor(fitCov);
+                                fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
+                                fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
                                 self$tab_covcorrImplied <- cbind(variable=nmeVar, type="implied", as.data.frame(fitCvC));
-                                
                               }
                               if (self$options$outputResidualCovariances) {
                                 # calculates the difference between observed and fitted correlations since
                                 # using cov2cor(resCov) almost invariably ends in having 0 or NA entries in the
                                 # main diagonal (given the small size of the residuals)
                                 # TO-DO: check whether the values have to be Fisher z-transformed before subtracting
-                                resCvClist<-list()
-                                for (i in seq_along(all_obsCov)) {
-                                    obsCov<-all_obsCov[[i]]$cov
-                                    fitCov<-all_fitCov[[i]]$cov
-                                    resCrr = cov2cor(obsCov) - cov2cor(fitCov);
-                                    resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                    ## since in multilevel model resCov is not yet
-                                    ## implemented, we use it only if available
-                                    if (is.something(all_resCov)) {
-                                        resCov<-all_resCov[[i]]$cov
-                                        resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
-                                    }
-                                    resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
-                                    resCvClist[[length(resCvClist)+1]]<-resCvC
-                                    
-                                }
-                                resCvC<-do.call("rbind",resCvClist)
+                                resCrr = cov2cor(obsCov) - cov2cor(fitCov);
+                                resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
+                                resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
                                 self$tab_covcorrResidual <- cbind(variable=nmeVar, type="residual", as.data.frame(resCvC));
                                 
                               }
