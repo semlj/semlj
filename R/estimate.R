@@ -46,6 +46,11 @@ Estimate <- R6::R6Class("Estimate",
                               # TO-DO: test eq_-options
                               # this is dealt with in syntax.R
                             }
+                            if (is.something(self$cluster)) {
+                              lavoptions[["cluster"]] <- self$cluster
+                              lavoptions[["h1"]] <- TRUE
+                            }
+                            
                             ## estimate the models
                             ginfo("Estimating the model...")
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
@@ -185,45 +190,61 @@ Estimate <- R6::R6Class("Estimate",
                             
 
                             # R²
-                            if (self$options$outputRSquared) {
+                            if (self$options$r2!="none") {
                               ginfo('begin tab_r2')
-                              RSqEst = lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE)
-                              RSqEst = RSqEst[RSqEst$op == "r2",]
+                              results<-try_hard(lavaan::parameterEstimates(self$model, se = FALSE, zstat = FALSE, pvalue = FALSE, ci = FALSE, rsquare=TRUE))
+                              if (!isFALSE(results$error)) {
+                                self$warnigs<-list(topic="tab_r2",message="Rsquared cannot be computed for this model")
+                              } else {
+                                      RSqEst = results$obj
+                                      RSqEst = RSqEst[RSqEst$op == "r2",]
+                                      if (self$options$r2=="endo") {
+                                            endo<-private$.lav_structure$lhs[private$.lav_structure$op=="~"]
+                                            RSqEst<-RSqEst[RSqEst$lhs %in% endo,]  
+                                        }
                               ### for some reasons, multigroup r2 are identified by block and not group
-                              RSqEst$group<-RSqEst$block
-                              if (nrow(RSqEst) > 0) {
-                                RSqEst<-private$.fix_groups_labels(RSqEst)
-                                self$tab_Rsquared<- RSqEst
-                              }
+                                      RSqEst$group<-RSqEst$block
+                                      if (nrow(RSqEst) > 0) {
+                                            RSqEst<-private$.fix_groups_labels(RSqEst)
+                                            self$tab_Rsquared<- RSqEst
+                                      }
                               ginfo('finished tab_r2')
+                              }
                             }
 
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
                               ginfo('begin tab_mardia');
+                              ## for multilevel-multigroup it gives an error. For the moment we 
+                              ## wrap it in try_hard() so it does not halt the estimation of other tables
                               
                               # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
                               # that are already contained in the lavaan model-fit
-                              nVar = length(self$model@Data@ov$name);
-                              nObs = self$model@Data@nobs[[1]];
-                              cntDta = as.list(data.frame(t(sweep(self$model@Data@X[[1]], 2, self$model@SampleStats@mean[[1]]))));
-                              invS = self$model@SampleStats@icov[[1]] / nObs * (nObs - 1);
+                              results<-try_hard({
+                                      nVar = length(self$model@Data@ov$name);
+                                      nObs = self$model@Data@nobs[[1]];
+                                      cntDta = as.list(data.frame(t(sweep(self$model@Data@X[[1]], 2, self$model@SampleStats@mean[[1]]))));
+                                      invS = self$model@SampleStats@icov[[1]] / nObs * (nObs - 1);
 
-                              FUN_S1 <- function(vec1, vec2, invS)     { as.numeric(t(as.matrix(vec1)) %*% invS %*% as.matrix(vec2)) };
-                              FUN_S2 <- function(vec1, listVec2, invS) { sapply(listVec2, FUN_S1, vec1=vec1, invS=invS) };
-                              MS_Cf  <- sum(sapply(cntDta, FUN_S2, listVec2=cntDta, invS=invS) ^ 3) / (nObs ^ 2);
-                              MS_chi <- nObs * MS_Cf / 6;
-                              MS_df  <- nVar * (nVar + 1) * (nVar + 2) / 6;
-                              MS_p   <- pchisq(MS_chi, df = MS_df, lower.tail = FALSE);
+                                      FUN_S1 <- function(vec1, vec2, invS)     { as.numeric(t(as.matrix(vec1)) %*% invS %*% as.matrix(vec2)) };
+                                      FUN_S2 <- function(vec1, listVec2, invS) { sapply(listVec2, FUN_S1, vec1=vec1, invS=invS) };
+                                      MS_Cf  <- sum(sapply(cntDta, FUN_S2, listVec2=cntDta, invS=invS) ^ 3) / (nObs ^ 2);
+                                      MS_chi <- nObs * MS_Cf / 6;
+                                      MS_df  <- nVar * (nVar + 1) * (nVar + 2) / 6;
+                                      MS_p   <- pchisq(MS_chi, df = MS_df, lower.tail = FALSE);
                               
-                              FUNK1 <- function(vec, invS) { as.numeric(t(as.matrix(vec)) %*% invS %*% as.matrix(vec)) };
-                              MK_Cf <- sum(sapply(cntDta, FUNK1, invS=invS) ^ 2) / nObs;
-                              MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
-                              MK_p  <- pnorm(-abs(MK_z)) * 2;
-                              
+                                      FUNK1 <- function(vec, invS) { as.numeric(t(as.matrix(vec)) %*% invS %*% as.matrix(vec)) };
+                                      MK_Cf <- sum(sapply(cntDta, FUNK1, invS=invS) ^ 2) / nObs;
+                                      MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
+                                      MK_p  <- pnorm(-abs(MK_z)) * 2;
+                                      list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
+                                                              list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
+                              })
                               ginfo('before adding to tab_mardia')
-                              self$tab_mardia <- list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
-                                                      list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
+                              self$warnings<-list(topic="tab_mardia",message=results$warning)
+                              self$warnings<-list(topic="tab_mardia",message=results$error)
+                              
+                              self$tab_mardia <- results$obj 
                             }
 
                             # covariances and correlations
@@ -232,14 +253,24 @@ Estimate <- R6::R6Class("Estimate",
                               numVar = length(nmeVar);
                               
                               all_obsCov = lavaan::inspect(self$model, "observed")
-                              # we always want a list of matrices, so the results will be ok
-                              # for multigroup or not
+                              # we always want a list of matrices, so the results will be ok also
+                              # for multigroup and multilevel 
                               if ("cov" %in% names(all_obsCov))
                                  all_obsCov<-list("1"=all_obsCov)
                               
-                              fitCov = lavaan::inspect(self$model,   "fitted")
+                              all_fitCov = lavaan::inspect(self$model,   "fitted")
+                              if ("cov" %in% names(all_fitCov))
+                                  all_fitCov<-list("1"=all_fitCov)
+                              
                               # TO-DO: Implement standardized residuals (cov.z instead of cov)
-                              resCov = lavaan::lavResiduals(self$model, type="raw");
+                              
+                              ## for multilevel-multigroup (in the same model) model 
+                              ## lav residuals are not available yet. So we wrap in try_hard()
+                              ## do it does not stop the estimation of other tables
+                              results<-try_hard(lavaan::lavResiduals(self$model, type="raw"))
+                              all_resCov =results$obj 
+                              if (is.something(all_resCov) & ("cov" %in% names(all_resCov)))
+                                  all_resCov<-list("1"=all_resCov)
                               
 
                               if (self$options$outputObservedCovariances) {
@@ -258,28 +289,44 @@ Estimate <- R6::R6Class("Estimate",
                               
                               
                               if (self$options$outputImpliedCovariances)  { 
-                                fitCrr = cov2cor(fitCov);
-                                fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
-                                fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
+                                fitCvClist<-list()
+                                for (i in seq_along(all_obsCov)) {
+                                  fitCov<-all_fitCov[[i]]$cov
+                                  fitCrr = cov2cor(fitCov);
+                                  fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                  fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
+                                  fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
+                                  fitCvClist[[length(fitCvClist)+1]]<-fitCvC
+                                  
+                                }
+                                fitCvC<-do.call("rbind",fitCvClist)
                                 self$tab_covcorrImplied <- cbind(variable=nmeVar, type="implied", as.data.frame(fitCvC));
                               }
+                              
                               if (self$options$outputResidualCovariances) {
                                 # calculates the difference between observed and fitted correlations since
                                 # using cov2cor(resCov) almost invariably ends in having 0 or NA entries in the
                                 # main diagonal (given the small size of the residuals)
                                 # TO-DO: check whether the values have to be Fisher z-transformed before subtracting
-                                resCrr = cov2cor(obsCov) - cov2cor(fitCov);
-                                resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
-                                resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
+                                resCvClist<-list()
+                                for (i in seq_along(all_obsCov)) {
+                                  resCrr = cov2cor(all_obsCov[[i]]$cov) - cov2cor(all_fitCov[[i]]$cov)
+                                  resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
+                                  resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
+                                  ## if we have lavResiduals, we use them
+                                  if (is.something(all_resCov)) {
+                                    resCov<-all_resCov[[i]]$cov
+                                    resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
+                                  }
+                                  
+                                  resCvClist[[length(resCvClist)+1]]<-resCvC
+                                }
+                                resCvC<-do.call("rbind",resCvClist)
                                 self$tab_covcorrResidual <- cbind(variable=nmeVar, type="residual", as.data.frame(resCvC));
-                                
                               }
                               if (self$options$outpuCombineCovariances) {
                                 dfCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
                                 self$tab_covcorrCombined <- dfCombined[order(dfCombined$variable), ];
-#                               self$tab_covcorrCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
                                 self$tab_covcorrObserved <- NULL;
                                 self$tab_covcorrImplied  <- NULL;
                                 self$tab_covcorrResidual <- NULL;

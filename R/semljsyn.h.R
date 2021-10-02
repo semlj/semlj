@@ -1227,7 +1227,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="Rsquared",
                             title="R\u00B2-values of the endogenous variables",
-                            visible="(outputRSquared)",
+                            visible=FALSE,
                             clearWith=NULL,
                             columns=list(
                                 list(

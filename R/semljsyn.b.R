@@ -168,7 +168,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             
             ### R² measures ===================================================
                 j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
-
+                j.add_warnings(self$results$add_outputs$Rsquared,lav_machine,"tab_r2")
+            
             ### Mardia's coefficients =========================================
             if (self$options$outputMardiasCoefficients) {
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)

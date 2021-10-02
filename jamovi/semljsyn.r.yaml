@@ -577,7 +577,7 @@ items:
         title: 'R²-values of the endogenous variables'
         type: Table
 #       description:
-        visible: (outputRSquared)
+        visible: false
         clearWith:
 #       variable number of rows
         columns:
