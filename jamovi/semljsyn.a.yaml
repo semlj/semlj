@@ -16,7 +16,6 @@ options:
 
     - name: code
       default: |
-          
       type: String
       hidden: true
       description:
@@ -27,6 +26,7 @@ options:
     - name: syntax
       type: String
       hidden: true
+      default: ""
     - name: fonts
       type: String
       default: "small"
@@ -34,6 +34,7 @@ options:
     - name: vars
       type: Variables
       hidden: true
+      default: []
       permitted:
         - factor
         - numeric

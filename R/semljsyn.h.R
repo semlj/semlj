@@ -7,9 +7,9 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             code = "",
-            syntax = NULL,
+            syntax = "",
             fonts = "small",
-            vars = NULL,
+            vars = list(),
             toggle = FALSE,
             estimator = "default",
             likelihood = "default",
@@ -77,7 +77,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..syntax <- jmvcore::OptionString$new(
                 "syntax",
                 syntax,
-                hidden=TRUE)
+                hidden=TRUE,
+                default="")
             private$..fonts <- jmvcore::OptionString$new(
                 "fonts",
                 fonts,
@@ -87,6 +88,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "vars",
                 vars,
                 hidden=TRUE,
+                default=list(),
                 permitted=list(
                     "factor",
                     "numeric",
@@ -1787,9 +1789,9 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 semljsyn <- function(
     data,
     code = "",
-    syntax,
+    syntax = "",
     fonts = "small",
-    vars,
+    vars = list(),
     toggle = FALSE,
     estimator = "default",
     likelihood = "default",
