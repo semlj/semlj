@@ -56,7 +56,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             miThreshold = 10,
             diagram = FALSE,
             diag_resid = FALSE,
-            diag_intercepts = FALSE,
+            diag_intercepts = TRUE,
             diag_paths = "est",
             diag_type = "tree",
             diag_rotate = "2",
@@ -339,7 +339,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..diag_intercepts <- jmvcore::OptionBool$new(
                 "diag_intercepts",
                 diag_intercepts,
-                default=FALSE)
+                default=TRUE)
             private$..diag_paths <- jmvcore::OptionList$new(
                 "diag_paths",
                 diag_paths,
@@ -795,7 +795,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="coefficients",
-                            title="Parameter estimates",
+                            title="Parameters estimates",
                             refs="lavaan",
                             clearWith=list(
                                 "ciType",
@@ -1776,7 +1776,7 @@ semljgui <- function(
     miThreshold = 10,
     diagram = FALSE,
     diag_resid = FALSE,
-    diag_intercepts = FALSE,
+    diag_intercepts = TRUE,
     diag_paths = "est",
     diag_type = "tree",
     diag_rotate = "2",

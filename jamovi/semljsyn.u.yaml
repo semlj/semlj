@@ -46,7 +46,7 @@ children:
                 name: cumscoretest
 
   - type: CollapseBox
-    label: Parameter options
+    label: Parameters options
     collapsed: true
     stretchFactor: 1
     children:

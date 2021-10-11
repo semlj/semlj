@@ -176,7 +176,7 @@ items:
 
       # Parameter estimates ---------------------------------------------------
       - name: coefficients
-        title: Parameter estimates
+        title: Parameters estimates
         type: Table
 #       description: 
         refs: lavaan

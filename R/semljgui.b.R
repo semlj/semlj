@@ -64,7 +64,7 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             ### (prepare the) intercepts ###
             if (self$options$intercepts & !is.null(lav_machine$tab_intercepts))
-                j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth,paceby="lgroup")
+                j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
 
             ### (prepare the) observed Covariances and correlations ====================
             if (is.something(lav_machine$tab_covcorrObserved)) {

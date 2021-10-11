@@ -639,7 +639,7 @@ options:
     - name: diag_intercepts
       title: show intercepts
       type: Bool
-      default: false
+      default: true
       description:
           R: >
              `TRUE` or `FALSE` (default), show the variable intercepts.
