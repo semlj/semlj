@@ -48,12 +48,18 @@ const events = {
     },
 
     onChange_varcov: function(ui) {
+
       update_syntax(ui,this);
     },
  
     onChange_varcovSupplier: function(ui) {
-     let values = this.itemsToValues(ui.varcovSupplier.value());
-     this.checkPairsValue(ui.varcov, values);
+        let values = this.itemsToValues(ui.varcovSupplier.value());
+        this.checkPairsValue(ui.varcov, values);
+      
+    },
+    onUpdate_varcovSupplier: function(ui) {
+      console.log("varcovsup update");
+      
     },
     
     onChange_constraints: function(ui) {
@@ -139,6 +145,7 @@ const updateSuppliers=function(ui, context) {
 
   var allvars=unique(latent.concat(vars));
   ui.varcovSupplier.setValue(context.valuesToItems(allvars, FormatDef.variable));
+  context.workspace.varcovSupplierList=allvars;
 
 };
 
