@@ -1771,10 +1771,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   combine the (up to) three covariance / correlation tables into one table
 #'   (i.e., showing observed, model-implied and residual values for each
 #'   variable combination underneath each other)
-#' @param cov.lv \code{TRUE} or \code{FALSE} (default), combine the (up to)
-#'   three covariance / correlation tables into one table (i.e., showing
-#'   observed, model-implied and residual values for each variable combination
-#'   underneath each other)
+#' @param cov.lv \code{TRUE} or \code{FALSE} (default), model-implied latent
+#'   covariances
 #' @param outputModificationIndices \code{TRUE} or \code{FALSE} (default),
 #'   show modification indices for if certain terms were removed from the model
 #' @param miHideLow \code{TRUE} or \code{FALSE} (default), hide modification

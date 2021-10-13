@@ -486,6 +486,9 @@ children:
                         name: outputResidualCovariances
                       - type: CheckBox
                         name: outpuCombineCovariances
+                      - type: CheckBox
+                        name: cov.lv
+
                   - type: LayoutBox
                     margin: large
                     style: list

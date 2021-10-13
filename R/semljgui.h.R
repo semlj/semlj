@@ -51,6 +51,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             outputImpliedCovariances = FALSE,
             outputResidualCovariances = FALSE,
             outpuCombineCovariances = FALSE,
+            cov.lv = FALSE,
             outputModificationIndices = FALSE,
             miHideLow = FALSE,
             miThreshold = 10,
@@ -315,6 +316,10 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "outpuCombineCovariances",
                 outpuCombineCovariances,
                 default=FALSE)
+            private$..cov.lv <- jmvcore::OptionBool$new(
+                "cov.lv",
+                cov.lv,
+                default=FALSE)
             private$..outputModificationIndices <- jmvcore::OptionBool$new(
                 "outputModificationIndices",
                 outputModificationIndices,
@@ -451,6 +456,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..outputImpliedCovariances)
             self$.addOption(private$..outputResidualCovariances)
             self$.addOption(private$..outpuCombineCovariances)
+            self$.addOption(private$..cov.lv)
             self$.addOption(private$..outputModificationIndices)
             self$.addOption(private$..miHideLow)
             self$.addOption(private$..miThreshold)
@@ -508,6 +514,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         outputImpliedCovariances = function() private$..outputImpliedCovariances$value,
         outputResidualCovariances = function() private$..outputResidualCovariances$value,
         outpuCombineCovariances = function() private$..outpuCombineCovariances$value,
+        cov.lv = function() private$..cov.lv$value,
         outputModificationIndices = function() private$..outputModificationIndices$value,
         miHideLow = function() private$..miHideLow$value,
         miThreshold = function() private$..miThreshold$value,
@@ -564,6 +571,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..outputImpliedCovariances = NA,
         ..outputResidualCovariances = NA,
         ..outpuCombineCovariances = NA,
+        ..cov.lv = NA,
         ..outputModificationIndices = NA,
         ..miHideLow = NA,
         ..miThreshold = NA,
@@ -1289,7 +1297,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     covcorrObserved = function() private$.items[["covcorrObserved"]],
                     covcorrImplied = function() private$.items[["covcorrImplied"]],
                     covcorrResidual = function() private$.items[["covcorrResidual"]],
-                    covcorrCombined = function() private$.items[["covcorrCombined"]]),
+                    covcorrCombined = function() private$.items[["covcorrCombined"]],
+                    covcorrLatent = function() private$.items[["covcorrLatent"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -1389,7 +1398,37 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="type", 
                                     `title`="", 
-                                    `type`="text"))))}))$new(options=options))
+                                    `type`="text"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="covcorrLatent",
+                            title="Model-implied Covariances for latent variables",
+                            visible=FALSE,
+                            clearWith=list(
+                                "ciType",
+                                "cov_y",
+                                "data",
+                                "multigroup",
+                                "code",
+                                "cluster"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="variable", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `combineBelow`=TRUE))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -1671,6 +1710,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   combine the (up to) three covariance / correlation tables into one table
 #'   (i.e., showing observed, model-implied and residual values for each
 #'   variable combination underneath each other)
+#' @param cov.lv \code{TRUE} or \code{FALSE} (default), model-implied latent
+#'   covariances
 #' @param outputModificationIndices \code{TRUE} or \code{FALSE} (default),
 #'   show modification indices for if certain terms were removed from the model
 #' @param miHideLow \code{TRUE} or \code{FALSE} (default), hide modification
@@ -1720,6 +1761,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$group_covariances$covcorrImplied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$group_covariances$covcorrResidual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$group_covariances$covcorrCombined} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+#'   \code{results$group_covariances$covcorrLatent} \tab \tab \tab \tab \tab A covariance matrix table. \cr
 #'   \code{results$modgroup$modInd} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
@@ -1779,6 +1821,7 @@ semljgui <- function(
     outputImpliedCovariances = FALSE,
     outputResidualCovariances = FALSE,
     outpuCombineCovariances = FALSE,
+    cov.lv = FALSE,
     outputModificationIndices = FALSE,
     miHideLow = FALSE,
     miThreshold = 10,
@@ -1847,6 +1890,7 @@ semljgui <- function(
         outputImpliedCovariances = outputImpliedCovariances,
         outputResidualCovariances = outputResidualCovariances,
         outpuCombineCovariances = outpuCombineCovariances,
+        cov.lv = cov.lv,
         outputModificationIndices = outputModificationIndices,
         miHideLow = miHideLow,
         miThreshold = miThreshold,

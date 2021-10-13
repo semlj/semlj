@@ -564,8 +564,7 @@ options:
       default: false
       description:
           R: >
-             `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing
-             observed, model-implied and residual values for each variable combination underneath each other)
+             `TRUE` or `FALSE` (default), model-implied latent covariances
 
     ### (c) Modification indices ----------------------------------------------
     - name: outputModificationIndices

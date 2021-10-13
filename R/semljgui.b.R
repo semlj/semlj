@@ -78,6 +78,10 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
                 j.expand_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined)
                 j.init_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined)
+                
+                j.expand_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent)
+                j.init_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent, spaceby="lgroup")
+                
 
             ################
             
@@ -163,7 +167,8 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 j.fill_table(self$results$group_covariances$covcorrImplied,  lav_machine$tab_covcorrImplied,spaceby="lgroup")
                 j.fill_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual,spaceby="lgroup") 
                 j.fill_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined, spaceby="variable")
-
+                j.fill_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent, spaceby="variable")
+                
             ### Modification indices ==========================================
             if (self$options$outputModificationIndices) {
                 j.fill_table(self$results$modgroup$modInd,lav_machine$tab_modInd,append=T)
