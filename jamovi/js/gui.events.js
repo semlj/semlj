@@ -142,6 +142,14 @@ const updateSuppliers=function(ui, context) {
              }
         }
      }
+   for (var i = 0; i < exogenousIndicators.length; i++) {
+      if  (exogenousIndicators[i]!==undefined)
+        if  (exogenousIndicators[i].vars!==undefined & exogenousIndicators[i].vars!==null) {
+             for (var j = 0; j < exogenousIndicators[i].vars.length; j++) {
+                vars.push(exogenousIndicators[i].vars[j]); 
+             }
+        }
+     }
 
   var allvars=unique(latent.concat(vars));
   ui.varcovSupplier.setValue(context.valuesToItems(allvars, FormatDef.variable));
