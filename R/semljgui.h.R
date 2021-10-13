@@ -1327,7 +1327,12 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="variable", 
                                     `title`="", 
-                                    `type`="text"))))
+                                    `type`="text"),
+                                list(
+                                    `name`="level", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `visible`=FALSE))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="covcorrImplied",
@@ -1349,7 +1354,12 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="variable", 
                                     `title`="", 
-                                    `type`="text"))))
+                                    `type`="text"),
+                                list(
+                                    `name`="level", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `visible`=FALSE))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="covcorrResidual",
@@ -1371,7 +1381,12 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="variable", 
                                     `title`="", 
-                                    `type`="text"))))
+                                    `type`="text"),
+                                list(
+                                    `name`="level", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `visible`=FALSE))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="covcorrCombined",
@@ -1398,7 +1413,12 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="type", 
                                     `title`="", 
-                                    `type`="text"))))
+                                    `type`="text"),
+                                list(
+                                    `name`="level", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `visible`=FALSE))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="covcorrLatent",
@@ -1419,16 +1439,15 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
-                                    `name`="level", 
-                                    `title`="Level", 
-                                    `type`="text", 
-                                    `visible`="(cluster)", 
-                                    `combineBelow`=TRUE),
-                                list(
                                     `name`="variable", 
                                     `title`="", 
                                     `type`="text", 
-                                    `combineBelow`=TRUE))))}))$new(options=options))
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `visible`=FALSE))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(

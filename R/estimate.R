@@ -247,82 +247,35 @@ Estimate <- R6::R6Class("Estimate",
                             }
 
                             # covariances and correlations
-                            if (self$options$outputObservedCovariances || self$options$outputImpliedCovariances || self$options$outputResidualCovariances) {
-                              nmeVar = lavaan::lavNames(self$model, 'ov');
-                              numVar = length(nmeVar);
-                              
-                              all_obsCov = lavaan::inspect(self$model, "observed")
-                              # we always want a list of matrices, so the results will be ok also
-                              # for multigroup and multilevel 
-                              if ("cov" %in% names(all_obsCov))
-                                 all_obsCov<-list("1"=all_obsCov)
-                              
-                              all_fitCov = lavaan::inspect(self$model,   "fitted")
-                              if ("cov" %in% names(all_fitCov))
-                                  all_fitCov<-list("1"=all_fitCov)
+
+                              if(self$options$outputObservedCovariances) {
+                                  obj = lavaan::inspect(self$model, "observed")
+                                  tab<-private$.make_covcor_table(obj)
+                                  self$tab_covcorrObserved <- cbind(variable=self$observed, type="observed", tab)
+                              }
+
+                              if(self$options$outputImpliedCovariances) {
+                                  obj = lavaan::inspect(self$model, "fitted")
+                                  tab<-private$.make_covcor_table(obj)
+                                  self$tab_covcorrImplied <- cbind(variable=self$observed, type="implied", tab)
+                              }
                               
                               # TO-DO: Implement standardized residuals (cov.z instead of cov)
                               
-                              ## for multilevel-multigroup (in the same model) model 
-                              ## lav residuals are not available yet. So we wrap in try_hard()
-                              ## do it does not stop the estimation of other tables
-                              results<-try_hard(lavaan::lavResiduals(self$model, type="raw"))
-                              all_resCov =results$obj 
-                              if (is.something(all_resCov) & ("cov" %in% names(all_resCov)))
-                                  all_resCov<-list("1"=all_resCov)
-                              
-
-                              if (self$options$outputObservedCovariances) {
-                                obsCvClist<-list()
-                                for (i in seq_along(all_obsCov)) {
-                                      obsCov<-all_obsCov[[i]]$cov
-                                      obsCrr = stats::cov2cor(obsCov);
-                                      obsCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                      obsCvC[lower.tri(obsCvC, diag=TRUE)]  = obsCov[lower.tri(obsCov, diag=TRUE)];
-                                      obsCvC[upper.tri(obsCvC, diag=FALSE)] = obsCrr[upper.tri(obsCrr, diag=FALSE)];
-                                      obsCvClist[[length(obsCvClist)+1]]<-obsCvC
-                                }
-                                obsCvC<-do.call("rbind",obsCvClist)
-                                self$tab_covcorrObserved <- cbind(variable=nmeVar, type="observed", as.data.frame(obsCvC));
-                              }
-                              
-                              
-                              if (self$options$outputImpliedCovariances)  { 
-                                fitCvClist<-list()
-                                for (i in seq_along(all_obsCov)) {
-                                  fitCov<-all_fitCov[[i]]$cov
-                                  fitCrr = cov2cor(fitCov);
-                                  fitCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                  fitCvC[lower.tri(fitCvC, diag=TRUE)]  = fitCov[lower.tri(fitCov, diag=TRUE)];
-                                  fitCvC[upper.tri(fitCvC, diag=FALSE)] = fitCrr[upper.tri(fitCrr, diag=FALSE)];
-                                  fitCvClist[[length(fitCvClist)+1]]<-fitCvC
-                                  
-                                }
-                                fitCvC<-do.call("rbind",fitCvClist)
-                                self$tab_covcorrImplied <- cbind(variable=nmeVar, type="implied", as.data.frame(fitCvC));
-                              }
-                              
+                            mark(self$options$cluster)
+                            
                               if (self$options$outputResidualCovariances) {
                                 # calculates the difference between observed and fitted correlations since
                                 # using cov2cor(resCov) almost invariably ends in having 0 or NA entries in the
                                 # main diagonal (given the small size of the residuals)
                                 # TO-DO: check whether the values have to be Fisher z-transformed before subtracting
-                                resCvClist<-list()
-                                for (i in seq_along(all_obsCov)) {
-                                  resCrr = cov2cor(all_obsCov[[i]]$cov) - cov2cor(all_fitCov[[i]]$cov)
-                                  resCvC = matrix(NA, nrow=numVar, ncol=numVar, dimnames=list(nmeVar, nmeVar));
-                                  resCvC[upper.tri(resCvC, diag=FALSE)] = resCrr[upper.tri(resCrr, diag=FALSE)];
-                                  ## if we have lavResiduals, we use them
-                                  if (is.something(all_resCov)) {
-                                    resCov<-all_resCov[[i]]$cov
-                                    resCvC[lower.tri(resCvC, diag=TRUE)]  = resCov[lower.tri(resCov, diag=TRUE)];
-                                  }
-                                  
-                                  resCvClist[[length(resCvClist)+1]]<-resCvC
-                                }
-                                resCvC<-do.call("rbind",resCvClist)
-                                self$tab_covcorrResidual <- cbind(variable=nmeVar, type="residual", as.data.frame(resCvC));
+                                obj1 = lavaan::inspect(self$model, "observed")
+                                obj2 = lavaan::inspect(self$model, "fitted")
+                                tab<-private$.make_covcor_diff(obj1,obj2)
+                                mark(tab)
+                                self$tab_covcorrResidual <- cbind(variable=self$observed, type="residual", tab)
                               }
+                            
                               if (self$options$outpuCombineCovariances) {
                                 dfCombined <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
                                 self$tab_covcorrCombined <- dfCombined[order(dfCombined$variable), ];
@@ -331,7 +284,7 @@ Estimate <- R6::R6Class("Estimate",
                                 self$tab_covcorrResidual <- NULL;
                               }
                               ginfo('finished tab_covcorr');
-                            }
+                            
                             ### model-implied latent covariances
                             if (self$options$cov.lv & is.something(self$latent)) {
                               all_covs<-lavaan::lavInspect(self$model,"cov.lv")
@@ -360,7 +313,51 @@ Estimate <- R6::R6Class("Estimate",
                             }
                             
                             ginfo("Estimation is done...")
-                          } # end of private function estimate
+                          } # end of public function estimate
 
-              ) # end of private
-)  # end of class
+              ), # end of public
+              private=list(
+                .make_covcor_table=function(obj,field="cov") {
+                  
+                  if (field %in% names(obj))   all_obj<-list("1"=obj) else all_obj<-obj
+                  alist<-list()
+                  for (i in seq_along(all_obj)) {
+                        covTab<-all_obj[[i]][[field]]
+                        corTab<- stats::cov2cor(covTab)
+                        .names<-colnames(covTab)
+                        .numVar<-length(.names)
+                        tab = matrix(NA, nrow=.numVar, ncol=.numVar, dimnames=list(.names, .names))
+                        tab[lower.tri(tab, diag=TRUE)]  = covTab[lower.tri(covTab, diag=TRUE)]
+                        tab[upper.tri(tab, diag=FALSE)] = corTab[upper.tri(corTab, diag=FALSE)]
+                        alist[[length(alist)+1]]<-tab
+                  }
+                        as.data.frame(do.call("rbind",alist))
+                },
+                
+                .make_covcor_diff=function(obj1,obj2) {
+                  
+                  if ("cov" %in% names(obj1))   all_obj1<-list("1"=obj1) else all_obj1<-obj1
+                  if ("cov" %in% names(obj2))   all_obj2<-list("1"=obj2) else all_obj2<-obj2
+                  
+                  alist<-list()
+                  for (i in seq_along(all_obj1)) {
+                    covTab1<-all_obj1[[i]][["cov"]]
+                    covTab2<-all_obj2[[i]][["cov"]]
+                    covTab<- covTab1-covTab2
+                    corTab<- stats::cov2cor(covTab1)-stats::cov2cor(covTab2)
+                    .names<-colnames(covTab)
+                    .numVar<-length(.names)
+                    tab = matrix(NA, nrow=.numVar, ncol=.numVar, dimnames=list(.names, .names))
+                    tab[lower.tri(tab, diag=TRUE)]  = covTab[lower.tri(covTab, diag=TRUE)]
+                    tab[upper.tri(tab, diag=FALSE)] = corTab[upper.tri(corTab, diag=FALSE)]
+                    alist[[length(alist)+1]]<-tab
+                  }
+                  as.data.frame(do.call("rbind",alist))
+                }
+                
+                
+                
+
+              ) #end of private
+  
+              )  # end of class
