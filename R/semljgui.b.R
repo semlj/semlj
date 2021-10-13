@@ -18,7 +18,6 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
         .ready=NULL,
         .init = function() {
             ginfo("init")
-            
             ### output some syntax examples if required by the user####
             
             if (self$options$constraints_examples) {
@@ -51,35 +50,43 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             j.init_table(self$results$models$coefficients,lav_machine$tab_coefficients,ci=T,ciwidth=self$options$ciWidth)
 
             #### (prepare the) loadings table ####
-            j.init_table(self$results$models$loadings,lav_machine$tab_loadings,ci=T,ciwidth=self$options$ciWidth)
+            j.init_table(self$results$models$loadings,lav_machine$tab_loadings,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
+
+            #### (prepare the) composites table ####
+            j.init_table(self$results$models$composites,lav_machine$tab_composites,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
             
+            #### (prepare the) variances covariances table ####
+            j.init_table(self$results$models$covariances,lav_machine$tab_covariances,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
+            
+                        
             ### (prepare the) defined params ###
             j.init_table(self$results$models$defined,lav_machine$tab_defined,ci=T,ciwidth=self$options$ciWidth)
 
             ### (prepare the) intercepts ###
             if (self$options$intercepts & !is.null(lav_machine$tab_intercepts))
-                j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth)
+                j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
 
-            ### (prepare the) Covariances and correlations ====================
-            if (is.something(lav_machine$tab_covcorrObserved)) {
-                j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved[, -1])
-                j.init_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
-            }
-
-            if (is.something(lav_machine$tab_covcorrImplied)) {
-                j.expand_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied[, -1])
-                j.init_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied)
-            }
-            if (is.something(lav_machine$tab_covcorrResidual)) {
-                j.expand_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual[, -1])
-                j.init_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual)
-            }
+            ### (prepare the) reliability index ###
+            j.init_table(self$results$add_outputs$reliability,lav_machine$tab_reliability,spaceby="lgroup")
             
-            if (is.something(lav_machine$tab_covcorrCombined)) {
-                j.expand_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined[, -1])
-                j.init_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined)
-            }
+            ### (prepare the) observed Covariances and correlations ====================
+                j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
+                j.init_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved,spaceby="lgroup")
+    
+                j.expand_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied)
+                j.init_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied,spaceby="lgroup")
                 
+                j.expand_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual)
+                j.init_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual,spaceby="lgroup")
+
+                
+                j.expand_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined)
+                j.init_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined)
+                
+                j.expand_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent)
+                j.init_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent, spaceby="lgroup")
+                
+
             ################
             
             private$.lav_machine<-lav_machine
@@ -130,51 +137,45 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
 
             ### Loadings table ================================================
             j.fill_table(self$results$models$loadings,lav_machine$tab_loadings)
+            
+            
+            ### composites table ================================================
+            j.fill_table(self$results$models$composites,lav_machine$tab_composites)
+            
+            ### variances and covariances table ================================================
+            j.fill_table(self$results$models$covariances,lav_machine$tab_covariances)
+            
              
             j.fill_table(self$results$models$defined,lav_machine$tab_defined)
             j.add_warnings(self$results$models$defined,lav_machine,"defined")
             
+
             if (self$options$intercepts & !is.null(lav_machine$tab_intercepts)) {
                j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
             }
 
             ### Additional fit measures (1): User model versus baseline model =
-            if (self$options$outputAdditionalFitMeasures) {
                 j.fill_table(self$results$add_outputs$compModelBsl,lav_machine$tab_compModelBsl)
-            }
 
             ### Additional fit measures (2): Other Fit Indices ================
-            if (self$options$outputAdditionalFitMeasures) {
                 j.fill_table(self$results$add_outputs$otherFit,lav_machine$tab_otherFit)
-            }
-            
+
             ### R² measures ===================================================
-            if (self$options$outputRSquared) {
                 j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
-            }
-            
+
+            ### reliability ===================================================
+                j.fill_table(self$results$add_outputs$reliability,lav_machine$tab_reliability)
+                j.add_warnings(self$results$add_outputs$reliability,lav_machine,"tab_reliability")
+                
             ### Mardia's coefficients =========================================
-            if (self$options$outputMardiasCoefficients) {
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)
-            }
-    
+
             ### Covariances and correlations ==================================
-            if (is.something(lav_machine$tab_covcorrObserved)) {
-                j.fill_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved);
-            }
-            
-            if (is.something(lav_machine$tab_covcorrImplied)) {
-                j.fill_table(self$results$group_covariances$covcorrImplied,  lav_machine$tab_covcorrImplied);
-            }
-            
-            if (is.something(lav_machine$tab_covcorrResidual)) {
-                j.fill_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual); 
-            }
-
-            if (is.something(lav_machine$tab_covcorrCombined)) {
+                j.fill_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved,spaceby="lgroup")
+                j.fill_table(self$results$group_covariances$covcorrImplied,  lav_machine$tab_covcorrImplied,spaceby="lgroup")
+                j.fill_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual,spaceby="lgroup") 
                 j.fill_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined, spaceby="variable")
-            }
-
+                j.fill_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent, spaceby="lgroup")
             ### Modification indices ==========================================
             if (self$options$outputModificationIndices) {
                 j.fill_table(self$results$modgroup$modInd,lav_machine$tab_modInd,append=T)

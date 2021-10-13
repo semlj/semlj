@@ -6,12 +6,13 @@ Datamatic <- R6::R6Class(
   public=list(
     multigroup=NULL,
     observed=NULL,
+    cluster=NULL,
     initialize=function(options,data) {
       astring<-options$code
       reg<-"[=~:+\n]"
       avec<-stringr::str_split(astring,reg)[[1]]
       avec<-avec[sapply(avec, function(a) a!="")]
-      vars<-sapply(avec, function(a) trimws(stringr::str_remove(a,'.?[*]')))
+      vars<-sapply(avec, function(a) trimws(stringr::str_remove(a,'.*[\\*]')))
       vars<-vars[grep("#",vars,fixed=T,invert = T)]
       super$initialize(options=options,vars=vars)
       mg<-options$multigroup
@@ -19,6 +20,12 @@ Datamatic <- R6::R6Class(
              if(trimws(mg)=="")
                    mg<-NULL
       self$multigroup=mg
+      ml<-options$cluster
+      if (is.character(ml))
+        if(trimws(ml)=="")
+          ml<-NULL
+      self$cluster=ml
+      
       private$.inspect_data(data)
       
 
@@ -55,7 +62,6 @@ Datamatic <- R6::R6Class(
           self$multigroup<-list(var=var,levels=levels,nlevels=length(levels))
         }
         self$observed<-intersect(self$vars,names(data))
-
       }
      
    ) #end of private

@@ -63,7 +63,7 @@ bogusfromb64<-function(obj,ref=NULL) fromb64(obj,ref=ref)
 
 ######### tables #########
 
-j.init_table<-function(table,obj,ci=FALSE,ciroot="",ciformat="{}% Confidence Intervals",ciwidth,indent=NULL) {
+j.init_table<-function(table,obj,ci=FALSE,ciroot="",ciformat="{}% Confidence Intervals",ciwidth,indent=NULL,spaceby=NULL) {
 
   if (is.null(obj)) 
      return()
@@ -89,6 +89,15 @@ j.init_table<-function(table,obj,ci=FALSE,ciroot="",ciformat="{}% Confidence Int
     for (j in rows)
       table$addFormat(rowKey=j,col=1,jmvcore::Cell.INDENTED)
   }  
+  if (is.something(spaceby)) {
+    if ((spaceby %in% names(obj))) {
+      col<-obj[,spaceby]
+      rows<-unlist(lapply(unique(col),function(x) min(which(col==x))))
+      for (j in rows)
+        table$addFormat(rowNo=j,col=1,jmvcore::Cell.BEGIN_GROUP)
+    }
+  }
+    
   table$setVisible(TRUE) 
 }
 
@@ -108,8 +117,11 @@ j.init_table_append<-function(table, obj, indent=NULL) {
 
 ## add columns to a table
 j.expand_table <- function(table, obj, types="text", superTitle=NULL) {
+
   
-# if (append) { j <- length(table$columns) - 1 } else { j <- 0 }
+  if (is.null(obj)) 
+    return()
+  
   if (inherits(obj, "data.frame")) {
       .names<-names(obj)
       .types<-unlist(lapply(obj,class))
@@ -120,11 +132,13 @@ j.expand_table <- function(table, obj, types="text", superTitle=NULL) {
     .names<-obj
     if (length(types)==1)
          .types<-rep(types,length(obj))
-    }
-
+  }
+  
+  .present<-names(table$columns)
+  .names<-setdiff(.names,.present)
+  
   for (i in seq_along(.names)) {
     table$addColumn(name = .names[[i]], title = .names[[i]], superTitle = superTitle, type=.types[i])
-#   table$addColumn(name = .names[[i]], title = .names[[i]], index = (i+j), superTitle = superTitle, type=.types[i])
   }
 }
 
@@ -154,7 +168,6 @@ j.fill_table<-function(table,obj, fixNA=TRUE, append=FALSE, spaceby=NULL, start=
          t[which(is.na(t))]<-""
        FUNC(i+last,t)
    }
-   
    if (is.something(spaceby)) {
           if ((spaceby %in% names(obj))) {
               col<-obj[,spaceby]

@@ -16,7 +16,6 @@ options:
 
     - name: code
       default: |
-          
       type: String
       hidden: true
       description:
@@ -27,6 +26,7 @@ options:
     - name: syntax
       type: String
       hidden: true
+      default: ""
     - name: fonts
       type: String
       default: "small"
@@ -34,6 +34,7 @@ options:
     - name: vars
       type: Variables
       hidden: true
+      default: []
       permitted:
         - factor
         - numeric
@@ -217,7 +218,7 @@ options:
     - name: meanstructure
       type: Bool
       title: Mean structure
-      default: false
+      default: true
       description:
           R: >
              If TRUE, the means of the observed variables enter the model. Required for calculating the intercepts of
@@ -226,7 +227,7 @@ options:
     - name: intercepts
       type: Bool
       title: Intercepts of the estimates
-      default: false
+      default: true
       description:
           R: >
             `TRUE` or `FALSE` (default), calculate and show the intercepts of the parameter estimates
@@ -365,6 +366,38 @@ options:
 #            `TRUE` (default) or `FALSE`, TO BE ADDED
 
 
+##### multilevel models =====================================================
+    
+    - name: cluster
+      title: ""
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+      default:
+      description:
+          R: Factor defining cluster in multilevel analysis.
+
+    ### (b) show icc --------------------------------------------------
+    - name: ml_icc
+      type: Bool
+      title: ICC
+      default: true
+      description:
+          R: >
+             show intra-class correlations
+
+    - name: ml_means
+      type: Bool
+      title: Between-Within Means
+      default: false
+      description:
+          R: >
+             unrestricted (h1) within and between means 
+
+
     ### Multigroup options / equality constraints =============================
     - name: multigroup
       title: ""
@@ -473,13 +506,27 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), show additional fit measures (e.g., CFI, TLI, etc.)
-    - name: outputRSquared
+    - name: r2
+      type: List
+      options:
+        - name:  none
+          title: None
+        - name:  all
+          title: All
+        - name:  endo
+          title: Endogenous
+        - name:  all
+          title: All
+      default: none
+
+    - name: reliability
       type: Bool
-      title: "R² (endogenous vars.)"
+      title: "Reliability indices"
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), show R²-values for the endogenous variables
+            `TRUE` or `FALSE` (default), show additional reliability indices
+
     - name: outputMardiasCoefficients
       type: Bool
       title: "Mardia's coefficients"
@@ -491,34 +538,41 @@ options:
     ### (b) Covariances and correlations --------------------------------------
     - name: outputObservedCovariances
       type: Bool
-      title: "observed"
+      title: "Observed"
       default: false
       description:
           R: >
             `TRUE` or `FALSE` (default), show the covariances and correlations between the observed values of the (manifest) variables
     - name: outputImpliedCovariances
       type: Bool
-      title: "model-implied (fitted)"
+      title: "Model-implied (fitted)"
       default: false
       description:
           R: >
             `TRUE` or `FALSE` (default), show the covariances and correlations between the model-implied / fitted values of the (manifest) variables
     - name: outputResidualCovariances
       type: Bool
-      title: "residual"
+      title: "Residual"
       default: false
       description:
           R: >
              `TRUE` or `FALSE` (default), show the covariances and correlations between the residuals of the (manifest) variables.
     - name: outpuCombineCovariances
       type: Bool
-      title: "combined into one table"
+      title: "Combined into one table"
       default: false
       description:
           R: >
              `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing
              observed, model-implied and residual values for each variable combination underneath each other)
 
+    - name: cov.lv
+      type: Bool
+      title: "Model-implied latent"
+      default: false
+      description:
+          R: >
+             `TRUE` or `FALSE` (default), model-implied latent covariances
 
     ### (c) Modification indices ----------------------------------------------
     - name: outputModificationIndices

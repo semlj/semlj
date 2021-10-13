@@ -16,7 +16,6 @@ options:
 
     - name: code
       default: |
-          
       type: String
       hidden: true
       description:
@@ -66,19 +65,10 @@ options:
             A list containing named lists that define the `label` of the latent exogenous variables and
             the `vars` that belong to that latent.
 
-    - name: multigroup
-      title: Multigroup Analysis Factor
-      type: Variable
-      suggested:
-        - nominal
-        - ordinal
-      permitted:
-        - factor
-      default:
-      description:
-          R: Factor defining groups for multigroup analysis.
 
-    # TO ADD?: input format
+
+
+#    # TO ADD?: input format
 #    - name: inputformat
 #      title: "Input data format"
 #      hidden: true
@@ -283,7 +273,7 @@ options:
     - name: meanstructure
       type: Bool
       title: Mean structure
-      default: false
+      default: true
       description:
           R: >
              If TRUE, the means of the observed variables enter the model. Required for calculating the intercepts of
@@ -292,7 +282,7 @@ options:
     - name: intercepts
       type: Bool
       title: Intercepts of the estimates
-      default: false
+      default: true
       description:
           R: >
             `TRUE` or `FALSE` (default), calculate and show the intercepts of the parameter estimates
@@ -344,7 +334,8 @@ options:
           R: >
              If TRUE, all observed variables are standardized before entering the analysis.
 
-    ### (f) Miscellaneous -----------------------------------------------------
+
+#    # (f) Miscellaneous 
     # TO-DO: find a better name than miscellaneous; perhaps: Constraints
     # lavOption: fixed.x
     - name: cov_x
@@ -431,7 +422,33 @@ options:
 #            `TRUE` (default) or `FALSE`, TO BE ADDED
 
 
+##   we need this also in GUI otherwise the syntax machine does not work. We do not use it (yet)
+##   so we keep it hidden
+    - name: cluster
+      default: ""
+      type: String
+      hidden: true
+      description:
+          R: >
+             Not used in gui
+
+
     ### Multigroup options / equality constraints =============================
+    
+    - name: multigroup
+      title: Multigroup Analysis Factor
+      type: Variable
+      suggested:
+        - nominal
+        - ordinal
+      permitted:
+        - factor
+      default:
+      description:
+          R: Factor defining groups for multigroup analysis.
+
+
+    
     #   For the GUI-version, the GUI-element multigroup is part of the inter-
     #   face to elect variables
 
@@ -524,13 +541,30 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), show additional fit measures (e.g., CFI, TLI, etc.)
-    - name: outputRSquared
+            
+    - name: reliability
       type: Bool
-      title: "R² (endogenous vars.)"
+      title: "Reliability indices"
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), show R²-values for the endogenous variables
+            `TRUE` or `FALSE` (default), show additional reliability indices
+            
+            
+    - name: r2
+      type: List
+      options:
+        - name:  none
+          title: None
+        - name:  all
+          title: All
+        - name:  endo
+          title: Endogenous
+        - name:  all
+          title: All
+      default: none
+
+
     - name: outputMardiasCoefficients
       type: Bool
       title: "Mardia's coefficients"
@@ -569,6 +603,14 @@ options:
           R: >
              `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing
              observed, model-implied and residual values for each variable combination underneath each other)
+
+    - name: cov.lv
+      type: Bool
+      title: "Model-implied latent"
+      default: false
+      description:
+          R: >
+             `TRUE` or `FALSE` (default), model-implied latent covariances
 
 
     ### (c) Modification indices ----------------------------------------------
@@ -615,7 +657,7 @@ options:
     - name: diag_intercepts
       title: show intercepts
       type: Bool
-      default: false
+      default: true
       description:
           R: >
              `TRUE` or `FALSE` (default), show the variable intercepts.

@@ -158,7 +158,7 @@ children:
             stretchFactor: 1
             events:
               change: './gui.events::onChange_varcovSupplier'
-              update: './gui.events::onChange_varcovSupplier'
+              update: './gui.events::onUpdate_varcovSupplier'
             children:
               - type: TargetLayoutBox
                 label: Select pairs
@@ -244,7 +244,7 @@ children:
                 name: cumscoretest
 
   - type: CollapseBox
-    label: Parameter options
+    label: Parameters options
     collapsed: true
     stretchFactor: 1
     children:
@@ -443,14 +443,38 @@ children:
                     margin: large
                     style: list
                     children:
-                      - type: Label
-                        label: Additional outputs
-                      - type: CheckBox
-                        name: outputAdditionalFitMeasures
-                      - type: CheckBox
-                        name: outputRSquared
-                      - type: CheckBox
-                        name: outputMardiasCoefficients
+                        - type: LayoutBox
+                          margin: large
+                          style: list
+                          children:
+                                - type: Label
+                                  label: Additional outputs
+                                - type: CheckBox
+                                  name: outputAdditionalFitMeasures
+                                - type: CheckBox
+                                  name: outputMardiasCoefficients
+                                - type: CheckBox
+                                  name: reliability
+                                  
+                        - type: LayoutBox
+                          margin: large
+                          style: list
+                          children:
+                                 - type: Label
+                                   label: R-squared
+                                 - type: RadioButton
+                                   name: r2_none
+                                   optionName: r2
+                                   optionPart: none
+                                 - type: RadioButton
+                                   name: r2_endo
+                                   optionName: r2
+                                   optionPart: endo
+                                 - type: RadioButton
+                                   name: r2_all
+                                   optionName: r2
+                                   optionPart: all
+
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -465,6 +489,9 @@ children:
                         name: outputResidualCovariances
                       - type: CheckBox
                         name: outpuCombineCovariances
+                      - type: CheckBox
+                        name: cov.lv
+
                   - type: LayoutBox
                     margin: large
                     style: list

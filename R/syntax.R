@@ -20,10 +20,12 @@ Syntax <- R6::R6Class(
           public=list(
               endogenous=NULL,
               observed=NULL,
+              latent=NULL,
               lav_terms=NULL,
               lav_structure=NULL,
               tab_coefficients=NULL,
               tab_loadings=NULL,
+              tab_composites=NULL,
               tab_covariances=NULL,
               tab_intercepts=NULL,
               tab_defined=NULL,
@@ -37,19 +39,23 @@ Syntax <- R6::R6Class(
               tab_covcorrImplied=NULL,                          
               tab_covcorrResidual=NULL,
               tab_covcorrCombined=NULL,
+              tab_covcorrLatent=NULL,
               tab_modInd=NULL,
+              tab_reliability=NULL,
               structure=NULL,
               options=NULL,
               multigroup=NULL,
+              cluster=NULL,
               indirect_names=NULL,
               models=NULL,
+              customgroups=FALSE,
               initialize=function(options,datamatic) {
                 astring<-options$code
                 super$initialize(options=options,vars=datamatic$vars)
 
-                self$observed<-datamatic$observed
-                self$multigroup=datamatic$multigroup
-
+                self$observed    <- datamatic$observed
+                self$multigroup  <- datamatic$multigroup
+                self$cluster     <- datamatic$cluster
                 # check_* check the input options and produces tables and list with names
                 ### prepare list of models for lavaan
                 private$.check_models()
@@ -75,7 +81,12 @@ Syntax <- R6::R6Class(
              check<-length(grep("fixed.x=FALSE",obj$message,fixed = T)>0) 
              if (check) 
                obj$message<-WARNS[["usercov"]]
-               
+             
+             check<-length(grep("cov.lv",obj$message,fixed = T)>0) 
+             if (check) 
+               obj$message<-WARNS[["cov.lv"]]
+             
+                            
              super$warnings<-obj
            },
            errors=function(obj) {
@@ -102,6 +113,30 @@ Syntax <- R6::R6Class(
               synt<-stringr::str_replace_all(synt, "[\r]" , "")
               avec<-stringr::str_split(synt,"\n")[[1]]
               avec<-avec[sapply(avec, function(a) a!="")]
+              avec<-avec[grep("#",avec,fixed = T,invert = T)]
+              
+              # here we check if the user used .pN. labels and warn if that is the case 
+              check<-stringr::str_extract(avec, ".p\\d+\\.")
+              check<-check[!unlist(sapply(check,is.na))]
+              if (length(check)>0)
+                for (st in check) {
+                  msg<-glue::glue(DP_WARNS[[".p."]],x=st)
+                  self$warnings<-list(topic="info",message=msg)
+                }
+
+              # here we check if the user used custom group names 
+              check<-any(stringr::str_detect(tolower(gsub(" ","",avec)), "^group:(?!\\=)"))
+              if (check)
+                  self$customgroups<-TRUE
+              # retrieve latent variables if any 
+              lat<-sapply(avec,function(a) stringr::str_extract(gsub(" ","",a),"^.+=~"))
+              lat<-lat[!is.na(lat)]
+              lat<-gsub("=~","",lat)       
+              if (length(lat)>0)
+                  self$latent<-lat
+
+
+
               self$models<-avec
 
             },
@@ -109,7 +144,6 @@ Syntax <- R6::R6Class(
             .lavaan_syntax=function() {
                   f <- glue::glue_collapse(unlist(self$models), sep = "; ")
                   i <- glue::glue_collapse(unlist(private$.lav_indirect), sep = "; ")
-mark(paste(f,i, sep="; "))
                   paste(f,i, sep="; ")
             },
             ## lavaanify the information available to obtain a info table representing the parameters structure.
@@ -153,8 +187,20 @@ mark(paste(f,i, sep="; "))
                 if (is.something(self$multigroup)) {
                   lavoptions[["ngroups"]] <- self$multigroup$nlevels
                   lavoptions[["meanstructure"]] <- TRUE
+                  group.equal<-c()
+                  if (self$options$eq_loadings) group.equal<-c(group.equal,"loadings")
+                  if (self$options$eq_intercepts) group.equal<-c(group.equal,"intercepts")
+                  if (self$options$eq_means) group.equal<-c(group.equal,"means")
+                  if (self$options$eq_thresholds) group.equal<-c(group.equal,"thresholds")
+                  if (self$options$eq_regressions) group.equal<-c(group.equal,"regressions")
+                  if (self$options$eq_residuals) group.equal<-c(group.equal,"residuals")
+                  if (self$options$eq_residual.covariances) group.equal<-c(group.equal,"residual.covariances")
+                  if (self$options$eq_lv.variances) group.equal<-c(group.equal,"lv.variances")
+                  if (self$options$eq_lv.variances) group.equal<-c(group.equal,"lv.covariances")
+                  if (length(group.equal)>0)
+                        lavoptions[["group.equal"]]<-group.equal
+                  
                 }
-              
                 results <- try_hard({ do.call(lavaan::lavaanify, lavoptions) })
                 self$warnings <- list(topic="info", message = results$warning)
                 self$errors <- results$error
@@ -163,12 +209,23 @@ mark(paste(f,i, sep="; "))
 
                 private$.lav_structure <- results$obj
                 ## if not user defined, create easy labels to be used by the user in constraints and defined parameters  
-                ## we want to be sure that we do not interfere with user ability to use p* as custom label
+                ## we want to be sure that we nicify only lavaan plabels and not user defined
                 ulabels <- private$.lav_structure$label
+                tvec<-gsub(" ","",ulabels)
+                check<-grep("^\\p\\d+$",tvec)
+                if (length(check)>0)
+                  for (i in check) {
+                    st<-tvec[[i]]
+                    msg<-glue::glue(DP_WARNS[["p"]],x=st)
+                    self$warnings<-list(topic="info",message=msg)
+                  }
+                
                 def <- ulabels!=""
-                plabels <- setdiff(paste0("p", 1:(length(ulabels) * 2)), ulabels[def])
-                plabels[which(def)] <- ulabels[def]
-                labels <- plabels[1:length(ulabels)]
+                labels<-private$.lav_structure$plabel
+                labels[def]<-ulabels[def]
+                # nicify lavaan .pN. labels
+                whichp<-grepl("^.p\\d+\\.$",labels)
+                labels[whichp]<-gsub(".","",labels[whichp],fixed=T)
                 private$.lav_structure$label <- labels
             },
 
@@ -187,13 +244,8 @@ mark(paste(f,i, sep="; "))
               ## fill some info to make nicer tables
                   .lav_structure$type<-ifelse(.lav_structure$free>0,"Free","Fixed")
               ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
-                  if (is.something(self$multigroup)) {
-                        levs<-c(self$multigroup$levels,"All")
-                       .lav_structure$group<-ifelse(.lav_structure$group==0,length(levs)+1,.lav_structure$group)
-                       .lav_structure$lgroup<-levs[.lav_structure$group]
-                   } else
-                        .lav_structure$lgroup<-"1"
-              
+                  .lav_structure<-private$.fix_groups_labels(.lav_structure)
+
               ### self$structure containts all parameters with. Useful for children to refer to parameters properties
               ### .lav_structure is not a tab_* which will be displayed in results
                   
@@ -208,10 +260,14 @@ mark(paste(f,i, sep="; "))
               
               self$tab_loadings<-.lav_structure[.lav_structure$op=="=~",]
               
+              ### tab_composites contains loadings from observed to formative vars
+              
+              .tab_composites<-.lav_structure[.lav_structure$op=="<~",]
+              if (nrow(.tab_composites)>0)
+                    self$tab_composites<-.tab_composites
               
               ### tab_covariances contains variances and covariances
               self$tab_covariances<-.lav_structure[.lav_structure$op=="~~",]
-              
               ### intercepts table
               self$tab_intercepts<-.lav_structure[.lav_structure$op=="~1",]
               if (nrow(self$tab_intercepts)==0) self$tab_intercepts<-NULL
@@ -231,7 +287,8 @@ mark(paste(f,i, sep="; "))
               self$tab_info<-alist
               
               # tab constraints
-              sel<-grep("==|<|>",.lav_structure$op)
+              op<-gsub("<~","&",.lav_structure$op,fixed=TRUE)
+              sel<-grep("==|<|>",op)
               const<-.lav_structure[sel,]
               if (nrow(const)>0)
                  self$tab_constfit<-const
@@ -271,13 +328,16 @@ mark(paste(f,i, sep="; "))
               }
               
               #### additional output ####
+              
               .length <- length(self$observed)
               tab <- cbind(variable=self$observed, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
+              names(tab)<-c("variable",self$observed)
+              tab<-private$.make_empty_table(tab)
               
               if (self$options$outputObservedCovariances) { self$tab_covcorrObserved <- tab };
               if (self$options$outputImpliedCovariances)  { self$tab_covcorrImplied  <- tab };
               if (self$options$outputResidualCovariances) { self$tab_covcorrResidual <- tab };
-              
+
               if (self$options$outpuCombineCovariances) {
                 tab <- rbind(self$tab_covcorrObserved, self$tab_covcorrImplied, self$tab_covcorrResidual);
                 self$tab_covcorrCombined <- tab[order(tab$variable), ];
@@ -286,6 +346,39 @@ mark(paste(f,i, sep="; "))
                 self$tab_covcorrResidual <- NULL;
               }
 
+              #### additional output ####
+              if (self$options$cov.lv & is.something(self$latent)) {
+
+                  .length <- length(self$latent)
+                   tab <- cbind(variable=self$latent, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
+                   names(tab)<-c("variable",self$latent)
+                   self$tab_covcorrLatent <- private$.make_empty_table(tab) 
+              }
+
+              if (self$options$reliability & is.something(self$latent)) {
+                indices<-c("alpha","omega","omega2","omega3","avevar")
+                tab <- cbind(variable=self$latent, as.data.frame(matrix(0, ncol=length(indices), nrow=length(self$latent))))
+                names(tab)<-c("variable",indices)
+                self$tab_reliability <- private$.make_empty_table(tab) 
+              }
+              
+            },
+            .fix_groups_labels=function(table) {
+              
+
+                ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
+                if (is.something(self$multigroup)) {
+                      if (self$customgroups) {
+                               table$lgroup=table$group
+                      } else {
+                               levs<-c(self$multigroup$levels,"All")
+                               table$group<-ifelse(table$group==0,length(levs)+1,table$group)
+                               table$lgroup<-levs[table$group]
+                        
+                      }
+                } else
+                  table$lgroup<-"1"
+                table
             },
 
             ### compute indirect effects if required by the user
@@ -365,7 +458,34 @@ mark(paste(f,i, sep="; "))
               if (is.something(self$options$multigroup))
                 self$indirect_names<-paste0("(",self$indirect_names,")",SUB[unlist(groupslist)])
               names(self$indirect_names)<-pars
+            },
+            
+            .make_empty_table=function(atable) {
+              
+              .len<-dim(as.data.frame(atable))[1]
+              ### in case we have multilevel, we expect the matrix to be replicated
+              ### for within and between
+              
+              if (is.something(self$cluster)) {
+                atable<-as.data.frame(rbind(atable,atable))
+                atable$level<-rep(c("within","between"),each=.len)
+              } else
+                atable$level<-""
+              
+              ### in case we have multigroup, we expect the matrix to be replicated
+              ### for each group. This should go after multilevel, because in case of both 
+              ### multilevel and multigroup, the matrices will be within-between for each group
+              if (is.something(self$multigroup)) {
+                .len<-dim(atable)[1]
+                k<-self$multigroup$nlevels
+                atable<-as.data.frame(do.call(rbind,lapply(1:k ,function(a) atable)))
+                atable$lgroup<-rep(self$multigroup$levels,each=.len)
+              } else
+                atable$lgroup<-0
+              
+              return(atable)
             }
+            
 
           ) # end of private
 ) # End Rclass

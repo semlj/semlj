@@ -9,6 +9,7 @@ const events = {
       updateSuppliers(ui,this);
       cleanEndogenousTerms(ui,this);
       update_syntax(ui,this); 
+
     },
 
     onChange_items_changed: function(ui) {
@@ -47,12 +48,18 @@ const events = {
     },
 
     onChange_varcov: function(ui) {
+
       update_syntax(ui,this);
     },
  
     onChange_varcovSupplier: function(ui) {
-     let values = this.itemsToValues(ui.varcovSupplier.value());
-     this.checkPairsValue(ui.varcov, values);
+        let values = this.itemsToValues(ui.varcovSupplier.value());
+        this.checkPairsValue(ui.varcov, values);
+      
+    },
+    onUpdate_varcovSupplier: function(ui) {
+      console.log("varcovsup update");
+      
     },
     
     onChange_constraints: function(ui) {
@@ -61,6 +68,15 @@ const events = {
       
       
     },
+
+     onChange_multigroup: function(ui) {
+       console.log("Multigroup changed");
+
+     },
+      onChange_cluster: function(ui) {
+       console.log("Multilevel cluster changed");
+
+     },
 
      onEvent_nothing: function(ui) {
       console.log("I did not do anything");
@@ -126,9 +142,18 @@ const updateSuppliers=function(ui, context) {
              }
         }
      }
+   for (var i = 0; i < exogenousIndicators.length; i++) {
+      if  (exogenousIndicators[i]!==undefined)
+        if  (exogenousIndicators[i].vars!==undefined & exogenousIndicators[i].vars!==null) {
+             for (var j = 0; j < exogenousIndicators[i].vars.length; j++) {
+                vars.push(exogenousIndicators[i].vars[j]); 
+             }
+        }
+     }
 
   var allvars=unique(latent.concat(vars));
   ui.varcovSupplier.setValue(context.valuesToItems(allvars, FormatDef.variable));
+  context.workspace.varcovSupplierList=allvars;
 
 };
 

@@ -83,6 +83,12 @@ const events = {
 
      loaded(ui) {
         console.log("loaded code");
+       var val = ui.multigroup.value();
+       console.log(typeof(val));
+       console.log(JSON.stringify(val));
+       
+      
+       
 
 
         this.editor = ace.edit('editor');
