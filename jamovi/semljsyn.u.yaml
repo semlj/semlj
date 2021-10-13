@@ -311,6 +311,8 @@ children:
                                 - type: CheckBox
                                   name: outputAdditionalFitMeasures
                                 - type: CheckBox
+                                  name: reliability
+                                - type: CheckBox
                                   name: outputMardiasCoefficients
                         - type: LayoutBox
                           margin: large

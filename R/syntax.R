@@ -41,6 +41,7 @@ Syntax <- R6::R6Class(
               tab_covcorrCombined=NULL,
               tab_covcorrLatent=NULL,
               tab_modInd=NULL,
+              tab_reliability=NULL,
               structure=NULL,
               options=NULL,
               multigroup=NULL,
@@ -327,30 +328,11 @@ Syntax <- R6::R6Class(
               }
               
               #### additional output ####
+              
               .length <- length(self$observed)
               tab <- cbind(variable=self$observed, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
               names(tab)<-c("variable",self$observed)
-              
-              
-              ### in case we have multilevel, we expect the matrix to be replicated
-              ### for within and between
-              
-              if (is.something(self$cluster)) {
-                tab<-as.data.frame(rbind(tab,tab))
-                tab$level<-rep(c("within","between"),each=length(self$observed))
-              } else
-                tab$level<-""
-              
-              ### in case we have multigroup, we expect the matrix to be replicated
-              ### for each group. This should go after multilevel, because in case of both 
-              ### multilevel and multigroup, the matrices will be within-between for each group
-              if (is.something(self$multigroup)) {
-                len<-dim(tab)[1]
-                k<-self$multigroup$nlevels
-                tab<-as.data.frame(do.call(rbind,lapply(1:k ,function(a) tab)))
-                tab$lgroup<-rep(self$multigroup$levels,each=len)
-              } else
-                tab$lgroup<-0
+              tab<-private$.make_empty_table(tab)
               
               if (self$options$outputObservedCovariances) { self$tab_covcorrObserved <- tab };
               if (self$options$outputImpliedCovariances)  { self$tab_covcorrImplied  <- tab };
@@ -366,34 +348,19 @@ Syntax <- R6::R6Class(
 
               #### additional output ####
               if (self$options$cov.lv & is.something(self$latent)) {
+
                   .length <- length(self$latent)
-              tab <- cbind(variable=self$latent, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
-              names(tab)<-c("variable",self$latent)
-              
-              
-              ### in case we have multilevel, we expect the matrix to be replicated
-              ### for within and between
-              
-              if (is.something(self$cluster)) {
-                tab<-as.data.frame(rbind(tab,tab))
-                tab$level<-rep(c("within","between"),each=length(self$observed))
-              } else
-                tab$level<-""
-              
-              ### in case we have multigroup, we expect the matrix to be replicated
-              ### for each group. This should go after multilevel, because in case of both 
-              ### multilevel and multigroup, the matrices will be within-between for each group
-              if (is.something(self$multigroup)) {
-                len<-dim(tab)[1]
-                k<-self$multigroup$nlevels
-                tab<-as.data.frame(do.call(rbind,lapply(1:k ,function(a) tab)))
-                tab$lgroup<-rep(self$multigroup$levels,each=len)
-              } else
-                tab$lgroup<-0
-              
-              self$tab_covcorrLatent <- tab 
+                   tab <- cbind(variable=self$latent, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
+                   names(tab)<-c("variable",self$latent)
+                   self$tab_covcorrLatent <- private$.make_empty_table(tab) 
               }
-              
+
+              if (self$options$reliability & is.something(self$latent)) {
+                indices<-c("alpha","omega","omega2","omega3","avevar")
+                tab <- cbind(variable=self$latent, as.data.frame(matrix(0, ncol=length(indices), nrow=length(self$latent))))
+                names(tab)<-c("variable",indices)
+                self$tab_reliability <- private$.make_empty_table(tab) 
+              }
               
             },
             .fix_groups_labels=function(table) {
@@ -491,7 +458,34 @@ Syntax <- R6::R6Class(
               if (is.something(self$options$multigroup))
                 self$indirect_names<-paste0("(",self$indirect_names,")",SUB[unlist(groupslist)])
               names(self$indirect_names)<-pars
+            },
+            
+            .make_empty_table=function(atable) {
+              
+              .len<-dim(as.data.frame(atable))[1]
+              ### in case we have multilevel, we expect the matrix to be replicated
+              ### for within and between
+              
+              if (is.something(self$cluster)) {
+                atable<-as.data.frame(rbind(atable,atable))
+                atable$level<-rep(c("within","between"),each=.len)
+              } else
+                atable$level<-""
+              
+              ### in case we have multigroup, we expect the matrix to be replicated
+              ### for each group. This should go after multilevel, because in case of both 
+              ### multilevel and multigroup, the matrices will be within-between for each group
+              if (is.something(self$multigroup)) {
+                .len<-dim(atable)[1]
+                k<-self$multigroup$nlevels
+                atable<-as.data.frame(do.call(rbind,lapply(1:k ,function(a) atable)))
+                atable$lgroup<-rep(self$multigroup$levels,each=.len)
+              } else
+                atable$lgroup<-0
+              
+              return(atable)
             }
+            
 
           ) # end of private
 ) # End Rclass

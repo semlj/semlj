@@ -519,6 +519,14 @@ options:
           title: All
       default: none
 
+    - name: reliability
+      type: Bool
+      title: "Reliability indices"
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show additional reliability indices
+
     - name: outputMardiasCoefficients
       type: Bool
       title: "Mardia's coefficients"

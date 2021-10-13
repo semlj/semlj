@@ -453,6 +453,9 @@ children:
                                   name: outputAdditionalFitMeasures
                                 - type: CheckBox
                                   name: outputMardiasCoefficients
+                                - type: CheckBox
+                                  name: reliability
+                                  
                         - type: LayoutBox
                           margin: large
                           style: list

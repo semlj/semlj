@@ -605,6 +605,44 @@ items:
             title: R²
             type: number
 
+      - name: reliability
+        title: 'Reliability indices'
+        type: Table
+#       description:
+        visible: false
+        clearWith:
+#       variable number of rows
+        columns:
+          - name:  lgroup
+            title: Group
+            type: text
+            visible: (multigroup)
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
+            combineBelow: true
+
+          - name: variable
+            title: "Variable"
+            type: text
+          - name: alpha
+            title: α
+            type: number
+          - name: omega
+            title: ω₁
+            type: number
+          - name: omega2
+            title: ω₂
+            type: number
+          - name: omega3
+            title: ω₃
+            type: number
+          - name: avevar
+            title: AVE
+            type: number
+
+
       - name: ml_icc
         title: 'Intra-class correlations'
         type: Table

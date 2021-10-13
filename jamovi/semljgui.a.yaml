@@ -541,6 +541,16 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), show additional fit measures (e.g., CFI, TLI, etc.)
+            
+    - name: reliability
+      type: Bool
+      title: "Reliability indices"
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show additional reliability indices
+            
+            
     - name: r2
       type: List
       options:

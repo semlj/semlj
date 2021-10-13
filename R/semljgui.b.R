@@ -66,6 +66,9 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$intercepts & !is.null(lav_machine$tab_intercepts))
                 j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
 
+            ### (prepare the) reliability index ###
+            j.init_table(self$results$add_outputs$reliability,lav_machine$tab_reliability,spaceby="lgroup")
+            
             ### (prepare the) observed Covariances and correlations ====================
                 j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
                 j.init_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved,spaceby="lgroup")
@@ -160,6 +163,10 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### R² measures ===================================================
                 j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
 
+            ### reliability ===================================================
+                j.fill_table(self$results$add_outputs$reliability,lav_machine$tab_reliability)
+                j.add_warnings(self$results$add_outputs$reliability,lav_machine,"tab_reliability")
+                
             ### Mardia's coefficients =========================================
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)
 

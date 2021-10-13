@@ -210,6 +210,13 @@ Estimate <- R6::R6Class("Estimate",
                               ginfo('finished tab_r2')
                               }
                             }
+                            
+                            
+                            if (is.something(self$tab_reliability)) {
+                              rel<-semTools::reliability(self$model)
+                              mark(rel)
+                              self$tab_reliability<-private$.make_matrix_table(rel,fun=t)
+                            }
 
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
@@ -262,8 +269,6 @@ Estimate <- R6::R6Class("Estimate",
                               
                               # TO-DO: Implement standardized residuals (cov.z instead of cov)
                               
-                            mark(self$options$cluster)
-                            
                               if (self$options$outputResidualCovariances) {
                                 # calculates the difference between observed and fitted correlations since
                                 # using cov2cor(resCov) almost invariably ends in having 0 or NA entries in the
@@ -272,7 +277,6 @@ Estimate <- R6::R6Class("Estimate",
                                 obj1 = lavaan::inspect(self$model, "observed")
                                 obj2 = lavaan::inspect(self$model, "fitted")
                                 tab<-private$.make_covcor_diff(obj1,obj2)
-                                mark(tab)
                                 self$tab_covcorrResidual <- cbind(variable=self$observed, type="residual", tab)
                               }
                             
@@ -287,11 +291,8 @@ Estimate <- R6::R6Class("Estimate",
                             
                             ### model-implied latent covariances
                             if (self$options$cov.lv & is.something(self$latent)) {
-                              all_covs<-lavaan::lavInspect(self$model,"cov.lv")
-                              if ("list" %in% class(all_covs))
-                                self$tab_covcorrLatent=as.data.frame(do.call("rbind",all_covs))
-                              else 
-                                self$tab_covcorrLatent=as.data.frame(all_covs)
+                              covs<-lavaan::lavInspect(self$model,"cov.lv")
+                              self$tab_covcorrLatent=private$.make_matrix_table(covs)
                             }
 
                             # modification indices
@@ -353,6 +354,17 @@ Estimate <- R6::R6Class("Estimate",
                     alist[[length(alist)+1]]<-tab
                   }
                   as.data.frame(do.call("rbind",alist))
+                },
+                
+                .make_matrix_table=function(obj,fun=identity) {
+                  
+                  if (is.list(obj)) {
+                      obj<-lapply(obj,fun)
+                      return(as.data.frame(do.call("rbind",obj)))
+                  }
+                  else
+                     return(as.data.frame(fun(obj)))
+                  
                 }
                 
                 

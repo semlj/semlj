@@ -67,10 +67,14 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### (prepare the) defined params ###
             j.init_table(self$results$models$defined,lav_machine$tab_defined,ci=T,ciwidth=self$options$ciWidth)
 
+            
             ### (prepare the) intercepts ###
             if (self$options$intercepts & !is.null(lav_machine$tab_intercepts))
                 j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
 
+            ### (prepare the) reliability index ###
+            j.init_table(self$results$add_outputs$reliability,lav_machine$tab_reliability,spaceby="lgroup")
+            
             ### (prepare the) Covariances and correlations ====================
                 j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
                 j.init_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved, spaceby="lgroup")
@@ -161,11 +165,16 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$outputAdditionalFitMeasures) {
                 j.fill_table(self$results$add_outputs$otherFit,lav_machine$tab_otherFit)
             }
+
             
             ### R² measures ===================================================
                 j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
                 j.add_warnings(self$results$add_outputs$Rsquared,lav_machine,"tab_r2")
-            
+
+            ### reliability ===================================================
+                j.fill_table(self$results$add_outputs$reliability,lav_machine$tab_reliability)
+                j.add_warnings(self$results$add_outputs$reliability,lav_machine,"tab_reliability")
+                
             ### Mardia's coefficients =========================================
             if (self$options$outputMardiasCoefficients) {
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)

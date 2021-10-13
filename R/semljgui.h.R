@@ -45,6 +45,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             showlabels = FALSE,
             constraints_examples = FALSE,
             outputAdditionalFitMeasures = FALSE,
+            reliability = FALSE,
             r2 = "none",
             outputMardiasCoefficients = FALSE,
             outputObservedCovariances = FALSE,
@@ -287,6 +288,10 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "outputAdditionalFitMeasures",
                 outputAdditionalFitMeasures,
                 default=FALSE)
+            private$..reliability <- jmvcore::OptionBool$new(
+                "reliability",
+                reliability,
+                default=FALSE)
             private$..r2 <- jmvcore::OptionList$new(
                 "r2",
                 r2,
@@ -450,6 +455,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showlabels)
             self$.addOption(private$..constraints_examples)
             self$.addOption(private$..outputAdditionalFitMeasures)
+            self$.addOption(private$..reliability)
             self$.addOption(private$..r2)
             self$.addOption(private$..outputMardiasCoefficients)
             self$.addOption(private$..outputObservedCovariances)
@@ -508,6 +514,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         showlabels = function() private$..showlabels$value,
         constraints_examples = function() private$..constraints_examples$value,
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
+        reliability = function() private$..reliability$value,
         r2 = function() private$..r2$value,
         outputMardiasCoefficients = function() private$..outputMardiasCoefficients$value,
         outputObservedCovariances = function() private$..outputObservedCovariances$value,
@@ -565,6 +572,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..showlabels = NA,
         ..constraints_examples = NA,
         ..outputAdditionalFitMeasures = NA,
+        ..reliability = NA,
         ..r2 = NA,
         ..outputMardiasCoefficients = NA,
         ..outputObservedCovariances = NA,
@@ -1191,6 +1199,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     compModelBsl = function() private$.items[["compModelBsl"]],
                     otherFit = function() private$.items[["otherFit"]],
                     Rsquared = function() private$.items[["Rsquared"]],
+                    reliability = function() private$.items[["reliability"]],
                     mardia = function() private$.items[["mardia"]]),
                 private = list(),
                 public=list(
@@ -1256,6 +1265,48 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="est", 
                                     `title`="R\u00B2", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="reliability",
+                            title="Reliability indices",
+                            visible=FALSE,
+                            clearWith=NULL,
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)"),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`=FALSE, 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="variable", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="alpha", 
+                                    `title`="\u03B1", 
+                                    `type`="number"),
+                                list(
+                                    `name`="omega", 
+                                    `title`="\u03C9\u2081", 
+                                    `type`="number"),
+                                list(
+                                    `name`="omega2", 
+                                    `title`="\u03C9\u2082", 
+                                    `type`="number"),
+                                list(
+                                    `name`="omega3", 
+                                    `title`="\u03C9\u2083", 
+                                    `type`="number"),
+                                list(
+                                    `name`="avevar", 
+                                    `title`="AVE", 
                                     `type`="number"))))
                         self$add(jmvcore::Table$new(
                             options=options,
@@ -1713,6 +1764,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   examples of the lavaan model syntax
 #' @param outputAdditionalFitMeasures \code{TRUE} or \code{FALSE} (default),
 #'   show additional fit measures (e.g., CFI, TLI, etc.)
+#' @param reliability \code{TRUE} or \code{FALSE} (default), show additional
+#'   reliability indices
 #' @param r2 .
 #' @param outputMardiasCoefficients \code{TRUE} or \code{FALSE} (default),
 #'   show Mardia's coefficients for multivariate skewness and kurtosis
@@ -1775,6 +1828,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$add_outputs$compModelBsl} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$otherFit} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$Rsquared} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$add_outputs$reliability} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$mardia} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$group_covariances$covcorrObserved} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$group_covariances$covcorrImplied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
@@ -1834,6 +1888,7 @@ semljgui <- function(
     showlabels = FALSE,
     constraints_examples = FALSE,
     outputAdditionalFitMeasures = FALSE,
+    reliability = FALSE,
     r2 = "none",
     outputMardiasCoefficients = FALSE,
     outputObservedCovariances = FALSE,
@@ -1903,6 +1958,7 @@ semljgui <- function(
         showlabels = showlabels,
         constraints_examples = constraints_examples,
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,
+        reliability = reliability,
         r2 = r2,
         outputMardiasCoefficients = outputMardiasCoefficients,
         outputObservedCovariances = outputObservedCovariances,
