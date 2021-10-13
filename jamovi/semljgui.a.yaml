@@ -282,7 +282,7 @@ options:
     - name: intercepts
       type: Bool
       title: Intercepts of the estimates
-      default: false
+      default: true
       description:
           R: >
             `TRUE` or `FALSE` (default), calculate and show the intercepts of the parameter estimates

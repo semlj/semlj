@@ -25,7 +25,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ci = TRUE,
             ciWidth = 95,
             meanstructure = TRUE,
-            intercepts = FALSE,
+            intercepts = TRUE,
             indirect = FALSE,
             std_lv = "fix_first",
             std_ov = FALSE,
@@ -201,7 +201,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..intercepts <- jmvcore::OptionBool$new(
                 "intercepts",
                 intercepts,
-                default=FALSE)
+                default=TRUE)
             private$..indirect <- jmvcore::OptionBool$new(
                 "indirect",
                 indirect,
@@ -1814,7 +1814,7 @@ semljgui <- function(
     ci = TRUE,
     ciWidth = 95,
     meanstructure = TRUE,
-    intercepts = FALSE,
+    intercepts = TRUE,
     indirect = FALSE,
     std_lv = "fix_first",
     std_ov = FALSE,
