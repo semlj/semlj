@@ -33,11 +33,12 @@ Datamatic <- R6::R6Class(
     cleandata=function(data) {
       
       for (var in self$vars) {
-        if (is.factor(data[[var]]))
+        if (is.factor(data[[var]])) { 
             if (length(levels(data[[var]]))>2) {
                 self$errors<-paste("Variable",var, "is a factor with more than two levels, it cannot be analyzed")
                 return()
             }
+          
             if (length(levels(data[[var]]))==2) {
               self$warnings<-list(topic="info",message=paste("Variable",var, "is a factor with two levels, it has been converted to continuous type"))
               avar<-data[[var]]
@@ -45,12 +46,11 @@ Datamatic <- R6::R6Class(
               data[[var]]<-as.numeric(a)-1
             } else
                  data[[var]]<-jmvcore::toNumeric(data[[var]])
+      } 
       }
       
       return(data)
-      
-      
-      
+
     }      
   
     ), ### end of public

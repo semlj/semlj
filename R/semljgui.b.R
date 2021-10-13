@@ -107,6 +107,10 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### clean the data and prepare things ###
             lav_machine<-private$.lav_machine
             data<-private$.data_machine$cleandata(self$data)
+            
+            if (is.something(private$.data_machine$errors))
+                stop(private$.data_machine$errors)
+            
 
             ## estimate the model running lavaan in lav_machine (Estimate R6 class)
             lav_machine$estimate(data)
