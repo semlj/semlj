@@ -20,6 +20,7 @@ Syntax <- R6::R6Class(
           public=list(
               endogenous=NULL,
               observed=NULL,
+              latent=NULL,
               lav_terms=NULL,
               lav_structure=NULL,
               tab_coefficients=NULL,
@@ -38,6 +39,7 @@ Syntax <- R6::R6Class(
               tab_covcorrImplied=NULL,                          
               tab_covcorrResidual=NULL,
               tab_covcorrCombined=NULL,
+              tab_covcorrLatent=NULL,
               tab_modInd=NULL,
               structure=NULL,
               options=NULL,
@@ -78,7 +80,12 @@ Syntax <- R6::R6Class(
              check<-length(grep("fixed.x=FALSE",obj$message,fixed = T)>0) 
              if (check) 
                obj$message<-WARNS[["usercov"]]
-               
+             
+             check<-length(grep("cov.lv",obj$message,fixed = T)>0) 
+             if (check) 
+               obj$message<-WARNS[["cov.lv"]]
+             
+                            
              super$warnings<-obj
            },
            errors=function(obj) {
@@ -120,7 +127,14 @@ Syntax <- R6::R6Class(
               check<-any(stringr::str_detect(tolower(gsub(" ","",avec)), "^group:(?!\\=)"))
               if (check)
                   self$customgroups<-TRUE
-              
+              # retrieve latent variables if any 
+              lat<-sapply(avec,function(a) stringr::str_extract(gsub(" ","",a),"^.+=~"))
+              lat<-lat[!is.na(lat)]
+              lat<-gsub("=~","",lat)       
+              if (length(lat)>0)
+                  self$latent<-lat
+
+
 
               self$models<-avec
 
@@ -350,6 +364,37 @@ Syntax <- R6::R6Class(
                 self$tab_covcorrResidual <- NULL;
               }
 
+              #### additional output ####
+              if (self$options$cov.lv & is.something(self$latent)) {
+                  .length <- length(self$latent)
+              tab <- cbind(variable=self$latent, as.data.frame(matrix(0, ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
+              names(tab)<-c("variable",self$latent)
+              
+              
+              ### in case we have multilevel, we expect the matrix to be replicated
+              ### for within and between
+              
+              if (is.something(self$cluster)) {
+                tab<-as.data.frame(rbind(tab,tab))
+                tab$level<-rep(c("within","between"),each=length(self$observed))
+              } else
+                tab$level<-""
+              
+              ### in case we have multigroup, we expect the matrix to be replicated
+              ### for each group. This should go after multilevel, because in case of both 
+              ### multilevel and multigroup, the matrices will be within-between for each group
+              if (is.something(self$multigroup)) {
+                len<-dim(tab)[1]
+                k<-self$multigroup$nlevels
+                tab<-as.data.frame(do.call(rbind,lapply(1:k ,function(a) tab)))
+                tab$lgroup<-rep(self$multigroup$levels,each=len)
+              } else
+                tab$lgroup<-0
+              
+              self$tab_covcorrLatent <- tab 
+              }
+              
+              
             },
             .fix_groups_labels=function(table) {
               

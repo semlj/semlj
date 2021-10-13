@@ -117,8 +117,11 @@ j.init_table_append<-function(table, obj, indent=NULL) {
 
 ## add columns to a table
 j.expand_table <- function(table, obj, types="text", superTitle=NULL) {
+
   
-# if (append) { j <- length(table$columns) - 1 } else { j <- 0 }
+  if (is.null(obj)) 
+    return()
+  
   if (inherits(obj, "data.frame")) {
       .names<-names(obj)
       .types<-unlist(lapply(obj,class))

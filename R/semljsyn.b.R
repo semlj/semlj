@@ -72,25 +72,21 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
 
             ### (prepare the) Covariances and correlations ====================
-            if (is.something(lav_machine$tab_covcorrObserved)) {
                 j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
                 j.init_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved, spaceby="lgroup")
-            }
 
-            if (is.something(lav_machine$tab_covcorrImplied)) {
                 j.expand_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied)
                 j.init_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied, spaceby="lgroup")
-            }
-            if (is.something(lav_machine$tab_covcorrResidual)) {
+
                 j.expand_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual)
                 j.init_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual,spaceby="lgroup")
-            }
-            
-            if (is.something(lav_machine$tab_covcorrCombined)) {
+
                 j.expand_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined)
                 j.init_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined)
-            }
-                
+
+                j.expand_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent)
+                j.init_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent, spaceby="lgroup")
+
             ################
             
             private$.lav_machine<-lav_machine
@@ -178,21 +174,11 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             }
     
             ### Covariances and correlations ==================================
-            if (is.something(lav_machine$tab_covcorrObserved)) {
-                j.fill_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved);
-            }
-            
-            if (is.something(lav_machine$tab_covcorrImplied)) {
-                j.fill_table(self$results$group_covariances$covcorrImplied,  lav_machine$tab_covcorrImplied);
-            }
-            
-            if (is.something(lav_machine$tab_covcorrResidual)) {
-                j.fill_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual);
-            }
-
-            if (is.something(lav_machine$tab_covcorrCombined)) {
+                j.fill_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved,spaceby="lgroup")
+                j.fill_table(self$results$group_covariances$covcorrImplied,  lav_machine$tab_covcorrImplied,spaceby="lgroup")
+                j.fill_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual,spaceby="lgroup") 
                 j.fill_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined, spaceby="variable")
-            }
+                j.fill_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent, spaceby="variable")
 
             ### Modification indices ==========================================
             if (self$options$outputModificationIndices) {

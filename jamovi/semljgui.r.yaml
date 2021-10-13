@@ -145,6 +145,13 @@ items:
             title: "adj. BIC"
             type: number
             visible: (estimator:ML)
+          - name: cfi
+            title: 'CFI'
+            type: number
+          - name: cfi
+            title: 'TLI'
+            type: number
+
           - name:  srmr
             title: SRMR
             type: number

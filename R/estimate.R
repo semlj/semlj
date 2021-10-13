@@ -110,7 +110,6 @@ Estimate <- R6::R6Class("Estimate",
                               alist[[1]] <- list(label="User Model",chisq=ff[["chisq"]],df=ff[["df"]],pvalue=ff[["pvalue"]])
                             try(alist[[length(alist) + 1]] <- list(label="Baseline Model",chisq=ff[["baseline.chisq"]],df=ff[["baseline.df"]],pvalue=ff[["baseline.pvalue"]]))
                             self$tab_fitindices <- as.list(ff)
-                            
                             self$tab_fit <- alist
                             
                             # fit indices
@@ -332,6 +331,14 @@ Estimate <- R6::R6Class("Estimate",
                                 self$tab_covcorrResidual <- NULL;
                               }
                               ginfo('finished tab_covcorr');
+                            }
+                            ### model-implied latent covariances
+                            if (self$options$cov.lv & is.something(self$latent)) {
+                              all_covs<-lavaan::lavInspect(self$model,"cov.lv")
+                              if ("list" %in% class(all_covs))
+                                self$tab_covcorrLatent=as.data.frame(do.call("rbind",all_covs))
+                              else 
+                                self$tab_covcorrLatent=as.data.frame(all_covs)
                             }
 
                             # modification indices

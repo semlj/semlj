@@ -752,6 +752,14 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="number", 
                                     `visible`="(estimator:ML)"),
                                 list(
+                                    `name`="cfi", 
+                                    `title`="CFI", 
+                                    `type`="number"),
+                                list(
+                                    `name`="cfi", 
+                                    `title`="TLI", 
+                                    `type`="number"),
+                                list(
                                     `name`="srmr", 
                                     `title`="SRMR", 
                                     `type`="number", 

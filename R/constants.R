@@ -57,6 +57,7 @@ WARNS[["nocenterd"]]<-"Variables {vars} are not centered Consider using `Continu
 WARNS[["scoreineq"]]<-"Score Tests not available with inequality constraints"
 WARNS[["noindirect"]]<-"Indirect effects cannot be computed for this model"
 WARNS[["noreserved"]]<-"`{var}` label is reserved for indirect effects. Using it in defined parameters may create confusion and unexpected results."
+WARNS[["cov.lv"]]<-"The covariance matrix of latent variables is not positive defenite. Please use 'Model-implied latent' option in 'Output options' panel to inspect it."
 
 DATA_WARNS<-list()
 DATA_WARNS[["fac_to_cont"]]<-"Warming: continuous variable are defined as factor. Please make sure that each is a continuous variable."
