@@ -485,6 +485,66 @@ items:
             type: number
             format: zto,pvalue
 
+      # Thresholds ------------------------------------------------------------
+      - name: thresholds
+        title: Thresholds
+        type: Table
+#       description: 
+        visible: false
+        clearWith:
+          - ciType
+          - cov_y
+          - data
+          - multigroup
+          - code
+          - cluster
+        columns:
+          - name: lgroup
+            title: Group
+            type: text
+            visible: (multigroup)
+            combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
+            combineBelow: true
+          - name: label
+            title: Label
+            type: text
+            visible: (showlabels)
+          - name: lhs
+            title: "Variable"
+            type: text
+          - name: rhs
+            title: "Step"
+            type: text
+          - name: est
+            title: "Thresholds"
+            type: number
+            format: zto
+          - name: se
+            title: "SE"
+            type: number
+            format: zto
+          - name: ci.lower
+            type: number
+            title: Lower
+            visible: (ci)
+            format: zto
+          - name: ci.upper
+            type: number
+            title: Upper
+            visible: (ci)
+            format: zto
+          - name: z
+            title: "z"
+            type: number
+            format: zto
+          - name: pvalue
+            title: "p"
+            type: number
+            format: zto,pvalue
 
       # Defined parameters ----------------------------------------------------
       - name: defined

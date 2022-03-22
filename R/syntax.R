@@ -21,6 +21,8 @@ Syntax <- R6::R6Class(
               endogenous=NULL,
               observed=NULL,
               latent=NULL,
+              ordered=NULL,
+              varTable=NULL,
               lav_terms=NULL,
               lav_structure=NULL,
               tab_coefficients=NULL,
@@ -28,6 +30,7 @@ Syntax <- R6::R6Class(
               tab_composites=NULL,
               tab_covariances=NULL,
               tab_intercepts=NULL,
+              tab_thresholds=NULL,
               tab_defined=NULL,
               tab_info=NULL,
               tab_constfit=NULL,
@@ -56,6 +59,8 @@ Syntax <- R6::R6Class(
                 self$observed    <- datamatic$observed
                 self$multigroup  <- datamatic$multigroup
                 self$cluster     <- datamatic$cluster
+                self$ordered     <- datamatic$ordered
+                self$varTable    <- datamatic$varTable
                 # check_* check the input options and produces tables and list with names
                 ### prepare list of models for lavaan
                 private$.check_models()
@@ -147,7 +152,7 @@ Syntax <- R6::R6Class(
                   paste(f,i, sep="; ")
             },
             ## lavaanify the information available to obtain a info table representing the parameters structure.
-            ## That is, the parameter names, labels, 
+            ## That is, the parameter names, labels, etc
 
             .make_structure = function() {
 
@@ -201,6 +206,14 @@ Syntax <- R6::R6Class(
                         lavoptions[["group.equal"]]<-group.equal
                   
                 }
+                
+                ### if ordered variables are present, datamatic prepared a varTable containing
+                ### the information about the variables. we need to pass it to lavaanify()
+
+                if (is.something(self$ordered)) 
+                      lavoptions[["varTable"]]<-self$varTable
+                  
+
                 results <- try_hard({ do.call(lavaan::lavaanify, lavoptions) })
                 self$warnings <- list(topic="info", message = results$warning)
                 self$errors <- results$error
@@ -248,7 +261,6 @@ Syntax <- R6::R6Class(
 
               ### self$structure containts all parameters with. Useful for children to refer to parameters properties
               ### .lav_structure is not a tab_* which will be displayed in results
-                  
               sel<-grep("==|<|>",.lav_structure$op,invert = T)
               self$structure<-.lav_structure[sel,]
 
@@ -271,6 +283,10 @@ Syntax <- R6::R6Class(
               ### intercepts table
               self$tab_intercepts<-.lav_structure[.lav_structure$op=="~1",]
               if (nrow(self$tab_intercepts)==0) self$tab_intercepts<-NULL
+              
+              ### thresholds table
+              self$tab_thresholds<-.lav_structure[.lav_structure$op=="|",]
+              if (nrow(self$tab_thresholds)==0) self$tab_thresholds<-NULL
               
               ### info contains the info table, with some loose information about the model
               alist<-list()
@@ -299,7 +315,7 @@ Syntax <- R6::R6Class(
               dp<-.lav_structure[.lav_structure$op==":=",]
               if (nrow(dp)>0) {
                       dp$desc<-""
-                      .structure<-.lav_structure[.lav_structure$op %in% c("~","~~","~1"),]
+                      .structure<-.lav_structure[.lav_structure$op %in% c("=~", "~","~~","~1","|","<~"),]
                       for (i in seq_along(dp$rhs)) {
                             r<-dp$rhs[i]
                             if (r %in% names(self$indirect_names))

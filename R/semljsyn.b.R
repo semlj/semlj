@@ -72,6 +72,11 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$intercepts & !is.null(lav_machine$tab_intercepts))
                 j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
 
+            ### (prepare the) thresholds ###
+            if (is.something(lav_machine$tab_thresholds))
+                j.init_table(self$results$models$thresholds,lav_machine$tab_thresholds,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
+            
+            
             ### (prepare the) reliability index ###
             j.init_table(self$results$add_outputs$reliability,lav_machine$tab_reliability,spaceby="lgroup")
             
@@ -123,7 +128,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ### Fit info ======================================================
             j.fill_table(self$results$info,lav_machine$tab_info)
             j.add_warnings(self$results$info,lav_machine)
-
+            j.add_warnings(self$results$info,private$.data_machine)
+            
             ### stop if error
             if (is.something(lav_machine$errors)) {
                 stop(paste(lav_machine$errors,collapse = "; "))
@@ -158,6 +164,16 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             if (self$options$intercepts & !is.null(lav_machine$tab_intercepts)) {
                j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
             }
+            
+            if (!is.null(lav_machine$tab_thresholds)) {
+                j.fill_table(self$results$models$thresholds,lav_machine$tab_thresholds,spaceby="lgroup")
+            }
+            
+            
+            if (!is.null(lav_machine$tab_thresholds)) {
+                j.fill_table(self$results$models$thresholds,lav_machine$tab_thresholds,append=T,spaceby="lgroup")
+            }
+            
 
             ### Additional fit measures (1): User model versus baseline model =
             if (self$options$outputAdditionalFitMeasures) {
@@ -234,6 +250,7 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                                   ,intercepts=options$intercepts
                                   ,shapeLat=options$shapeLat
                                   ,shapeMan=options$shapeMan
+                                  ,thresholds = FALSE
                                   
                         )
             )

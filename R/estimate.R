@@ -50,7 +50,6 @@ Estimate <- R6::R6Class("Estimate",
                               lavoptions[["cluster"]] <- self$cluster
                               lavoptions[["h1"]] <- TRUE
                             }
-                            
                             ## estimate the models
                             ginfo("Estimating the model...")
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
@@ -62,6 +61,7 @@ Estimate <- R6::R6Class("Estimate",
                             
                             ## ask for the paramters estimates
                             self$model <- results$obj
+
                             .lav_params <- lavaan::parameterestimates(
                               self$model,
                               ci = self$options$ci,
@@ -101,7 +101,11 @@ Estimate <- R6::R6Class("Estimate",
                             ### collect intercepts
                             self$tab_intercepts <- .lav_params[.lav_params$op == "~1",]
                             if (nrow(self$tab_intercepts) == 0) self$tab_intercepts <- NULL
-                           
+
+                            ### collect thresholds, if any
+                            self$tab_thresholds <- .lav_params[.lav_params$op == "|",]
+                            if (nrow(self$tab_thresholds) == 0) self$tab_thresholds <- NULL
+                            
                             #### fit tests ###
                             alist <- list()
                             ff <- lavaan::fitmeasures(self$model)
@@ -119,8 +123,11 @@ Estimate <- R6::R6Class("Estimate",
                             alist[[length(alist) + 1]] <- c(info="Free parameters",value=self$model@Fit@npar)
                             alist[[length(alist) + 1]] <- c(info="Converged",value=self$model@Fit@converged) 
                             alist[[length(alist) + 1]] <- c(info="",value="")
-                            try(alist[[length(alist) + 1]] <- c(info="Loglikelihood user model",value=round(ff[["logl"]],digits=3) ))
-                            try(alist[[length(alist) + 1]] <- c(info="Loglikelihood unrestricted model",value=round(ff[["unrestricted.logl"]],digits=3)))
+                            if (hasName(ff,"logl")) logl<-round(ff[["logl"]],digits=3) else logl<-"Not available" 
+                            if (hasName(ff,"unrestricted.logl")) ulogl<-round(ff[["unrestricted.logl"]],digits=3) else ulogl<-"Not available" 
+                            
+                            alist[[length(alist) + 1]] <- c(info="Loglikelihood user model",value=logl)
+                            alist[[length(alist) + 1]] <- c(info="Loglikelihood unrestricted model",value=ulogl)
                             alist[[length(alist) + 1]] <- c(info="",value="")
                             
                             self$tab_info <- alist
@@ -214,7 +221,6 @@ Estimate <- R6::R6Class("Estimate",
                             
                             if (is.something(self$tab_reliability)) {
                               rel<-semTools::reliability(self$model)
-                              mark(rel)
                               self$tab_reliability<-private$.make_matrix_table(rel,fun=t)
                             }
 

@@ -7,6 +7,8 @@ Datamatic <- R6::R6Class(
     multigroup=NULL,
     observed=NULL,
     cluster=NULL,
+    ordered=NULL,
+    varTable=NULL,
     initialize=function(options,data) {
       astring<-options$code
       reg<-"[=~:+\n]"
@@ -25,43 +27,52 @@ Datamatic <- R6::R6Class(
         if(trimws(ml)=="")
           ml<-NULL
       self$cluster=ml
-      
       private$.inspect_data(data)
       
-
     },
     cleandata=function(data) {
       
+      trans<-c()
       for (var in self$vars) {
+        
         if (is.factor(data[[var]])) { 
-            if (length(levels(data[[var]]))>2) {
-                self$errors<-paste("Variable",var, "is a factor with more than two levels, it cannot be analyzed")
-                return()
+                data[[var]]<-ordered(data[[var]])
+                trans<-c(trans,var)
             }
-          
-            if (length(levels(data[[var]]))==2) {
-              self$warnings<-list(topic="info",message=paste("Variable",var, "is a factor with two levels, it has been converted to continuous type"))
-              avar<-data[[var]]
-              levels(avar)<-1:nlevels(avar)
-              data[[var]]<-as.numeric(a)-1
-            } else
-                 data[[var]]<-jmvcore::toNumeric(data[[var]])
-      } 
       }
-      
+      if (is.something(trans))
+         self$warnings<-list(topic="info",message=paste("Variable (",paste(trans,collapse = ", "),") is a factor and it has been coerced to ordered type"))
       return(data)
-
     }      
   
     ), ### end of public
    private=list(
       .inspect_data=function(data) {
+        
         if (is.something(self$multigroup)) {
           var<-trimws(self$multigroup)
           levels<-levels(data[,var])
           self$multigroup<-list(var=var,levels=levels,nlevels=length(levels))
         }
         self$observed<-intersect(self$vars,names(data))
+        self$ordered<-names(data)[sapply(data, function(a) any(class(a) %in% c("factor","ordered")))]
+
+        ### if ordered variables are present, we need to prepare the varTable to give information
+        ### about the variables. Since we are in init, we do not have the full dataset, so
+        ### varTable() will assign obs=0 and the variable will be ignored by lavaanify().
+        ### We trick it to consider the variables anyway by setting obs=100. This does not
+        ### influence the estimation, because lavaan() function will operate on the full
+        ### dataset and so the number of observations will be correct at the end
+        ### do not specify "ordered" in varTable() because it needs the data. Without
+        ### the option "ordered" it takes the class of variable that it finds and work just fine
+        ### for the factor to be ordered, we will make them so later on in cleandata()        
+        
+        if (is.something(self$ordered)) {
+          self$varTable<-lavaan::varTable(data)
+          self$varTable$type[self$varTable$type=="factor"]<-"ordered"
+          self$varTable$nobs<-100
+        }
+
       }
      
    ) #end of private

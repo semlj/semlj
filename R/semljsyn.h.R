@@ -783,6 +783,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     composites = function() private$.items[["composites"]],
                     covariances = function() private$.items[["covariances"]],
                     intercepts = function() private$.items[["intercepts"]],
+                    thresholds = function() private$.items[["thresholds"]],
                     defined = function() private$.items[["defined"]]),
                 private = list(),
                 public=list(
@@ -1111,6 +1112,76 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="est", 
                                     `title`="Intercept", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="se", 
+                                    `title`="SE", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(ci)", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(ci)", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="z", 
+                                    `title`="z", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="pvalue", 
+                                    `title`="p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="thresholds",
+                            title="Thresholds",
+                            visible=FALSE,
+                            clearWith=list(
+                                "ciType",
+                                "cov_y",
+                                "data",
+                                "multigroup",
+                                "code",
+                                "cluster"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="label", 
+                                    `title`="Label", 
+                                    `type`="text", 
+                                    `visible`="(showlabels)"),
+                                list(
+                                    `name`="lhs", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Step", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="Thresholds", 
                                     `type`="number", 
                                     `format`="zto"),
                                 list(
@@ -1866,6 +1937,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$models$composites} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$covariances} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$models$thresholds} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$compModelBsl} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$add_outputs$otherFit} \tab \tab \tab \tab \tab a table \cr

@@ -116,8 +116,7 @@ Plotter <- R6::R6Class(
                       , nCharNodes=as.numeric(self$options$diag_abbrev)
                       , shapeMan=self$options$diag_shape_man
                       , shapeLat=self$options$diag_shape_lat
-                      
-                      ,edge.label.cex =1.3)
+                      , edge.label.cex =1.3)
         
 
         
