@@ -500,6 +500,14 @@ Syntax <- R6::R6Class(
                 atable$lgroup<-0
               
               return(atable)
+            },
+            .translate=function(msg) {
+              
+              test<-grep('fixed.x = FALSE is not supported when conditional.x = TRUE',msg,fixed = T)
+              if (is.something(test))
+                 msg<-"Random exogenous variables are not allow in this model. Please select `Fix exogenous covariates` in `Parameter Options`"
+             msg      
+              
             }
             
 

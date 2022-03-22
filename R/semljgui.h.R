@@ -1358,6 +1358,11 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="\u03B1", 
                                     `type`="number"),
                                 list(
+                                    `name`="alpha.ord", 
+                                    `title`="Ordinal \u03B1", 
+                                    `type`="number", 
+                                    `visible`=FALSE),
+                                list(
                                     `name`="omega", 
                                     `title`="\u03C9\u2081", 
                                     `type`="number"),

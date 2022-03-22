@@ -140,7 +140,8 @@ semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
              
             ### Fit test ======================================================
             j.fill_table(self$results$fit$main,lav_machine$tab_fit,append=T)
-
+            j.add_warnings(self$results$fit$constraints,lav_machine)
+            
             ### Constraints fit test ==========================================
             j.fill_table(self$results$fit$constraints, lav_machine$tab_constfit, append=T, spaceby="type")
             j.add_warnings(self$results$fit$constraints,lav_machine)

@@ -120,8 +120,6 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
             ## estimate the model running lavaan in lav_machine (Estimate R6 class)
             lav_machine$estimate(data)
 
-            warns<-lav_machine$warnings
-
             ### Fit info ======================================================
             j.fill_table(self$results$info,lav_machine$tab_info)
             j.add_warnings(self$results$info,lav_machine)
@@ -137,7 +135,8 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
              
             ### Fit test ======================================================
             j.fill_table(self$results$fit$main,lav_machine$tab_fit,append=T)
-
+            j.add_warnings(self$results$fit$main,lav_machine)
+            
             ### Constraints fit test ==========================================
             j.fill_table(self$results$fit$constraints, lav_machine$tab_constfit, append=T, spaceby="type")
             j.add_warnings(self$results$fit$constraints,lav_machine)
@@ -178,8 +177,10 @@ semljguiClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
                 j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
 
             ### reliability ===================================================
+                if (is.something(private$.data_machine$ordered))
+                    self$results$add_outputs$reliability$getColumn("alpha.ord")$setVisible(TRUE)
                 j.fill_table(self$results$add_outputs$reliability,lav_machine$tab_reliability)
-                j.add_warnings(self$results$add_outputs$reliability,lav_machine,"tab_reliability")
+                j.add_warnings(self$results$add_outputs$reliability,lav_machine)
                 
             ### Mardia's coefficients =========================================
                 j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)

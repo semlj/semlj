@@ -656,6 +656,10 @@ items:
           - name: alpha
             title: α
             type: number
+          - name: alpha.ord
+            title: Ordinal α
+            type: number
+            visible: false
           - name: omega
             title: ω₁
             type: number

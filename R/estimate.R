@@ -56,19 +56,24 @@ Estimate <- R6::R6Class("Estimate",
                             ## check if warnings or errors are produced
                             self$warnings <- list(topic="info", message=results$warning)
                             self$errors <- results$error
-                            if (is.something(self$errors))
+                            if (is.something(self$errors)) {
+                                self$errors<-results$warning
                                 return(self$errors)
+                            }
                             
                             ## ask for the paramters estimates
                             self$model <- results$obj
-
-                            .lav_params <- lavaan::parameterestimates(
-                              self$model,
-                              ci = self$options$ci,
-                              standardized = T,
-                              level = self$ciwidth,
-                              boot.ci.type = self$options$bootci
+                            results<-try_hard(
+                                    .lav_params <- lavaan::parameterestimates(
+                                                          self$model,
+                                                          ci = self$options$ci,
+                                                          standardized = T,
+                                                          level = self$ciwidth,
+                                                          boot.ci.type = self$options$bootci
                             )
+                            )
+                            self$warnings <- list(topic="coefficients", message=results$warning)
+                            self$warnings <- list(topic="coefficients", message=results$error)
                             
                             ## we need some info initialized by Syntax regarding the parameters properties
                             .lav_structure <- private$.lav_structure
@@ -108,30 +113,34 @@ Estimate <- R6::R6Class("Estimate",
                             
                             #### fit tests ###
                             alist <- list()
-                            ff <- lavaan::fitmeasures(self$model)
-                            alist <- list()
-                            if (ff[["df"]] > 0)
-                              alist[[1]] <- list(label="User Model",chisq=ff[["chisq"]],df=ff[["df"]],pvalue=ff[["pvalue"]])
-                            try(alist[[length(alist) + 1]] <- list(label="Baseline Model",chisq=ff[["baseline.chisq"]],df=ff[["baseline.df"]],pvalue=ff[["baseline.pvalue"]]))
-                            self$tab_fitindices <- as.list(ff)
-                            self$tab_fit <- alist
+                            results <- try_hard(lavaan::fitmeasures(self$model))
+                            self$warnings<-list(topic="main",message=results$warning)
+                            self$warnings<-list(topic="main",message=results$error)
+                            if (isFALSE(results$error)) {
+                               ff<-results$obj
+                                alist <- list()
+                                if (ff[["df"]] > 0)
+                                  alist[[1]] <- list(label="User Model",chisq=ff[["chisq"]],df=ff[["df"]],pvalue=ff[["pvalue"]])
+                                try(alist[[length(alist) + 1]] <- list(label="Baseline Model",chisq=ff[["baseline.chisq"]],df=ff[["baseline.df"]],pvalue=ff[["baseline.pvalue"]]))
+                                self$tab_fitindices <- as.list(ff)
+                                self$tab_fit <- alist
                             
                             # fit indices
-                            alist <- list()
-                            alist[[length(alist) + 1]] <- c(info="Estimation Method",value=self$model@Options$estimator)
-                            alist[[length(alist) + 1]] <- c(info="Number of observations",value=lavaan::lavInspect(self$model,"ntotal")) 
-                            alist[[length(alist) + 1]] <- c(info="Free parameters",value=self$model@Fit@npar)
-                            alist[[length(alist) + 1]] <- c(info="Converged",value=self$model@Fit@converged) 
-                            alist[[length(alist) + 1]] <- c(info="",value="")
-                            if (hasName(ff,"logl")) logl<-round(ff[["logl"]],digits=3) else logl<-"Not available" 
-                            if (hasName(ff,"unrestricted.logl")) ulogl<-round(ff[["unrestricted.logl"]],digits=3) else ulogl<-"Not available" 
+                                alist <- list()
+                                alist[[length(alist) + 1]] <- c(info="Estimation Method",value=self$model@Options$estimator)
+                                alist[[length(alist) + 1]] <- c(info="Number of observations",value=lavaan::lavInspect(self$model,"ntotal")) 
+                                alist[[length(alist) + 1]] <- c(info="Free parameters",value=self$model@Fit@npar)
+                                alist[[length(alist) + 1]] <- c(info="Converged",value=self$model@Fit@converged) 
+                                alist[[length(alist) + 1]] <- c(info="",value="")
+                                if (hasName(ff,"logl")) logl<-round(ff[["logl"]],digits=3) else logl<-"Not available" 
+                                  if (hasName(ff,"unrestricted.logl")) ulogl<-round(ff[["unrestricted.logl"]],digits=3) else ulogl<-"Not available" 
                             
-                            alist[[length(alist) + 1]] <- c(info="Loglikelihood user model",value=logl)
-                            alist[[length(alist) + 1]] <- c(info="Loglikelihood unrestricted model",value=ulogl)
-                            alist[[length(alist) + 1]] <- c(info="",value="")
+                                alist[[length(alist) + 1]] <- c(info="Loglikelihood user model",value=logl)
+                                alist[[length(alist) + 1]] <- c(info="Loglikelihood unrestricted model",value=ulogl)
+                                alist[[length(alist) + 1]] <- c(info="",value="")
                             
-                            self$tab_info <- alist
-                            
+                                self$tab_info <- alist
+                            }        
                             # checking constraints
                             if (is.something(self$tab_constfit)) {
                               op<-self$tab_constfit$op
@@ -220,8 +229,11 @@ Estimate <- R6::R6Class("Estimate",
                             
                             
                             if (is.something(self$tab_reliability)) {
-                              rel<-semTools::reliability(self$model)
-                              self$tab_reliability<-private$.make_matrix_table(rel,fun=t)
+                              results<-try_hard(semTools::reliability(self$model))
+                              self$warnings<-list(topic="reliability",results$warning)
+                              self$warnings<-list(topic="reliability",results$error)
+                              if (!isFALSE(results$warning))
+                                     self$tab_reliability<-private$.make_matrix_table(results$obj,fun=t)
                             }
 
                             # Mardia's coefficients

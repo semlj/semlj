@@ -22,7 +22,7 @@ Dispatch <- R6::R6Class(
               if (obj$message==FALSE)
                            return()
               topic<-private$.warnings[[obj$topic]]
-              topic[[length(topic)+1]]<-obj$message
+              topic[[length(topic)+1]]<-private$.translate(obj$message)
               topic<-unique(topic)
               private$.warnings[[obj$topic]]<-topic
               
@@ -35,14 +35,18 @@ Dispatch <- R6::R6Class(
                             return()
                      if (obj==FALSE)
                            return()
-                     private$.errors[[length(private$.errors)+1]]<-obj
+          
+                     private$.errors[[length(private$.errors)+1]]<-private$.translate(obj)
         }
         
   ),
   
   private = list(
      .warnings=list(),
-     .errors=list()
+     .errors=list(),
+     .translate=function(msg) {
+       return(msg)
+     }
   )
 )
 

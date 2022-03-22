@@ -149,7 +149,7 @@ j.fill_table<-function(table,obj, fixNA=TRUE, append=FALSE, spaceby=NULL, start=
   
   last <- start-1
   if (append)  last<-table$rowCount
-  
+
   FUNC<-function(i,w) table$setRow(rowNo=i,w)
   if (append)   FUNC<-function(i,w) table$addRow(rowKey=i,w)
 
