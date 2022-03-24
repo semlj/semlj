@@ -120,7 +120,7 @@ children:
                         name: ci
                         margin: none
                       - type: TextBox
-                        name: ciWidth
+                        name: ci_width
                         label: Interval
                         suffix: '%'
                         format: number

@@ -3,8 +3,8 @@
 
 ## Any function that produce a table goes here
 
-Estimate <- R6::R6Class("Estimate",
-                        inherit = Syntax,
+oldEstimate <- R6::R6Class("Estimate",
+                        inherit = oldSyntax,
                         cloneable=FALSE,
                         class=FALSE,
                         list(

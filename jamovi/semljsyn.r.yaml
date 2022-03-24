@@ -666,7 +666,6 @@ items:
             type: number
 
       - name: reliability
-        title: 'Reliability indices'
         type: Table
 #       description:
         visible: false

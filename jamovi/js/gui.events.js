@@ -236,14 +236,17 @@ var update_syntax=function(ui,context) {
     var vars=endogenous.concat(exogenous);
     var varcov=context.cloneArray(ui.varcov.value(),[]);
     var constraints=context.cloneArray(ui.constraints.value(),[]);
-    syntax.measures(vars);
-    syntax.make(endogenousTerms,getLabels(endogenous));
+    var is_measures= syntax.measures(vars);
+    var is_terms =syntax.make(endogenousTerms,getLabels(endogenous));
     syntax.varcov(varcov);
     syntax.constraints(constraints);
     
-    ui.code.setValue(syntax.lav_syntax);
+    if (is_measures || is_terms )
+             ui.code.setValue(syntax.lav_syntax);
+    else    
+             ui.code.setValue("")
+    
 
-  
 };
 
 var getLabels=function(alist,context) {

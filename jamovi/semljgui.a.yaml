@@ -21,6 +21,11 @@ options:
       description:
           R: >
              TO ADD
+    - name: donotrun
+      type: Bool
+      title: Do not run
+      description: not present in R. Halt running for more confortable input
+
 
     # Interface for selecting latent variables and the grouping variable ======
     - name: endogenous
@@ -258,7 +263,7 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), show confidence intervals
-    - name: ciWidth
+    - name: ci_width
       title: Confidence level
       type: Number
       min: 50
@@ -576,28 +581,28 @@ options:
     ### (b) Covariances and correlations --------------------------------------
     - name: outputObservedCovariances
       type: Bool
-      title: "observed"
+      title: "Observed"
       default: false
       description:
           R: >
             `TRUE` or `FALSE` (default), show the covariances and correlations between the observed values of the (manifest) variables
     - name: outputImpliedCovariances
       type: Bool
-      title: "model-implied (fitted)"
+      title: "Model-implied (fitted)"
       default: false
       description:
           R: >
             `TRUE` or `FALSE` (default), show the covariances and correlations between the model-implied / fitted values of the (manifest) variables
     - name: outputResidualCovariances
       type: Bool
-      title: "residual"
+      title: "Residual"
       default: false
       description:
           R: >
              `TRUE` or `FALSE` (default), show the covariances and correlations between the residuals of the (manifest) variables.
     - name: outpuCombineCovariances
       type: Bool
-      title: "combined into one table"
+      title: "Combined into one table"
       default: false
       description:
           R: >

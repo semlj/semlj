@@ -19,7 +19,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             bootci = "perc",
             bootN = 1000,
             ci = TRUE,
-            ciWidth = 95,
+            ci_width = 95,
             meanstructure = TRUE,
             intercepts = TRUE,
             indirect = FALSE,
@@ -155,9 +155,9 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "ci",
                 ci,
                 default=TRUE)
-            private$..ciWidth <- jmvcore::OptionNumber$new(
-                "ciWidth",
-                ciWidth,
+            private$..ci_width <- jmvcore::OptionNumber$new(
+                "ci_width",
+                ci_width,
                 min=50,
                 max=99.9,
                 default=95)
@@ -404,7 +404,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..bootci)
             self$.addOption(private$..bootN)
             self$.addOption(private$..ci)
-            self$.addOption(private$..ciWidth)
+            self$.addOption(private$..ci_width)
             self$.addOption(private$..meanstructure)
             self$.addOption(private$..intercepts)
             self$.addOption(private$..indirect)
@@ -464,7 +464,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         bootci = function() private$..bootci$value,
         bootN = function() private$..bootN$value,
         ci = function() private$..ci$value,
-        ciWidth = function() private$..ciWidth$value,
+        ci_width = function() private$..ci_width$value,
         meanstructure = function() private$..meanstructure$value,
         intercepts = function() private$..intercepts$value,
         indirect = function() private$..indirect$value,
@@ -523,7 +523,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..bootci = NA,
         ..bootN = NA,
         ..ci = NA,
-        ..ciWidth = NA,
+        ..ci_width = NA,
         ..meanstructure = NA,
         ..intercepts = NA,
         ..indirect = NA,
@@ -1350,7 +1350,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="reliability",
-                            title="Reliability indices",
                             visible=FALSE,
                             clearWith=NULL,
                             columns=list(
@@ -1816,7 +1815,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param bootN The number of bootstrap samples for estimating confidence
 #'   intervals.
 #' @param ci \code{TRUE} or \code{FALSE} (default), show confidence intervals
-#' @param ciWidth A number between 50 and 99.9 (default: 95) specifying the
+#' @param ci_width A number between 50 and 99.9 (default: 95) specifying the
 #'   confidence interval width for the parameter estimates.
 #' @param meanstructure If TRUE, the means of the observed variables enter the
 #'   model. Required for calculating the intercepts of the estimates.
@@ -1977,7 +1976,7 @@ semljsyn <- function(
     bootci = "perc",
     bootN = 1000,
     ci = TRUE,
-    ciWidth = 95,
+    ci_width = 95,
     meanstructure = TRUE,
     intercepts = TRUE,
     indirect = FALSE,
@@ -2050,7 +2049,7 @@ semljsyn <- function(
         bootci = bootci,
         bootN = bootN,
         ci = ci,
-        ciWidth = ciWidth,
+        ci_width = ci_width,
         meanstructure = meanstructure,
         intercepts = intercepts,
         indirect = indirect,

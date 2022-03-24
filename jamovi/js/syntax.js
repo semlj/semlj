@@ -1,5 +1,6 @@
 const syntax = {
     measures: function(vars) {
+      var found = false;
       var astring="";
       var terms="";
       for(let i = 0; i < vars.length; i++) {
@@ -7,14 +8,17 @@ const syntax = {
                continue;
           if (vars[i].vars.length===0)
                continue;
-               
+          found=true;     
           terms=vars[i].vars.join("+");
           astring+=vars[i].label+'=~'+terms+'\n ';
     }
     this.lav_syntax=astring;
+    return(found);
 
     },
     make: function(eterms,latnames) {
+      
+      var found=false;
       var astring="";
       var terms="";
         for(let i = 0; i < latnames.length; i++) {
@@ -22,11 +26,12 @@ const syntax = {
               continue;
           if (eterms[i].length===0)
               continue;
-
+          found=true;
           terms=eterms[i].join("+");
           astring+=latnames[i]+'~'+terms+'\n';
     }
     this.lav_syntax+=astring;
+    return(found);
     },
     varcov: function(pairs) {
       var astring="";
@@ -46,6 +51,10 @@ const syntax = {
               astring+=' '+alist[i]+'  \n ';
       }
       this.lav_syntax+=astring;
+    },
+    clean: function() {
+      this.lav_syntax="";
+      
     }
 
 };

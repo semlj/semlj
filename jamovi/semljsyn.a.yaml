@@ -203,7 +203,7 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), show confidence intervals
-    - name: ciWidth
+    - name: ci_width
       title: Confidence level
       type: Number
       min: 50

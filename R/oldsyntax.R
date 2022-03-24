@@ -12,7 +12,7 @@
 ## which is a offspring of this class. The version of the tables produced here are used by the ".init()" function in .b.R
 ## to prepare the tables (so the output is nicely shown during estimation)
 
-Syntax <- R6::R6Class(
+oldSyntax <- R6::R6Class(
          "Syntax",
           class=FALSE, ## this and the next 
           cloneable=FALSE, ## should improve performance https://r6.r-lib.org/articles/Performance.html ###

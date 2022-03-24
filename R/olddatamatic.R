@@ -1,5 +1,5 @@
-Datamatic <- R6::R6Class(
-  "Datamatic",
+xDatamatic <- R6::R6Class(
+  "xDatamatic",
   cloneable=FALSE,
   class=FALSE,
   inherit = Dispatch,
