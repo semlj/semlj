@@ -238,7 +238,7 @@ oldEstimate <- R6::R6Class("Estimate",
 
                             # Mardia's coefficients
                             if (self$options$outputMardiasCoefficients) {
-                              ginfo('begin tab_mardia');
+                              
                               ## for multilevel-multigroup it gives an error. For the moment we 
                               ## wrap it in try_hard() so it does not halt the estimation of other tables
                               

@@ -260,6 +260,10 @@ children:
             style: list
             children:
               - type: RadioButton
+                name: se_auto
+                optionName: se
+                optionPart: auto
+              - type: RadioButton
                 name: se_standard
                 optionName: se
                 optionPart: standard
@@ -323,7 +327,6 @@ children:
                         name: ci_width
                         format: number
                         enable: (ci)
-                        
               - type: Label
                 label: Constraints
                 margin: large

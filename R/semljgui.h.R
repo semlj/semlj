@@ -20,7 +20,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             likelihood = "default",
             scoretest = TRUE,
             cumscoretest = FALSE,
-            se = "standard",
+            se = "auto",
             bootci = "perc",
             bootN = 1000,
             ci = TRUE,
@@ -144,10 +144,16 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=list(
                     "default",
                     "ML",
+                    "MLM",
+                    "MLMV",
+                    "MLMVS",
                     "PML",
                     "GLS",
                     "WLS",
                     "DWLS",
+                    "WLSM",
+                    "WLSMV",
+                    "WLSMVS",
                     "ULS"),
                 default="default")
             private$..likelihood <- jmvcore::OptionList$new(
@@ -170,11 +176,12 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "se",
                 se,
                 options=list(
+                    "auto",
                     "standard",
                     "robust.sem",
                     "robust.huber.white",
                     "boot"),
-                default="standard")
+                default="auto")
             private$..bootci <- jmvcore::OptionList$new(
                 "bootci",
                 bootci,
@@ -727,7 +734,6 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances"),
-                            rows=2,
                             columns=list(
                                 list(
                                     `name`="label", 
@@ -808,7 +814,6 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="indices",
                             title="Fit indices",
-                            rows=1,
                             clearWith=list(
                                 "code",
                                 "estimator",
@@ -832,28 +837,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_lv.covariances"),
                             columns=list(
                                 list(
-                                    `name`="aic", 
-                                    `title`="AIC", 
-                                    `visible`="(estimator:ML)", 
-                                    `type`="number"),
-                                list(
-                                    `name`="bic", 
-                                    `title`="BIC", 
-                                    `type`="number", 
-                                    `visible`="(estimator:ML)"),
-                                list(
-                                    `name`="bic2", 
-                                    `title`="adj. BIC", 
-                                    `type`="number", 
-                                    `visible`="(estimator:ML)"),
-                                list(
-                                    `name`="cfi", 
-                                    `title`="CFI", 
-                                    `type`="number"),
-                                list(
-                                    `name`="cfi", 
-                                    `title`="TLI", 
-                                    `type`="number"),
+                                    `name`="type", 
+                                    `title`="Type", 
+                                    `visible`="(estimator:MLM || estimator:MLMV || estimator:WLSM || estimator:WLSMV)"),
                                 list(
                                     `name`="srmr", 
                                     `title`="SRMR", 
@@ -883,7 +869,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="modelbaseline",
                             title="User model versus baseline model",
-                            visible="(outputAdditionalFitMeasures)",
+                            visible=TRUE,
                             clearWith=list(
                                 "code",
                                 "estimator",
@@ -905,7 +891,6 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances"),
-                            rows=8,
                             columns=list(
                                 list(
                                     `name`="name", 
@@ -1895,8 +1880,6 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 width=800,
                                 height=600,
                                 clearWith=list(
-                                    "cov_y",
-                                    "data",
                                     "multigroup",
                                     "code",
                                     "diag_shape_man",
@@ -1908,17 +1891,11 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     "diag_resid",
                                     "diag_paths",
                                     "diag_intercepts"))))
-                        self$add(jmvcore::Table$new(
+                        self$add(jmvcore::Html$new(
                             options=options,
                             name="notes",
                             title="",
-                            visible=FALSE,
-                            clearWith=list(),
-                            columns=list(
-                                list(
-                                    `name`="message", 
-                                    `type`="text", 
-                                    `title`="Model diagram notes"))))}))$new(options=options))},
+                            visible=FALSE))}))$new(options=options))},
         .setModel=function(x) private$..model <- x))
 
 semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -2131,7 +2108,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$covariances$latent} \tab \tab \tab \tab \tab A covariance matrix table. \cr
 #'   \code{results$modification$indices} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
-#'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a html \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -2157,7 +2134,7 @@ semljgui <- function(
     likelihood = "default",
     scoretest = TRUE,
     cumscoretest = FALSE,
-    se = "standard",
+    se = "auto",
     bootci = "perc",
     bootN = 1000,
     ci = TRUE,

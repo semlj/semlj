@@ -107,8 +107,7 @@ items:
               - eq_lv.variances  
               - eq_lv.covariances  
         
-        rows: 2
-          
+
         columns:
           - name: label
             title: Label
@@ -184,7 +183,6 @@ items:
         title: Fit indices
         type: Table
 #       description: 
-        rows: 1
         clearWith:
               - code 
               - estimator
@@ -208,24 +206,9 @@ items:
               - eq_lv.covariances  
 
         columns:
-          - name:  aic
-            title: AIC
-            visible: (estimator:ML)
-            type: number
-          - name:  bic
-            title: BIC
-            type: number
-            visible: (estimator:ML)
-          - name:  bic2
-            title: "adj. BIC"
-            type: number
-            visible: (estimator:ML)
-          - name: cfi
-            title: 'CFI'
-            type: number
-          - name: cfi
-            title: 'TLI'
-            type: number
+          - name: type
+            title: Type
+            visible: (estimator:MLM || estimator:MLMV || estimator:WLSM || estimator:WLSMV)
           - name:  srmr
             title: SRMR
             type: number
@@ -252,7 +235,7 @@ items:
         title: 'User model versus baseline model'
         type: Table
 #       description:
-        visible: (outputAdditionalFitMeasures)
+        visible: true
         clearWith:
               - code 
               - estimator
@@ -275,7 +258,6 @@ items:
               - eq_lv.variances  
               - eq_lv.covariances  
 
-        rows: 8
         columns:
           - name: name
             title: ""
@@ -1168,8 +1150,6 @@ items:
           width: 800
           height: 600
           clearWith:
-            - cov_y
-            - data
             - multigroup
             - code
             - diag_shape_man
@@ -1184,12 +1164,7 @@ items:
 
     # Path diagram notes ------------------------------------------------------
       - name: notes
-        type: Table
+        type: Html
         title: ""
 #       description:
         visible: false
-        clearWith: []
-        columns:
-          - name: message
-            type: text
-            title: "Model diagram notes"

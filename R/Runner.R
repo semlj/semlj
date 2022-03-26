@@ -20,11 +20,15 @@ Runner <- R6::R6Class("Runner",
                                                data = data,
                                                estimator  = self$options$estimator,
                                                likelihood = self$options$likelihood,
-                                               se         = self$options$se,
-                                               bootstrap  = self$options$bootN,
                                                std.ov     = self$options$std_ov,
+                                               bootstrap  = self$options$bootN,
                                                fixed.x    = self$options$cov_x
                             )
+                            
+                            if (self$options$se!="auto") 
+                                lavoptions[["se"]]<-self$options$se
+                              
+
                             if (is.something(self$multigroup)) {
                               lavoptions[["group"]] <- self$multigroup$var
                               lavoptions[["group.label"]] <- self$multigroup$levels
@@ -40,12 +44,13 @@ Runner <- R6::R6Class("Runner",
                             ## estimate the models
                             ginfo("Estimating the model...")
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
+                            ginfo("Estimating the model...done")
+                            
                             ## check if warnings or errors are produced
                             self$dispatcher$warnings <-  list(topic="info", message=results$warning)
                             ## it it fails here, we should stop
-                            if (!isFALSE(results$error))
-                                stop(results$error)
-
+                            self$dispatcher$errors <-  list(topic="info", message=results$error,final=TRUE)
+                            
                             self$model <- results$obj
                           },
                           
@@ -72,7 +77,10 @@ Runner <- R6::R6Class("Runner",
                             alist[[length(alist)+1]]<-c(info="Optimization Method",value=toupper(self$model@Options$optim.method))
                             alist[[length(alist) + 1]] <- c(info="Number of observations",value=lavaan::lavInspect(self$model,"ntotal")) 
                             alist[[length(alist) + 1]] <- c(info="Free parameters",value=self$model@Fit@npar)
+                            alist[[length(alist)+1]]<-c(info="Standard errors",value=INFO_SE[[self$model@Options$se]])
+                            alist[[length(alist)+1]]<-c(info="Scaled test",value=private$.get_test_info())
                             alist[[length(alist) + 1]] <- c(info="Converged",value=self$model@Fit@converged) 
+                            alist[[length(alist) + 1]] <- c(info="Iterations",value=self$model@optim$iterations) 
                             alist[[length(alist) + 1]] <- c(info="",value="")
                             alist[[length(alist) + 1]] <- c(info="",value="")
                             
@@ -84,18 +92,30 @@ Runner <- R6::R6Class("Runner",
                             if (hasName(fit,"logl")) logl=fit[["logl"]] else logl=""
                             if (hasName(fit,"logl.restricted")) logl=fit[["logl"]] else logl=""
                             
-                            alist <- list()
-                            alist[[1]] <- list(label="User Model",
+                            tab <- list()
+                            tab[[1]] <- list(label="User Model",
                                                  chisq=fit[["chisq"]],
                                                  df=fit[["df"]],
                                                  pvalue=fit[["pvalue"]],
                                                  logl=logl)
-                              try(alist[[length(alist) + 1]] <- list(label="Baseline Model",
+                            if (hasName(fit,"baseline.chisq"))  
+                                    tab[[length(tab) + 1]] <- list(label="Baseline Model",
                                                                      chisq=fit[["baseline.chisq"]],
                                                                      df=fit[["baseline.df"]],
-                                                                     pvalue=fit[["baseline.pvalue"]]))
-
-                            alist
+                                                                     pvalue=fit[["baseline.pvalue"]])
+                            if (hasName(fit,"chisq.scaled"))  
+                                    tab[[length(tab) + 1]] <- list(label="Scaled User",
+                                                                 chisq=fit[["chisq.scaled"]],
+                                                                 df=fit[["df.scaled"]],
+                                                                 pvalue=fit[["pvalue.scaled"]])
+                            
+                            if (hasName(fit,"baseline.chisq.scaled"))  
+                                    tab[[length(tab) + 1]] <- list(label="Scaled Baseline",
+                                                                 chisq=fit[["baseline.chisq.scaled"]],
+                                                                 df=fit[["baseline.df.scaled"]],
+                                                                 pvalue=fit[["baseline.pvalue.scaled"]])
+                            
+                            tab
                             #self$tab_fitindices <- as.list(ff)
                             
                           },
@@ -141,7 +161,33 @@ Runner <- R6::R6Class("Runner",
                           },
                           run_fit_indices=function() {
                             
-                            list(self$fit_measures())
+                            fi<-self$fit_measures()
+                            mark(fi)
+                           
+                            tab<-list(list(srmr=fi$srmr,
+                                        rmsea=fi$rmsea,
+                                        rmsea.ci.lower=fi$rmsea.ci.lower,
+                                        rmsea.ci.upper=fi$rmsea.ci.upper,
+                                        rmsea.pvalue=fi$rmsea.pvalue)
+                                   )
+                            
+                            if (hasName(fi,"rmsea.robust") ) {
+                              tab[[2]]<-list(srmr=fi$srmr_bentler,
+                                        rmsea=fi$rmsea.robust,
+                                        rmsea.ci.lower=fi$rmsea.ci.lower.robust,
+                                        rmsea.ci.upper=fi$rmsea.ci.upper.robust,
+                                        rmsea.pvalue=fi$rmsea.pvalue.robust)
+                            }
+                            if (hasName(fi,"rmsea.scaled") ) {
+                              
+                              tab[[length(tab)+1]]<-list(srmr=fi$srmr_bentler,
+                                         rmsea=fi$rmsea.scaled,
+                                         rmsea.ci.lower=fi$rmsea.ci.lower.scaled,
+                                         rmsea.ci.upper=fi$rmsea.ci.upper.scaled,
+                                         rmsea.pvalue=fi$rmsea.pvalue.scaled)
+
+                            }
+                            tab
 
                           },
                           run_fit_modelbaseline=function() {
@@ -164,6 +210,12 @@ Runner <- R6::R6Class("Runner",
                             
                             fit<-self$fit_measures()
                             alist<-list()
+                            if (hasName(fit,"logl"))
+                               alist[[length(alist) + 1]]  <- list(name = "Log Likelihood",            statistics = fit[["logl"]]);
+
+                            if (hasName(fit,"unrestricted.logl"))
+                              alist[[length(alist) + 1]]  <- list(name = "Unrestricted Log Likelihood",            statistics = fit[["unrestricted.logl"]]);
+                            
                             alist[[length(alist) + 1]]  <- list(name = "Hoelter Critical N (CN), α=0.05",            statistics = fit[["cn_05"]]);
                             alist[[length(alist) + 1]]  <- list(name = "Hoelter Critical N (CN), α=0.01",            statistics = fit[["cn_01"]]);
                             alist[[length(alist) + 1]]  <- list(name = "Goodness of Fit Index (GFI)",                statistics = fit[["gfi"]]);
@@ -190,7 +242,6 @@ Runner <- R6::R6Class("Runner",
                                 return()
                               } 
                               ### here we can compute them
-                              
                                 RSqEst = results$obj
                                 RSqEst = RSqEst[RSqEst$op == "r2",]
                                 
@@ -370,16 +421,7 @@ Runner <- R6::R6Class("Runner",
                             
                             
                           }
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
-                          
+
                           ), # end of public function estimate
 
                         private=list(
@@ -414,11 +456,20 @@ Runner <- R6::R6Class("Runner",
                               )
                             )
                             self$dispatcher$warnings <- list(topic="info", message=results$warning)
-                            self$dispatcher$errors <- list(topic="inof", message=results$error)
+                            self$dispatcher$errors <- list(topic="info", message=results$error)
                             private$.par_table<-results$obj
                             if (is.null(private$.par_table)) private$.par_table<-FALSE
                             
+                          },
+                          .get_test_info=function() {
+                            
+                            tests<-names(self$model@test)
+                            if (length(tests)==1)
+                              return("None")
+                            return(INFO_TEST[[tests[[2]]]])
+                            
                           }
+                          
 
                         ) #end of private
 )  # end of class

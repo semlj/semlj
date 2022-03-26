@@ -79,7 +79,6 @@ SmartTable <- R6::R6Class("SmartTable",
                               private$.ci()
                               self$title
                               self$setTopics()
-                              self$retrieveNotes()
 
                               ### check if we need to fill it (it may be empty)
                               if (private$.stop()) {
@@ -92,6 +91,9 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               if (is.null(rtable))
                                   return()
+                              ### this should go after the data
+                              self$retrieveNotes()
+                              
                               ### expand it if needed
                               if (self$expandable) private$.expand(rtable)
                               private$.fill(self$table,rtable)
@@ -544,6 +546,7 @@ SmartTable <- R6::R6Class("SmartTable",
                           
                           
 ) ## end of class
+
 
 SmartArray <- R6::R6Class("SmartArray",
                           inherit = SmartTable,

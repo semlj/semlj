@@ -42,21 +42,48 @@ Initer <- R6::R6Class(
     
     init_info=function() {
       
-      mark(private$.lav_structure)
       ### info contains the info table, with some loose information about the model
       alist<-list()
       alist[[length(alist)+1]]<-c(info="Estimation Method",value=self$options$estimator)
       alist[[length(alist)+1]]<-c(info="Optimization Method",value="")
       alist[[length(alist)+1]]<-c(info="Number of observations",value="") 
       alist[[length(alist)+1]]<-c(info="Free parameters",value=max(private$.lav_structure$free))
+      alist[[length(alist)+1]]<-c(info="Standard errors",value="")
+      alist[[length(alist)+1]]<-c(info="Scaled Test",value="")
       alist[[length(alist)+1]]<-c(info="Converged", value="") 
-      alist[[length(alist)+1]]<-c(info="",value="")
+      alist[[length(alist)+1]]<-c(info="Iterations", value="") 
       alist[[length(alist)+1]]<-c(info="",value="")
       for (m in self$user_syntax)
         alist[[length(alist)+1]]<-c(info="Model",value=m)
       
+      if (self$option("se","boot"))
+          self$dispatcher$warnings<-list(topic="info",message="Bootstrap confidence intervals may take a while. Please be patient.",init=TRUE)
+      
       return(alist)
     },
+    init_fit_main=function() {
+
+      tab<-list(list(label="User Model"),list(label="Baseline Model"))
+      
+      if (self$options$estimator %in% ROBUST_ESTIM) {
+           tab[[3]]<-list(label="Scaled User")
+           tab[[4]]<-list(label="Scaled Baseline")
+      }
+      
+      return(tab)      
+    },
+    init_fit_moreindices=function() {
+      
+      tab<-lapply(1:5,function(a) list(name="."))
+      if (self$options$estimator %in% INFO_ML) {
+          tab[[6]]<-list(name=".")
+          tab[[7]]<-list(name=".")
+      }
+      
+
+      return(tab)      
+    },
+    
     init_fit_constraints=function() {
       
       what<-c("==","<",">")
@@ -80,6 +107,16 @@ Initer <- R6::R6Class(
       tab<-rbind(tab1,tab2,tab3)      
       return(tab)
       
+    },
+    init_fit_indices=function() {
+      
+      tab<-list(list(type="Classical"))
+      
+      if (self$options$estimator %in% ROBUST_ESTIM) {
+        tab[[2]]<-list(type="Robust")
+        tab[[3]]<-list(type="Scaled")
+      }      
+      return(tab)    
     },
     init_fit_rsquared=function() {
       
@@ -224,6 +261,7 @@ Initer <- R6::R6Class(
           tab <- cbind(variable=self$latent, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
           names(tab)<-c("variable",self$latent)
           private$.make_empty_table(tab) 
+          
       }
 
 
@@ -264,8 +302,6 @@ Initer <- R6::R6Class(
       lat<-gsub("=~","",lat)       
       if (length(lat)>0)
         self$latent<-lat
-      
-      
       
       self$user_syntax<-avec
       
@@ -341,7 +377,7 @@ Initer <- R6::R6Class(
       
       results <- try_hard({ do.call(lavaan::lavaanify, lavoptions) })
       self$dispatcher$warnings <- list(topic="info", message = results$warning)
-      self$dispatcher$errors   <- list(topic="info", message = results$error)
+      self$dispatcher$errors   <- list(topic="info", message = results$error,final=TRUE)
       
       private$.lav_structure <- results$obj
       ## if not user defined, create easy labels to be used by the user in constraints and defined parameters  
@@ -435,7 +471,7 @@ Initer <- R6::R6Class(
       
       
       if (length(deps)==0) {
-        self$dispatcher$warnings<-list(topic="defined",message=WARNS[["noindirect"]])
+        self$dispatcher$warnings<-list(topic="models_defined",message=WARNS[["noindirect"]])
         return()
       }
       tabs<-list()
@@ -450,7 +486,7 @@ Initer <- R6::R6Class(
             .doit(tabs[[i]],term=tt)
         })
         if (.results$error!=FALSE)
-          self$dispatcher$warnings<-list(topic="defined",message=WARNS[["noindirect"]])
+          self$dispatcher$warnings<-list(topic="models_defined",message=WARNS[["noindirect"]])
         results[[i]]<-.results
       }
       pars<-sapply(labslist,paste,collapse="*")
@@ -539,7 +575,6 @@ Initer <- R6::R6Class(
       }
       as.data.frame(do.call("rbind",alist))
     }
-    
     
     
     

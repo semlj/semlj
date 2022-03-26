@@ -49,8 +49,8 @@ Datamatic <- R6::R6Class(
         }
       }
       if (is.something(trans))
-        self$warnings<-list(topic="info",
-                            message=paste("Variable (",paste(trans,collapse = ", "),") is a factor and it has been coerced to ordered type"))
+        self$dispatcher$warnings<-list(topic="info",
+                            message=glue::glue(DATA_WARNS[["fac_to_ord"]],x=paste(trans,collapse = ",")))
       return(data)
       
     }
