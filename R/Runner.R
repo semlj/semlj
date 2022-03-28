@@ -72,17 +72,19 @@ Runner <- R6::R6Class("Runner",
                           },
                           run_info=function() {
 
+                          
+                            mark(str(self$model))
                             alist <- list()
-                            alist[[length(alist) + 1]] <- c(info="Estimation Method",value=self$model@Options$estimator)
-                            alist[[length(alist)+1]]<-c(info="Optimization Method",value=toupper(self$model@Options$optim.method))
-                            alist[[length(alist) + 1]] <- c(info="Number of observations",value=lavaan::lavInspect(self$model,"ntotal")) 
-                            alist[[length(alist) + 1]] <- c(info="Free parameters",value=self$model@Fit@npar)
-                            alist[[length(alist)+1]]<-c(info="Standard errors",value=INFO_SE[[self$model@Options$se]])
-                            alist[[length(alist)+1]]<-c(info="Scaled test",value=private$.get_test_info())
-                            alist[[length(alist) + 1]] <- c(info="Converged",value=self$model@Fit@converged) 
-                            alist[[length(alist) + 1]] <- c(info="Iterations",value=self$model@optim$iterations) 
-                            alist[[length(alist) + 1]] <- c(info="",value="")
-                            alist[[length(alist) + 1]] <- c(info="",value="")
+                            alist[[length(alist) + 1]]   <-  c(info="Estimation Method",value=self$model@Options$estimator)
+                            alist[[length(alist) + 1]]   <-  c(info="Optimization Method",value=toupper(self$model@Options$optim.method))
+                            alist[[length(alist) + 1]]   <-  c(info="Number of observations",value=lavaan::lavInspect(self$model,"ntotal")) 
+                            alist[[length(alist) + 1]]   <-  c(info="Free parameters",value=self$model@Fit@npar)
+                            alist[[length(alist) + 1]]   <-  c(info="Standard errors",value=INFO_SE[[self$model@Options$se]])
+                            alist[[length(alist) + 1]]   <-  c(info="Scaled test",value=private$.get_test_info())
+                            alist[[length(alist) + 1]]   <-  c(info="Converged",value=self$model@Fit@converged) 
+                            alist[[length(alist) + 1]]   <-  c(info="Iterations",value=self$model@optim$iterations) 
+                            alist[[length(alist) + 1]]   <-  c(info="",value="")
+                            alist[[length(alist) + 1]]   <-  c(info="",value="")
                             
                             return(alist)
                           },
@@ -93,36 +95,39 @@ Runner <- R6::R6Class("Runner",
                             if (hasName(fit,"logl.restricted")) logl=fit[["logl"]] else logl=""
                             
                             tab <- list()
-                            tab[[1]] <- list(label="User Model",
+                            tab[[1]] <- list(    label="User Model",
                                                  chisq=fit[["chisq"]],
                                                  df=fit[["df"]],
                                                  pvalue=fit[["pvalue"]],
-                                                 logl=logl)
+                                                 logl=logl
+                                                 )
                             if (hasName(fit,"baseline.chisq"))  
-                                    tab[[length(tab) + 1]] <- list(label="Baseline Model",
+                                    tab[[length(tab) + 1]] <- list(  label="Baseline Model",
                                                                      chisq=fit[["baseline.chisq"]],
                                                                      df=fit[["baseline.df"]],
-                                                                     pvalue=fit[["baseline.pvalue"]])
+                                                                     pvalue=fit[["baseline.pvalue"]]
+                                                                     )
                             if (hasName(fit,"chisq.scaled"))  
-                                    tab[[length(tab) + 1]] <- list(label="Scaled User",
-                                                                 chisq=fit[["chisq.scaled"]],
-                                                                 df=fit[["df.scaled"]],
-                                                                 pvalue=fit[["pvalue.scaled"]])
+                                    tab[[length(tab) + 1]] <- list(  label="Scaled User",
+                                                                     chisq=fit[["chisq.scaled"]],
+                                                                     df=fit[["df.scaled"]],
+                                                                     pvalue=fit[["pvalue.scaled"]]
+                                                                     )
                             
                             if (hasName(fit,"baseline.chisq.scaled"))  
-                                    tab[[length(tab) + 1]] <- list(label="Scaled Baseline",
-                                                                 chisq=fit[["baseline.chisq.scaled"]],
-                                                                 df=fit[["baseline.df.scaled"]],
-                                                                 pvalue=fit[["baseline.pvalue.scaled"]])
+                                    tab[[length(tab) + 1]] <- list(  label="Scaled Baseline",
+                                                                     chisq=fit[["baseline.chisq.scaled"]],
+                                                                     df=fit[["baseline.df.scaled"]],
+                                                                     pvalue=fit[["baseline.pvalue.scaled"]]
+                                                                     )
                             
-                            tab
-                            #self$tab_fitindices <- as.list(ff)
-                            
+                            return(tab)
+
                           },
                           run_fit_constraints=function() {
                             
                             # checking constraints
-                            itab<-self$init_fit_constraints()
+                            itab  <-  self$init_fit_constraints()
                             if (is.null(itab)) return()
                             
                             op<-itab$op
@@ -131,63 +136,66 @@ Runner <- R6::R6Class("Runner",
                                  warning(WARNS[["scoreineq"]])
                                  return()
                               }
-                              tab<-NULL
-                              rtab <- lavaan::lavTestScore(self$model,
+                              tab  <-  NULL
+                              rtab <- lavaan::lavTestScore( self$model,
                                                             univariate = self$options$scoretest,
-                                                            cumulative = self$options$cumscoretest)
+                                                            cumulative = self$options$cumscoretest
+                                                          )
 
                               if (self$options$scoretest) {
                                   names(rtab$uni) <- c("lhs","op","rhs","chisq","df","pvalue")
-                                  tab<-rtab$uni
-                                  tab$type="Univariate"
+                                  tab  <-  rtab$uni
+                                  tab$type  <-  "Univariate"
                               }
                               if (self$options$cumscoretest) {
                                   names(rtab$cumulative) <- c("lhs","op","rhs","chisq","df","pvalue")
-                                  rtab$cumulative$type <- "Cumulative"
+                                  rtab$cumulative$type   <- "Cumulative"
                                   tab <- rbind(tab,rtab$cumulative)
                               }
-                              tab$lhs<-sapply(tab$lhs,function(st) ifelse(grepl("^.p\\d+\\.$",st),gsub(".","",st,fixed=T),st))
-                              tab$rhs<-sapply(tab$rhs,function(st) ifelse(grepl("^.p\\d+\\.$",st),gsub(".","",st,fixed=T),st))
+                              tab$lhs  <- sapply(tab$lhs,function(st) ifelse(grepl("^.p\\d+\\.$",st),gsub(".","",st,fixed=T),st))
+                              tab$rhs  <- sapply(tab$rhs,function(st) ifelse(grepl("^.p\\d+\\.$",st),gsub(".","",st,fixed=T),st))
                               ### here we add the total test ###
-                              ttab<-rtab$test
-                              ttab$test<-NULL
+                              ttab        <-  rtab$test
+                              ttab$test   <-  NULL
                               names(ttab) <- c("chisq","df","pvalue")
-                              ttab$lhs<-ttab$op<-ttab$rhs<-""
-                              ttab$type="Total"
-                              tab<-rbind(tab,ttab)
+                              ttab$lhs    <-  ttab$op<-ttab$rhs<-""
+                              ttab$type   <-  "Total"
+                              tab         <-  rbind(tab,ttab)
                               
                               return(tab)
 
                           },
                           run_fit_indices=function() {
                             
-                            fi<-self$fit_measures()
-                            mark(fi)
-                           
-                            tab<-list(list(srmr=fi$srmr,
-                                        rmsea=fi$rmsea,
-                                        rmsea.ci.lower=fi$rmsea.ci.lower,
-                                        rmsea.ci.upper=fi$rmsea.ci.upper,
-                                        rmsea.pvalue=fi$rmsea.pvalue)
-                                   )
+                            fi  <-  self$fit_measures()
                             
-                            if (hasName(fi,"rmsea.robust") ) {
-                              tab[[2]]<-list(srmr=fi$srmr_bentler,
-                                        rmsea=fi$rmsea.robust,
-                                        rmsea.ci.lower=fi$rmsea.ci.lower.robust,
-                                        rmsea.ci.upper=fi$rmsea.ci.upper.robust,
-                                        rmsea.pvalue=fi$rmsea.pvalue.robust)
+                            tab <-  list(list(srmr=fi$srmr,
+                                              rmsea=fi$rmsea,
+                                              rmsea.ci.lower=fi$rmsea.ci.lower,
+                                              rmsea.ci.upper=fi$rmsea.ci.upper,
+                                              rmsea.pvalue=fi$rmsea.pvalue
+                                              )
+                                         )
+                            
+                            if (hasName(fi,"rmsea.robust")) {
+                              
+                              tab[[2]]  <-  list(srmr=fi$srmr_bentler,
+                                                 rmsea=fi$rmsea.robust,
+                                                 rmsea.ci.lower=fi$rmsea.ci.lower.robust,
+                                                 rmsea.ci.upper=fi$rmsea.ci.upper.robust,
+                                                 rmsea.pvalue=fi$rmsea.pvalue.robust
+                                                 )
                             }
                             if (hasName(fi,"rmsea.scaled") ) {
                               
                               tab[[length(tab)+1]]<-list(srmr=fi$srmr_bentler,
-                                         rmsea=fi$rmsea.scaled,
-                                         rmsea.ci.lower=fi$rmsea.ci.lower.scaled,
-                                         rmsea.ci.upper=fi$rmsea.ci.upper.scaled,
-                                         rmsea.pvalue=fi$rmsea.pvalue.scaled)
+                                                         rmsea=fi$rmsea.scaled,
+                                                         rmsea.ci.lower=fi$rmsea.ci.lower.scaled,
+                                                         rmsea.ci.upper=fi$rmsea.ci.upper.scaled,
+                                                         rmsea.pvalue=fi$rmsea.pvalue.scaled)
 
                             }
-                            tab
+                            return(tab)
 
                           },
                           run_fit_modelbaseline=function() {
@@ -431,12 +439,13 @@ Runner <- R6::R6Class("Runner",
                           .get_fit_measures=function() {
                             
                               results<-try_hard(as.list(lavaan::fitmeasures(self$model)))
-                             
+
                               if (!isFALSE(results$warning))
                                        warning(results$warning)
                             
                               if (!isFALSE(results$error)) {
-                                       warning(results$error)
+                                       err<-gsub("subscript out of bounds","Results not available, please revise the model",results$error,fixed=T)
+                                       warning(err)
                                       return()
                                }
                              
@@ -463,9 +472,14 @@ Runner <- R6::R6Class("Runner",
                           },
                           .get_test_info=function() {
                             
+                            if (! "test" %in% methods::slotNames(self$model))
+                                return("")
+
                             tests<-names(self$model@test)
-                            if (length(tests)==1)
+
+                            if (length(tests)<2)
                               return("None")
+                            
                             return(INFO_TEST[[tests[[2]]]])
                             
                           }

@@ -16,6 +16,16 @@ children:
         name: syntax
         events:
           creating: './main::editor_creating'
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+              - type: CheckBox
+                name: donotrun
+          
+          
+          
+          
   - type: CollapseBox
     label: Model options
     collapsed: true
@@ -34,7 +44,7 @@ children:
                 name: estimator
               - type: ComboBox
                 name: likelihood
-                enable: (estimator:ML || estimator:PML)
+                enable: '(estimator:ML || estimator:PML)'
           - type: Label
             label: Constraints tests
             margin: large
@@ -44,7 +54,6 @@ children:
                 name: scoretest
               - type: CheckBox
                 name: cumscoretest
-
   - type: CollapseBox
     label: Parameters options
     collapsed: true
@@ -134,6 +143,9 @@ children:
                     name: cov_x
                   - type: CheckBox
                     name: cov_y
+                  - type: CheckBox
+                    name: cov_lv
+
       - type: LayoutBox
         margin: large
         style: inline
@@ -166,7 +178,6 @@ children:
                 optionPart: std_res
               - type: CheckBox
                 name: std_ov
-
   - type: CollapseBox
     label: Multi-group analyses
     collapsed: true
@@ -191,7 +202,7 @@ children:
                 margin: none
                 format: string
                 events:
-                   change: './gui.events::onChange_multigroup'
+                  change: './gui.events::onChange_multigroup'
           - type: Label
             label: Equality constraints
           - type: LayoutBox
@@ -228,8 +239,6 @@ children:
                     name: eq_lv.variances
                   - type: CheckBox
                     name: eq_lv.covariances
-
-
   - type: CollapseBox
     label: Multi-level analyses
     collapsed: true
@@ -254,7 +263,7 @@ children:
                 margin: none
                 format: string
                 events:
-                   change: './gui.events::onChange_cluster'
+                  change: './gui.events::onChange_cluster'
           - type: Label
             label: Show
           - type: LayoutBox
@@ -269,8 +278,6 @@ children:
                     name: ml_icc
                   - type: CheckBox
                     name: ml_means
-
-
   - type: CollapseBox
     label: Output options
     collapsed: true
@@ -302,37 +309,36 @@ children:
                     margin: large
                     style: list
                     children:
-                        - type: LayoutBox
-                          margin: large
-                          style: list
-                          children:
-                                - type: Label
-                                  label: Additional outputs
-                                - type: CheckBox
-                                  name: outputAdditionalFitMeasures
-                                - type: CheckBox
-                                  name: reliability
-                                - type: CheckBox
-                                  name: outputMardiasCoefficients
-                        - type: LayoutBox
-                          margin: large
-                          style: list
-                          children:
-                                 - type: Label
-                                   label: R-squared
-                                 - type: RadioButton
-                                   name: r2_none
-                                   optionName: r2
-                                   optionPart: none
-                                 - type: RadioButton
-                                   name: r2_endo
-                                   optionName: r2
-                                   optionPart: endo
-                                 - type: RadioButton
-                                   name: r2_all
-                                   optionName: r2
-                                   optionPart: all
-
+                      - type: LayoutBox
+                        margin: large
+                        style: list
+                        children:
+                          - type: Label
+                            label: Additional outputs
+                          - type: CheckBox
+                            name: outputAdditionalFitMeasures
+                          - type: CheckBox
+                            name: reliability
+                          - type: CheckBox
+                            name: outputMardiasCoefficients
+                      - type: LayoutBox
+                        margin: large
+                        style: list
+                        children:
+                          - type: Label
+                            label: R-squared
+                          - type: RadioButton
+                            name: r2_none
+                            optionName: r2
+                            optionPart: none
+                          - type: RadioButton
+                            name: r2_endo
+                            optionName: r2
+                            optionPart: endo
+                          - type: RadioButton
+                            name: r2_all
+                            optionName: r2
+                            optionPart: all
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -349,7 +355,6 @@ children:
                         name: outpuCombineCovariances
                       - type: CheckBox
                         name: cov.lv
-
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -367,7 +372,6 @@ children:
                                 name: miThreshold
                                 format: number
                                 enable: (miHideLow)
-
   - type: CollapseBox
     label: Path diagram
     collapsed: true

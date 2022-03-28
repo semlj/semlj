@@ -182,6 +182,19 @@ children:
                         stretchFactor: 1
                         template:
                           type: VariableLabel
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Correlated
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: cov_y
+              - type: CheckBox
+                name: cov_lv
   - type: CollapseBox
     label: Custom model settings
     collapsed: true
@@ -334,8 +347,6 @@ children:
                 children:
                   - type: CheckBox
                     name: cov_x
-                  - type: CheckBox
-                    name: cov_y
       - type: LayoutBox
         margin: large
         style: inline

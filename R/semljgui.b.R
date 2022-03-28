@@ -280,6 +280,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
                                         ,intercepts=options$intercepts
                                         ,shapeLat=options$shapeLat
                                         ,shapeMan=options$shapeMan
+                                        ,thresholds = FALSE
                       
                                     )
                         )

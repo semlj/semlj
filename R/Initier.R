@@ -129,6 +129,7 @@ Initer <- R6::R6Class(
         amat<-as.data.frame(matrix(vars,nrow = length(vars),ncol=1))
         names(amat)<-"rhs"
         amat<-private$.make_empty_table(amat)
+        mark(amat)
         return(amat)
       }
       ### return a row anyway to make the warning appear as a note
@@ -331,8 +332,8 @@ Initer <- R6::R6Class(
         auto.th = TRUE,                                       # TRUE for sem + cfa + growth - to be implemented as option
         auto.delta = TRUE,                                    # TRUE for sem + cfa + growth - to be implemented as option
         auto.cov.y = self$options$cov_y,                      # TRUE for sem + cfa + growth (default: TRUE)
-        fixed.x = self$options$cov_x
-        
+        fixed.x = self$options$cov_x,
+        orthogonal=!self$options$cov_lv
         # TO-DO (1): implemented as option
         # int.lv.free, auto.fix.single, auto.var, auto.cov.lv.x, auto.efa, auto.th, auto.delta
         # TO-DO (2): further arguments included in JASP-SEM

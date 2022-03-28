@@ -103,7 +103,6 @@ Plotter <- R6::R6Class(
                       ,residuals = self$options$diag_resid
                       ,intercepts= self$options$diag_intercepts
                       ,rotation = rotation 
-                      ,intercepts = F
                       ,sizeLat = size
                       ,sizeLat2 = size*.50
                       ,sizeMan=size*.70
@@ -113,7 +112,6 @@ Plotter <- R6::R6Class(
                       , shapeMan=self$options$diag_shape_man
                       , shapeLat=self$options$diag_shape_lat
                       , edge.label.cex =1.3)
-        
 
         
         return()

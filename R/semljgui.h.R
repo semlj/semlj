@@ -32,6 +32,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             std_ov = FALSE,
             cov_x = FALSE,
             cov_y = TRUE,
+            cov_lv = TRUE,
             cluster = "",
             multigroup = NULL,
             eq_loadings = FALSE,
@@ -236,6 +237,10 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..cov_y <- jmvcore::OptionBool$new(
                 "cov_y",
                 cov_y,
+                default=TRUE)
+            private$..cov_lv <- jmvcore::OptionBool$new(
+                "cov_lv",
+                cov_lv,
                 default=TRUE)
             private$..cluster <- jmvcore::OptionString$new(
                 "cluster",
@@ -453,6 +458,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..std_ov)
             self$.addOption(private$..cov_x)
             self$.addOption(private$..cov_y)
+            self$.addOption(private$..cov_lv)
             self$.addOption(private$..cluster)
             self$.addOption(private$..multigroup)
             self$.addOption(private$..eq_loadings)
@@ -513,6 +519,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         std_ov = function() private$..std_ov$value,
         cov_x = function() private$..cov_x$value,
         cov_y = function() private$..cov_y$value,
+        cov_lv = function() private$..cov_lv$value,
         cluster = function() private$..cluster$value,
         multigroup = function() private$..multigroup$value,
         eq_loadings = function() private$..eq_loadings$value,
@@ -572,6 +579,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..std_ov = NA,
         ..cov_x = NA,
         ..cov_y = NA,
+        ..cov_lv = NA,
         ..cluster = NA,
         ..multigroup = NA,
         ..eq_loadings = NA,
@@ -698,6 +706,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "std_ov",
                     "cov_x",
                     "cov_y",
+                    "cov_lv",
                     "cluster",
                     "multigroup",
                     "eq_loadings",
@@ -723,6 +732,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -767,6 +777,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -824,6 +835,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -880,6 +892,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -891,6 +904,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances"),
+                            rows=8,
                             columns=list(
                                 list(
                                     `name`="name", 
@@ -906,7 +920,6 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="moreindices",
                             title="Additional fit indices",
                             visible="(outputAdditionalFitMeasures)",
-                            rows=5,
                             clearWith=list(
                                 "code",
                                 "estimator",
@@ -917,6 +930,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -952,6 +966,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -1015,6 +1030,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -1097,6 +1113,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -1180,6 +1197,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -1262,6 +1280,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -1344,6 +1363,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -1423,6 +1443,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -1506,6 +1527,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "std_ov",
                                 "cov_x",
                                 "cov_y",
+                                "cov_lv",
                                 "cluster",
                                 "multigroup",
                                 "eq_loadings",
@@ -1999,6 +2021,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   and the means, variances and covariances are free parameters. If "default",
 #'   the value is set depending on the mimic option.
 #' @param cov_y \code{TRUE} (default) or \code{FALSE}, TO ADD
+#' @param cov_lv \code{TRUE} (default) or \code{FALSE}, is the negation of
+#'   orthogonal option
 #' @param cluster Not used in gui
 #' @param multigroup Factor defining groups for multigroup analysis.
 #' @param eq_loadings \code{TRUE} or \code{FALSE} (default), constrain the
@@ -2146,6 +2170,7 @@ semljgui <- function(
     std_ov = FALSE,
     cov_x = FALSE,
     cov_y = TRUE,
+    cov_lv = TRUE,
     cluster = "",
     multigroup = NULL,
     eq_loadings = FALSE,
@@ -2217,6 +2242,7 @@ semljgui <- function(
         std_ov = std_ov,
         cov_x = cov_x,
         cov_y = cov_y,
+        cov_lv = cov_lv,
         cluster = cluster,
         multigroup = multigroup,
         eq_loadings = eq_loadings,

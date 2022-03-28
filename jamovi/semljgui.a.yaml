@@ -369,11 +369,20 @@ options:
 
     - name: cov_y
       type: Bool    
-      title: Correlated y
+      title: Dependent vars (y)
       default: true
       description:
           R: >
              `TRUE` (default) or `FALSE`, TO ADD
+
+    - name: cov_lv
+      type: Bool    
+      title: Latent vars 
+      default: true
+      description:
+          R: >
+             `TRUE` (default) or `FALSE`, is the negation of orthogonal option
+
 
     #   FURTHER OPTIONS (included in JASP-SEM)
 #    - name: int.ov.fixed
