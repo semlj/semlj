@@ -66,6 +66,7 @@ items:
       - std_ov  
       - cov_x  
       - cov_y  
+      - cov_lv      
       - cluster  
       - multigroup  
       - eq_loadings  
@@ -94,7 +95,8 @@ items:
               - std_lv
               - std_ov  
               - cov_x  
-              - cov_y  
+              - cov_y 
+              - cov_lv      
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -139,7 +141,8 @@ items:
               - std_lv
               - std_ov  
               - cov_x  
-              - cov_y  
+              - cov_y 
+              - cov_lv      
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -192,7 +195,9 @@ items:
               - std_lv
               - std_ov  
               - cov_x  
-              - cov_y  
+              - cov_y 
+              - cov_lv      
+              
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -246,6 +251,8 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
+              
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -285,6 +292,7 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -322,6 +330,8 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
+          
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -375,6 +385,7 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -449,6 +460,7 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -523,6 +535,7 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -598,6 +611,7 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -675,6 +689,7 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -748,6 +763,8 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
+              
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -826,6 +843,7 @@ items:
               - std_ov  
               - cov_x  
               - cov_y  
+              - cov_lv      
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -1151,8 +1169,28 @@ items:
           width: 800
           height: 600
           clearWith:
-            - multigroup
-            - code
+            - code 
+            - estimator
+            - likelihood
+            - meanstructure  
+            - intercepts  
+            - std_lv
+            - std_ov  
+            - cov_x  
+            - cov_y  
+            - cov_lv      
+            - cluster  
+            - multigroup  
+            - eq_loadings  
+            - eq_intercepts  
+            - eq_residuals  
+            - eq_residual.covariances  
+            - eq_means  
+            - eq_thresholds  
+            - eq_regressions  
+            - eq_lv.variances  
+            - eq_lv.covariances  
+          
             - diag_shape_man
             - diag_shape_lat
             - diag_abbrev
