@@ -300,7 +300,7 @@ options:
 
     - name: cov_y
       type: Bool    
-      title: Dependent vars (y)
+      title: Correlated dependent vars (y)
       default: true
       description:
           R: >
@@ -308,7 +308,7 @@ options:
 
     - name: cov_lv
       type: Bool    
-      title: Latent vars 
+      title: Correlated latent vars 
       default: true
       description:
           R: >

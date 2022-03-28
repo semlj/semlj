@@ -53,6 +53,7 @@ Initer <- R6::R6Class(
       alist[[length(alist)+1]]<-c(info="Converged", value="") 
       alist[[length(alist)+1]]<-c(info="Iterations", value="") 
       alist[[length(alist)+1]]<-c(info="",value="")
+      mark(self$user_syntax)
       for (m in self$user_syntax)
         alist[[length(alist)+1]]<-c(info="Model",value=m)
       
@@ -129,7 +130,6 @@ Initer <- R6::R6Class(
         amat<-as.data.frame(matrix(vars,nrow = length(vars),ncol=1))
         names(amat)<-"rhs"
         amat<-private$.make_empty_table(amat)
-        mark(amat)
         return(amat)
       }
       ### return a row anyway to make the warning appear as a note

@@ -73,7 +73,6 @@ Runner <- R6::R6Class("Runner",
                           run_info=function() {
 
                           
-                            mark(str(self$model))
                             alist <- list()
                             alist[[length(alist) + 1]]   <-  c(info="Estimation Method",value=self$model@Options$estimator)
                             alist[[length(alist) + 1]]   <-  c(info="Optimization Method",value=toupper(self$model@Options$optim.method))
@@ -84,8 +83,7 @@ Runner <- R6::R6Class("Runner",
                             alist[[length(alist) + 1]]   <-  c(info="Converged",value=self$model@Fit@converged) 
                             alist[[length(alist) + 1]]   <-  c(info="Iterations",value=self$model@optim$iterations) 
                             alist[[length(alist) + 1]]   <-  c(info="",value="")
-                            alist[[length(alist) + 1]]   <-  c(info="",value="")
-                            
+
                             return(alist)
                           },
                           run_fit_main=function() {
