@@ -329,7 +329,6 @@ items:
               - cov_x  
               - cov_y  
               - cov_lv      
-          
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -341,6 +340,7 @@ items:
               - eq_regressions  
               - eq_lv.variances  
               - eq_lv.covariances  
+              
 
         columns:
           - name:  lgroup
@@ -369,6 +369,21 @@ items:
             title: R²
             type: number
 
+      - name: icc
+        title: 'Intra-class correlations'
+        type: Table
+        visible: ((cluster) && (icc))
+        columns:
+          - name:  lgroup
+            title: Group
+            type: text
+            visible: (multigroup)
+          - name: rhs
+            title: "Variable"
+            type: text
+          - name: est
+            title: ICC
+            type: number
 
   # Estimates =================================================================
   - name: models
@@ -866,6 +881,56 @@ items:
             format: zto,pvalue
 
 
+      # Multilevel means ------------------------------------------------------------
+      - name: mlmeans
+        title: Expected Means
+        type: Table
+        visible: ((cluster) && (mlmeans))
+        clearWith:
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+              - bootci
+              - bootN 
+              - ci  
+              - ci_width
+              - se
+        
+        columns:
+          - name: lgroup
+            title: Group
+            type: text
+            visible: (multigroup)
+            combineBelow: true
+          - name: level
+            title: Level
+            type: text
+          - name: lhs
+            title: "Variable"
+            type: text
+          - name: est
+            title: "Mean"
+            type: number
+  
+
       # Defined parameters ----------------------------------------------------
       - name: defined
         title: Defined parameters
@@ -993,28 +1058,6 @@ items:
             title: AVE
             type: number
 
-      - name: icc
-        title: 'Intra-class correlations'
-        type: Table
-#       description:
-        visible: false
-        clearWith:
-#       variable number of rows
-        columns:
-          - name:  lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-          - name: level
-            title: Level
-            type: text
-            combineBelow: true
-          - name: rhs
-            title: "Variable"
-            type: text
-          - name: est
-            title: ICC
-            type: number
 
 
       # Mardia's coefficients -------------------------------------------------

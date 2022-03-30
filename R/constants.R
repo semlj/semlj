@@ -101,3 +101,4 @@ INFO_SE<-list()
 INFO_SE[["standard"]]<-"Standard"
 INFO_SE[["robust.sem"]]<-"Robust"
 INFO_SE[["boot"]]<-"Bootstrap"
+INFO_SE[["robust.huber.white"]]<-"Robust Huber and White"

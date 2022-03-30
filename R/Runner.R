@@ -49,7 +49,7 @@ Runner <- R6::R6Class("Runner",
                             self$dispatcher$warnings <-  list(topic="info", message=results$warning)
                             ## it it fails here, we should stop
                             error<-results$error
-                            if (length(grep("subscript out of bound",error,fixed=T))>0)
+                            if (length(grep("subscript out of bound",error,fixed=T))>0) 
                                    error<-"Model cannot be estimated. Please refine the model or choose different options."
                             self$dispatcher$errors <-  list(topic="info", message=error,final=TRUE)
                             
@@ -74,7 +74,6 @@ Runner <- R6::R6Class("Runner",
                           },
                           run_info=function() {
 
-                          
                             alist <- list()
                             alist[[length(alist) + 1]]   <-  c(info="Estimation Method",value=self$model@Options$estimator)
                             alist[[length(alist) + 1]]   <-  c(info="Optimization Method",value=toupper(self$model@Options$optim.method))
@@ -267,6 +266,15 @@ Runner <- R6::R6Class("Runner",
                                 warning("No R-squared available")
                                 return(NULL)
                           },
+                          run_fit_icc=function() {
+                            
+                            tab<-lavaan::lavInspect(self$model,"icc")
+                            tab<-private$.make_matrix_table(tab,transform)
+                            names(tab)<-"est"
+                            tab$rhs<-rownames(tab)
+                            
+                            return(tab)
+                          },
                           run_models_coefficients=function() {
                             
                             tab<-self$par_table()
@@ -315,6 +323,19 @@ Runner <- R6::R6Class("Runner",
                             return(tab)
                             
                           },
+                          run_models_mlmeans=function() {
+                            
+                            if (!is.something(self$cluster))
+                               return(NULL)
+                            
+                            tab = lavaan::inspect(self$model, "fitted")
+                            tabs<-lapply(tab, function(atab) atab$mean)
+                            tab<-private$.make_matrix_table(tabs,transform)
+                            names(tab)<-"est"
+                            mark(tab)
+                            return(tab)
+                          },
+                          
                           run_models_defined=function() {
                             
                             tab<-self$par_table()
@@ -337,8 +358,8 @@ Runner <- R6::R6Class("Runner",
                           run_additional_mardia=function() {
                             
                               ## for multilevel-multigroup it gives an error. For the moment we 
-                              ## wrap it in try_hard() so it does not halt the estimation of other tables
-                              
+                              ## we leave it fail in that case
+                            
                               # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
                               # that are already contained in the lavaan model-fit
                             

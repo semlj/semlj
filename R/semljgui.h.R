@@ -180,6 +180,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "auto",
                     "standard",
                     "robust.sem",
+                    "robust.sem",
                     "robust.huber.white",
                     "boot"),
                 default="auto")

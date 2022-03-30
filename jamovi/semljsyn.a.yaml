@@ -85,15 +85,27 @@ options:
         - name: default
           title: "Automatic"
         - name:  ML
-          title: "Maximum Likelihood"
+          title: "Maximum Likelihood (ML)"
+        - name:  MLM
+          title: "Robust Maximum Likelihood (MLM)"
+        - name:  MLMV
+          title: "Robust Maximum Likelihood (MLMV)"
+        - name:  MLMVS
+          title: "Robust Maximum Likelihood (MLMVS)"
         - name: PML
-          title: "Pairwise maximum likelihood"
+          title: "Pairwise maximum likelihood (PML)"
         - name: GLS
-          title: "Generalized Least Squares"
+          title: "Generalized Least Squares (GSL)"
         - name: WLS
-          title: "Weighted Least Squares"
+          title: "Weighted Least Squares (WLS)"
         - name: DWLS
-          title: "Diagonally weighted Least Squares"
+          title: "Diagonally weighted Least Squares (DWLS)"
+        - name: WLSM
+          title: "Robust Weighted Least Squares (WLSM)"
+        - name: WLSMV
+          title: "Robust Weighted Least Squares (WLSMV)"
+        - name: WLSMVS
+          title: "Robust Weighted Least Squares (WLSMVS)"
         - name: ULS
           title: "Unweighted Least Squares"
       default: default
@@ -162,6 +174,8 @@ options:
       type: List
       title: Standard errors
       options:
+        - name: auto
+          title: Automatic
         - name: standard
           title: Standard
         - name: robust.sem
@@ -403,7 +417,7 @@ options:
           R: >
              show intra-class correlations
 
-    - name: ml_means
+    - name: mlmeans
       type: Bool
       title: Between-Within Means
       default: false

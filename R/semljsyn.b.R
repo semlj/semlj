@@ -73,6 +73,13 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$spaceBy         <- "lgroup"
         private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
+        ## icc table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$fit$icc, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$activated        <-(self$options$icc & is.something(data_machine$cluster))
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        
         ## regression coefficients ###
 
         aSmartObj                 <- SmartTable$new(self$results$models$coefficients, runner_machine)
@@ -115,11 +122,17 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ## thresholds table ###
         
         aSmartObj                  <- SmartTable$new(self$results$models$thresholds, runner_machine)
-        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$spaceBy          <- c("lgroup","level")
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$activated        <- is.something(data_machine$ordered)
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
         
+
+        ## mlmeans table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$models$mlmeans, runner_machine)
+        aSmartObj$spaceBy          <- c("lgroup","level")
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
         
         ## defined parameters table ###
 
@@ -128,12 +141,6 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$activateOnData   <-TRUE
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-        ## icc table ###
-        
-        aSmartObj                  <- SmartTable$new(self$results$additional$icc, runner_machine)
-        aSmartObj$spaceBy          <- "lgroup"
-        aSmartObj$activated        <-(self$options$icc & is.something(data_machine$cluster))
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
         
         ## raliability matrix table ###
         

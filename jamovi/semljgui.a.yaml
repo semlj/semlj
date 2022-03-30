@@ -234,6 +234,8 @@ options:
           title: Standard
         - name: robust.sem
           title: Robust
+        - name: robust.sem
+          title: Robust for Clusters
         - name: robust.huber.white
           title: Pseudo ML
         - name: boot

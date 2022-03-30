@@ -150,7 +150,7 @@ Initer <- R6::R6Class(
     init_fit_rsquared=function() {
       
       if (self$option("r2","endo")) 
-         vars<-private$.lav_structure$lhs[private$.lav_structure$op=="~"]
+         vars<-unique(private$.lav_structure$lhs[private$.lav_structure$op=="~"])
       else
          vars<-self$observed
       
@@ -206,6 +206,13 @@ Initer <- R6::R6Class(
       return(tab)
       
     },
+    init_models_mlmeans=function() {
+      
+      tab<-private$.lav_structure[private$.lav_structure$op=="~1",]
+      return(tab)
+      
+    },
+    
     init_models_defined=function() {
 
       tab<-private$.lav_structure[private$.lav_structure$op==":=",]
@@ -333,6 +340,13 @@ Initer <- R6::R6Class(
       if (length(lat)>0)
         self$latent<-lat
       
+      ## check if multilevel, and see if user specified levels
+      if (is.something(self$cluster)) {
+        check<-any(stringr::str_detect(tolower(gsub(" ","",avec)), "^level:(?!\\=)"))
+        if (!check)
+           self$dispatcher$warnings<-list(topic="info",message="A cluster variable was specified, but not levels are defined in the syntax")
+      }
+      
       self$user_syntax<-avec
       
     },
@@ -406,7 +420,9 @@ Initer <- R6::R6Class(
       
       
       results <- try_hard({ do.call(lavaan::lavaanify, lavoptions) })
-      self$dispatcher$warnings <- list(topic="info", message = results$warning)
+      if (!isFALSE(results$warning))
+           self$dispatcher$warnings <- list(topic="info", message = paste("Model set-up:",results$warning))
+      
       self$dispatcher$errors   <- list(topic="info", message = results$error,final=TRUE)
       
       private$.lav_structure <- results$obj

@@ -65,6 +65,10 @@ children:
             style: list
             children:
               - type: RadioButton
+                name: se_auto
+                optionName: se
+                optionPart: auto
+              - type: RadioButton
                 name: se_standard
                 optionName: se
                 optionPart: standard
@@ -266,16 +270,8 @@ children:
             children:
               - type: CheckBox
                 name: icc
-          - type: LayoutBox
-            margin: large
-            style: inline
-            children:
-              - type: LayoutBox
-                margin: large
-                style: list
-                children:
-                  - type: CheckBox
-                    name: ml_means
+              - type: CheckBox
+                name: mlmeans
   - type: CollapseBox
     label: Output options
     collapsed: true
