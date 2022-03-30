@@ -27,7 +27,6 @@ Runner <- R6::R6Class("Runner",
                             
                             if (self$options$se!="auto") 
                                 lavoptions[["se"]]<-self$options$se
-                              
 
                             if (is.something(self$multigroup)) {
                               lavoptions[["group"]] <- self$multigroup$var
@@ -49,7 +48,10 @@ Runner <- R6::R6Class("Runner",
                             ## check if warnings or errors are produced
                             self$dispatcher$warnings <-  list(topic="info", message=results$warning)
                             ## it it fails here, we should stop
-                            self$dispatcher$errors <-  list(topic="info", message=results$error,final=TRUE)
+                            error<-results$error
+                            if (length(grep("subscript out of bound",error,fixed=T))>0)
+                                   error<-"Model cannot be estimated. Please refine the model or choose different options."
+                            self$dispatcher$errors <-  list(topic="info", message=error,final=TRUE)
                             
                             self$model <- results$obj
                           },
@@ -367,14 +369,15 @@ Runner <- R6::R6Class("Runner",
                             
                             tab = lavaan::inspect(self$model, "observed")
                             tab<-private$.make_covcor_table(tab)
-                            cbind(variable=self$observed, type="observed", tab)
-                            
+                            tab$type<-"observed"
+                            return(tab)
                           },
                           run_covariances_implied=function() {
                             
                             tab = lavaan::inspect(self$model, "fitted")
                             tab<-private$.make_covcor_table(tab)
-                            cbind(variable=self$observed, type="implied", tab)
+                            tab$type<-"implied"
+                            return(tab)
                             
                           },
                           run_covariances_residual=function() {
@@ -386,8 +389,9 @@ Runner <- R6::R6Class("Runner",
                             obj1 = lavaan::inspect(self$model, "observed")
                             obj2 = lavaan::inspect(self$model, "fitted")
                             tab<-private$.make_covcor_diff(obj1,obj2)
-                            cbind(variable=self$observed, type="residual", tab)
-
+                            tab$type<-"residual"
+                            return(tab)
+                            
                           },
                           run_covariances_combined=function() {
                             

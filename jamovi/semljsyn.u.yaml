@@ -20,12 +20,8 @@ children:
         margin: large
         style: inline
         children:
-              - type: CheckBox
-                name: donotrun
-          
-          
-          
-          
+          - type: CheckBox
+            name: donotrun
   - type: CollapseBox
     label: Model options
     collapsed: true
@@ -145,7 +141,6 @@ children:
                     name: cov_y
                   - type: CheckBox
                     name: cov_lv
-
       - type: LayoutBox
         margin: large
         style: inline
@@ -268,14 +263,17 @@ children:
             label: Show
           - type: LayoutBox
             margin: large
+            children:
+              - type: CheckBox
+                name: icc
+          - type: LayoutBox
+            margin: large
             style: inline
             children:
               - type: LayoutBox
                 margin: large
                 style: list
                 children:
-                  - type: CheckBox
-                    name: ml_icc
                   - type: CheckBox
                     name: ml_means
   - type: CollapseBox

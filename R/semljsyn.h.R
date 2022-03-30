@@ -30,7 +30,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cov_y = TRUE,
             cov_lv = TRUE,
             cluster = NULL,
-            ml_icc = TRUE,
+            icc = TRUE,
             ml_means = FALSE,
             multigroup = NULL,
             eq_loadings = FALSE,
@@ -210,9 +210,9 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 permitted=list(
                     "factor"),
                 default=NULL)
-            private$..ml_icc <- jmvcore::OptionBool$new(
-                "ml_icc",
-                ml_icc,
+            private$..icc <- jmvcore::OptionBool$new(
+                "icc",
+                icc,
                 default=TRUE)
             private$..ml_means <- jmvcore::OptionBool$new(
                 "ml_means",
@@ -424,7 +424,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cov_y)
             self$.addOption(private$..cov_lv)
             self$.addOption(private$..cluster)
-            self$.addOption(private$..ml_icc)
+            self$.addOption(private$..icc)
             self$.addOption(private$..ml_means)
             self$.addOption(private$..multigroup)
             self$.addOption(private$..eq_loadings)
@@ -486,7 +486,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cov_y = function() private$..cov_y$value,
         cov_lv = function() private$..cov_lv$value,
         cluster = function() private$..cluster$value,
-        ml_icc = function() private$..ml_icc$value,
+        icc = function() private$..icc$value,
         ml_means = function() private$..ml_means$value,
         multigroup = function() private$..multigroup$value,
         eq_loadings = function() private$..eq_loadings$value,
@@ -547,7 +547,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cov_y = NA,
         ..cov_lv = NA,
         ..cluster = NA,
-        ..ml_icc = NA,
+        ..icc = NA,
         ..ml_means = NA,
         ..multigroup = NA,
         ..eq_loadings = NA,
@@ -610,7 +610,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="info",
-                title="Models Info",
+                title="Models Infox",
                 refs=list(
                     "semlj",
                     "lavaan"),
@@ -872,7 +872,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances"),
-                            rows=8,
                             columns=list(
                                 list(
                                     `name`="name", 
@@ -954,6 +953,18 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
                                     `name`="label", 
                                     `title`="Label", 
                                     `type`="text", 
@@ -1021,6 +1032,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="Group", 
                                     `type`="text", 
                                     `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
                                     `combineBelow`=TRUE),
                                 list(
                                     `name`="label", 
@@ -1104,6 +1121,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="Group", 
                                     `type`="text", 
                                     `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
                                     `combineBelow`=TRUE),
                                 list(
                                     `name`="label", 
@@ -1190,6 +1213,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
                                     `name`="label", 
                                     `title`="Label", 
                                     `type`="text", 
@@ -1271,6 +1300,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="Group", 
                                     `type`="text", 
                                     `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
                                     `combineBelow`=TRUE),
                                 list(
                                     `name`="label", 
@@ -1356,6 +1391,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
                                     `name`="label", 
                                     `title`="Label", 
                                     `type`="text", 
@@ -1434,6 +1475,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="Group", 
                                     `type`="text", 
                                     `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
                                     `combineBelow`=TRUE),
                                 list(
                                     `name`="label", 
@@ -1566,6 +1613,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     reliability = function() private$.items[["reliability"]],
+                    icc = function() private$.items[["icc"]],
                     mardia = function() private$.items[["mardia"]]),
                 private = list(),
                 public=list(
@@ -1587,6 +1635,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="Group", 
                                     `type`="text", 
                                     `visible`="(multigroup)"),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
                                 list(
                                     `name`="level", 
                                     `title`="Level", 
@@ -1621,6 +1675,31 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="avevar", 
                                     `title`="AVE", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="icc",
+                            title="Intra-class correlations",
+                            visible=FALSE,
+                            clearWith=NULL,
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)"),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="ICC", 
                                     `type`="number"))))
                         self$add(jmvcore::Table$new(
                             options=options,
@@ -1684,14 +1763,15 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
                                     `name`="variable", 
                                     `title`="", 
-                                    `type`="text"),
-                                list(
-                                    `name`="level", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `visible`=FALSE))))
+                                    `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="implied",
@@ -1705,14 +1785,15 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
                                     `name`="variable", 
                                     `title`="", 
-                                    `type`="text"),
-                                list(
-                                    `name`="level", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `visible`=FALSE))))
+                                    `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="residual",
@@ -1726,14 +1807,15 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
                                     `name`="variable", 
                                     `title`="", 
-                                    `type`="text"),
-                                list(
-                                    `name`="level", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `visible`=FALSE))))
+                                    `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="combined",
@@ -1747,15 +1829,16 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
                                     `name`="variable", 
                                     `title`="", 
                                     `type`="text", 
                                     `combineBelow`=TRUE),
-                                list(
-                                    `name`="level", 
-                                    `title`="", 
-                                    `type`="text", 
-                                    `visible`=FALSE),
                                 list(
                                     `name`="type", 
                                     `title`="", 
@@ -1772,6 +1855,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="Group", 
                                     `type`="text", 
                                     `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
                                     `combineBelow`=TRUE),
                                 list(
                                     `name`="variable", 
@@ -2004,7 +2093,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cov_lv \code{TRUE} (default) or \code{FALSE}, is the negation of
 #'   orthogonal option
 #' @param cluster Factor defining cluster in multilevel analysis.
-#' @param ml_icc show intra-class correlations
+#' @param icc show intra-class correlations
 #' @param ml_means unrestricted (h1) within and between means
 #' @param multigroup string (default=""), the separate models (one for each
 #'   level / group in the variable) are fit, instead of fitting the same model
@@ -2108,6 +2197,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$models$thresholds} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$reliability} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$additional$icc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$mardia} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$covariances$observed} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$covariances$implied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
@@ -2152,7 +2242,7 @@ semljsyn <- function(
     cov_y = TRUE,
     cov_lv = TRUE,
     cluster = NULL,
-    ml_icc = TRUE,
+    icc = TRUE,
     ml_means = FALSE,
     multigroup,
     eq_loadings = FALSE,
@@ -2227,7 +2317,7 @@ semljsyn <- function(
         cov_y = cov_y,
         cov_lv = cov_lv,
         cluster = cluster,
-        ml_icc = ml_icc,
+        icc = icc,
         ml_means = ml_means,
         multigroup = multigroup,
         eq_loadings = eq_loadings,

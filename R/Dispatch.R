@@ -73,7 +73,8 @@ Dispatch <- R6::R6Class(
                                if (is.null(obj$message) || obj$message==FALSE)
                                     return()
           
-                              
+                               obj$message<-private$.translate(obj$message)
+                          
                                if (hasName(obj,"final") && (obj$final))
                                    stop(obj$message)
                           

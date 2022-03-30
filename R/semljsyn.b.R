@@ -2,7 +2,7 @@
 semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
   R6::R6Class(
     "semljsynClass",
-    inherit = semljguiBase,
+    inherit = semljsynBase,
     private = list(
       .dispatcher = NULL,
       .data_machine = NULL,
@@ -128,6 +128,13 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$activateOnData   <-TRUE
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
+        ## icc table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$additional$icc, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$activated        <-(self$options$icc & is.something(data_machine$cluster))
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        
         ## raliability matrix table ###
         
         aSmartObj                  <- SmartTable$new(self$results$additional$reliability, runner_machine)
@@ -146,39 +153,39 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$covariances$observed, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$expandable       <- TRUE
-        aSmartObj$expandFrom       <- 3
+        aSmartObj$expandFrom       <- 4
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
         ## implied covariances table ###
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$implied, runner_machine)
-        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$spaceBy          <- c("lgroup","level")
         aSmartObj$expandable       <- TRUE
-        aSmartObj$expandFrom       <- 3
+        aSmartObj$expandFrom       <- 4
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
         ## residuals covariances table ###
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$residual, runner_machine)
-        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$spaceBy          <- c("lgroup","level")
         aSmartObj$expandable       <- TRUE
-        aSmartObj$expandFrom       <- 3
+        aSmartObj$expandFrom       <- 4
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
         ## combined covariances table ###
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$combined, runner_machine)
-        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$spaceBy          <- c("lgroup","level")
         aSmartObj$expandable       <- TRUE
         aSmartObj$expandFrom       <- 4
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
         ## latent covariances table ###
         aSmartObj                  <- SmartTable$new(self$results$covariances$latent, runner_machine)
-        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$spaceBy          <- c("lgroup","level")
         aSmartObj$activated        <- ((self$options$cov.lv) & is.something(runner_machine$latent))
         aSmartObj$expandable       <- TRUE
-        aSmartObj$expandFrom       <- 3
+        aSmartObj$expandFrom       <- 4
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
         ## modification indices table ###

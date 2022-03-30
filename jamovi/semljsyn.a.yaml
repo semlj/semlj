@@ -395,7 +395,7 @@ options:
           R: Factor defining cluster in multilevel analysis.
 
     ### (b) show icc --------------------------------------------------
-    - name: ml_icc
+    - name: icc
       type: Bool
       title: ICC
       default: true

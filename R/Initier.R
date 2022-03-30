@@ -53,9 +53,21 @@ Initer <- R6::R6Class(
       alist[[length(alist)+1]]<-c(info="Converged", value="") 
       alist[[length(alist)+1]]<-c(info="Iterations", value="") 
       alist[[length(alist)+1]]<-c(info="",value="")
-      mark(self$user_syntax)
+      
       for (m in self$user_syntax)
         alist[[length(alist)+1]]<-c(info="Model",value=m)
+
+      alist[[length(alist)+1]]<-c(info="",value="")
+      
+      if (is.something(self$options$cluster)) {
+         alist[[length(alist)+1]]<-c(info="",value="")
+         alist[[length(alist)+1]]<-c(info="Cluster variable",value=self$options$cluster)
+      }
+      
+      if (is.something(self$options$multigroup)) {
+        alist[[length(alist)+1]]<-c(info="Multi-group variable",value=self$options$multigroup)
+      }
+      
       
       if (self$option("se","boot"))
           self$dispatcher$warnings<-list(topic="info",message="Bootstrap confidence intervals may take a while. Please be patient.",init=TRUE)
@@ -73,7 +85,23 @@ Initer <- R6::R6Class(
       
       return(tab)      
     },
+    
+    init_fit_modelbaseline=function() {
+      
+    alist<-list()
+    alist[[length(alist) + 1]]  <- list(name = "Comparative Fit Index (CFI)");
+    alist[[length(alist) + 1]]  <- list(name = "Tucker-Lewis Index (TLI)");
+    alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Non-normed Fit Index (NNFI)");
+    alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Normed Fit Index (NFI)");
+    alist[[length(alist) + 1]]  <- list(name = "Parsimony Normed Fit Index (PNFI)");
+    alist[[length(alist) + 1]]  <- list(name = "Bollen's Relative Fit Index (RFI)");
+    alist[[length(alist) + 1]]  <- list(name = "Bollen's Incremental Fit Index (IFI)");
+    alist[[length(alist) + 1]]  <- list(name = "Relative Noncentrality Index (RNI)");
+    
+    return(alist)
+    },
     init_fit_moreindices=function() {
+      
       
       tab<-lapply(1:5,function(a) list(name="."))
       if (self$options$estimator %in% INFO_ML) {
@@ -225,7 +253,8 @@ Initer <- R6::R6Class(
       .length <- length(self$observed)
        tab <- cbind(variable=self$observed, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
        names(tab)<-c("variable",self$observed)
-       private$.make_empty_table(tab)
+       tab<-private$.make_empty_table(tab)
+       return(tab)
     },
     init_covariances_implied=function() {
   
@@ -406,7 +435,6 @@ Initer <- R6::R6Class(
     },
     .fix_groups_labels=function(table) {
       
-      
       ## for multigroup analysis, add a description label with the level of each group (all for general parameter)
       if (is.something(self$multigroup)) {
         if (self$customgroups) {
@@ -506,8 +534,6 @@ Initer <- R6::R6Class(
     .make_empty_table=function(atable) {
       
       .len<-dim(as.data.frame(atable))[1]
-      ### in case we have multilevel, we expect the matrix to be replicated
-      ### for within and between
       
       if (is.something(self$cluster)) {
         atable<-as.data.frame(rbind(atable,atable))
@@ -553,7 +579,9 @@ Initer <- R6::R6Class(
         tab[upper.tri(tab, diag=FALSE)] = corTab[upper.tri(corTab, diag=FALSE)]
         alist[[length(alist)+1]]<-tab
       }
-      as.data.frame(do.call("rbind",alist))
+      tabs<-do.call("ebind_square",alist)
+      return(as.data.frame(tabs))
+  
     },
     
     .make_covcor_diff=function(obj1,obj2) {
@@ -574,7 +602,8 @@ Initer <- R6::R6Class(
         tab[upper.tri(tab, diag=FALSE)] = corTab[upper.tri(corTab, diag=FALSE)]
         alist[[length(alist)+1]]<-tab
       }
-      as.data.frame(do.call("rbind",alist))
+      tabs<-do.call("ebind_square",alist)
+      return(as.data.frame(tabs))
     }
     
     
