@@ -826,7 +826,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             columns=list(
                                 list(
                                     `name`="type", 
-                                    `title`="Type"),
+                                    `title`="Type", 
+                                    `visible`=FALSE),
                                 list(
                                     `name`="srmr", 
                                     `title`="SRMR", 

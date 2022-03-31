@@ -16,6 +16,7 @@ Initer <- R6::R6Class(
     cluster=NULL,
     varTable=NULL,
     user_syntax=NULL,
+    moretests=FALSE,
     
     initialize=function(options,dispatcher,datamatic) {
       
@@ -78,7 +79,7 @@ Initer <- R6::R6Class(
 
       tab<-list(list(label="User Model"),list(label="Baseline Model"))
       
-      if (self$options$estimator %in% ROBUST_ESTIM | is.something(self$ordered)) {
+      if (self$moretests) {
            tab[[3]]<-list(label="Scaled User")
            tab[[4]]<-list(label="Scaled Baseline")
       }
@@ -141,7 +142,7 @@ Initer <- R6::R6Class(
       
       tab<-list(list(type="Classical"))
       
-      if (self$options$estimator %in% ROBUST_ESTIM | is.something(self$ordered)) {
+      if (self$moretests) {
         tab[[2]]<-list(type="Robust")
         tab[[3]]<-list(type="Scaled")
       }      
@@ -349,6 +350,11 @@ Initer <- R6::R6Class(
       
       self$user_syntax<-avec
       
+      ## some additional tests
+      
+      if (self$options$estimator %in% ROBUST_ESTIM | (self$options$estimator=="default" & is.something(self$ordered))) 
+                self$moretests<-TRUE
+        
     },
     ### collapse the informations in the private lists of terms and constraints and produce a lavaan syntax string
     .lavaan_syntax=function() {

@@ -213,6 +213,7 @@ items:
         columns:
           - name: type
             title: Type
+            visible: false
           - name:  srmr
             title: SRMR
             type: number

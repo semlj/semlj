@@ -852,7 +852,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="type", 
                                     `title`="Type", 
-                                    `visible`="(estimator:MLM || estimator:MLMV || estimator:WLSM || estimator:WLSMV)"),
+                                    `visible`=FALSE),
                                 list(
                                     `name`="srmr", 
                                     `title`="SRMR", 

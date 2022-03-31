@@ -212,7 +212,7 @@ items:
         columns:
           - name: type
             title: Type
-            visible: (estimator:MLM || estimator:MLMV || estimator:WLSM || estimator:WLSMV)
+            visible: false
           - name:  srmr
             title: SRMR
             type: number

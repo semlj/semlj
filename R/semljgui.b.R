@@ -55,6 +55,8 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ## fit basic indices table ###
         aSmartObj                 <- SmartTable$new(self$results$fit$indices, runner_machine)
         aSmartObj$ci("rmsea", self$options$ci_width)
+        if (runner_machine$moretests)
+          aSmartObj$setColumnVisible<-"type"     
         private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
         ## more fit indices table ###
