@@ -184,7 +184,7 @@ options:
           title: Pseudo ML
         - name: boot
           title: Bootstrap
-      default: standard
+      default: auto
       description:
           R: >
              TO ADD

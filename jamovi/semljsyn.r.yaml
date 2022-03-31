@@ -14,7 +14,7 @@ items:
 
   # Model overview and examples ===============================================
   - name: info
-    title: Models Infox
+    title: Models Info
     type: Table
 #   description: 
     refs: 
@@ -213,7 +213,6 @@ items:
         columns:
           - name: type
             title: Type
-            visible: (estimator:MLM || estimator:MLMV || estimator:WLSM || estimator:WLSMV)
           - name:  srmr
             title: SRMR
             type: number
@@ -372,7 +371,7 @@ items:
       - name: icc
         title: 'Intra-class correlations'
         type: Table
-        visible: ((cluster) && (icc))
+        visible: false
         columns:
           - name:  lgroup
             title: Group
@@ -885,7 +884,7 @@ items:
       - name: mlmeans
         title: Expected Means
         type: Table
-        visible: ((cluster) && (mlmeans))
+        visible: false
         clearWith:
               - code 
               - estimator

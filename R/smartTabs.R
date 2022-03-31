@@ -199,6 +199,7 @@ SmartTable <- R6::R6Class("SmartTable",
                                 self$columnTitles[[name]]<-title
                                 
                             }
+                            
                           ), ## end of public
                           active=list(
                             
@@ -248,7 +249,16 @@ SmartTable <- R6::R6Class("SmartTable",
                                     self$table$getColumn(.names[[i]])$setSuperTitle(alist[[stn]])
                                   }
                               }
+                            },
+                            setColumnVisible=function(varnames) {
+                              
+                              if (missing(varnames))
+                                  return()
+                              
+                              for (name in varnames)
+                                self$table$getColumn(name)$setVisible(TRUE)
                             }
+                            
                           ), #end of active
                           private=list(
                             .estimator=NULL,

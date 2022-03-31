@@ -119,7 +119,6 @@ Runner <- R6::R6Class("Runner",
                                                                      df=fit[["baseline.df.scaled"]],
                                                                      pvalue=fit[["baseline.pvalue.scaled"]]
                                                                      )
-                            
                             return(tab)
 
                           },
@@ -251,7 +250,7 @@ Runner <- R6::R6Class("Runner",
                               ### here we can compute them
                                 RSqEst = results$obj
                                 RSqEst = RSqEst[RSqEst$op == "r2",]
-                                
+                                mark(RSqEst)
                                 if (self$option("r2","endo")) {
                                   endo<-private$.lav_structure$lhs[private$.lav_structure$op=="~"]
                                   RSqEst<-RSqEst[RSqEst$lhs %in% endo,]  
@@ -263,7 +262,7 @@ Runner <- R6::R6Class("Runner",
                                   RSqEst<-private$.fix_groups_labels(RSqEst)
                                   return(RSqEst)
                                 }
-                                warning("No R-squared available")
+                                warning("R-squared not completed")
                                 return(NULL)
                           },
                           run_fit_icc=function() {

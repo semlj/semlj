@@ -70,7 +70,11 @@ const events = {
     },
 
      onChange_multigroup: function(ui) {
-       console.log("Multigroup changed");
+       
+       var val = ui.multigroup.value();
+       if (typeof(val)==="string")
+             if (val.length===0)
+                ui.multigroup.setValue(null);
 
      },
       onChange_cluster: function(ui) {

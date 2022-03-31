@@ -16,7 +16,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             likelihood = "default",
             scoretest = TRUE,
             cumscoretest = FALSE,
-            se = "standard",
+            se = "auto",
             bootci = "perc",
             bootN = 1000,
             ci = TRUE,
@@ -148,7 +148,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "robust.sem",
                     "robust.huber.white",
                     "boot"),
-                default="standard")
+                default="auto")
             private$..bootci <- jmvcore::OptionList$new(
                 "bootci",
                 bootci,
@@ -617,7 +617,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(jmvcore::Table$new(
                 options=options,
                 name="info",
-                title="Models Infox",
+                title="Models Info",
                 refs=list(
                     "semlj",
                     "lavaan"),
@@ -826,8 +826,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             columns=list(
                                 list(
                                     `name`="type", 
-                                    `title`="Type", 
-                                    `visible`="(estimator:MLM || estimator:MLMV || estimator:WLSM || estimator:WLSMV)"),
+                                    `title`="Type"),
                                 list(
                                     `name`="srmr", 
                                     `title`="SRMR", 
@@ -989,7 +988,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="icc",
                             title="Intra-class correlations",
-                            visible="((cluster) && (icc))",
+                            visible=FALSE,
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1559,7 +1558,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="mlmeans",
                             title="Expected Means",
-                            visible="((cluster) && (mlmeans))",
+                            visible=FALSE,
                             clearWith=list(
                                 "code",
                                 "estimator",
@@ -2282,7 +2281,7 @@ semljsyn <- function(
     likelihood = "default",
     scoretest = TRUE,
     cumscoretest = FALSE,
-    se = "standard",
+    se = "auto",
     bootci = "perc",
     bootN = 1000,
     ci = TRUE,

@@ -115,7 +115,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ## thresholds table ###
         
         aSmartObj                  <- SmartTable$new(self$results$models$thresholds, runner_machine)
-        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$spaceBy          <- c("lgroup","level","lhs")
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$activated        <- is.something(data_machine$ordered)
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
@@ -133,6 +133,8 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$additional$reliability, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$activated        <-(self$options$reliability & is.something(runner_machine$latent))
+        if (is.something(runner_machine$ordered))
+             aSmartObj$setColumnVisible <- "alpha.ord"
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
         ## mardia matrix table ###

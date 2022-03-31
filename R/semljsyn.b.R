@@ -122,7 +122,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ## thresholds table ###
         
         aSmartObj                  <- SmartTable$new(self$results$models$thresholds, runner_machine)
-        aSmartObj$spaceBy          <- c("lgroup","level")
+        aSmartObj$spaceBy          <- c("lgroup","level","lhs")
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$activated        <- is.something(data_machine$ordered)
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
@@ -132,6 +132,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         
         aSmartObj                  <- SmartTable$new(self$results$models$mlmeans, runner_machine)
         aSmartObj$spaceBy          <- c("lgroup","level")
+        aSmartObj$activated        <- (self$options$mlmeans & is.something(runner_machine$cluster))
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
         
         ## defined parameters table ###
@@ -147,6 +148,8 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$additional$reliability, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$activated        <-(self$options$reliability & is.something(runner_machine$latent))
+        if (is.something(runner_machine$ordered))
+          aSmartObj$setColumnVisible <- "alpha.ord"
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
         ## mardia matrix table ###

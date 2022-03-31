@@ -78,7 +78,7 @@ Initer <- R6::R6Class(
 
       tab<-list(list(label="User Model"),list(label="Baseline Model"))
       
-      if (self$options$estimator %in% ROBUST_ESTIM) {
+      if (self$options$estimator %in% ROBUST_ESTIM | is.something(self$ordered)) {
            tab[[3]]<-list(label="Scaled User")
            tab[[4]]<-list(label="Scaled Baseline")
       }
@@ -141,7 +141,7 @@ Initer <- R6::R6Class(
       
       tab<-list(list(type="Classical"))
       
-      if (self$options$estimator %in% ROBUST_ESTIM) {
+      if (self$options$estimator %in% ROBUST_ESTIM | is.something(self$ordered)) {
         tab[[2]]<-list(type="Robust")
         tab[[3]]<-list(type="Scaled")
       }      
