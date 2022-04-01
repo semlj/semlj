@@ -92,7 +92,12 @@ children:
             maxItemCount: 1
             isTarget: true
             itemDropBehaviour: overwrite
-
+  - type: LayoutBox
+    margin: large
+    style: inline
+    children:
+      - type: CheckBox
+        name: donotrun
   - type: CollapseBox
     label: Endogenous models
     collapsed: true
@@ -140,7 +145,6 @@ children:
                             change: './gui.events::onChange_endogenousTerms'
                           template:
                             type: TermLabel
-
   - type: CollapseBox
     label: Variances and covariances
     collapsed: true
@@ -178,6 +182,19 @@ children:
                         stretchFactor: 1
                         template:
                           type: VariableLabel
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Correlated
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: cov_y
+              - type: CheckBox
+                name: cov_lv
   - type: CollapseBox
     label: Custom model settings
     collapsed: true
@@ -213,7 +230,6 @@ children:
                           borderless: true
                           height: auto
                           ghostText: write here
-
   - type: CollapseBox
     label: Model options
     collapsed: true
@@ -232,7 +248,7 @@ children:
                 name: estimator
               - type: ComboBox
                 name: likelihood
-                enable: (estimator:ML || estimator:PML)
+                enable: '(estimator:ML || estimator:PML)'
           - type: Label
             label: Constraints tests
             margin: large
@@ -242,7 +258,6 @@ children:
                 name: scoretest
               - type: CheckBox
                 name: cumscoretest
-
   - type: CollapseBox
     label: Parameters options
     collapsed: true
@@ -257,6 +272,10 @@ children:
             margin: large
             style: list
             children:
+              - type: RadioButton
+                name: se_auto
+                optionName: se
+                optionPart: auto
               - type: RadioButton
                 name: se_standard
                 optionName: se
@@ -318,9 +337,7 @@ children:
                         name: ci
                         margin: none
                       - type: TextBox
-                        name: ciWidth
-                        label: Interval
-                        suffix: '%'
+                        name: ci_width
                         format: number
                         enable: (ci)
               - type: Label
@@ -330,8 +347,6 @@ children:
                 children:
                   - type: CheckBox
                     name: cov_x
-                  - type: CheckBox
-                    name: cov_y
       - type: LayoutBox
         margin: large
         style: inline
@@ -364,9 +379,8 @@ children:
                 optionPart: std_res
               - type: CheckBox
                 name: std_ov
-
   - type: CollapseBox
-    label: Multi-group analyses
+    label: Multi-group analysis
     collapsed: true
     stretchFactor: 1
     style: list
@@ -411,7 +425,6 @@ children:
                     name: eq_lv.variances
                   - type: CheckBox
                     name: eq_lv.covariances
-
   - type: CollapseBox
     label: Output options
     collapsed: true
@@ -443,38 +456,36 @@ children:
                     margin: large
                     style: list
                     children:
-                        - type: LayoutBox
-                          margin: large
-                          style: list
-                          children:
-                                - type: Label
-                                  label: Additional outputs
-                                - type: CheckBox
-                                  name: outputAdditionalFitMeasures
-                                - type: CheckBox
-                                  name: outputMardiasCoefficients
-                                - type: CheckBox
-                                  name: reliability
-                                  
-                        - type: LayoutBox
-                          margin: large
-                          style: list
-                          children:
-                                 - type: Label
-                                   label: R-squared
-                                 - type: RadioButton
-                                   name: r2_none
-                                   optionName: r2
-                                   optionPart: none
-                                 - type: RadioButton
-                                   name: r2_endo
-                                   optionName: r2
-                                   optionPart: endo
-                                 - type: RadioButton
-                                   name: r2_all
-                                   optionName: r2
-                                   optionPart: all
-
+                      - type: LayoutBox
+                        margin: large
+                        style: list
+                        children:
+                          - type: Label
+                            label: Additional outputs
+                          - type: CheckBox
+                            name: outputAdditionalFitMeasures
+                          - type: CheckBox
+                            name: outputMardiasCoefficients
+                          - type: CheckBox
+                            name: reliability
+                      - type: LayoutBox
+                        margin: large
+                        style: list
+                        children:
+                          - type: Label
+                            label: R-squared
+                          - type: RadioButton
+                            name: r2_none
+                            optionName: r2
+                            optionPart: none
+                          - type: RadioButton
+                            name: r2_endo
+                            optionName: r2
+                            optionPart: endo
+                          - type: RadioButton
+                            name: r2_all
+                            optionName: r2
+                            optionPart: all
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -491,7 +502,6 @@ children:
                         name: outpuCombineCovariances
                       - type: CheckBox
                         name: cov.lv
-
                   - type: LayoutBox
                     margin: large
                     style: list
@@ -509,7 +519,6 @@ children:
                                 name: miThreshold
                                 format: number
                                 enable: (miHideLow)
-
   - type: CollapseBox
     label: Path diagram
     collapsed: true

@@ -1,6 +1,6 @@
 j_DEBUG=T
 j_INFO=T
-
+t_INFO=F
 
 
 NOTES<-list()
@@ -60,8 +60,7 @@ WARNS[["noreserved"]]<-"`{var}` label is reserved for indirect effects. Using it
 WARNS[["cov.lv"]]<-"The covariance matrix of latent variables is not positive defenite. Please use 'Model-implied latent' option in 'Output options' panel to inspect it."
 
 DATA_WARNS<-list()
-DATA_WARNS[["fac_to_cont"]]<-"Warming: continuous variable are defined as factor. Please make sure that each is a continuous variable."
-DATA_WARNS[["cont_to_fac"]]<-"Warning: variable coerced to factor"
+DATA_WARNS[["fac_to_ord"]]<-"Variable ({x}) has been coerced to ordered type."
 
 ## defined parameters warnings
 DP_WARNS<-list()
@@ -70,7 +69,6 @@ DP_WARNS[["p"]]<-"Warming: {x} is a reserved word (pN) for parameters labels. Pl
 
 
 ERRS<-list()
-ERRS[["nolatent"]]<-"Latent variables are not allowed in pathj. Please use another  SEM module"
 ERRS[["noluck"]]<-"The model cannot be estimated. Please refine the model"
 
 PLOT_WARNS<-list()
@@ -82,3 +80,25 @@ PLOT_WARNS[["fail"]]<-"The diagram cannot be displayed. Please try a different l
 SUB<-list("\u2081","\u2082","\u2083","\u2084","\u2085","\u2086","\u2087","\u2088","\u2089","\u20810",
           "\u20811","\u20812","\u20813","\u20814","\u20815","\u20816","\u20817","\u20818","\u20819","\u20820")
 
+
+TRANS_WARNS<-list()
+TRANS_WARNS[[1]]<-list(original="subscript out of bounds",new="Computation cannot be done") 
+
+
+##### some info ####
+
+ROBUST_ESTIM<-c("MLM","MLMV","MLMVS","WLSM","WLSMV","WLSMVS")
+
+INFO_TEST<-list()
+INFO_TEST[["satorra.bentler"]]   <- "Satorra-Bentler mean adjusted"
+INFO_TEST[["scaled.shifted"]]    <- "Mean adjusted scaled and shifted"
+INFO_TEST[["mean.var.adjusted"]] <- "Mean and variance adjusted"
+
+INFO_ML<-c("ML","MLM","MLMV","MLMVS")
+
+
+INFO_SE<-list()
+INFO_SE[["standard"]]<-"Standard"
+INFO_SE[["robust.sem"]]<-"Robust"
+INFO_SE[["boot"]]<-"Bootstrap"
+INFO_SE[["robust.huber.white"]]<-"Robust Huber and White"

@@ -1,284 +1,346 @@
-### This class takes care of passing all information from lavaan tables definitions and estimations from jamovi input
-### to jamovi results tables. It works using Datamatic R6 class, Syntax R6 class, Estimate R6 class, and Plotter R6 class.
-### Datamatic R6 cleans the data and makes some checking
-### Syntax R6 class gets all input options and defines the tables required for showing the results using lavaan::lavaanify(). 
-### Estimate R6 class inherits from Syntax all properties of the tables and fill them with the actual 
-### results estimated with lavaan::lavaan() function.
-### We do not need to initiate Syntax class because Estimate inherits from Syntax, 
-### so only one instance of Estimate is defined. Here is called lav_machine.
-### Filling the results tables is handled by function in jamovi.R (functions starting with j.)
 
-
-semljsynClass <- if (requireNamespace('jmvcore', quietly=TRUE)) R6::R6Class(
+semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
+  R6::R6Class(
     "semljsynClass",
     inherit = semljsynBase,
     private = list(
-        .lav_machine=NULL,
-        .data_machine=NULL,
-        .plot_machine=NULL,
-        .model=NULL,
-        .ready=NULL,
-        .init = function() {
-            ginfo("init")
-            
-            ### output some syntax examples if required by the user####
-            
-            if (self$options$constraints_examples) {
-                j.init_table(self$results$contraintsnotes,LAT_EXAMPLES,indent=-1)
-                j.init_table_append(self$results$contraintsnotes,CONT_EXAMPLES,indent=-1)
-                j.init_table_append(self$results$contraintsnotes,DP_EXAMPLES,indent=-1)
-                j.init_table_append(self$results$contraintsnotes,SY_EXAMPLES,indent=-1)
-                self$results$contraintsnotes$setNote(1,CONT_NOTE)
-            }
-            
+      .dispatcher = NULL,
+      .data_machine = NULL,
+      .runner_machine = NULL,
+      .plotter_machine = NULL,
+      .ready = NULL,
+      .time = NULL,
+      .smartObjs = list(),
+      .init = function() {
+        ginfo(paste("MODULE: SEMLj GUI  #### phase init  ####"))
 
-            ### check that we have enough information to run using readiness.R function####
-            private$.ready<-readiness(self$options)
-            if (!private$.ready$ready) {
-                  if(private$.ready$report)
-                      self$results$info$addRow("info",list(info="Setup",specs=private$.ready$reason))
-                return()
-            }
-            ### prepare R6 classes that do the work ####
-            data_machine<-Datamatic$new(self$options,self$data)
-            lav_machine<-Estimate$new(self$options,data_machine)
-            plot_machine<-Plotter$new(self$options,data_machine,lav_machine,self$results$pathgroup)
-            
-            ### (prepare the) Model info ======================================
-            j.init_table(self$results$info,lav_machine$tab_info)
+        private$.time <- Sys.time()
+        private$.ready <- readiness(self$options)
+        if (!private$.ready$ready) {
+          if (private$.ready$report) {
+            self$results$info$addRow("info", list(info = "Setup", specs = private$.ready$reason))
+          }
+          return()
+        }
 
-            #### (prepare the) Fit indices ====================================
-            j.init_table(self$results$fit$indices,"",ci=T,ciroot="rmsea.",ciformat='RMSEA {}% CI',ciwidth=self$options$ciWidth)
+        ### set up the R6 workhorse class
+        dispatcher               <- Dispatch$new(self$results)
+        data_machine             <- Datamatic$new(self$options, dispatcher, self$data)
+        runner_machine           <- Runner$new(self$options, dispatcher, data_machine)
 
-            #### (prepare the) Parameter estimates table ======================
-            j.init_table(self$results$models$coefficients,lav_machine$tab_coefficients,ci=T,ciwidth=self$options$ciWidth, spaceby="lgroup")
 
-            #### (prepare the) loadings table ####
-            j.init_table(self$results$models$loadings,lav_machine$tab_loadings,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
+        ### info table ###
+        aSmartObj                <- SmartTable$new(self$results$info, runner_machine)
+        private$.smartObjs       <- append_list(private$.smartObjs, aSmartObj)
 
-            
-            #### (prepare the) composites table ####
-            j.init_table(self$results$models$composites,lav_machine$tab_composites,ci=T,ciwidth=self$options$ciWidth,,spaceby="lgroup")
-            
-            #### (prepare the) variances covariances table ####
-            j.init_table(self$results$models$covariances,lav_machine$tab_covariances,ci=T,ciwidth=self$options$ciWidth,,spaceby="lgroup")
-            
-            
-            ### (prepare the) defined params ###
-            j.init_table(self$results$models$defined,lav_machine$tab_defined,ci=T,ciwidth=self$options$ciWidth)
+        ## syntax examples table ###
+        EXAMPLES                  <- c(CONT_EXAMPLES, DP_EXAMPLES)
+        aSmartObj                 <- SmartTable$new(self$results$synexamples)
+        aSmartObj$initSource(EXAMPLES)
+        aSmartObj$indent          <- c(-1, -11)
+        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
-            
-            ### (prepare the) intercepts ###
-            if (self$options$intercepts & !is.null(lav_machine$tab_intercepts))
-                j.init_table(self$results$models$intercepts,lav_machine$tab_intercepts,ci=T,ciwidth=self$options$ciWidth,spaceby="lgroup")
 
-            ### (prepare the) reliability index ###
-            j.init_table(self$results$add_outputs$reliability,lav_machine$tab_reliability,spaceby="lgroup")
-            
-            ### (prepare the) Covariances and correlations ====================
-                j.expand_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved)
-                j.init_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved, spaceby="lgroup")
+        ## main fit table ###
+        aSmartObj                 <- SmartTable$new(self$results$fit$main, runner_machine)
+        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
-                j.expand_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied)
-                j.init_table(self$results$group_covariances$covcorrImplied, lav_machine$tab_covcorrImplied, spaceby="lgroup")
+        ## constraints test table ###
+        aSmartObj                 <- SmartTable$new(self$results$fit$constraints, runner_machine)
+        aSmartObj$activateOnData  <-TRUE
+        aSmartObj$spaceBy         <- "type"
+        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
-                j.expand_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual)
-                j.init_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual,spaceby="lgroup")
 
-                j.expand_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined)
-                j.init_table(self$results$group_covariances$covcorrCombined,lav_machine$tab_covcorrCombined)
+        ## fit basic indices table ###
+        aSmartObj                 <- SmartTable$new(self$results$fit$indices, runner_machine)
+        aSmartObj$ci("rmsea", self$options$ci_width)
+        if (runner_machine$moretests)
+          aSmartObj$setColumnVisible<-"type"     
+        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
-                j.expand_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent)
-                j.init_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent, spaceby="lgroup")
+        ## more fit indices table ###
+        aSmartObj                 <- SmartTable$new(self$results$fit$moreindices, runner_machine)
+        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
-            ################
-            
-            private$.lav_machine<-lav_machine
-            private$.data_machine<-data_machine
-            private$.plot_machine<-plot_machine 
+        ## even more fit indices table ###
 
-            ### init the diagram
-            plot_machine$initPlots()
-            
-        },
-    
-        .run = function() {
-            ginfo("run")
-            ### check that we have enough information to run ####
-            if (!private$.ready$ready)
-                return()
+        aSmartObj                 <- SmartTable$new(self$results$fit$modelbaseline, runner_machine)
+        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
-            ### clean the data and prepare things ###
-            lav_machine<-private$.lav_machine
-            data<-private$.data_machine$cleandata(self$data)
-            
-            if (is.something(private$.data_machine$errors))
-                 stop(private$.data_machine$errors)
+        ## R2 table ###
 
-            ## estimate the model running lavaan in lav_machine (Estimate R6 class)
-            lav_machine$estimate(data)
+        aSmartObj                 <- SmartTable$new(self$results$fit$rsquared, runner_machine)
+        aSmartObj$activated       <- (self$options$r2 != "none")
+        aSmartObj$spaceBy         <- "lgroup"
+        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
-            warns<-lav_machine$warnings
+        ## icc table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$fit$icc, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$activated        <-(self$options$icc & is.something(data_machine$cluster))
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        
+        ## regression coefficients ###
 
-            ### Fit info ======================================================
-            j.fill_table(self$results$info,lav_machine$tab_info)
-            j.add_warnings(self$results$info,lav_machine)
+        aSmartObj                 <- SmartTable$new(self$results$models$coefficients, runner_machine)
+        aSmartObj$spaceBy         <- "lgroup"
+        aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$activateOnData  <-  TRUE
+        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
-            ### stop if error
-            if (is.something(lav_machine$errors)) {
-                stop(paste(lav_machine$errors,collapse = "; "))
-            }
-            
-            ### Fit indices ===================================================
-            self$results$fit$indices$setRow(rowNo=1,lav_machine$tab_fitindices)
-             
-            ### Fit test ======================================================
-            j.fill_table(self$results$fit$main,lav_machine$tab_fit,append=T)
+        ## factor loadings table ###
 
-            ### Constraints fit test ==========================================
-            j.fill_table(self$results$fit$constraints, lav_machine$tab_constfit, append=T, spaceby="type")
-            j.add_warnings(self$results$fit$constraints,lav_machine)
+        aSmartObj                  <- SmartTable$new(self$results$models$loadings, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$activateOnData   <-TRUE
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-            ### Parameters estimates ==========================================
-            j.fill_table(self$results$models$coefficients,lav_machine$tab_coefficients)
+        ## factor composite table ###
 
-            ### Loadings table ================================================
-            j.fill_table(self$results$models$loadings,lav_machine$tab_loadings)
+        aSmartObj                  <- SmartTable$new(self$results$models$composites, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$activateOnData   <- TRUE
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-            ### variances and covariances table ================================================
-            j.fill_table(self$results$models$covariances,lav_machine$tab_covariances)
-            
-            ### composites table ================================================
-            j.fill_table(self$results$models$composites,lav_machine$tab_composites)
-            
-            ### user defined params
-            j.fill_table(self$results$models$defined,lav_machine$tab_defined)
-            j.add_warnings(self$results$models$defined,lav_machine,"defined")
-            
-            if (self$options$intercepts & !is.null(lav_machine$tab_intercepts)) {
-               j.fill_table(self$results$models$intercepts,lav_machine$tab_intercepts)
-            }
+        ## factor composites table ###
 
-            ### Additional fit measures (1): User model versus baseline model =
-            if (self$options$outputAdditionalFitMeasures) {
-                j.fill_table(self$results$add_outputs$compModelBsl,lav_machine$tab_compModelBsl)
-            }
+        aSmartObj                  <- SmartTable$new(self$results$models$covariances, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$ci(NULL, self$options$ci_width)
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-            ### Additional fit measures (2): Other Fit Indices ================
-            if (self$options$outputAdditionalFitMeasures) {
-                j.fill_table(self$results$add_outputs$otherFit,lav_machine$tab_otherFit)
-            }
+        ## intercepts table ###
 
-            
-            ### R² measures ===================================================
-                j.fill_table(self$results$add_outputs$Rsquared,lav_machine$tab_Rsquared,append=T)
-                j.add_warnings(self$results$add_outputs$Rsquared,lav_machine,"tab_r2")
+        aSmartObj                  <- SmartTable$new(self$results$models$intercepts, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$activateOnData   <-TRUE
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-            ### reliability ===================================================
-                j.fill_table(self$results$add_outputs$reliability,lav_machine$tab_reliability)
-                j.add_warnings(self$results$add_outputs$reliability,lav_machine,"tab_reliability")
-                
-            ### Mardia's coefficients =========================================
-            if (self$options$outputMardiasCoefficients) {
-                j.fill_table(self$results$add_outputs$mardia,lav_machine$tab_mardia)
-                j.add_warnings(self$results$add_outputs$mardia, lav_machine, "tab_mardia")
-                
-            }
-    
-            ### Covariances and correlations ==================================
-                j.fill_table(self$results$group_covariances$covcorrObserved, lav_machine$tab_covcorrObserved,spaceby="lgroup")
-                j.fill_table(self$results$group_covariances$covcorrImplied,  lav_machine$tab_covcorrImplied,spaceby="lgroup")
-                j.fill_table(self$results$group_covariances$covcorrResidual, lav_machine$tab_covcorrResidual,spaceby="lgroup") 
-                j.fill_table(self$results$group_covariances$covcorrCombined, lav_machine$tab_covcorrCombined, spaceby="variable")
-                j.fill_table(self$results$group_covariances$covcorrLatent, lav_machine$tab_covcorrLatent, spaceby="variable")
+        ## thresholds table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$models$thresholds, runner_machine)
+        aSmartObj$spaceBy          <- c("lgroup","level","lhs")
+        aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$activated        <- is.something(data_machine$ordered)
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        
 
-            ### Modification indices ==========================================
-            if (self$options$outputModificationIndices) {
-                j.fill_table(self$results$modgroup$modInd, lav_machine$tab_modInd, append=T)
-                j.add_warnings(self$results$modgroup$modInd, lav_machine, "tab_modInd")
-            }
-            
-            ### Path diagrams =================================================
-            private$.plot_machine$preparePlots()   
-            if (is.something(private$.plot_machine$warnings$diagram)) {
-                 for (i in seq_along(private$.plot_machine$warnings$diagram))
-                        self$results$pathgroup$notes$addRow(i,list(message=private$.plot_machine$warnings$diagram[[i]]))
-                  self$results$pathgroup$notes$setVisible(TRUE)
-            }
-            
-            self$results$.setModel(lav_machine$model)
-            ginfo("run ends")
-            
-        },
- 
-        .showDiagram=function(image,ggtheme, theme, ...) {
-            if (self$options$diagram==FALSE) 
-                return()
-            if (!is.something(image$state$semModel))
-                 return()
-            options<-private$.plot_machine$semPathsOptions
-            note<-FALSE
-            # we cannot do a do.call() because semPaths will fail
-            # so we need to pass the options directly to semPaths
-            res<-try_hard(
-                semPlot::semPaths(object = image$state$semModel
-                                  ,layout =options$layout
-                                  ,whatLabels=options$whatLabels
-                                  ,rotation = options$rotation
-                                  ,nCharNodes=options$nCharNodes
-                                  ,sizeLat = options$sizeLat
-                                  ,sizeLat2 = options$sizeLat2
-                                  ,sizeMan=options$sizeMan
-                                  ,sizeMan2=options$sizeMan2
-                                  ,residuals=options$residuals
-                                  ,intercepts=options$intercepts
-                                  ,shapeLat=options$shapeLat
-                                  ,shapeMan=options$shapeMan
-                                  
-                        )
-            )
-            
-            
-            if (!isFALSE(res$error)) {
-                # translate some lavaan error so they make sense for the user interface
-                if  (length(grep("Circle layout only supported",res$error,fixed = T))>0) {
-                    res$error<-PLOT_WARNS[["nocircle"]]
-                    note<-TRUE
-                } 
-                if  (length(grep("graph_from_edgelist",res$error,fixed = T))>0) {
-                    res$error<-PLOT_WARNS[["nocircle"]]
-                    note<-TRUE
-                } 
-                if  (length(grep("subscript out of",res$error,fixed = T))>0) {
-                    res$error<-PLOT_WARNS[["fail"]]
-                    note<-TRUE
-                }
-            }
-            
-            
-            
-            if (!isFALSE(res$error)) {
-                 self$results$pathgroup$notes$addRow("err",list(message=res$error))
-                 note<-TRUE
-            }
-            if (!isFALSE(res$warning)) {
-                self$results$pathgroup$notes$addRow("war",list(message=res$warning))
-                note<-TRUE
-            }
+        ## mlmeans table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$models$mlmeans, runner_machine)
+        aSmartObj$spaceBy          <- c("lgroup","level")
+        aSmartObj$activated        <- (self$options$mlmeans & is.something(runner_machine$cluster))
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        
+        ## defined parameters table ###
 
-            if (note)
-                self$results$pathgroup$notes$setVisible(TRUE)
+        aSmartObj                  <- SmartTable$new(self$results$models$defined, runner_machine)
+        aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$activateOnData   <-TRUE
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-            return(TRUE)
+        
+        ## raliability matrix table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$additional$reliability, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$activated        <-(self$options$reliability & is.something(runner_machine$latent))
+        if (is.something(runner_machine$ordered))
+          aSmartObj$setColumnVisible <- "alpha.ord"
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-        },
+        ## mardia matrix table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$additional$mardia, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-        ### at the moment no "syntax mode" is produced. I do not think that this
-        ### module will be useful in R, so the there's no need to output it's R
-        ### syntax
-        .sourcifyOption = function(option) {
-            return("")
+        ## observed covariances table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$covariances$observed, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandFrom       <- 4
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+
+        ## implied covariances table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$covariances$implied, runner_machine)
+        aSmartObj$spaceBy          <- c("lgroup","level")
+        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandFrom       <- 4
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+
+        ## residuals covariances table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$covariances$residual, runner_machine)
+        aSmartObj$spaceBy          <- c("lgroup","level")
+        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandFrom       <- 4
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+
+        ## combined covariances table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$covariances$combined, runner_machine)
+        aSmartObj$spaceBy          <- c("lgroup","level")
+        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandFrom       <- 4
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+
+        ## latent covariances table ###
+        aSmartObj                  <- SmartTable$new(self$results$covariances$latent, runner_machine)
+        aSmartObj$spaceBy          <- c("lgroup","level")
+        aSmartObj$activated        <- ((self$options$cov.lv) & is.something(runner_machine$latent))
+        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandFrom       <- 4
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+
+        ## modification indices table ###
+        aSmartObj                  <- SmartTable$new(self$results$modification$indices, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+
+
+
+        for (tab in private$.smartObjs) {
+          tab$initTable()
+        }
+
+
+        private$.data_machine <- data_machine
+        private$.runner_machine <- runner_machine
+
+        ######## plotting class #######
+        private$.plotter_machine<-Plotter$new(self$options,runner_machine,self$results$pathgroup)
+        private$.plotter_machine$initPlots()
+
+        now <- Sys.time()
+        ginfo("INIT TIME:", now - private$.time, " secs")
+      },
+      .run = function() {
+        ginfo("MODULE:  #### phase run ####")
+
+        if (self$options$donotrun) {
+          return()
+        }
+
+        private$.ready <- readiness(self$options)
+        if (!private$.ready$ready) {
+          return()
+        }
+        runnow <- Sys.time()
+        data <- private$.data_machine$cleandata(self$data)
+        private$.runner_machine$estimate(data)
+
+        ### run tables ###
+
+        for (smarttab in private$.smartObjs) {
+          smarttab$runTable()
+        }
+
+        private$.plotter_machine$preparePlots()   
+        if (is.something(private$.plotter_machine$warnings$diagram)) {
+          for (i in seq_along(private$.plotter_machine$warnings$diagram))
+            self$results$pathgroup$notes$addRow(i,list(message=private$.plotter_machine$warnings$diagram[[i]]))
+          self$results$pathgroup$notes$setVisible(TRUE)
         }
         
-        )
-)
+
+      
+        ginfo("MODULE:  #### phase end ####")
+
+        ginfo("RUN TIME:", Sys.time() - runnow, " secs")
+
+        ginfo("TIME:", Sys.time() - private$.time, " secs")
+
+        return()
+      },
+
+      .showDiagram=function(image,ggtheme, theme, ...) {
+        
+          
+          if (self$options$diagram==FALSE) 
+              return()
+          if (!is.something(image$state$semModel))
+              return()
+          options<-private$.plotter_machine$semPathsOptions
+        
+              # leave this here for future reference
+              # semPlot::semPaths(object = image$state$semModel,
+              #                   layout =options$layout,
+              #                   residuals = options$residuals,
+              #                   rotation = options$rotation,
+              #                   intercepts = options$intercepts,
+              #                   nodeLabels= options$nodeLabels,
+              #                   whatLabels=options$whatLabels,
+              #                   sizeMan = options$sizeMan,
+              #                   sizeMan2=options$sizeMan2,
+              #                   curve=options$curve,
+              #                   shapeMan=options$shapeMan,
+              #                   edge.label.cex =options$edge.label.cex)
+          note<-FALSE
+  
+          res<-try_hard(
+                      semPlot::semPaths(object = image$state$semModel
+                                        ,layout =options$layout
+                                        ,whatLabels=options$whatLabels
+                                        ,rotation = options$rotation
+                                        ,nCharNodes=options$nCharNodes
+                                        ,sizeLat = options$sizeLat
+                                        ,sizeLat2 = options$sizeLat2
+                                        ,sizeMan=options$sizeMan
+                                        ,sizeMan2=options$sizeMan2
+                                        ,residuals=options$residuals
+                                        ,intercepts=options$intercepts
+                                        ,shapeLat=options$shapeLat
+                                        ,shapeMan=options$shapeMan
+                                        ,thresholds = FALSE
+                      
+                                    )
+                        )
+  
+  
+          if (!isFALSE(res$error)) {
+              # translate some lavaan error so they make sense for the user interface
+              if  (length(grep("Circle layout only supported",res$error,fixed = T))>0) {
+                  res$error<-PLOT_WARNS[["nocircle"]]
+                  note<-TRUE
+              } 
+              if  (length(grep("graph_from_edgelist",res$error,fixed = T))>0) {
+                  res$error<-PLOT_WARNS[["nocircle"]]
+                  note<-TRUE
+              } 
+              if  (length(grep("subscript out of",res$error,fixed = T))>0) {
+                  res$error<-PLOT_WARNS[["fail"]]
+                  note<-TRUE
+              }
+          }
+          
+          if (!isFALSE(res$error)) {
+              private$.plotter_machine$dispatcher$warnings<-list(topic="pathgroup_notes",message=res$error)
+          }
+          if (!isFALSE(res$warning)) {
+            private$.plotter_machine$dispatcher$warnings<-list(topic="pathgroup_notes",message=res$warning)
+          }
+  
+          return(TRUE)
+  
+      },
+
+      .sourcifyOption = function(option) {
+        return("")
+        # skip<-c("modelTerms","factors","covs","dep")
+        # defaults<-c(scaling="centered",contrasts="simple")
+        #
+        # if (option$name %in% skip)
+        #     return('')
+        # sourcifyOption(option,defaults)
+      }
+    )
+  )
+}

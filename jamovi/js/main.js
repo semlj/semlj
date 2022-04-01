@@ -84,8 +84,8 @@ const events = {
      loaded(ui) {
         console.log("loaded code");
        var val = ui.multigroup.value();
-       console.log(typeof(val));
-       console.log(JSON.stringify(val));
+       console.log("multigroup type",typeof(val));
+       console.log("multigroup value",JSON.stringify(val));
        
       
        

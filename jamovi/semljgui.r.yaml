@@ -11,14 +11,15 @@ items:
     visible: (FALSE)
 
 
+
   # Model overview and examples ===============================================
   - name: info
     title: Models Info
     type: Table
 #   description: 
-    refs: semlj    
-    clearWith:
-      - code
+    refs: 
+      - semlj
+      - lavaan
     columns:
       - name: info
         type: text
@@ -32,11 +33,12 @@ items:
         title: ""
         combineBelow: true
 
-  - name: contraintsnotes
+  - name: synexamples
     type: Table
 #   description:     
     visible: (constraints_examples)
     title: "Syntax examples"
+    clearWith:
     columns:
       - name: info
         type: text
@@ -55,7 +57,28 @@ items:
     type: Group
     visible: false
     clearWith:
-      - code
+      - code 
+      - estimator
+      - likelihood
+      - meanstructure  
+      - intercepts  
+      - std_lv
+      - std_ov  
+      - cov_x  
+      - cov_y  
+      - cov_lv      
+      - cluster  
+      - multigroup  
+      - eq_loadings  
+      - eq_intercepts  
+      - eq_residuals  
+      - eq_residual.covariances  
+      - eq_means  
+      - eq_thresholds  
+      - eq_regressions  
+      - eq_lv.variances  
+      - eq_lv.covariances  
+    
     items:
 
       # Model tests -----------------------------------------------------------
@@ -64,9 +87,29 @@ items:
         type: Table
 #       description: 
         clearWith:
-          - ciType
-          - cov_y
-          - code
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+        
+
         columns:
           - name: label
             title: Label
@@ -90,9 +133,28 @@ items:
 #       description: 
         visible: false
         clearWith:
-          - ciType
-          - cov_y
-          - code
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+        
         columns:
           - name: type
             type: text
@@ -125,33 +187,32 @@ items:
         type: Table
 #       description: 
         clearWith:
-          - endogenous
-          - covs
-          - factors
-          - ciType
-          - contrasts
-          - cov_y
-          - constraints
-        columns:
-          - name:  aic
-            title: AIC
-            visible: (estimator:ML)
-            type: number
-          - name:  bic
-            title: BIC
-            type: number
-            visible: (estimator:ML)
-          - name:  bic2
-            title: "adj. BIC"
-            type: number
-            visible: (estimator:ML)
-          - name: cfi
-            title: 'CFI'
-            type: number
-          - name: cfi
-            title: 'TLI'
-            type: number
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
 
+        columns:
+          - name: type
+            title: Type
+            visible: false
           - name:  srmr
             title: SRMR
             type: number
@@ -173,6 +234,130 @@ items:
             type: number
             format: zto,pvalue
 
+      # Additional fit measures (1): User model versus baseline model ---------
+      - name: modelbaseline
+        title: 'User model versus baseline model'
+        type: Table
+#       description:
+        visible: true
+        clearWith:
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+
+        rows: 8
+        columns:
+          - name: name
+            title: ""
+            type: text
+          - name: statistics
+            title: Model
+            type: number
+            format: zto
+
+      # Additional fit measures (2): Other fit indices ------------------------
+      - name: moreindices
+        title: 'Additional fit indices'
+        type: Table
+#       description:
+        visible: (outputAdditionalFitMeasures)
+
+        clearWith:
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+
+        columns:
+          - name: name
+            title: ""
+            type: text
+          - name: statistics
+            title: Model
+            type: number
+
+
+      # R² measures -----------------------------------------------------------
+      - name: rsquared
+        title: 'R²'
+        type: Table
+#       description:
+        visible: false
+        clearWith:
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+
+        columns:
+          - name:  lgroup
+            title: Group
+            type: text
+            visible: (multigroup)
+            combineBelow: true
+          - name: label
+            title: Label
+            type: text
+            visible: (showlabels)
+          - name: rhs
+            title: "Variable"
+            type: text
+          - name: est
+            title: R²
+            type: number
+
 
   # Estimates =================================================================
   - name: models
@@ -185,15 +370,36 @@ items:
       - name: coefficients
         title: Parameters estimates
         type: Table
+        visible: false
 #       description: 
-        refs: lavaan
         clearWith:
-          - ciType
-          - contrasts
-          - cov_y
-          - data
-          - multigroup
-          - code
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+              - bootci
+              - bootN 
+              - ci  
+              - ci_width
+              - se
+          
         columns:
           - name: lgroup
             title: Group
@@ -242,12 +448,33 @@ items:
 #       description: 
         visible: false
         clearWith:
-          - ciType
-          - contrasts
-          - cov_y
-          - data
-          - multigroup
-          - code
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+              - bootci
+              - bootN 
+              - ci  
+              - ci_width
+              - se
+
         columns:
           - name: lgroup
             title: Group
@@ -296,12 +523,34 @@ items:
 #       description: 
         visible: false
         clearWith:
-          - ciType
-          - contrasts
-          - cov_y
-          - data
-          - multigroup
-          - code
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+              - bootci
+              - bootN 
+              - ci  
+              - ci_width
+              - se
+
+
         columns:
           - name: lgroup
             title: Group
@@ -350,17 +599,33 @@ items:
         title: Variances and Covariances
         type: Table
         clearWith:
-                  - endogenous
-                  - covs
-                  - factors
-                  - ciType
-                  - contrasts
-                  - cov_y
-                  - constraints
-                  - data
-                  - multigroup
-                  - varcov
-                  
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+              - bootci
+              - bootN 
+              - ci  
+              - ci_width
+              - se
+
         columns:
                     - name: lgroup
                       title: Group
@@ -412,11 +677,33 @@ items:
 #       description: 
         visible: false
         clearWith:
-          - ciType
-          - cov_y
-          - data
-          - multigroup
-          - code
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+              - bootci
+              - bootN 
+              - ci  
+              - ci_width
+              - se
+        
         columns:
           - name: lgroup
             title: Group
@@ -457,6 +744,85 @@ items:
             type: number
             format: zto,pvalue
 
+      # Thresholds ------------------------------------------------------------
+      - name: thresholds
+        title: Thresholds
+        type: Table
+#       description: 
+        visible: false
+        clearWith:
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+              - bootci
+              - bootN 
+              - ci  
+              - ci_width
+              - se
+
+        columns:
+          - name: lgroup
+            title: Group
+            type: text
+            visible: (multigroup)
+            combineBelow: true
+          - name: label
+            title: Label
+            type: text
+            visible: (showlabels)
+          - name: lhs
+            title: "Variable"
+            type: text
+          - name: rhs
+            title: "Step"
+            type: text
+
+          - name: est
+            title: "Thresholds"
+            type: number
+            format: zto
+          - name: se
+            title: "SE"
+            type: number
+            format: zto
+          - name: ci.lower
+            type: number
+            title: Lower
+            visible: (ci)
+            format: zto
+          - name: ci.upper
+            type: number
+            title: Upper
+            visible: (ci)
+            format: zto
+          - name: z
+            title: "z"
+            type: number
+            format: zto
+          - name: pvalue
+            title: "p"
+            type: number
+            format: zto,pvalue
+
+
       # Defined parameters ----------------------------------------------------
       - name: defined
         title: Defined parameters
@@ -464,11 +830,33 @@ items:
 #       description: 
         visible: false
         clearWith:
-          - ciType
-          - cov_y
-          - data
-          - multigroup
-          - code
+              - code 
+              - estimator
+              - likelihood
+              - meanstructure  
+              - intercepts  
+              - std_lv
+              - std_ov  
+              - cov_x  
+              - cov_y  
+              - cov_lv      
+              - cluster  
+              - multigroup  
+              - eq_loadings  
+              - eq_intercepts  
+              - eq_residuals  
+              - eq_residual.covariances  
+              - eq_means  
+              - eq_thresholds  
+              - eq_regressions  
+              - eq_lv.variances  
+              - eq_lv.covariances  
+              - bootci
+              - bootN 
+              - ci  
+              - ci_width
+              - se
+        
         columns:
           - name: lhs
             title: "Label"
@@ -512,75 +900,18 @@ items:
 
 
   # Additional outputs ========================================================
-  - name: add_outputs
+  - name: additional
     title: "Additional outputs"
     type: Group
     visible: (outputAdditionalFitMeasures || (r2) || outputMardiasCoefficients)
     items:
 
-      # Additional fit measures (1): User model versus baseline model ---------
-      - name: compModelBsl
-        title: 'User model versus baseline model'
-        type: Table
-#       description:
-        visible: (outputAdditionalFitMeasures)
-        clearWith:
-        rows: 8
-        columns:
-          - name: name
-            title: ""
-            type: text
-          - name: statistics
-            title: Model
-            type: number
-            format: zto
-      # Additional fit measures (2): Other fit indices ------------------------
-      - name: otherFit
-        title: 'Other fit indices'
-        type: Table
-#       description:
-        visible: (outputAdditionalFitMeasures)
-        clearWith:
-        rows: 5
-        columns:
-          - name: name
-            title: ""
-            type: text
-          - name: statistics
-            title: Model
-            type: number
-
-      # R² measures -----------------------------------------------------------
-      - name: Rsquared
-        title: 'R²-values of the endogenous variables'
-        type: Table
-#       description:
-        visible: false
-        clearWith:
-#       variable number of rows
-        columns:
-          - name:  lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
-          - name: rhs
-            title: "Variable"
-            type: text
-          - name: est
-            title: R²
-            type: number
-
       - name: reliability
         title: 'Reliability indices'
         type: Table
-#       description:
         visible: false
-        clearWith:
-#       variable number of rows
+        clearWith: []
+        refs: semtools
         columns:
           - name:  lgroup
             title: Group
@@ -591,13 +922,16 @@ items:
             type: text
             visible: false
             combineBelow: true
-
           - name: variable
             title: "Variable"
             type: text
           - name: alpha
             title: α
             type: number
+          - name: alpha.ord
+            title: Ordinal α
+            type: number
+            visible: false
           - name: omega
             title: ω₁
             type: number
@@ -619,7 +953,7 @@ items:
 #       description:
         refs: semtools
         visible: (outputMardiasCoefficients)
-        clearWith:
+        clearWith: []
         rows: 2
         columns:
         - name: name
@@ -644,7 +978,7 @@ items:
 
 
   # Covariances and correlations ==============================================
-  - name: group_covariances
+  - name: covariances
     title: "Covariances and correlations"
     type: Group
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances || cov.lv)
@@ -652,17 +986,11 @@ items:
 
     # all tables below have variable number of rows and columns
     # Observed covariances and correlations -----------------------------------
-    - name: covcorrObserved
+    - name: observed
       title: Observed covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: false
+      visible: (outputObservedCovariances & !outpuCombineCovariances)
       description: A covariance / correlation matrix table.
-      clearWith:
-        - ciType
-        - cov_y
-        - data
-        - multigroup
-        - code
       columns:
       - name: lgroup
         title: Group
@@ -678,17 +1006,11 @@ items:
         visible: false 
 
     # Model-implied / fitted covariances and correlations ---------------------
-    - name: covcorrImplied
+    - name: implied
       title: Fitted covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: false
+      visible: (outputImpliedCovariances & !outpuCombineCovariances)
       description: A covariance / correlation matrix table.
-      clearWith:
-        - ciType
-        - cov_y
-        - data
-        - multigroup
-        - code
       columns:
       - name: lgroup
         title: Group
@@ -704,17 +1026,11 @@ items:
         visible: false 
 
     # Residual covariances and correlations -----------------------------------
-    - name: covcorrResidual
+    - name: residual
       title: Residual covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: false
+      visible: (outputResidualCovariances & !outpuCombineCovariances)
       description: A covariance / correlation matrix table.
-      clearWith:
-        - ciType
-        - cov_y
-        - data
-        - multigroup
-        - code
       columns:
       - name: lgroup
         title: Group
@@ -731,17 +1047,11 @@ items:
 
     # Combined covariances and correlations (sorted by variable; observed,
     # implied, residual within a cell -----------------------------------------
-    - name: covcorrCombined
+    - name: combined
       title: Covariances (lower triangle) and correlations (upper triangle)
       type: Table
-      visible: false
+      visible: (outpuCombineCovariances)
       description: A covariance / correlation matrix table.
-      clearWith:
-        - ciType
-        - cov_y
-        - data
-        - multigroup
-        - code
       columns:
       - name: lgroup
         title: Group
@@ -752,26 +1062,20 @@ items:
         title: ""
         type: text
         combineBelow: true
-      - name: type
-        title: ""
-        type: text
       - name: level
         title: ""
         type: text
         visible: false 
+      - name: type
+        title: ""
+        type: text
 
-    - name: covcorrLatent
+    - name: latent
       title: Model-implied Covariances for latent variables
       type: Table
       visible: false
       description: A covariance matrix table.
-      clearWith:
-        - ciType
-        - cov_y
-        - data
-        - multigroup
-        - code
-        - cluster
+      clearWith: []
       columns:
       - name: lgroup
         title: Group
@@ -789,18 +1093,13 @@ items:
 
 
   # Modification indices ======================================================
-  - name: modgroup
+  - name: modification
     title: "Modifcation indices"
     type: Group
     visible: (outputModificationIndices)
-    clearWith:
-      - ciType
-      - cov_y
-      - data
-      - multigroup
-      - code
+    clearWith: []
     items:
-      - name: modInd
+      - name: indices
         title: 'Modification indices'
         type: Table
         visible: (outputModificationIndices)
@@ -849,20 +1148,7 @@ items:
     type: Group
     title: Path Model
     visible: (diagram)
-    clearWith:
-      - cov_y
-      - data
-      - multigroup
-      - code
-      - diag_shape_man
-      - diag_shape_lat
-      - diag_abbrev
-      - diag_type
-      - diag_rotate
-      - diag_labsize
-      - diag_resid
-      - diag_paths
-      - dia_intercepts
+    clearWith: []
     items:
 
     # Path diagrams -----------------------------------------------------------
@@ -879,8 +1165,6 @@ items:
           width: 800
           height: 600
           clearWith:
-            - cov_y
-            - data
             - multigroup
             - code
             - diag_shape_man
@@ -895,11 +1179,7 @@ items:
 
     # Path diagram notes ------------------------------------------------------
       - name: notes
-        type: Table
+        type: Html
         title: ""
 #       description:
         visible: false
-        columns:
-          - name: message
-            type: text
-            title: "Model diagram notes"

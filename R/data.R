@@ -10,3 +10,14 @@
 #' data(pathjdata)
 NULL
 
+#' Ordinal variables example data
+#'
+#' Data for testing SEM with ordinal variables
+#'
+#' @docType data
+#' @name ordereditems
+#' @usage data(ordereditems)
+#' @keywords datasets
+#' @examples
+#' data(ordereditems)
+NULL

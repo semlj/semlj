@@ -11,15 +11,16 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             fonts = "small",
             vars = list(),
             toggle = FALSE,
+            donotrun = NULL,
             estimator = "default",
             likelihood = "default",
             scoretest = TRUE,
             cumscoretest = FALSE,
-            se = "standard",
+            se = "auto",
             bootci = "perc",
             bootN = 1000,
             ci = TRUE,
-            ciWidth = 95,
+            ci_width = 95,
             meanstructure = TRUE,
             intercepts = TRUE,
             indirect = FALSE,
@@ -27,9 +28,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             std_ov = FALSE,
             cov_x = FALSE,
             cov_y = TRUE,
+            cov_lv = TRUE,
             cluster = NULL,
-            ml_icc = TRUE,
-            ml_means = FALSE,
+            icc = TRUE,
+            mlmeans = FALSE,
             multigroup = NULL,
             eq_loadings = FALSE,
             eq_intercepts = FALSE,
@@ -100,16 +102,25 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 toggle,
                 default=FALSE,
                 hidden=TRUE)
+            private$..donotrun <- jmvcore::OptionBool$new(
+                "donotrun",
+                donotrun)
             private$..estimator <- jmvcore::OptionList$new(
                 "estimator",
                 estimator,
                 options=list(
                     "default",
                     "ML",
+                    "MLM",
+                    "MLMV",
+                    "MLMVS",
                     "PML",
                     "GLS",
                     "WLS",
                     "DWLS",
+                    "WLSM",
+                    "WLSMV",
+                    "WLSMVS",
                     "ULS"),
                 default="default")
             private$..likelihood <- jmvcore::OptionList$new(
@@ -132,11 +143,12 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "se",
                 se,
                 options=list(
+                    "auto",
                     "standard",
                     "robust.sem",
                     "robust.huber.white",
                     "boot"),
-                default="standard")
+                default="auto")
             private$..bootci <- jmvcore::OptionList$new(
                 "bootci",
                 bootci,
@@ -155,9 +167,9 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "ci",
                 ci,
                 default=TRUE)
-            private$..ciWidth <- jmvcore::OptionNumber$new(
-                "ciWidth",
-                ciWidth,
+            private$..ci_width <- jmvcore::OptionNumber$new(
+                "ci_width",
+                ci_width,
                 min=50,
                 max=99.9,
                 default=95)
@@ -192,6 +204,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "cov_y",
                 cov_y,
                 default=TRUE)
+            private$..cov_lv <- jmvcore::OptionBool$new(
+                "cov_lv",
+                cov_lv,
+                default=TRUE)
             private$..cluster <- jmvcore::OptionVariable$new(
                 "cluster",
                 cluster,
@@ -201,13 +217,13 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 permitted=list(
                     "factor"),
                 default=NULL)
-            private$..ml_icc <- jmvcore::OptionBool$new(
-                "ml_icc",
-                ml_icc,
+            private$..icc <- jmvcore::OptionBool$new(
+                "icc",
+                icc,
                 default=TRUE)
-            private$..ml_means <- jmvcore::OptionBool$new(
-                "ml_means",
-                ml_means,
+            private$..mlmeans <- jmvcore::OptionBool$new(
+                "mlmeans",
+                mlmeans,
                 default=FALSE)
             private$..multigroup <- jmvcore::OptionString$new(
                 "multigroup",
@@ -396,6 +412,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..fonts)
             self$.addOption(private$..vars)
             self$.addOption(private$..toggle)
+            self$.addOption(private$..donotrun)
             self$.addOption(private$..estimator)
             self$.addOption(private$..likelihood)
             self$.addOption(private$..scoretest)
@@ -404,7 +421,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..bootci)
             self$.addOption(private$..bootN)
             self$.addOption(private$..ci)
-            self$.addOption(private$..ciWidth)
+            self$.addOption(private$..ci_width)
             self$.addOption(private$..meanstructure)
             self$.addOption(private$..intercepts)
             self$.addOption(private$..indirect)
@@ -412,9 +429,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..std_ov)
             self$.addOption(private$..cov_x)
             self$.addOption(private$..cov_y)
+            self$.addOption(private$..cov_lv)
             self$.addOption(private$..cluster)
-            self$.addOption(private$..ml_icc)
-            self$.addOption(private$..ml_means)
+            self$.addOption(private$..icc)
+            self$.addOption(private$..mlmeans)
             self$.addOption(private$..multigroup)
             self$.addOption(private$..eq_loadings)
             self$.addOption(private$..eq_intercepts)
@@ -456,6 +474,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fonts = function() private$..fonts$value,
         vars = function() private$..vars$value,
         toggle = function() private$..toggle$value,
+        donotrun = function() private$..donotrun$value,
         estimator = function() private$..estimator$value,
         likelihood = function() private$..likelihood$value,
         scoretest = function() private$..scoretest$value,
@@ -464,7 +483,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         bootci = function() private$..bootci$value,
         bootN = function() private$..bootN$value,
         ci = function() private$..ci$value,
-        ciWidth = function() private$..ciWidth$value,
+        ci_width = function() private$..ci_width$value,
         meanstructure = function() private$..meanstructure$value,
         intercepts = function() private$..intercepts$value,
         indirect = function() private$..indirect$value,
@@ -472,9 +491,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         std_ov = function() private$..std_ov$value,
         cov_x = function() private$..cov_x$value,
         cov_y = function() private$..cov_y$value,
+        cov_lv = function() private$..cov_lv$value,
         cluster = function() private$..cluster$value,
-        ml_icc = function() private$..ml_icc$value,
-        ml_means = function() private$..ml_means$value,
+        icc = function() private$..icc$value,
+        mlmeans = function() private$..mlmeans$value,
         multigroup = function() private$..multigroup$value,
         eq_loadings = function() private$..eq_loadings$value,
         eq_intercepts = function() private$..eq_intercepts$value,
@@ -515,6 +535,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..fonts = NA,
         ..vars = NA,
         ..toggle = NA,
+        ..donotrun = NA,
         ..estimator = NA,
         ..likelihood = NA,
         ..scoretest = NA,
@@ -523,7 +544,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..bootci = NA,
         ..bootN = NA,
         ..ci = NA,
-        ..ciWidth = NA,
+        ..ci_width = NA,
         ..meanstructure = NA,
         ..intercepts = NA,
         ..indirect = NA,
@@ -531,9 +552,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..std_ov = NA,
         ..cov_x = NA,
         ..cov_y = NA,
+        ..cov_lv = NA,
         ..cluster = NA,
-        ..ml_icc = NA,
-        ..ml_means = NA,
+        ..icc = NA,
+        ..mlmeans = NA,
         ..multigroup = NA,
         ..eq_loadings = NA,
         ..eq_intercepts = NA,
@@ -576,12 +598,12 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         model = function() private$..model,
         info = function() private$.items[["info"]],
-        contraintsnotes = function() private$.items[["contraintsnotes"]],
+        synexamples = function() private$.items[["synexamples"]],
         fit = function() private$.items[["fit"]],
         models = function() private$.items[["models"]],
-        add_outputs = function() private$.items[["add_outputs"]],
-        group_covariances = function() private$.items[["group_covariances"]],
-        modgroup = function() private$.items[["modgroup"]],
+        additional = function() private$.items[["additional"]],
+        covariances = function() private$.items[["covariances"]],
+        modification = function() private$.items[["modification"]],
         pathgroup = function() private$.items[["pathgroup"]]),
     private = list(
         ..model = NA),
@@ -596,9 +618,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="info",
                 title="Models Info",
-                refs="semlj",
-                clearWith=list(
-                    "code"),
+                refs=list(
+                    "semlj",
+                    "lavaan"),
                 columns=list(
                     list(
                         `name`="info", 
@@ -616,9 +638,10 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `combineBelow`=TRUE))))
             self$add(jmvcore::Table$new(
                 options=options,
-                name="contraintsnotes",
+                name="synexamples",
                 visible="(constraints_examples)",
                 title="Syntax examples",
+                clearWith=NULL,
                 columns=list(
                     list(
                         `name`="info", 
@@ -637,7 +660,11 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 active = list(
                     main = function() private$.items[["main"]],
                     constraints = function() private$.items[["constraints"]],
-                    indices = function() private$.items[["indices"]]),
+                    indices = function() private$.items[["indices"]],
+                    modelbaseline = function() private$.items[["modelbaseline"]],
+                    moreindices = function() private$.items[["moreindices"]],
+                    rsquared = function() private$.items[["rsquared"]],
+                    icc = function() private$.items[["icc"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -646,15 +673,53 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="fit",
                             title="Overall Tests",
                             clearWith=list(
-                    "code"))
+                    "code",
+                    "estimator",
+                    "likelihood",
+                    "meanstructure",
+                    "intercepts",
+                    "std_lv",
+                    "std_ov",
+                    "cov_x",
+                    "cov_y",
+                    "cov_lv",
+                    "cluster",
+                    "multigroup",
+                    "eq_loadings",
+                    "eq_intercepts",
+                    "eq_residuals",
+                    "eq_residual.covariances",
+                    "eq_means",
+                    "eq_thresholds",
+                    "eq_regressions",
+                    "eq_lv.variances",
+                    "eq_lv.covariances"))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="main",
                             title="Model tests",
                             clearWith=list(
-                                "ciType",
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
                                 "cov_y",
-                                "code"),
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances"),
                             columns=list(
                                 list(
                                     `name`="label", 
@@ -679,9 +744,27 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Constraints score tests",
                             visible=FALSE,
                             clearWith=list(
-                                "ciType",
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
                                 "cov_y",
-                                "code"),
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances"),
                             columns=list(
                                 list(
                                     `name`="type", 
@@ -719,37 +802,32 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="indices",
                             title="Fit indices",
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
-                                "ciType",
-                                "contrasts",
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
                                 "cov_y",
-                                "constraints"),
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances"),
                             columns=list(
                                 list(
-                                    `name`="aic", 
-                                    `title`="AIC", 
-                                    `visible`="(estimator:ML)", 
-                                    `type`="number"),
-                                list(
-                                    `name`="bic", 
-                                    `title`="BIC", 
-                                    `type`="number", 
-                                    `visible`="(estimator:ML)"),
-                                list(
-                                    `name`="bic2", 
-                                    `title`="adj. BIC", 
-                                    `type`="number", 
-                                    `visible`="(estimator:ML)"),
-                                list(
-                                    `name`="cfi", 
-                                    `title`="CFI", 
-                                    `type`="number"),
-                                list(
-                                    `name`="tli", 
-                                    `title`="TLI", 
-                                    `type`="number"),
+                                    `name`="type", 
+                                    `title`="Type", 
+                                    `visible`=FALSE),
                                 list(
                                     `name`="srmr", 
                                     `title`="SRMR", 
@@ -774,7 +852,159 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="rmsea.pvalue", 
                                     `title`="RMSEA p", 
                                     `type`="number", 
-                                    `format`="zto,pvalue"))))}))$new(options=options))
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="modelbaseline",
+                            title="User model versus baseline model",
+                            visible=TRUE,
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text"),
+                                list(
+                                    `name`="statistics", 
+                                    `title`="Model", 
+                                    `type`="number", 
+                                    `format`="zto"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="moreindices",
+                            title="Additional fit indices",
+                            visible="(outputAdditionalFitMeasures)",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances"),
+                            columns=list(
+                                list(
+                                    `name`="name", 
+                                    `title`="", 
+                                    `type`="text"),
+                                list(
+                                    `name`="statistics", 
+                                    `title`="Model", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="rsquared",
+                            title="R\u00B2",
+                            visible=FALSE,
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="label", 
+                                    `title`="Label", 
+                                    `type`="text", 
+                                    `visible`="(showlabels)"),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="R\u00B2", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="icc",
+                            title="Intra-class correlations",
+                            visible=FALSE,
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="ICC", 
+                                    `type`="number"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -783,6 +1013,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     composites = function() private$.items[["composites"]],
                     covariances = function() private$.items[["covariances"]],
                     intercepts = function() private$.items[["intercepts"]],
+                    thresholds = function() private$.items[["thresholds"]],
+                    mlmeans = function() private$.items[["mlmeans"]],
                     defined = function() private$.items[["defined"]]),
                 private = list(),
                 public=list(
@@ -795,14 +1027,34 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="coefficients",
                             title="Parameters estimates",
-                            refs="lavaan",
+                            visible=FALSE,
                             clearWith=list(
-                                "ciType",
-                                "contrasts",
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
                                 "cov_y",
-                                "data",
+                                "cov_lv",
+                                "cluster",
                                 "multigroup",
-                                "code"),
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "bootci",
+                                "bootN",
+                                "ci",
+                                "ci_width",
+                                "se"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -866,13 +1118,32 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Measurement model",
                             visible=FALSE,
                             clearWith=list(
-                                "ciType",
-                                "contrasts",
-                                "cov_y",
-                                "data",
-                                "multigroup",
                                 "code",
-                                "cluster"),
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "bootci",
+                                "bootN",
+                                "ci",
+                                "ci_width",
+                                "se"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -937,12 +1208,32 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Composites",
                             visible=FALSE,
                             clearWith=list(
-                                "ciType",
-                                "contrasts",
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
                                 "cov_y",
-                                "data",
+                                "cov_lv",
+                                "cluster",
                                 "multigroup",
-                                "code"),
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "bootci",
+                                "bootN",
+                                "ci",
+                                "ci_width",
+                                "se"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1006,17 +1297,32 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="covariances",
                             title="Variances and Covariances",
                             clearWith=list(
-                                "endogenous",
-                                "covs",
-                                "factors",
-                                "ciType",
-                                "contrasts",
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
                                 "cov_y",
-                                "constraints",
-                                "data",
+                                "cov_lv",
+                                "cluster",
                                 "multigroup",
-                                "varcov",
-                                "cluster"),
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "bootci",
+                                "bootN",
+                                "ci",
+                                "ci_width",
+                                "se"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1080,12 +1386,32 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Intercepts",
                             visible=FALSE,
                             clearWith=list(
-                                "ciType",
-                                "cov_y",
-                                "data",
-                                "multigroup",
                                 "code",
-                                "cluster"),
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "bootci",
+                                "bootN",
+                                "ci",
+                                "ci_width",
+                                "se"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1142,15 +1468,177 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `format`="zto,pvalue"))))
                         self$add(jmvcore::Table$new(
                             options=options,
+                            name="thresholds",
+                            title="Thresholds",
+                            visible=FALSE,
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "bootci",
+                                "bootN",
+                                "ci",
+                                "ci_width",
+                                "se"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text", 
+                                    `visible`="(cluster)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="label", 
+                                    `title`="Label", 
+                                    `type`="text", 
+                                    `visible`="(showlabels)"),
+                                list(
+                                    `name`="lhs", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Step", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="Thresholds", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="se", 
+                                    `title`="SE", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(ci)", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(ci)", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="z", 
+                                    `title`="z", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="pvalue", 
+                                    `title`="p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="mlmeans",
+                            title="Expected Means",
+                            visible=FALSE,
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "bootci",
+                                "bootN",
+                                "ci",
+                                "ci_width",
+                                "se"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="Level", 
+                                    `type`="text"),
+                                list(
+                                    `name`="lhs", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="Mean", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
                             name="defined",
                             title="Defined parameters",
                             visible=FALSE,
                             clearWith=list(
-                                "ciType",
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "intercepts",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
                                 "cov_y",
-                                "data",
+                                "cov_lv",
+                                "cluster",
                                 "multigroup",
-                                "code"),
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "bootci",
+                                "bootN",
+                                "ci",
+                                "ci_width",
+                                "se"),
                             columns=list(
                                 list(
                                     `name`="lhs", 
@@ -1204,58 +1692,22 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    compModelBsl = function() private$.items[["compModelBsl"]],
-                    otherFit = function() private$.items[["otherFit"]],
-                    Rsquared = function() private$.items[["Rsquared"]],
                     reliability = function() private$.items[["reliability"]],
-                    ml_icc = function() private$.items[["ml_icc"]],
                     mardia = function() private$.items[["mardia"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
                         super$initialize(
                             options=options,
-                            name="add_outputs",
+                            name="additional",
                             title="Additional outputs")
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="compModelBsl",
-                            title="User model versus baseline model",
-                            visible="(outputAdditionalFitMeasures)",
-                            clearWith=NULL,
-                            rows=8,
-                            columns=list(
-                                list(
-                                    `name`="name", 
-                                    `title`="", 
-                                    `type`="text"),
-                                list(
-                                    `name`="statistics", 
-                                    `title`="Model", 
-                                    `type`="number", 
-                                    `format`="zto"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
-                            name="otherFit",
-                            title="Other fit indices",
-                            visible="(outputAdditionalFitMeasures)",
-                            clearWith=NULL,
-                            rows=5,
-                            columns=list(
-                                list(
-                                    `name`="name", 
-                                    `title`="", 
-                                    `type`="text"),
-                                list(
-                                    `name`="statistics", 
-                                    `title`="Model", 
-                                    `type`="number"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
-                            name="Rsquared",
-                            title="R\u00B2-values of the endogenous variables",
+                            name="reliability",
+                            title="Reliability indices",
                             visible=FALSE,
-                            clearWith=NULL,
+                            clearWith=list(),
+                            refs="semtools",
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1269,30 +1721,10 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(cluster)", 
                                     `combineBelow`=TRUE),
                                 list(
-                                    `name`="rhs", 
-                                    `title`="Variable", 
-                                    `type`="text"),
-                                list(
-                                    `name`="est", 
-                                    `title`="R\u00B2", 
-                                    `type`="number"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
-                            name="reliability",
-                            title="Reliability indices",
-                            visible=FALSE,
-                            clearWith=NULL,
-                            columns=list(
-                                list(
-                                    `name`="lgroup", 
-                                    `title`="Group", 
-                                    `type`="text", 
-                                    `visible`="(multigroup)"),
-                                list(
                                     `name`="level", 
                                     `title`="Level", 
                                     `type`="text", 
-                                    `visible`="(cluster)", 
+                                    `visible`=FALSE, 
                                     `combineBelow`=TRUE),
                                 list(
                                     `name`="variable", 
@@ -1302,6 +1734,11 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="alpha", 
                                     `title`="\u03B1", 
                                     `type`="number"),
+                                list(
+                                    `name`="alpha.ord", 
+                                    `title`="Ordinal \u03B1", 
+                                    `type`="number", 
+                                    `visible`=FALSE),
                                 list(
                                     `name`="omega", 
                                     `title`="\u03C9\u2081", 
@@ -1320,37 +1757,11 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="number"))))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="ml_icc",
-                            title="Intra-class correlations",
-                            visible=FALSE,
-                            clearWith=NULL,
-                            columns=list(
-                                list(
-                                    `name`="lgroup", 
-                                    `title`="Group", 
-                                    `type`="text", 
-                                    `visible`="(multigroup)"),
-                                list(
-                                    `name`="level", 
-                                    `title`="Level", 
-                                    `type`="text", 
-                                    `visible`="(cluster)", 
-                                    `combineBelow`=TRUE),
-                                list(
-                                    `name`="rhs", 
-                                    `title`="Variable", 
-                                    `type`="text"),
-                                list(
-                                    `name`="est", 
-                                    `title`="R\u00B2", 
-                                    `type`="number"))))
-                        self$add(jmvcore::Table$new(
-                            options=options,
                             name="mardia",
                             title="Mardia's coefficients",
                             refs="semtools",
                             visible="(outputMardiasCoefficients)",
-                            clearWith=NULL,
+                            clearWith=list(),
                             rows=2,
                             columns=list(
                                 list(
@@ -1381,30 +1792,23 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    covcorrObserved = function() private$.items[["covcorrObserved"]],
-                    covcorrImplied = function() private$.items[["covcorrImplied"]],
-                    covcorrResidual = function() private$.items[["covcorrResidual"]],
-                    covcorrCombined = function() private$.items[["covcorrCombined"]],
-                    covcorrLatent = function() private$.items[["covcorrLatent"]]),
+                    observed = function() private$.items[["observed"]],
+                    implied = function() private$.items[["implied"]],
+                    residual = function() private$.items[["residual"]],
+                    combined = function() private$.items[["combined"]],
+                    latent = function() private$.items[["latent"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
                         super$initialize(
                             options=options,
-                            name="group_covariances",
+                            name="covariances",
                             title="Covariances and correlations")
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="covcorrObserved",
+                            name="observed",
                             title="Observed covariances (lower triangle) and correlations (upper triangle)",
-                            visible=FALSE,
-                            clearWith=list(
-                                "ciType",
-                                "cov_y",
-                                "data",
-                                "multigroup",
-                                "code",
-                                "cluster"),
+                            visible="(outputObservedCovariances & !outpuCombineCovariances)",
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1424,16 +1828,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="covcorrImplied",
+                            name="implied",
                             title="Fitted covariances (lower triangle) and correlations (upper triangle)",
-                            visible=FALSE,
-                            clearWith=list(
-                                "ciType",
-                                "cov_y",
-                                "data",
-                                "multigroup",
-                                "code",
-                                "cluster"),
+                            visible="(outputImpliedCovariances & !outpuCombineCovariances)",
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1453,16 +1850,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="covcorrResidual",
+                            name="residual",
                             title="Residual covariances (lower triangle) and correlations (upper triangle)",
-                            visible=FALSE,
-                            clearWith=list(
-                                "ciType",
-                                "cov_y",
-                                "data",
-                                "multigroup",
-                                "code",
-                                "cluster"),
+                            visible="(outputResidualCovariances & !outpuCombineCovariances)",
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1482,16 +1872,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="covcorrCombined",
+                            name="combined",
                             title="Covariances (lower triangle) and correlations (upper triangle)",
-                            visible=FALSE,
-                            clearWith=list(
-                                "ciType",
-                                "cov_y",
-                                "data",
-                                "multigroup",
-                                "code",
-                                "cluster"),
+                            visible="(outpuCombineCovariances)",
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1512,20 +1895,14 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `combineBelow`=TRUE),
                                 list(
                                     `name`="type", 
-                                    `title`="Type", 
+                                    `title`="", 
                                     `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="covcorrLatent",
+                            name="latent",
                             title="Model-implied Covariances for latent variables",
                             visible=FALSE,
-                            clearWith=list(
-                                "ciType",
-                                "cov_y",
-                                "data",
-                                "multigroup",
-                                "code",
-                                "cluster"),
+                            clearWith=list(),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1543,27 +1920,27 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="variable", 
                                     `title`="", 
                                     `type`="text", 
-                                    `combineBelow`=TRUE))))}))$new(options=options))
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="level", 
+                                    `title`="", 
+                                    `type`="text", 
+                                    `visible`=FALSE))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    modInd = function() private$.items[["modInd"]]),
+                    indices = function() private$.items[["indices"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
                         super$initialize(
                             options=options,
-                            name="modgroup",
+                            name="modification",
                             title="Modifcation indices",
-                            clearWith=list(
-                    "ciType",
-                    "cov_y",
-                    "data",
-                    "multigroup",
-                    "code"))
+                            clearWith=list())
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="modInd",
+                            name="indices",
                             title="Modification indices",
                             visible="(outputModificationIndices)",
                             notes=list(
@@ -1622,20 +1999,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="pathgroup",
                             title="Path Model",
-                            clearWith=list(
-                    "cov_y",
-                    "data",
-                    "multigroup",
-                    "code",
-                    "diag_shape_man",
-                    "diag_shape_lat",
-                    "diag_abbrev",
-                    "diag_type",
-                    "diag_rotate",
-                    "diag_labsize",
-                    "diag_resid",
-                    "diag_paths",
-                    "dia_intercepts"))
+                            clearWith=list())
                         self$add(jmvcore::Array$new(
                             options=options,
                             name="diagrams",
@@ -1649,10 +2013,27 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 width=800,
                                 height=600,
                                 clearWith=list(
-                                    "cov_y",
-                                    "data",
-                                    "multigroup",
                                     "code",
+                                    "estimator",
+                                    "likelihood",
+                                    "meanstructure",
+                                    "intercepts",
+                                    "std_lv",
+                                    "std_ov",
+                                    "cov_x",
+                                    "cov_y",
+                                    "cov_lv",
+                                    "cluster",
+                                    "multigroup",
+                                    "eq_loadings",
+                                    "eq_intercepts",
+                                    "eq_residuals",
+                                    "eq_residual.covariances",
+                                    "eq_means",
+                                    "eq_thresholds",
+                                    "eq_regressions",
+                                    "eq_lv.variances",
+                                    "eq_lv.covariances",
                                     "diag_shape_man",
                                     "diag_shape_lat",
                                     "diag_abbrev",
@@ -1662,16 +2043,11 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     "diag_resid",
                                     "diag_paths",
                                     "diag_intercepts"))))
-                        self$add(jmvcore::Table$new(
+                        self$add(jmvcore::Html$new(
                             options=options,
                             name="notes",
                             title="",
-                            visible=FALSE,
-                            columns=list(
-                                list(
-                                    `name`="message", 
-                                    `type`="text", 
-                                    `title`="Model diagram notes"))))}))$new(options=options))},
+                            visible=FALSE))}))$new(options=options))},
         .setModel=function(x) private$..model <- x))
 
 semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -1703,6 +2079,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param fonts .
 #' @param vars .
 #' @param toggle .
+#' @param donotrun not present in R. Halt running for more confortable input
 #' @param estimator The estimator to be used. Can be one of the following:
 #'   "ML" for maximum likelihood, "GLS" for (normal theory) generalized least
 #'   squares, "WLS" for weighted least squares (sometimes called ADF
@@ -1745,7 +2122,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param bootN The number of bootstrap samples for estimating confidence
 #'   intervals.
 #' @param ci \code{TRUE} or \code{FALSE} (default), show confidence intervals
-#' @param ciWidth A number between 50 and 99.9 (default: 95) specifying the
+#' @param ci_width A number between 50 and 99.9 (default: 95) specifying the
 #'   confidence interval width for the parameter estimates.
 #' @param meanstructure If TRUE, the means of the observed variables enter the
 #'   model. Required for calculating the intercepts of the estimates.
@@ -1767,9 +2144,11 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   and the means, variances and covariances are free parameters. If "default",
 #'   the value is set depending on the mimic option.
 #' @param cov_y \code{TRUE} (default) or \code{FALSE}, TO ADD
+#' @param cov_lv \code{TRUE} (default) or \code{FALSE}, is the negation of
+#'   orthogonal option
 #' @param cluster Factor defining cluster in multilevel analysis.
-#' @param ml_icc show intra-class correlations
-#' @param ml_means unrestricted (h1) within and between means
+#' @param icc show intra-class correlations
+#' @param mlmeans unrestricted (h1) within and between means
 #' @param multigroup string (default=""), the separate models (one for each
 #'   level / group in the variable) are fit, instead of fitting the same model
 #'   for the whole dataset (all groups)
@@ -1857,30 +2236,32 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' \tabular{llllll}{
 #'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$synexamples} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$constraints} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$fit$modelbaseline} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$fit$moreindices} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$fit$rsquared} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$fit$icc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$coefficients} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$loadings} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$composites} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$covariances} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$models$thresholds} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$models$mlmeans} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$add_outputs$compModelBsl} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$add_outputs$otherFit} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$add_outputs$Rsquared} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$add_outputs$reliability} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$add_outputs$ml_icc} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$add_outputs$mardia} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$group_covariances$covcorrObserved} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
-#'   \code{results$group_covariances$covcorrImplied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
-#'   \code{results$group_covariances$covcorrResidual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
-#'   \code{results$group_covariances$covcorrCombined} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
-#'   \code{results$group_covariances$covcorrLatent} \tab \tab \tab \tab \tab A covariance matrix table. \cr
-#'   \code{results$modgroup$modInd} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$additional$reliability} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$additional$mardia} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$covariances$observed} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+#'   \code{results$covariances$implied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+#'   \code{results$covariances$residual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+#'   \code{results$covariances$combined} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+#'   \code{results$covariances$latent} \tab \tab \tab \tab \tab A covariance matrix table. \cr
+#'   \code{results$modification$indices} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
-#'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a html \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -1897,15 +2278,16 @@ semljsyn <- function(
     fonts = "small",
     vars = list(),
     toggle = FALSE,
+    donotrun,
     estimator = "default",
     likelihood = "default",
     scoretest = TRUE,
     cumscoretest = FALSE,
-    se = "standard",
+    se = "auto",
     bootci = "perc",
     bootN = 1000,
     ci = TRUE,
-    ciWidth = 95,
+    ci_width = 95,
     meanstructure = TRUE,
     intercepts = TRUE,
     indirect = FALSE,
@@ -1913,9 +2295,10 @@ semljsyn <- function(
     std_ov = FALSE,
     cov_x = FALSE,
     cov_y = TRUE,
+    cov_lv = TRUE,
     cluster = NULL,
-    ml_icc = TRUE,
-    ml_means = FALSE,
+    icc = TRUE,
+    mlmeans = FALSE,
     multigroup,
     eq_loadings = FALSE,
     eq_intercepts = FALSE,
@@ -1970,6 +2353,7 @@ semljsyn <- function(
         fonts = fonts,
         vars = vars,
         toggle = toggle,
+        donotrun = donotrun,
         estimator = estimator,
         likelihood = likelihood,
         scoretest = scoretest,
@@ -1978,7 +2362,7 @@ semljsyn <- function(
         bootci = bootci,
         bootN = bootN,
         ci = ci,
-        ciWidth = ciWidth,
+        ci_width = ci_width,
         meanstructure = meanstructure,
         intercepts = intercepts,
         indirect = indirect,
@@ -1986,9 +2370,10 @@ semljsyn <- function(
         std_ov = std_ov,
         cov_x = cov_x,
         cov_y = cov_y,
+        cov_lv = cov_lv,
         cluster = cluster,
-        ml_icc = ml_icc,
-        ml_means = ml_means,
+        icc = icc,
+        mlmeans = mlmeans,
         multigroup = multigroup,
         eq_loadings = eq_loadings,
         eq_intercepts = eq_intercepts,
