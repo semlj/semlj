@@ -378,6 +378,7 @@ items:
             title: Group
             type: text
             visible: (multigroup)
+            combineBelow: true
           - name: rhs
             title: "Variable"
             type: text

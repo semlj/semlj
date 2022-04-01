@@ -995,7 +995,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="lgroup", 
                                     `title`="Group", 
                                     `type`="text", 
-                                    `visible`="(multigroup)"),
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
                                 list(
                                     `name`="rhs", 
                                     `title`="Variable", 

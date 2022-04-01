@@ -250,7 +250,6 @@ Runner <- R6::R6Class("Runner",
                               ### here we can compute them
                                 RSqEst = results$obj
                                 RSqEst = RSqEst[RSqEst$op == "r2",]
-                                mark(RSqEst)
                                 if (self$option("r2","endo")) {
                                   endo<-private$.lav_structure$lhs[private$.lav_structure$op=="~"]
                                   RSqEst<-RSqEst[RSqEst$lhs %in% endo,]  
@@ -269,9 +268,18 @@ Runner <- R6::R6Class("Runner",
                             
                             tab<-lavaan::lavInspect(self$model,"icc")
                             tab<-private$.make_matrix_table(tab,transform)
+                            labs<-row.names(tab)
                             names(tab)<-"est"
-                            tab$rhs<-rownames(tab)
                             
+                            mark(labs)
+                            if (is.something(self$multigroup)) {
+                              labs<-stringr::str_split(labs,"\\.")
+                              mark(labs)
+                              tab$lgroup<-sapply(labs, function(x) x[[1]])
+                              labs<-sapply(labs, function(x) paste0(x[-1],collapse = "."))
+                            }
+                            tab$rhs<-labs
+                            mark(tab)
                             return(tab)
                           },
                           run_models_coefficients=function() {
@@ -331,7 +339,6 @@ Runner <- R6::R6Class("Runner",
                             tabs<-lapply(tab, function(atab) atab$mean)
                             tab<-private$.make_matrix_table(tabs,transform)
                             names(tab)<-"est"
-                            mark(tab)
                             return(tab)
                           },
                           

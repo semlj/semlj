@@ -66,8 +66,10 @@ Datamatic <- R6::R6Class(
           self$multigroup<-list(var=var,levels=levels,nlevels=length(levels))
         }
         self$observed<-intersect(self$vars,names(data))
-        self$ordered<-names(data)[sapply(data, function(a) any(class(a) %in% c("factor","ordered")))]
-        
+        observed<-self$observed[(!(self$observed %in% c(self$multigroup$var,self$cluster)))]
+        self$ordered<-observed[sapply(observed, function(a) any(class(data[[a]]) %in% c("factor","ordered")))]
+        if (is.something(self$ordered))
+            mark(paste("ordered vars:" ,self$ordered))
         ### if ordered variables are present, we need to prepare the varTable to give information
         ### about the variables. Since we are in init, we do not have the full dataset, so
         ### varTable() will assign obs=0 and the variable will be ignored by lavaanify().

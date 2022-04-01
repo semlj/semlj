@@ -380,7 +380,7 @@ children:
               - type: CheckBox
                 name: std_ov
   - type: CollapseBox
-    label: Multi-group analyses
+    label: Multi-group analysis
     collapsed: true
     stretchFactor: 1
     style: list

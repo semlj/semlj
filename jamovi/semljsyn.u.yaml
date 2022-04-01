@@ -239,7 +239,7 @@ children:
                   - type: CheckBox
                     name: eq_lv.covariances
   - type: CollapseBox
-    label: Multi-level analyses
+    label: Multi-level analysis
     collapsed: true
     stretchFactor: 1
     style: list
