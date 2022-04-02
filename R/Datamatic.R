@@ -50,7 +50,7 @@ Datamatic <- R6::R6Class(
       }
       if (is.something(trans))
         self$dispatcher$warnings<-list(topic="info",
-                            message=glue::glue(DATA_WARNS[["fac_to_ord"]],x=paste(trans,collapse = ",")))
+                            message=glue::glue(DATA_WARNS[["fac_to_ord"]],x=paste(unique(trans),collapse = ",")))
       return(data)
       
     }
