@@ -34,11 +34,11 @@ Runner <- R6::R6Class("Runner",
                               # TO-DO: test eq_-options
                               # this is dealt with in syntax.R
                             }
+
                             if (is.something(self$cluster)) {
                               lavoptions[["cluster"]] <- self$cluster
                               lavoptions[["h1"]] <- TRUE
                             }
-                            
 
                             ## estimate the models
                             ginfo("Estimating the model...")
@@ -271,15 +271,12 @@ Runner <- R6::R6Class("Runner",
                             labs<-row.names(tab)
                             names(tab)<-"est"
                             
-                            mark(labs)
                             if (is.something(self$multigroup)) {
                               labs<-stringr::str_split(labs,"\\.")
-                              mark(labs)
                               tab$lgroup<-sapply(labs, function(x) x[[1]])
                               labs<-sapply(labs, function(x) paste0(x[-1],collapse = "."))
                             }
                             tab$rhs<-labs
-                            mark(tab)
                             return(tab)
                           },
                           run_models_coefficients=function() {

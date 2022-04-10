@@ -60,12 +60,12 @@ Initer <- R6::R6Class(
 
       alist[[length(alist)+1]]<-c(info="",value="")
       
-      if (is.something(self$options$cluster) && self$options$cluster!="") {
+      if (is.something(self$cluster)) {
          alist[[length(alist)+1]]<-c(info="",value="")
-         alist[[length(alist)+1]]<-c(info="Cluster variable",value=self$options$cluster)
+         alist[[length(alist)+1]]<-c(info="Cluster variable",value=self$cluster)
       }
       
-      if (is.something(self$options$multigroup)) {
+      if (is.something(self$multigroup)) {
         alist[[length(alist)+1]]<-c(info="Multi-group variable",value=self$options$multigroup)
       }
       
@@ -385,7 +385,7 @@ Initer <- R6::R6Class(
         orthogonal=!self$options$cov_lv
         # TO-DO (1): implemented as option
         # int.lv.free, auto.fix.single, auto.var, auto.cov.lv.x, auto.efa, auto.th, auto.delta
-        # TO-DO (2): further arguments included in JASP-SEM
+        # TO-DO (2): further arguments
         # int.lv.fixed int.ov.fixed mimic orthogonal
       )
       
