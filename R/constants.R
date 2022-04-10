@@ -1,6 +1,6 @@
-j_DEBUG=F
-j_INFO=F
-t_INFO=F
+j_DEBUG=T
+j_INFO=T
+t_INFO=T
 
 
 NOTES<-list()
