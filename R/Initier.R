@@ -60,7 +60,7 @@ Initer <- R6::R6Class(
 
       alist[[length(alist)+1]]<-c(info="",value="")
       
-      if (is.something(self$options$cluster)) {
+      if (is.something(self$options$cluster) && self$options$cluster!="") {
          alist[[length(alist)+1]]<-c(info="",value="")
          alist[[length(alist)+1]]<-c(info="Cluster variable",value=self$options$cluster)
       }
