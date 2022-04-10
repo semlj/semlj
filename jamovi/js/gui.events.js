@@ -73,12 +73,16 @@ const events = {
        
        var val = ui.multigroup.value();
        if (typeof(val)==="string")
-             if (val.length===0)
+             if (val.replace(/ /g,'').length===0)
                 ui.multigroup.setValue(null);
 
      },
       onChange_cluster: function(ui) {
        console.log("Multilevel cluster changed");
+       var val = ui.cluster.value();
+       if (typeof(val)==="string")
+             if (val.replace(/ /g,'').length===0)
+                ui.cluster.setValue(null);
 
      },
 

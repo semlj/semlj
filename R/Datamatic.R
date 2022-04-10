@@ -14,7 +14,7 @@ Datamatic <- R6::R6Class(
     initialize=function(options,dispatcher,data) {
       
       super$initialize(options,dispatcher)
-      
+      mark("Datamatic")
       astring<-options$code
       reg<-"[=~:+\n]"
       avec<-stringr::str_split(astring,reg)[[1]]
@@ -28,11 +28,13 @@ Datamatic <- R6::R6Class(
         if(trimws(mg)=="")
           mg<-NULL
       self$multigroup=mg
+      
       ml<-options$cluster
       if (is.character(ml))
         if(trimws(ml)=="")
           ml<-NULL
-      self$cluster=ml
+      self$cluster<-ml
+      mark(self$cluster,is.something(self$cluster),class(self$cluster))
       private$.inspect_data(data)
       
       
