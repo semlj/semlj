@@ -17,7 +17,7 @@ Initer <- R6::R6Class(
     varTable=NULL,
     user_syntax=NULL,
     moretests=FALSE,
-    
+    indirect_names=NULL,
     initialize=function(options,dispatcher,datamatic) {
       
       super$initialize(options,dispatcher)
@@ -479,7 +479,6 @@ Initer <- R6::R6Class(
       
       if (!self$options$indirect)
         return()
-      
       ## first, we update the lavaanified structure table
       private$.make_structure()
       tab<-private$.lav_structure
@@ -520,11 +519,11 @@ Initer <- R6::R6Class(
       terms<-unique(tab$rhs)
       deps<-unique(setdiff(tab$lhs,tab$rhs))
       
-      
       if (length(deps)==0) {
         self$dispatcher$warnings<-list(topic="models_defined",message=WARNS[["noindirect"]])
         return()
       }
+
       tabs<-list()
       for (i in tab$group) 
         tabs[[i]]<-tab[tab$group==i,]
@@ -548,6 +547,7 @@ Initer <- R6::R6Class(
       synt<-paste(plabs,pars,sep=":=",collapse = " ; ")
       private$.lav_indirect<-synt
       self$indirect_names<-labs
+
       if (is.something(self$options$multigroup))
         self$indirect_names<-paste0("(",self$indirect_names,")",SUB[unlist(groupslist)])
       names(self$indirect_names)<-pars
