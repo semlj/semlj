@@ -1706,7 +1706,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="reliability",
                             title="Reliability indices",
                             visible=FALSE,
-                            clearWith=list(),
                             refs="semtools",
                             columns=list(
                                 list(
@@ -1761,7 +1760,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Mardia's coefficients",
                             refs="semtools",
                             visible="(outputMardiasCoefficients)",
-                            clearWith=list(),
                             rows=2,
                             columns=list(
                                 list(
@@ -1902,7 +1900,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="latent",
                             title="Model-implied Covariances for latent variables",
                             visible=FALSE,
-                            clearWith=list(),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1936,8 +1933,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         super$initialize(
                             options=options,
                             name="modification",
-                            title="Modifcation indices",
-                            clearWith=list())
+                            title="Modifcation indices")
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="indices",
@@ -1998,8 +1994,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         super$initialize(
                             options=options,
                             name="pathgroup",
-                            title="Path Model",
-                            clearWith=list())
+                            title="Path Model")
                         self$add(jmvcore::Array$new(
                             options=options,
                             name="diagrams",
