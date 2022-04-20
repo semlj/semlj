@@ -910,7 +910,6 @@ items:
         title: 'Reliability indices'
         type: Table
         visible: false
-        clearWith: []
         refs: semtools
         columns:
           - name:  lgroup
@@ -953,7 +952,6 @@ items:
 #       description:
         refs: semtools
         visible: (outputMardiasCoefficients)
-        clearWith: []
         rows: 2
         columns:
         - name: name
@@ -1075,7 +1073,6 @@ items:
       type: Table
       visible: false
       description: A covariance matrix table.
-      clearWith: []
       columns:
       - name: lgroup
         title: Group
@@ -1097,7 +1094,6 @@ items:
     title: "Modifcation indices"
     type: Group
     visible: (outputModificationIndices)
-    clearWith: []
     items:
       - name: indices
         title: 'Modification indices'
@@ -1148,7 +1144,6 @@ items:
     type: Group
     title: Path Model
     visible: (diagram)
-    clearWith: []
     items:
 
     # Path diagrams -----------------------------------------------------------
