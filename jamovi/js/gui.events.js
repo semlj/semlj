@@ -29,15 +29,6 @@ const events = {
     },
     onChange_SecondName: function(ui) {
      console.log("change second name");
-     
-     var list1 = ui.endogenous.applyToItems(0, (item, index) => {
-        let value = item.controls[0].value();
-        if ( ! value || value.trim() === '')
-            item.controls[0].setValue("Factor " + (index + 1) );
-    });
-
-     
-     
      updateSuppliers(ui,this);
      cleanEndogenousTerms(ui,this);
      update_syntax(ui,this);
@@ -54,14 +45,19 @@ const events = {
     },
     onChange_endogenousSupplier: function(ui) {
      console.log("endosupplier change");
-//     calcCustomVariables(ui,this);
-//     prepareEndogenousTerms(ui,this);
-//      cleanEndogenousTerms(ui,this);
-      
+
     },
     onUpdate_endogenousSupplier: function(ui) {
      console.log("endosupplier update");
-//     calcCustomVariables(ui,this);
+
+    },
+
+    onChange_secondorderSupplier: function(ui) {
+     console.log("secondorder supplier change");
+
+    },
+    onUpdate_secondorderSupplier: function(ui) {
+     console.log("second order supplier update");
 
     },
 
@@ -107,16 +103,12 @@ const events = {
      onEvent_show_so: function(ui) {
       console.log("show so has changed");
        if (ui.show_so.getValue()===true) {
+              
+               console.log(ui.secondorder_layout);
+               ui.secondorder_layout.$el.show();
          
-         ui.secondorder_layout.$buttons.show();
-         ui.secondorder_layout.$label.show();
-         ui.secondorder_layout.container.$el.show();
-
        } else {
-         
-              ui.secondorder_layout.$buttons.hide();
-              ui.secondorder_layout.$label.hide();
-              ui.secondorder_layout.container.$el.hide();
+              ui.secondorder_layout.$el.hide();
               ui.secondorder.setValue(null);
        }
     },
@@ -185,6 +177,7 @@ const updateSuppliers=function(ui, context) {
 
   context.setCustomVariables(customVariables);
   ui.endogenousSupplier.setValue(context.valuesToItems(latent, FormatDef.variable));
+  ui.secondorderSupplier.setValue(context.valuesToItems(latent, FormatDef.variable));
 
   var vars=[];  
    for (var i = 0; i < endogenousIndicators.length; i++) {

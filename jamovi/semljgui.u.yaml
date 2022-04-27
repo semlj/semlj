@@ -92,41 +92,31 @@ children:
             maxItemCount: 1
             isTarget: true
             itemDropBehaviour: overwrite
+            
   - type: LayoutBox
     margin: large
     style: inline
     children:
-      - type: CheckBox
-        name: donotrun
-  - type: CollapseBox
-    label: Endogenous models
-    collapsed: true
-    stretchFactor: 1
-    children:
-      - type: LayoutBox
-        margin: large
-        style: inline
-        children:
            - type: CheckBox
              name: show_so
              events:
                       change: './gui.events::onEvent_show_so'
     
-      - type: LayoutBox
-        margin: large
-        stretchFactor: 1
-        children:
+  - type: LayoutBox
+    name: secondorder_layout
+    margin: large
+    stretchFactor: 1
+    children:
           - type: Supplier
-            name: endogenousSupplier
+            name: secondorderSupplier
             format: term
             persistentItems: true
             stretchFactor: 1
             events:
-              update: './gui.events::onUpdate_endogenousSupplier'
-              change: './gui.events::onChange_endogenousSupplier'
+              update: './gui.events::onUpdate_secondorderSupplier'
+              change: './gui.events::onChange_secondorderSupplier'
             children:
                   - type: TargetLayoutBox
-                    name: secondorder_layout
                     label: Second Order Factors
                     children:
                       - type: ListBox
@@ -161,7 +151,37 @@ children:
                               isTarget: true
                               height: auto
                               ghostText: drag variables here
+            
+            
+            
+            
+            
+  - type: LayoutBox
+    margin: large
+    style: inline
+    children:
+      - type: CheckBox
+        name: donotrun
+  - type: CollapseBox
+    label: Endogenous models
+    collapsed: true
+    stretchFactor: 1
+    children:
                 
+
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: Supplier
+            name: endogenousSupplier
+            format: term
+            persistentItems: true
+            stretchFactor: 1
+            events:
+              update: './gui.events::onUpdate_endogenousSupplier'
+              change: './gui.events::onChange_endogenousSupplier'
+            children:
                   - type: TargetLayoutBox
                     label: Endogenous Variables Models
                     transferAction: interactions
