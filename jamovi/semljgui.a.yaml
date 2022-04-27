@@ -99,6 +99,35 @@ options:
 
     ### OPTIONS #########
 
+    ### second order factors  =====================================================
+    - name: show_so
+      type: Bool
+      title: Second Order Factors
+      default: false
+      description:
+          R: >
+             not present in R
+    
+
+    - name: secondorder
+      type: Array
+      default:
+        - label: Factor1
+          vars: []
+      template:
+          type: Group
+          elements:
+            - name: label
+              type: String
+            - name: vars
+              type: Terms
+      description:
+          R: >
+            A list containing named lists that define the `label` of the second order latent factors  and
+            the `vars` that belong to that latent.
+
+
+
     ### Endogenous models =====================================================
     - name: endogenousTerms
       title: Endogenous Latent Variable Models

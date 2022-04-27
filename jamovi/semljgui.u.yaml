@@ -105,6 +105,13 @@ children:
     children:
       - type: LayoutBox
         margin: large
+        style: inline
+        children:
+           - type: CheckBox
+             name: show_so
+    
+      - type: LayoutBox
+        margin: large
         stretchFactor: 1
         children:
           - type: Supplier
@@ -117,9 +124,49 @@ children:
               change: './gui.events::onChange_endogenousSupplier'
             children:
               - type: TargetLayoutBox
-                transferAction: interactions
                 children:
+                
+                  - type: TargetLayoutBox
+                    label: Second Order Factors
+                    children:
+                      - type: ListBox
+                        name: secondorder
+                        height: large
+                        addButton: Add New Latent
+                        events:
+                          listItemAdded: './gui.events::onChange_items_changed'
+                          listItemRemoved: './gui.events::onChange_items_changed'
+                        templateName: linreg-block-template
+                        template:
+                          type: LayoutBox
+                          margin: normal
+                          children:
+                            - type: TextBox
+                              events:
+                                change: './gui.events::onChange_SecondName'
+                              valueKey:
+                                - label
+                              borderless: true
+                              name: blockName
+                              stretchFactor: 1
+                              margin: normal
+                            - type: VariablesListBox
+                              valueFilter: unique
+                              events:
+                                listItemAdded: './gui.events::onChange_items_changed'
+                                listItemRemoved: './gui.events::onChange_items_changed'
+                              valueKey:
+                                - vars
+                              name: blockList
+                              isTarget: true
+                              height: auto
+                              ghostText: drag variables here
+                
+                
+                
+                
                   - type: ListBox
+                    label: Endogenous Variables Models
                     name: endogenousTerms
                     height: large
                     selectable: true

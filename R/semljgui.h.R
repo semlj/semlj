@@ -12,6 +12,9 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 list(label="Endogenous1", vars=list())),
             exogenous = list(
                 list(label="Exogenous1", vars=list())),
+            show_so = FALSE,
+            secondorder = list(
+                list(label="Factor1", vars=list())),
             endogenousTerms = list(
                 list()),
             varcov = NULL,
@@ -121,6 +124,25 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "continuous"),
                             permitted=list(
                                 "numeric")))))
+            private$..show_so <- jmvcore::OptionBool$new(
+                "show_so",
+                show_so,
+                default=FALSE)
+            private$..secondorder <- jmvcore::OptionArray$new(
+                "secondorder",
+                secondorder,
+                default=list(
+                    list(label="Factor1", vars=list())),
+                template=jmvcore::OptionGroup$new(
+                    "secondorder",
+                    NULL,
+                    elements=list(
+                        jmvcore::OptionString$new(
+                            "label",
+                            NULL),
+                        jmvcore::OptionTerms$new(
+                            "vars",
+                            NULL))))
             private$..endogenousTerms <- jmvcore::OptionArray$new(
                 "endogenousTerms",
                 endogenousTerms,
@@ -440,6 +462,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..donotrun)
             self$.addOption(private$..endogenous)
             self$.addOption(private$..exogenous)
+            self$.addOption(private$..show_so)
+            self$.addOption(private$..secondorder)
             self$.addOption(private$..endogenousTerms)
             self$.addOption(private$..varcov)
             self$.addOption(private$..constraints)
@@ -501,6 +525,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         donotrun = function() private$..donotrun$value,
         endogenous = function() private$..endogenous$value,
         exogenous = function() private$..exogenous$value,
+        show_so = function() private$..show_so$value,
+        secondorder = function() private$..secondorder$value,
         endogenousTerms = function() private$..endogenousTerms$value,
         varcov = function() private$..varcov$value,
         constraints = function() private$..constraints$value,
@@ -561,6 +587,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..donotrun = NA,
         ..endogenous = NA,
         ..exogenous = NA,
+        ..show_so = NA,
+        ..secondorder = NA,
         ..endogenousTerms = NA,
         ..varcov = NA,
         ..constraints = NA,
@@ -1948,6 +1976,10 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param exogenous A list containing named lists that define the \code{label}
 #'   of the latent exogenous variables and the \code{vars} that belong to that
 #'   latent.
+#' @param show_so not present in R
+#' @param secondorder A list containing named lists that define the
+#'   \code{label} of the second order latent factors  and the \code{vars} that
+#'   belong to that latent.
 #' @param endogenousTerms A list of lists specifying the models for with the
 #'   mediators as dependent variables.
 #' @param varcov A list of lists specifying the  covariances that need to be
@@ -2146,6 +2178,9 @@ semljgui <- function(
                 list(label="Endogenous1", vars=list())),
     exogenous = list(
                 list(label="Exogenous1", vars=list())),
+    show_so = FALSE,
+    secondorder = list(
+                list(label="Factor1", vars=list())),
     endogenousTerms = list(
                 list()),
     varcov,
@@ -2219,6 +2254,8 @@ semljgui <- function(
         donotrun = donotrun,
         endogenous = endogenous,
         exogenous = exogenous,
+        show_so = show_so,
+        secondorder = secondorder,
         endogenousTerms = endogenousTerms,
         varcov = varcov,
         constraints = constraints,
