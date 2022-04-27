@@ -275,9 +275,14 @@ var update_syntax=function(ui,context) {
   
 
     var endogenousTerms = context.cloneArray(ui.endogenousTerms.value(),[]);
+    var secondorder=context.cloneArray(ui.secondorder.value(),[]);
+    // second order factors can be handle like an endogenous variable
     var endogenous=context.cloneArray(ui.endogenous.value(),[]);
+        endogenous=endogenous.concat(secondorder);
+
     var exogenous=context.cloneArray(ui.exogenous.value(),[]);
     var vars=endogenous.concat(exogenous);
+
     var varcov=context.cloneArray(ui.varcov.value(),[]);
     var constraints=context.cloneArray(ui.constraints.value(),[]);
     var is_measures= syntax.measures(vars);
