@@ -46,6 +46,8 @@ const events = {
 
      onChange_endogenousTerms: function(ui) {
        console.log(" endogenousTerms changed"); 
+      var e=this.cloneArray(ui.endogenousTerms.value(),[]);
+      console.log(e);
 //      cleanEndogenousTerms(ui,this);
       update_syntax(ui,this);
 

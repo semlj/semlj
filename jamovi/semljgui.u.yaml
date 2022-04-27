@@ -123,9 +123,6 @@ children:
               update: './gui.events::onUpdate_endogenousSupplier'
               change: './gui.events::onChange_endogenousSupplier'
             children:
-              - type: TargetLayoutBox
-                children:
-                
                   - type: TargetLayoutBox
                     label: Second Order Factors
                     children:
@@ -162,36 +159,35 @@ children:
                               height: auto
                               ghostText: drag variables here
                 
-                
-                
-                
-                  - type: ListBox
+                  - type: TargetLayoutBox
                     label: Endogenous Variables Models
-                    name: endogenousTerms
-                    height: large
-                    selectable: true
-                    templateName: linreg-block-template
-                    template:
-                      type: LayoutBox
-                      margin: normal
-                      targetArea: true
-                      children:
-                        - type: Label
-                          label: empty
-                          name: blockName
-                          stretchFactor: 1
+                    children:
+                      - type: ListBox
+                        name: endogenousTerms
+                        height: large
+                        selectable: true
+                        templateName: linreg-block-template
+                        template:
+                          type: LayoutBox
                           margin: normal
-                        - type: ListBox
-                          enable: (endogenous)
-                          name: blockList
-                          isTarget: true
-                          valueFilter: unique
-                          height: auto
-                          ghostText: drag variables here
-                          events:
-                            change: './gui.events::onChange_endogenousTerms'
-                          template:
-                            type: TermLabel
+                          targetArea: true
+                          children:
+                            - type: Label
+                              label: empty
+                              name: blockName
+                              stretchFactor: 1
+                              margin: normal
+                            - type: ListBox
+                              enable: (endogenous)
+                              name: blockList
+                              isTarget: true
+                              valueFilter: unique
+                              height: auto
+                              ghostText: drag variables here
+                              events:
+                                change: './gui.events::onChange_endogenousTerms'
+                              template:
+                                type: TermLabel
   - type: CollapseBox
     label: Variances and covariances
     collapsed: true
