@@ -104,6 +104,23 @@ const events = {
 
      },
 
+     onEvent_show_so: function(ui) {
+      console.log("show so has changed");
+       if (ui.show_so.getValue()===true) {
+         
+         ui.secondorder_layout.$buttons.show();
+         ui.secondorder_layout.$label.show();
+         ui.secondorder_layout.container.$el.show();
+
+       } else {
+         
+              ui.secondorder_layout.$buttons.hide();
+              ui.secondorder_layout.$label.hide();
+              ui.secondorder_layout.container.$el.hide();
+              ui.secondorder.setValue(null);
+       }
+    },
+
      onEvent_nothing: function(ui) {
       console.log("I did not do anything");
     }
@@ -279,9 +296,12 @@ var update_syntax=function(ui,context) {
     // second order factors can be handle like an endogenous variable
     var endogenous=context.cloneArray(ui.endogenous.value(),[]);
         endogenous=endogenous.concat(secondorder);
-
+    console.log("up syntax");
+    console.log(endogenous);
+    
+    
     var exogenous=context.cloneArray(ui.exogenous.value(),[]);
-    var vars=endogenous.concat(exogenous);
+    var vars=exogenous.concat(endogenous);
 
     var varcov=context.cloneArray(ui.varcov.value(),[]);
     var constraints=context.cloneArray(ui.constraints.value(),[]);
@@ -289,7 +309,7 @@ var update_syntax=function(ui,context) {
     var is_terms =syntax.make(endogenousTerms,getLabels(endogenous));
     syntax.varcov(varcov);
     syntax.constraints(constraints);
-    
+    console.log(syntax.lav_syntax)
     if (is_measures || is_terms )
              ui.code.setValue(syntax.lav_syntax);
     else    

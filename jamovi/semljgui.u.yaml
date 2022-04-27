@@ -109,6 +109,8 @@ children:
         children:
            - type: CheckBox
              name: show_so
+             events:
+                      change: './gui.events::onEvent_show_so'
     
       - type: LayoutBox
         margin: large
@@ -124,6 +126,7 @@ children:
               change: './gui.events::onChange_endogenousSupplier'
             children:
                   - type: TargetLayoutBox
+                    name: secondorder_layout
                     label: Second Order Factors
                     children:
                       - type: ListBox
