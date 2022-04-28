@@ -97,16 +97,18 @@ children:
     margin: large
     style: inline
     children:
-           - type: CheckBox
-             name: show_so
-             events:
-                      change: './gui.events::onEvent_show_so'
-    
-  - type: LayoutBox
-    name: secondorder_layout
-    margin: large
+      - type: CheckBox
+        name: donotrun
+
+  - type: CollapseBox
+    label: Second Oder Factors
+    collapsed: true
     stretchFactor: 1
     children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
           - type: Supplier
             name: secondorderSupplier
             format: term
@@ -156,12 +158,6 @@ children:
             
             
             
-  - type: LayoutBox
-    margin: large
-    style: inline
-    children:
-      - type: CheckBox
-        name: donotrun
   - type: CollapseBox
     label: Endogenous models
     collapsed: true

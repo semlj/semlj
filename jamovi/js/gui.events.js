@@ -8,6 +8,8 @@ const events = {
       calcCustomVariables(ui,this);
       updateSuppliers(ui,this);
       cleanEndogenousTerms(ui,this);
+      cleanSecondOrder(ui,this);
+    
       update_syntax(ui,this); 
 
     },
@@ -17,6 +19,7 @@ const events = {
       updateModelLabels(ui,this);
       updateSuppliers(ui,this);
       cleanEndogenousTerms(ui,this);
+      cleanSecondOrder(ui,this);
       update_syntax(ui,this);
     },
 
@@ -24,6 +27,7 @@ const events = {
      console.log("change latent name");
      updateSuppliers(ui,this);
      cleanEndogenousTerms(ui,this);
+     cleanSecondOrder(ui,this);
      update_syntax(ui,this);
 
     },
@@ -31,16 +35,14 @@ const events = {
      console.log("change second name");
      updateSuppliers(ui,this);
      cleanEndogenousTerms(ui,this);
+     cleanSecondOrder(ui,this);
      update_syntax(ui,this);
 
     },
 
      onChange_endogenousTerms: function(ui) {
        console.log(" endogenousTerms changed"); 
-      var e=this.cloneArray(ui.endogenousTerms.value(),[]);
-      console.log(e);
-//      cleanEndogenousTerms(ui,this);
-      update_syntax(ui,this);
+       update_syntax(ui,this);
 
     },
     onChange_endogenousSupplier: function(ui) {
@@ -58,6 +60,7 @@ const events = {
     },
     onUpdate_secondorderSupplier: function(ui) {
      console.log("second order supplier update");
+     
 
     },
 
@@ -99,19 +102,6 @@ const events = {
                 ui.cluster.setValue(null);
 
      },
-
-     onEvent_show_so: function(ui) {
-      console.log("show so has changed");
-       if (ui.show_so.getValue()===true) {
-              
-               console.log(ui.secondorder_layout);
-               ui.secondorder_layout.$el.show();
-         
-       } else {
-              ui.secondorder_layout.$el.hide();
-              ui.secondorder.setValue(null);
-       }
-    },
 
      onEvent_nothing: function(ui) {
       console.log("I did not do anything");
@@ -261,7 +251,6 @@ var cleanEndogenousTerms= function(ui,context) {
 
     for (var i = 0; i < endogenous.length; i++) {
         endogenousTerms[i]=removeFromList(endogenous[i],endogenousTerms[i],context,1);
-
     }
 
     var endogenousSupplierList = context.cloneArray(context.itemsToValues(ui.endogenousSupplier.value()),[]);
@@ -272,14 +261,45 @@ var cleanEndogenousTerms= function(ui,context) {
            for (var j = 0; j < diff.removed.length; j++) {
                 endogenousTerms[i]=removeFromList(diff.removed[j],endogenousTerms[i],context,1);
            }
-           
     }
     ui.endogenousTerms.setValue(endogenousTerms);
     storeComponent("endogenousTerms",endogenousTerms,context);
     
-    
 
 };
+
+var cleanSecondOrder= function(ui,context) {
+
+    console.log("cleanSecondOrder");
+    var secondorderTerms = context.cloneArray(ui.secondorder.value(),[]);
+    console.log("second order");
+    console.log("secondorderTerms");
+    
+    var secondorderSupplierList = context.cloneArray(context.itemsToValues(ui.secondorderSupplier.value()),[]);
+    var diff = context.findChanges("secondorderSupplierList",secondorderSupplierList,context);
+
+    if (diff.hasChanged) {
+    var vars=[];    
+      for (var i = 0; i < secondorderTerms.length; i++) 
+            for (var j = 0; j < diff.removed.length; j++) {
+//                secondorderTerms[i].vars=removeFromList(diff.removed[j],secondorderTerms[i].vars,context,1);
+                console.log(secondorderTerms[i].vars);
+                if (secondorderTerms[i].vars!==null) {
+                    vars=removeFromList(diff.removed[j],secondorderTerms[i].vars,context,1);
+                    // the remove function was written for arrays of array. Here we need
+                    // arrays of string, so we fixed brutaly. Needs work.
+                    vars=vars.map(function(e) { return e.join("")});
+                    secondorderTerms[i].vars=vars;
+                }
+
+            }
+    }
+
+    console.log(secondorderTerms);
+    ui.secondorder.setValue(secondorderTerms);
+};
+
+
 
 var update_syntax=function(ui,context) {
   
@@ -289,9 +309,6 @@ var update_syntax=function(ui,context) {
     // second order factors can be handle like an endogenous variable
     var endogenous=context.cloneArray(ui.endogenous.value(),[]);
         endogenous=endogenous.concat(secondorder);
-    console.log("up syntax");
-    console.log(endogenous);
-    
     
     var exogenous=context.cloneArray(ui.exogenous.value(),[]);
     var vars=exogenous.concat(endogenous);
@@ -302,7 +319,7 @@ var update_syntax=function(ui,context) {
     var is_terms =syntax.make(endogenousTerms,getLabels(endogenous));
     syntax.varcov(varcov);
     syntax.constraints(constraints);
-    console.log(syntax.lav_syntax)
+    
     if (is_measures || is_terms )
              ui.code.setValue(syntax.lav_syntax);
     else    

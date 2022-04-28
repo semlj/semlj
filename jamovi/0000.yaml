@@ -31,7 +31,10 @@ datasets:
     description: Example data for SEMLj tests
   - name: ordereditems
     path: ordereditems.csv
-    description: Example of ordinal variablesfor SEMLj
+    description: Example of ordinal variables for SEMLj
+  - name: secondorder
+    path: secondorder.csv
+    description: Example data for second order mediation analysis
 usesNative: true
 minApp: 1.8.0
 

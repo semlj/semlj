@@ -100,14 +100,6 @@ options:
     ### OPTIONS #########
 
     ### second order factors  =====================================================
-    - name: show_so
-      type: Bool
-      title: Second Order Factors
-      default: false
-      description:
-          R: >
-             not present in R
-    
 
     - name: secondorder
       type: Array
