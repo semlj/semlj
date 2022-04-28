@@ -42,6 +42,7 @@ const events = {
 
      onChange_endogenousTerms: function(ui) {
        console.log(" endogenousTerms changed"); 
+       cleanSelfEndogenous(ui,this);
        update_syntax(ui,this);
 
     },
@@ -60,7 +61,11 @@ const events = {
     },
     onUpdate_secondorderSupplier: function(ui) {
      console.log("second order supplier update");
-     
+    },
+    onChange_secondorderTerms: function(ui) {
+       console.log(" secondorderTerms changed"); 
+       cleanSelfSecondorder(ui,this);
+       update_syntax(ui,this);
 
     },
 
@@ -246,7 +251,10 @@ var cleanEndogenousTerms= function(ui,context) {
 
     console.log("cleanEndogenousTerms");
     prepareEndogenousTerms(ui,context);
-    var endogenous = getLabels(context.cloneArray(ui.endogenous.value(), []));
+    var endogenous  = getLabels(context.cloneArray(ui.endogenous.value(), []));
+    var secondorder = getLabels(context.cloneArray(ui.secondorder.value(), []));
+        endogenous  = endogenous.concat(secondorder);
+        
     var endogenousTerms = context.cloneArray(ui.endogenousTerms.value(),[]);
 
     for (var i = 0; i < endogenous.length; i++) {
@@ -254,10 +262,11 @@ var cleanEndogenousTerms= function(ui,context) {
     }
 
     var endogenousSupplierList = context.cloneArray(context.itemsToValues(ui.endogenousSupplier.value()),[]);
+
     var diff = context.findChanges("endogenousSupplierList",endogenousSupplierList,context);
     
     if (diff.hasChanged) {
-      for (var i = 0; i < endogenous.length; i++) 
+      for (var i = 0; i < endogenousTerms.length; i++) 
            for (var j = 0; j < diff.removed.length; j++) {
                 endogenousTerms[i]=removeFromList(diff.removed[j],endogenousTerms[i],context,1);
            }
@@ -268,13 +277,30 @@ var cleanEndogenousTerms= function(ui,context) {
 
 };
 
+var cleanSelfEndogenous=function(ui,context) {
+  
+    var endogenous  = getLabels(context.cloneArray(ui.endogenous.value(), []));
+    var secondorder = getLabels(context.cloneArray(ui.secondorder.value(), []));
+        endogenous  = endogenous.concat(secondorder);
+        
+    var endogenousTerms = context.cloneArray(ui.endogenousTerms.value(),[]);
+
+    for (var i = 0; i < endogenous.length; i++) {
+        endogenousTerms[i]=removeFromList(endogenous[i],endogenousTerms[i],context,1);
+    }
+  
+    ui.endogenousTerms.setValue(endogenousTerms);
+    storeComponent("endogenousTerms",endogenousTerms,context);
+  
+  
+}
+
+
 var cleanSecondOrder= function(ui,context) {
 
     console.log("cleanSecondOrder");
     var secondorderTerms = context.cloneArray(ui.secondorder.value(),[]);
-    console.log("second order");
-    console.log("secondorderTerms");
-    
+
     var secondorderSupplierList = context.cloneArray(context.itemsToValues(ui.secondorderSupplier.value()),[]);
     var diff = context.findChanges("secondorderSupplierList",secondorderSupplierList,context);
 
@@ -283,7 +309,6 @@ var cleanSecondOrder= function(ui,context) {
       for (var i = 0; i < secondorderTerms.length; i++) 
             for (var j = 0; j < diff.removed.length; j++) {
 //                secondorderTerms[i].vars=removeFromList(diff.removed[j],secondorderTerms[i].vars,context,1);
-                console.log(secondorderTerms[i].vars);
                 if (secondorderTerms[i].vars!==null) {
                     vars=removeFromList(diff.removed[j],secondorderTerms[i].vars,context,1);
                     // the remove function was written for arrays of array. Here we need
@@ -295,10 +320,29 @@ var cleanSecondOrder= function(ui,context) {
             }
     }
 
-    console.log(secondorderTerms);
     ui.secondorder.setValue(secondorderTerms);
 };
 
+
+var cleanSelfSecondorder=function(ui,context) {
+  
+    var secondorderTerms = context.cloneArray(ui.secondorder.value(), []);
+    var secondorder=getLabels(secondorderTerms);
+    var vars=[];
+
+    for (var i = 0; i < secondorder.length; i++) {
+            if (secondorderTerms[i].vars!==null) {
+                    vars=removeFromList(secondorder[i],secondorderTerms[i].vars,context,1);
+                    // the remove function was written for arrays of array. Here we need
+                    // arrays of string, so we fixed brutaly. Needs work.
+                    vars=vars.map(function(e) { return e.join("")});
+                    secondorderTerms[i].vars=vars;
+       }
+     }
+  
+    ui.secondorder.setValue(secondorderTerms);
+
+}
 
 
 var update_syntax=function(ui,context) {

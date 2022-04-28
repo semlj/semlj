@@ -145,8 +145,10 @@ children:
                             - type: VariablesListBox
                               valueFilter: unique
                               events:
-                                listItemAdded: './gui.events::onChange_items_changed'
-                                listItemRemoved: './gui.events::onChange_items_changed'
+                                 listItemAdded: './gui.events::onChange_items_changed'
+                                 listItemRemoved: './gui.events::onChange_items_changed'
+                                 change: './gui.events::onChange_secondorderTerms'
+
                               valueKey:
                                 - vars
                               name: blockList
