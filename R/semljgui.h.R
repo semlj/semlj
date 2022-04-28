@@ -62,7 +62,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             miThreshold = 10,
             diagram = FALSE,
             diag_resid = FALSE,
-            diag_intercepts = TRUE,
+            diag_intercepts = FALSE,
             diag_paths = "est",
             diag_type = "tree",
             diag_rotate = "2",
@@ -383,7 +383,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..diag_intercepts <- jmvcore::OptionBool$new(
                 "diag_intercepts",
                 diag_intercepts,
-                default=TRUE)
+                default=FALSE)
             private$..diag_paths <- jmvcore::OptionList$new(
                 "diag_paths",
                 diag_paths,
@@ -2219,7 +2219,7 @@ semljgui <- function(
     miThreshold = 10,
     diagram = FALSE,
     diag_resid = FALSE,
-    diag_intercepts = TRUE,
+    diag_intercepts = FALSE,
     diag_paths = "est",
     diag_type = "tree",
     diag_rotate = "2",
