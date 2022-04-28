@@ -92,17 +92,81 @@ children:
             maxItemCount: 1
             isTarget: true
             itemDropBehaviour: overwrite
+            
   - type: LayoutBox
     margin: large
     style: inline
     children:
       - type: CheckBox
         name: donotrun
+
+  - type: CollapseBox
+    label: Second Oder Factors
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: Supplier
+            name: secondorderSupplier
+            format: term
+            persistentItems: true
+            stretchFactor: 1
+            events:
+              update: './gui.events::onUpdate_secondorderSupplier'
+              change: './gui.events::onChange_secondorderSupplier'
+            children:
+                  - type: TargetLayoutBox
+                    label: Second Order Factors
+                    children:
+                      - type: ListBox
+                        name: secondorder
+                        height: large
+                        addButton: Add New Latent
+                        events:
+                          listItemAdded: './gui.events::onChange_items_changed'
+                          listItemRemoved: './gui.events::onChange_items_changed'
+                        templateName: linreg-block-template
+                        template:
+                          type: LayoutBox
+                          margin: normal
+                          children:
+                            - type: TextBox
+                              events:
+                                change: './gui.events::onChange_SecondName'
+                              valueKey:
+                                - label
+                              borderless: true
+                              name: blockName
+                              stretchFactor: 1
+                              margin: normal
+                            - type: VariablesListBox
+                              valueFilter: unique
+                              events:
+                                 listItemAdded: './gui.events::onChange_items_changed'
+                                 listItemRemoved: './gui.events::onChange_items_changed'
+                                 change: './gui.events::onChange_secondorderTerms'
+
+                              valueKey:
+                                - vars
+                              name: blockList
+                              isTarget: true
+                              height: auto
+                              ghostText: drag variables here
+            
+            
+            
+            
+            
   - type: CollapseBox
     label: Endogenous models
     collapsed: true
     stretchFactor: 1
     children:
+                
+
       - type: LayoutBox
         margin: large
         stretchFactor: 1
@@ -116,35 +180,36 @@ children:
               update: './gui.events::onUpdate_endogenousSupplier'
               change: './gui.events::onChange_endogenousSupplier'
             children:
-              - type: TargetLayoutBox
-                transferAction: interactions
-                children:
-                  - type: ListBox
-                    name: endogenousTerms
-                    height: large
-                    selectable: true
-                    templateName: linreg-block-template
-                    template:
-                      type: LayoutBox
-                      margin: normal
-                      targetArea: true
-                      children:
-                        - type: Label
-                          label: empty
-                          name: blockName
-                          stretchFactor: 1
+                  - type: TargetLayoutBox
+                    label: Endogenous Variables Models
+                    transferAction: interactions
+                    children:
+                      - type: ListBox
+                        name: endogenousTerms
+                        height: large
+                        selectable: true
+                        templateName: linreg-block-template
+                        template:
+                          type: LayoutBox
                           margin: normal
-                        - type: ListBox
-                          enable: (endogenous)
-                          name: blockList
-                          isTarget: true
-                          valueFilter: unique
-                          height: auto
-                          ghostText: drag variables here
-                          events:
-                            change: './gui.events::onChange_endogenousTerms'
-                          template:
-                            type: TermLabel
+                          targetArea: true
+                          children:
+                            - type: Label
+                              label: empty
+                              name: blockName
+                              stretchFactor: 1
+                              margin: normal
+                            - type: ListBox
+                              enable: (endogenous)
+                              name: blockList
+                              isTarget: true
+                              valueFilter: unique
+                              height: auto
+                              ghostText: drag variables here
+                              events:
+                                change: './gui.events::onChange_endogenousTerms'
+                              template:
+                                type: TermLabel
   - type: CollapseBox
     label: Variances and covariances
     collapsed: true

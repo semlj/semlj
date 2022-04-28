@@ -99,6 +99,27 @@ options:
 
     ### OPTIONS #########
 
+    ### second order factors  =====================================================
+
+    - name: secondorder
+      type: Array
+      default:
+        - label: Factor1
+          vars: []
+      template:
+          type: Group
+          elements:
+            - name: label
+              type: String
+            - name: vars
+              type: Terms
+      description:
+          R: >
+            A list containing named lists that define the `label` of the second order latent factors  and
+            the `vars` that belong to that latent.
+
+
+
     ### Endogenous models =====================================================
     - name: endogenousTerms
       title: Endogenous Latent Variable Models
@@ -687,7 +708,7 @@ options:
     - name: diag_intercepts
       title: show intercepts
       type: Bool
-      default: true
+      default: false
       description:
           R: >
              `TRUE` or `FALSE` (default), show the variable intercepts.
