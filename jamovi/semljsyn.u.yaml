@@ -145,23 +145,37 @@ children:
                     name: cov_y
                   - type: CheckBox
                     name: cov_lv
+
       - type: LayoutBox
         margin: large
         style: inline
         children:
+          - type: Label
+            label: Intercepts
+            margin: large
+            style: list
+            children:
+              - type: CheckBox
+                name: meanstructure
+              - type: CheckBox
+                name: int_ov
+                enable: (meanstructure)
+              - type: CheckBox
+                name: int_lv
+                enable: (meanstructure)
+                
           - type: Label
             label: Estimates
             margin: large
             style: list
             children:
               - type: CheckBox
-                name: meanstructure
-                children:
-                  - type: CheckBox
-                    name: intercepts
-                    enable: (meanstructure)
-              - type: CheckBox
                 name: indirect
+
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
           - type: Label
             label: Scale / standardize variables
             margin: large
@@ -177,6 +191,9 @@ children:
                 optionPart: std_res
               - type: CheckBox
                 name: std_ov
+
+
+
   - type: CollapseBox
     label: Multi-group analyses
     collapsed: true

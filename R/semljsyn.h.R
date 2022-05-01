@@ -22,7 +22,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             ci = TRUE,
             ci_width = 95,
             meanstructure = TRUE,
-            intercepts = TRUE,
+            int_ov = TRUE,
+            int_lv = FALSE,
             indirect = FALSE,
             std_lv = "fix_first",
             std_ov = FALSE,
@@ -177,10 +178,14 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "meanstructure",
                 meanstructure,
                 default=TRUE)
-            private$..intercepts <- jmvcore::OptionBool$new(
-                "intercepts",
-                intercepts,
+            private$..int_ov <- jmvcore::OptionBool$new(
+                "int_ov",
+                int_ov,
                 default=TRUE)
+            private$..int_lv <- jmvcore::OptionBool$new(
+                "int_lv",
+                int_lv,
+                default=FALSE)
             private$..indirect <- jmvcore::OptionBool$new(
                 "indirect",
                 indirect,
@@ -423,7 +428,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..ci)
             self$.addOption(private$..ci_width)
             self$.addOption(private$..meanstructure)
-            self$.addOption(private$..intercepts)
+            self$.addOption(private$..int_ov)
+            self$.addOption(private$..int_lv)
             self$.addOption(private$..indirect)
             self$.addOption(private$..std_lv)
             self$.addOption(private$..std_ov)
@@ -485,7 +491,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ci = function() private$..ci$value,
         ci_width = function() private$..ci_width$value,
         meanstructure = function() private$..meanstructure$value,
-        intercepts = function() private$..intercepts$value,
+        int_ov = function() private$..int_ov$value,
+        int_lv = function() private$..int_lv$value,
         indirect = function() private$..indirect$value,
         std_lv = function() private$..std_lv$value,
         std_ov = function() private$..std_ov$value,
@@ -546,7 +553,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..ci = NA,
         ..ci_width = NA,
         ..meanstructure = NA,
-        ..intercepts = NA,
+        ..int_ov = NA,
+        ..int_lv = NA,
         ..indirect = NA,
         ..std_lv = NA,
         ..std_ov = NA,
@@ -677,7 +685,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "estimator",
                     "likelihood",
                     "meanstructure",
-                    "intercepts",
+                    "int_ov",
+                    "int_lv",
                     "std_lv",
                     "std_ov",
                     "cov_x",
@@ -703,7 +712,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_lv",
+                                "int_ov",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -748,7 +758,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -806,7 +817,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -863,7 +875,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -900,7 +913,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -936,7 +950,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1033,7 +1048,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1122,7 +1138,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_lv",
+                                "int_ov",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1212,7 +1229,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1301,7 +1319,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1390,7 +1409,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1476,7 +1496,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1566,7 +1587,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1617,7 +1639,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "intercepts",
+                                "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -2012,7 +2035,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     "estimator",
                                     "likelihood",
                                     "meanstructure",
-                                    "intercepts",
+                                    "int_ov",
+                                    "int_lv",
                                     "std_lv",
                                     "std_ov",
                                     "cov_x",
@@ -2121,8 +2145,10 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   confidence interval width for the parameter estimates.
 #' @param meanstructure If TRUE, the means of the observed variables enter the
 #'   model. Required for calculating the intercepts of the estimates.
-#' @param intercepts \code{TRUE} or \code{FALSE} (default), calculate and show
-#'   the intercepts of the parameter estimates
+#' @param int_ov \code{TRUE} or \code{FALSE} (default), calculate intercepts
+#'   for observed variables
+#' @param int_lv \code{TRUE} or \code{FALSE} (default), calculate intercepts
+#'   for latent variables
 #' @param indirect \code{TRUE} or \code{FALSE} (default), TO ADD
 #' @param std_lv If \code{fix_first} (default), the factor loading of the
 #'   first indicator is set to 1.0 for every latent variable. If \code{std_res},
@@ -2284,7 +2310,8 @@ semljsyn <- function(
     ci = TRUE,
     ci_width = 95,
     meanstructure = TRUE,
-    intercepts = TRUE,
+    int_ov = TRUE,
+    int_lv = FALSE,
     indirect = FALSE,
     std_lv = "fix_first",
     std_ov = FALSE,
@@ -2359,7 +2386,8 @@ semljsyn <- function(
         ci = ci,
         ci_width = ci_width,
         meanstructure = meanstructure,
-        intercepts = intercepts,
+        int_ov = int_ov,
+        int_lv = int_lv,
         indirect = indirect,
         std_lv = std_lv,
         std_ov = std_ov,
