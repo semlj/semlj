@@ -494,7 +494,12 @@ Runner <- R6::R6Class("Runner",
                             self$dispatcher$errors <- list(topic="info", message=results$error)
                             private$.par_table<-results$obj
                             if (is.null(private$.par_table)) private$.par_table<-FALSE
-                            
+                            mark(private$.par_table$label)
+                            userlabel<-grep("^\\p\\d+$",private$.par_table$label,invert = T)
+                            if (length(userlabel)>0) {
+                              ilabel<-paste("(",private$.lav_structure$plabel[userlabel],")")
+                              private$.par_table$label[userlabel]<-paste(private$.par_table$label[userlabel],ilabel)
+                            }
                           },
                           .get_test_info=function() {
                             

@@ -14,7 +14,6 @@ Datamatic <- R6::R6Class(
     initialize=function(options,dispatcher,data) {
       
       super$initialize(options,dispatcher)
-      mark("Datamatic")
       astring<-options$code
       reg<-"[=~:+\n]"
       avec<-stringr::str_split(astring,reg)[[1]]
@@ -34,16 +33,17 @@ Datamatic <- R6::R6Class(
         if(trimws(ml)=="")
           ml<-NULL
       self$cluster<-ml
-      mark(self$cluster,is.something(self$cluster),class(self$cluster))
       private$.inspect_data(data)
       
       
     },
     
     cleandata=function(data) {
-      
       trans<-c()
-      for (var in self$vars) {
+      facts<-c(self$cluster,self$multigroup$var)
+      vars<-setdiff(self$vars,facts)
+      
+      for (var in vars) {
         
         if (is.factor(data[[var]])) { 
           data[[var]]<-ordered(data[[var]])
@@ -53,6 +53,19 @@ Datamatic <- R6::R6Class(
       if (is.something(trans))
         self$dispatcher$warnings<-list(topic="info",
                             message=glue::glue(DATA_WARNS[["fac_to_ord"]],x=paste(unique(trans),collapse = ",")))
+
+      
+      trans<-NULL
+      for (var in facts) {
+      if (!is.factor(data[[var]])) { 
+          data[[var]]<-factor(data[[var]])
+          trans<-c(trans,var)
+      }
+      }
+      if (is.something(trans))
+        self$dispatcher$warnings<-list(topic="info",
+                                       message=glue::glue(DATA_WARNS[["num_to_fac"]],x=paste(unique(trans),collapse = ",")))
+
       return(data)
       
     }
