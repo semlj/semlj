@@ -12,7 +12,6 @@ Runner <- R6::R6Class("Runner",
                             super$initialize(options,dispatcher,datamatic)
                           },
                           estimate = function(data) {
-                            
                             ## prepare the options based on Syntax definitions
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
@@ -451,11 +450,86 @@ Runner <- R6::R6Class("Runner",
                               tab = NULL;
                             }
                             tab
+                          },
+                          savePredRes=function(results,data) {
+                            
+                            .compute<-function() {
+                            #### this comes from
+                            ###  https://github.com/mjderooij/SEMpredict/blob/main/predicty.lavaan.R
+                            try_hard({
+                            mark(xnames,ynames)
+                              Sxx = lavaan::fitted(self$model)$cov[xnames , xnames]
+                              Sxy = lavaan::fitted(self$model)$cov[xnames , ynames]
+                              mx = lavaan::fitted(self$model)$mean[xnames]
+                              my = lavaan::fitted(self$model)$mean[ynames]
+                              
+                              #
+                              Xtest = as.matrix(data[, xnames])
+                              Xtest = scale(Xtest, center = mx, scale = FALSE)
+                              yhat = matrix(my, nrow = nrow(Xtest), ncol = length(ynames), byrow = TRUE) + Xtest %*% solve(Sxx) %*% Sxy
+                              colnames(yhat)<-paste0("PREDS_",ynames)
+                              data.frame(yhat, row.names=rownames(data))
+                            })
+                            }
                             
                             
-                            
-                          }
+                            if (self$options$predicted && results$predicted$isNotFilled()) {
+                              ginfo("Saving predicted")
+                              
+                              .names<-private$.observed_vars()
+                              xnames<-.names[[1]]
+                              ynames<-.names[[2]]
+                           
+                              predsdata<-.compute()
+                              if (!isFALSE(predsdata$error)) {
+                                self$dispatcher$warnings<-list(topic="info",message="Predicted values cannot be computed for this  model")
+                              } else {
+                                
+                                results$predicted$set(1:ncol(predsdata$obj),
+                                                    names(predsdata$obj),
+                                                    rep("Predicted",ncol(predsdata$obj)),
+                                                    rep("continuous",ncol(predsdata$obj)))
+                                results$predicted$setValues(predsdata$obj)
+                                self$dispatcher$warnings<-list(topic="info",message=paste("Predicted values saved in the dataset. Varnames:",paste(names(predsdata$obj),collapse = ", ")))
+                                
+                              }
+                            }
+                          
+        
+                          if (self$options$residuals && results$residuals$isNotFilled()) {
 
+                            ginfo("Saving residuals")
+                            
+                            .names<-private$.observed_vars()
+                            xnames<-.names[[1]]
+                            ynames<-.names[[2]]
+                            
+                            predsdata<-.compute()
+                            if (!isFALSE(predsdata$error)) {
+                              self$dispatcher$warnings<-list(topic="info",message="Residuals values cannot be computed for this  model")
+                            } else {
+                              
+                              preds<-predsdata$obj
+                              predsnames<-names(preds)
+                              resdata<-data.frame(row.names=rownames(data))
+                              for (i in seq_along(ynames)) {
+                                 resdata[,i]<-data[,ynames[i]]-preds[,predsnames[i]]
+                              }
+                              names(resdata)<-paste0("RES_",ynames)
+                              results$residuals$set(1:ncol(resdata),
+                                                    names(resdata),
+                                                    rep("Predicted",ncol(resdata)),
+                                                    rep("continuous",ncol(resdata)))
+                              results$residuals$setValues(resdata)
+                              self$dispatcher$warnings<-list(topic="info",message=paste("Residuals values saved in the dataset. Varnames: ",paste(names(resdata),collapse = ", ")))
+                              
+                            }
+                          }
+                          
+                  }  ## end of savePredRes
+
+                          
+                          
                           ), # end of public function estimate
 
                         private=list(
@@ -479,6 +553,7 @@ Runner <- R6::R6Class("Runner",
 
                             
                           },  
+
                           .get_par_table=function() {
                             
                             results<-try_hard(
@@ -494,7 +569,6 @@ Runner <- R6::R6Class("Runner",
                             self$dispatcher$errors <- list(topic="info", message=results$error)
                             private$.par_table<-results$obj
                             if (is.null(private$.par_table)) private$.par_table<-FALSE
-                            mark(private$.par_table$label)
                             userlabel<-grep("^\\p\\d+$",private$.par_table$label,invert = T)
                             if (length(userlabel)>0) {
                               ilabel<-paste("(",private$.lav_structure$plabel[userlabel],")")

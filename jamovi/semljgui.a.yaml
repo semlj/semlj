@@ -850,4 +850,13 @@ options:
           R: >
              Choose the length (characters) of the variable name abbreviations (default: 5).
 
+
+
+    - name: predicted
+      title: Predicted
+      type: Output            
+    - name: residuals
+      title: Residuals
+      type: Output            
+
 ...

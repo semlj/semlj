@@ -20,6 +20,7 @@ Datamatic <- R6::R6Class(
       avec<-avec[sapply(avec, function(a) a!="")]
       vars<-sapply(avec, function(a) trimws(stringr::str_remove(a,'.*[\\*]')))
       vars<-vars[grep("#",vars,fixed=T,invert = T)]
+      vars<-vars[sapply(vars,function(x) x!="")]
       self$vars<-vars
       
       mg<-options$multigroup
@@ -34,8 +35,6 @@ Datamatic <- R6::R6Class(
           ml<-NULL
       self$cluster<-ml
       private$.inspect_data(data)
-      
-      
     },
     
     cleandata=function(data) {
@@ -73,18 +72,32 @@ Datamatic <- R6::R6Class(
   ), ### end of public
   private=list(
     .inspect_data=function(data) {
-      
+       
 
+        test<-(make.names(self$vars) %in% self$vars)
+
+        if (!all(test)) {
+          msg<-paste(self$vars[!test],collapse = ",")
+          self$dispatcher$errors <-  list(topic="info", message=paste0(
+                        "Variable name not allowed for variables: ",
+                        msg,
+                        ". Please remove characters that are not letters, numbers, dot or underline. Letters may be defined differently in different locales."),
+                        final=TRUE)
+        }
+        
+        
         if (is.something(self$multigroup)) {
           var<-trimws(self$multigroup)
           levels<-levels(data[,var])
           self$multigroup<-list(var=var,levels=levels,nlevels=length(levels))
         }
         self$observed<-intersect(self$vars,names(data))
+        if (length(self$observed)==0)
+          self$dispatcher$errors <-  list(topic="info", message="No observed variable in the dataset",final=TRUE)
+        
         observed<-self$observed[(!(self$observed %in% c(self$multigroup$var,self$cluster)))]
         self$ordered<-observed[sapply(observed, function(a) any(class(data[[a]]) %in% c("factor","ordered")))]
-        if (is.something(self$ordered))
-            mark(paste("ordered vars:" ,self$ordered))
+
         ### if ordered variables are present, we need to prepare the varTable to give information
         ### about the variables. Since we are in init, we do not have the full dataset, so
         ### varTable() will assign obs=0 and the variable will be ignored by lavaanify().

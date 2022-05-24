@@ -383,6 +383,16 @@ children:
                                 name: miThreshold
                                 format: number
                                 enable: (miHideLow)
+
+                      - type: Label
+                        label: Save
+                        children:
+                          - type: Output
+                            name: predicted
+                          - type: Output
+                            name: residuals
+
+
   - type: CollapseBox
     label: Path diagram
     collapsed: true

@@ -411,6 +411,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "20",
                     "25"),
                 default="5")
+            private$..predicted <- jmvcore::OptionOutput$new(
+                "predicted")
+            private$..residuals <- jmvcore::OptionOutput$new(
+                "residuals")
 
             self$.addOption(private$..code)
             self$.addOption(private$..syntax)
@@ -473,6 +477,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..diag_shape_man)
             self$.addOption(private$..diag_shape_lat)
             self$.addOption(private$..diag_abbrev)
+            self$.addOption(private$..predicted)
+            self$.addOption(private$..residuals)
         }),
     active = list(
         code = function() private$..code$value,
@@ -535,7 +541,9 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         diag_labsize = function() private$..diag_labsize$value,
         diag_shape_man = function() private$..diag_shape_man$value,
         diag_shape_lat = function() private$..diag_shape_lat$value,
-        diag_abbrev = function() private$..diag_abbrev$value),
+        diag_abbrev = function() private$..diag_abbrev$value,
+        predicted = function() private$..predicted$value,
+        residuals = function() private$..residuals$value),
     private = list(
         ..code = NA,
         ..syntax = NA,
@@ -597,7 +605,9 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..diag_labsize = NA,
         ..diag_shape_man = NA,
         ..diag_shape_lat = NA,
-        ..diag_abbrev = NA)
+        ..diag_abbrev = NA,
+        ..predicted = NA,
+        ..residuals = NA)
 )
 
 semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -612,7 +622,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         additional = function() private$.items[["additional"]],
         covariances = function() private$.items[["covariances"]],
         modification = function() private$.items[["modification"]],
-        pathgroup = function() private$.items[["pathgroup"]]),
+        pathgroup = function() private$.items[["pathgroup"]],
+        predicted = function() private$.items[["predicted"]],
+        residuals = function() private$.items[["residuals"]]),
     private = list(
         ..model = NA),
     public=list(
@@ -2066,7 +2078,19 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="notes",
                             title="",
-                            visible=FALSE))}))$new(options=options))},
+                            visible=FALSE))}))$new(options=options))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="predicted",
+                title="Predicted Vales",
+                varDescription="Predicted values",
+                initInRun=TRUE))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="residuals",
+                title="Predicted Vales",
+                varDescription="Predicted values",
+                initInRun=TRUE))},
         .setModel=function(x) private$..model <- x))
 
 semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -2283,6 +2307,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$modification$indices} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$predicted} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$residuals} \tab \tab \tab \tab \tab an output \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:

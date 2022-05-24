@@ -203,12 +203,12 @@ const updateModelLabels = function(ui,context) {
     var list1 = ui.endogenous.applyToItems(0, (item, index) => {
         let value = item.controls[0].value();
         if ( ! value || value.trim() === '')
-            item.controls[0].setValue("Endogenous " + (index + 1) );
+            item.controls[0].setValue("Endogenous" + (index + 1) );
     });
     var list2 = ui.exogenous.applyToItems(0, (item, index) => {
         let value = item.controls[0].value();
         if ( ! value || value.trim() === '')
-            item.controls[0].setValue("Exogenous " + (index + 1) );
+            item.controls[0].setValue("Exogenous" + (index + 1) );
     });
     
     var list3 = ui.secondorder.applyToItems(0, (item, index) => {

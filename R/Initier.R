@@ -626,6 +626,19 @@ Initer <- R6::R6Class(
       }
       tabs<-do.call("ebind_square",alist)
       return(as.data.frame(tabs))
+    },
+    
+    .observed_vars=function() {
+      
+      tab<-self$par_table()
+      endo<-unique(tab[tab$op=="~","lhs"])
+      exo<-unique(tab[tab$op=="~" & tab$lhs %in% endo,"rhs"])
+      xnames<-c(exo,unique(tab[tab$op=="=~" & tab$lhs %in% exo,"rhs"]))
+      xnames<-intersect(xnames,self$observed)
+      ynames<-c(endo,unique(tab[tab$op=="=~" & tab$lhs %in% endo,"rhs"]))
+      ynames<-intersect(ynames,self$observed)
+      ynames<-setdiff(ynames,xnames)
+      list(xnames,ynames)
     }
     
     

@@ -1192,3 +1192,16 @@ items:
         title: ""
 #       description:
         visible: false
+
+  - name: predicted
+    title: Predicted Vales
+    type: Output            
+    varDescription: Predicted values
+    initInRun: true 
+
+  - name: residuals
+    title: Predicted Vales
+    type: Output            
+    varDescription: Predicted values
+    initInRun: true 
+    
