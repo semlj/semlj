@@ -287,6 +287,7 @@ children:
                           ghostText: write here
   - type: CollapseBox
     label: Model options
+    name: model_options
     collapsed: true
     stretchFactor: 1
     children:
@@ -315,6 +316,7 @@ children:
                 name: cumscoretest
   - type: CollapseBox
     label: Parameters options
+    name: parameters_options
     collapsed: true
     stretchFactor: 1
     children:
@@ -447,6 +449,7 @@ children:
                 name: std_ov
   - type: CollapseBox
     label: Multi-group analysis
+    name: multigroup_options
     collapsed: true
     stretchFactor: 1
     style: list
@@ -493,6 +496,7 @@ children:
                     name: eq_lv.covariances
   - type: CollapseBox
     label: Output options
+    name: output_options
     collapsed: true
     stretchFactor: 1
     children:
@@ -590,7 +594,7 @@ children:
                         style: list
                         children:
                              - type: Label
-                               label: Modification indices
+                               label: Save Predicted
                              - type: Output
                                name: preds_lv
                              - type: Output
@@ -600,6 +604,7 @@ children:
                                 
   - type: CollapseBox
     label: Path diagram
+    name: pathdiagram_options
     collapsed: true
     stretchFactor: 1
     style: list

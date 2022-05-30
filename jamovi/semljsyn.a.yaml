@@ -789,13 +789,23 @@ options:
 
 
 
-
-    - name: predicted
-      title: Predicted
-      type: Output            
-    - name: residuals
-      title: Residuals
-      type: Output            
-
+    - name: preds_lv 
+      type: Output
+      title: Factor Scores
+      description:
+        R: >
+           save factor scores 
+    - name: preds_ov 
+      type: Output
+      title: Indicators
+      description:
+        R: >
+           save indicators predicted values 
+    - name: preds_dv
+      type: Output
+      title: Dependent variables
+      description:
+        R: >
+           save dependent variables predicted values 
 
 ...

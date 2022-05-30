@@ -487,7 +487,7 @@ Runner <- R6::R6Class("Runner",
                                  }
                                  results$preds_dv$set(1:ncol(predsdata),
                                                        names(predsdata),
-                                                       rep("Predicted",ncol(predsdata)),
+                                                       rep("DV Predicted",ncol(predsdata)),
                                                        rep("continuous",ncol(predsdata)))
                                  results$preds_dv$setValues(predsdata)
                                  self$dispatcher$warnings<-list(topic="info",message=paste("Dependent variables predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
@@ -500,10 +500,10 @@ Runner <- R6::R6Class("Runner",
                                  colnames(predsdata)<-paste0("PRFS_",colnames(predsdata))
                                  results$preds_lv$set(1:ncol(predsdata),
                                                       names(predsdata),
-                                                      rep("Predicted",ncol(predsdata)),
+                                                      rep("Factor scores ",ncol(predsdata)),
                                                       rep("continuous",ncol(predsdata)))
                                  results$preds_lv$setValues(predsdata)
-                                 self$dispatcher$warnings<-list(topic="info",message=paste("Factors scores predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                                 self$dispatcher$warnings<-list(topic="info",message=paste("Factors scores (latent predicted values) saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
                                  
                               }
                               if (self$option("preds_ov")) {
@@ -512,14 +512,11 @@ Runner <- R6::R6Class("Runner",
                                 colnames(predsdata)<-paste0("PRIN_",colnames(predsdata))
                                 results$preds_ov$set(1:ncol(predsdata),
                                                      names(predsdata),
-                                                     rep("Predicted",ncol(predsdata)),
+                                                     rep("Indicator predicted",ncol(predsdata)),
                                                      rep("continuous",ncol(predsdata)))
                                 results$preds_ov$setValues(predsdata)
                                 self$dispatcher$warnings<-list(topic="info",message=paste("Indicators predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
                               }
-
-
-                                
 
                   }  ## end of savePredRes
 

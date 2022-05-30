@@ -1340,15 +1340,21 @@ items:
 #       description:
         visible: false
 
-  - name: predicted
-    title: Predicted Vales
+
+  - name: preds_lv
+    title: Factor scores
     type: Output            
-    varDescription: Predicted values
+    varDescription: Factor scores
     initInRun: true 
 
-  - name: residuals
-    title: Predicted Vales
+  - name: preds_ov
+    title: Indicators scores
     type: Output            
-    varDescription: Predicted values
+    varDescription: Indicators scores
     initInRun: true 
-    
+
+  - name: preds_dv
+    title: Dependent vars scores
+    type: Output            
+    varDescription: Dependent vars scores
+    initInRun: true 

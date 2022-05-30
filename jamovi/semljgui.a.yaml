@@ -956,18 +956,38 @@ options:
       title: Factor Scores
       description:
         R: >
-           save factor scores 
+           none
+        ui: >
+           this option saves, for each participant, the latent variables predicted
+           values based on the latent variables estimation. The values are obtained
+           with `lavaan::lavPredict(..,type="lv")`. See @lavaan for details. The values
+           are basically factor scores.
     - name: preds_ov 
       type: Output
       title: Indicators
       description:
         R: >
-           save indicators predicted values 
+           none
+        ui: >
+           this option saves, for each participant, the observed variables predicted
+           values based on the latent variables estimation. The values are obtained
+           with `lavaan::lavPredict(..,type="ov")`. See @lavaan for details
     - name: preds_dv
       type: Output
       title: Dependent variables
       description:
         R: >
-           save dependent variables predicted values 
+           this option saves, for each participant, the model based predicted values
+           of the observed variables involved in the measurement of purely endogenous
+           dependent variables. The predicted values computation is based on
+           @predict, and the implementation is adapted from
+           [github SEMpredict](https://github.com/mjderooij/SEMpredict)
+        ui: >
+           this option saves, for each participant, the model based predicted values
+           of the observed variables involved in the measurement of purely endogenous
+           dependent variables. The predicted values computation is based on
+           @predict, and the implementation is adpted from
+           [github SEMpredict](https://github.com/mjderooij/SEMpredict)
+ 
 
 ...

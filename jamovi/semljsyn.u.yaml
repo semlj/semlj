@@ -145,7 +145,6 @@ children:
                     name: cov_y
                   - type: CheckBox
                     name: cov_lv
-
       - type: LayoutBox
         margin: large
         style: inline
@@ -163,7 +162,6 @@ children:
               - type: CheckBox
                 name: int_lv
                 enable: (meanstructure)
-                
           - type: Label
             label: Estimates
             margin: large
@@ -171,7 +169,6 @@ children:
             children:
               - type: CheckBox
                 name: indirect
-
       - type: LayoutBox
         margin: large
         style: inline
@@ -191,9 +188,6 @@ children:
                 optionPart: std_res
               - type: CheckBox
                 name: std_ov
-
-
-
   - type: CollapseBox
     label: Multi-group analyses
     collapsed: true
@@ -383,16 +377,21 @@ children:
                                 name: miThreshold
                                 format: number
                                 enable: (miHideLow)
-
+                      - type: LayoutBox
+                        margin: large
+                        style: list
+                        children:
+                          - type: Label
+                            label: Save Predicted
+                          - type: Output
+                            name: preds_lv
+                          - type: Output
+                            name: preds_ov
+                          - type: Output
+                            name: preds_dv
                       - type: Label
                         label: Save
-                        children:
-                          - type: Output
-                            name: predicted
-                          - type: Output
-                            name: residuals
-
-
+                        children: []
   - type: CollapseBox
     label: Path diagram
     collapsed: true
