@@ -585,14 +585,19 @@ children:
                                 name: miThreshold
                                 format: number
                                 enable: (miHideLow)
-                      - type: Label
-                        label: Save
+                      - type: LayoutBox
+                        margin: large
+                        style: list
                         children:
-                          - type: Output
-                            name: predicted
-                          - type: Output
-                            name: residuals
-
+                             - type: Label
+                               label: Modification indices
+                             - type: Output
+                               name: preds_lv
+                             - type: Output
+                               name: preds_ov
+                             - type: Output
+                               name: preds_dv
+                                
   - type: CollapseBox
     label: Path diagram
     collapsed: true

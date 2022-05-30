@@ -457,10 +457,12 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "20",
                     "25"),
                 default="5")
-            private$..predicted <- jmvcore::OptionOutput$new(
-                "predicted")
-            private$..residuals <- jmvcore::OptionOutput$new(
-                "residuals")
+            private$..preds_lv <- jmvcore::OptionOutput$new(
+                "preds_lv")
+            private$..preds_ov <- jmvcore::OptionOutput$new(
+                "preds_ov")
+            private$..preds_dv <- jmvcore::OptionOutput$new(
+                "preds_dv")
 
             self$.addOption(private$..code)
             self$.addOption(private$..donotrun)
@@ -523,8 +525,9 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..diag_shape_man)
             self$.addOption(private$..diag_shape_lat)
             self$.addOption(private$..diag_abbrev)
-            self$.addOption(private$..predicted)
-            self$.addOption(private$..residuals)
+            self$.addOption(private$..preds_lv)
+            self$.addOption(private$..preds_ov)
+            self$.addOption(private$..preds_dv)
         }),
     active = list(
         code = function() private$..code$value,
@@ -588,8 +591,9 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         diag_shape_man = function() private$..diag_shape_man$value,
         diag_shape_lat = function() private$..diag_shape_lat$value,
         diag_abbrev = function() private$..diag_abbrev$value,
-        predicted = function() private$..predicted$value,
-        residuals = function() private$..residuals$value),
+        preds_lv = function() private$..preds_lv$value,
+        preds_ov = function() private$..preds_ov$value,
+        preds_dv = function() private$..preds_dv$value),
     private = list(
         ..code = NA,
         ..donotrun = NA,
@@ -652,8 +656,9 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..diag_shape_man = NA,
         ..diag_shape_lat = NA,
         ..diag_abbrev = NA,
-        ..predicted = NA,
-        ..residuals = NA)
+        ..preds_lv = NA,
+        ..preds_ov = NA,
+        ..preds_dv = NA)
 )
 
 semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -669,8 +674,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         covariances = function() private$.items[["covariances"]],
         modification = function() private$.items[["modification"]],
         pathgroup = function() private$.items[["pathgroup"]],
-        predicted = function() private$.items[["predicted"]],
-        residuals = function() private$.items[["residuals"]]),
+        preds_lv = function() private$.items[["preds_lv"]],
+        preds_ov = function() private$.items[["preds_ov"]],
+        preds_dv = function() private$.items[["preds_dv"]]),
     private = list(
         ..model = NA),
     public=list(
@@ -1970,15 +1976,21 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             visible=FALSE))}))$new(options=options))
             self$add(jmvcore::Output$new(
                 options=options,
-                name="predicted",
-                title="Predicted Vales",
-                varDescription="Predicted values",
+                name="preds_lv",
+                title="Factor scores",
+                varDescription="Factor scores",
                 initInRun=TRUE))
             self$add(jmvcore::Output$new(
                 options=options,
-                name="residuals",
-                title="Predicted Vales",
-                varDescription="Predicted values",
+                name="preds_ov",
+                title="Indicators scores",
+                varDescription="Indicators scores",
+                initInRun=TRUE))
+            self$add(jmvcore::Output$new(
+                options=options,
+                name="preds_dv",
+                title="Dependent vars scores",
+                varDescription="Dependent vars scores",
                 initInRun=TRUE))},
         .setModel=function(x) private$..model <- x))
 
@@ -2057,7 +2069,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   used; otherwise, wishart likelihood is used.
 #' @param scoretest TO ADD
 #' @param cumscoretest TO ADD
-#' @param se TO ADD
+#' @param se Standard error method.
 #' @param bootci Choose the confidence interval type ("perc" - percentiles
 #'   [default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic"
 #'   - basic).
@@ -2127,7 +2139,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   show additional fit measures (e.g., CFI, TLI, etc.)
 #' @param reliability \code{TRUE} or \code{FALSE} (default), show additional
 #'   reliability indices
-#' @param r2 .
+#' @param r2 compute R-squared for all endogenous variables (\code{endo}) or
+#'   for all variables in the model (\code{all}). \code{none} for no R-squared
 #' @param outputMardiasCoefficients \code{TRUE} or \code{FALSE} (default),
 #'   show Mardia's coefficients for multivariate skewness and kurtosis
 #' @param outputObservedCovariances \code{TRUE} or \code{FALSE} (default),
@@ -2200,8 +2213,9 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$modification$indices} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$predicted} \tab \tab \tab \tab \tab an output \cr
-#'   \code{results$residuals} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$preds_lv} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$preds_ov} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$preds_dv} \tab \tab \tab \tab \tab an output \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
