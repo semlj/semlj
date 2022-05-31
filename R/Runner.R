@@ -473,7 +473,7 @@ Runner <- R6::R6Class("Runner",
                             }
                             
                               
-                              if (self$option("preds_dv")) {
+                              if (self$option("preds_dv") & results$preds_dv$isNotFilled()) {
                                  ginfo("saving dv predicted")
                                  .names<-private$.observed_vars()
                                  xnames<-.names[[1]]
@@ -482,40 +482,50 @@ Runner <- R6::R6Class("Runner",
                                  predsobj<-.compute()
                                  predsdata<-predsobj$obj
                                  if (!isFALSE(predsobj$error)) {
-                                   self$dispatcher$warnings<-list(topic="info",message="Predicted values cannot be computed for this  model")
-                                   return()
-                                 }
-                                 results$preds_dv$set(1:ncol(predsdata),
+                                   self$dispatcher$warnings<-list(topic="info",message="Dependent variables predicted values cannot be computed for this  model")
+                                 } else {
+                                   results$preds_dv$set(1:ncol(predsdata),
                                                        names(predsdata),
                                                        rep("DV Predicted",ncol(predsdata)),
                                                        rep("continuous",ncol(predsdata)))
-                                 results$preds_dv$setValues(predsdata)
-                                 self$dispatcher$warnings<-list(topic="info",message=paste("Dependent variables predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
-                                 
-                              }
+                                   results$preds_dv$setValues(predsdata)
+                                   self$dispatcher$warnings<-list(topic="info",message=paste("Dependent variables predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                                 }                       
+                                 }
                               
-                              if (self$option("preds_lv")) {
+                              if (self$option("preds_lv") & results$preds_lv$isNotFilled()) {
                                  ginfo("saving lv predicted")
                                  predsdata<-as.data.frame(lavaan::lavPredict(self$model,type="lv"))
-                                 colnames(predsdata)<-paste0("PRFS_",colnames(predsdata))
-                                 results$preds_lv$set(1:ncol(predsdata),
-                                                      names(predsdata),
-                                                      rep("Factor scores ",ncol(predsdata)),
-                                                      rep("continuous",ncol(predsdata)))
-                                 results$preds_lv$setValues(predsdata)
-                                 self$dispatcher$warnings<-list(topic="info",message=paste("Factors scores (latent predicted values) saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                                 if (ncol(predsdata)>0) {
+                                   
+                                   colnames(predsdata)<-paste0("PRFS_",colnames(predsdata))
+                                   results$preds_lv$set(1:ncol(predsdata),
+                                                        names(predsdata),
+                                                        rep("Factor scores ",ncol(predsdata)),
+                                                        rep("continuous",ncol(predsdata)))
+                                   results$preds_lv$setValues(predsdata)
+                                   self$dispatcher$warnings<-list(topic="info",message=paste("Factors scores (latent predicted values) saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                                   
+                                 } else {
+                                   self$dispatcher$warnings<-list(topic="info",message="Factor scores cannot be computed for this model")
+                                   
+                                 }
                                  
                               }
-                              if (self$option("preds_ov")) {
+                              if (self$option("preds_ov") && results$preds_ov$isNotFilled()) {
                                 ginfo("saving ov predicted")
                                 predsdata<-as.data.frame(lavaan::lavPredict(self$model,type="ov"))
-                                colnames(predsdata)<-paste0("PRIN_",colnames(predsdata))
-                                results$preds_ov$set(1:ncol(predsdata),
+                                if (ncol(predsdata)>0) {
+                                  colnames(predsdata)<-paste0("PRIN_",colnames(predsdata))
+                                  results$preds_ov$set(1:ncol(predsdata),
                                                      names(predsdata),
                                                      rep("Indicator predicted",ncol(predsdata)),
                                                      rep("continuous",ncol(predsdata)))
-                                results$preds_ov$setValues(predsdata)
-                                self$dispatcher$warnings<-list(topic="info",message=paste("Indicators predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                                  results$preds_ov$setValues(predsdata)
+                                  self$dispatcher$warnings<-list(topic="info",message=paste("Indicators predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                                } else {
+                                  self$dispatcher$warnings<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
+                                }
                               }
 
                   }  ## end of savePredRes

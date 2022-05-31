@@ -389,9 +389,6 @@ children:
                             name: preds_ov
                           - type: Output
                             name: preds_dv
-                      - type: Label
-                        label: Save
-                        children: []
   - type: CollapseBox
     label: Path diagram
     collapsed: true

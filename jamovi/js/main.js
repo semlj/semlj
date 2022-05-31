@@ -245,15 +245,19 @@ const events = {
 			return;
 		if (event.dataType !== 'columns')
 			return;
+    console.log(this.getColumnNames())
+
 		this.getColumnNames().then((columns) => {
 			let old = ui.vars.value();
-			if ( ! _.isEqual(old, columns))
-				ui.vars.setValue(columns);
+			if ( ! old.every((val, idx) => val === columns[idx])) {
+			    console.log("adjust vars")
+	  			ui.vars.setValue(columns);
+			}
 		});
 	},
 
     update(ui, event) {
-
+        console.log("update");
         let id = event.id;
         this.currentSession = this.editSessions[id];
 
