@@ -235,11 +235,9 @@ const events = {
 
 	},
 
+
 	onDataChanged(ui, event) {
 
-    console.log("vars in onDataChanged before change")
-    console.log(ui.vars.value());
-    console.log("end of vars")
 		if ( ! this.currentSession.allColumns)
 			return;
 		if (event.dataType !== 'columns')
@@ -249,13 +247,9 @@ const events = {
 		this.getColumnNames().then((columns) => {
 			let old = ui.vars.value();
 			if ( ! columns.every((val, idx) => val === old[idx])) {
-			    console.log("adjust vars")
 	  			ui.vars.setValue(columns);
 			}
 		});
-    console.log("vars in onDataChanged after change")
-    console.log(ui.vars.value());
-    console.log("end of vars")
 
 	},
 

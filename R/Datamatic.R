@@ -16,11 +16,18 @@ Datamatic <- R6::R6Class(
       super$initialize(options,dispatcher)
       astring<-options$code
       reg<-"[=~:+\n]"
+      ## split by syntax operators
       avec<-stringr::str_split(astring,reg)[[1]]
+      ## remove empty lines
       avec<-avec[sapply(avec, function(a) a!="")]
+      ## remove product operator
       vars<-sapply(avec, function(a) trimws(stringr::str_remove(a,'.*[\\*]')))
+      ## remove comments
       vars<-vars[grep("#",vars,fixed=T,invert = T)]
       vars<-vars[sapply(vars,function(x) x!="")]
+      ## remove constraints numeric values
+      vars<-vars[sapply(vars,function(x) is.na(as.numeric(x)))]
+
       self$vars<-vars
       
       mg<-options$multigroup
@@ -43,7 +50,6 @@ Datamatic <- R6::R6Class(
       vars<-setdiff(self$vars,facts)
       
       for (var in vars) {
-        
         if (is.factor(data[[var]])) { 
           data[[var]]<-ordered(data[[var]])
           trans<-c(trans,var)
