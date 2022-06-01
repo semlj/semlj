@@ -84,11 +84,6 @@ const events = {
      loaded(ui) {
         console.log("loaded code");
        var val = ui.multigroup.value();
-       console.log("multigroup type",typeof(val));
-       console.log("multigroup value",JSON.stringify(val));
-       
-      
-       
 
 
         this.editor = ace.edit('editor');
@@ -100,7 +95,6 @@ const events = {
         this.editor.setOptions({
             enableBasicAutocompletion: true,
         });
-        
         
         
         
@@ -190,6 +184,7 @@ const events = {
 
               ui.view.model.options.beginEdit();
 
+
                 let match = script.match(/^\s*\#\s*\((.*)\)/);
                 if (match !== null) {
                     let content = match[1];
@@ -240,20 +235,26 @@ const events = {
 
 	},
 
+
 	onDataChanged(ui, event) {
+
 		if ( ! this.currentSession.allColumns)
 			return;
 		if (event.dataType !== 'columns')
 			return;
+
+      
 		this.getColumnNames().then((columns) => {
 			let old = ui.vars.value();
-			if ( ! _.isEqual(old, columns))
-				ui.vars.setValue(columns);
+			if ( ! columns.every((val, idx) => val === old[idx])) {
+	  			ui.vars.setValue(columns);
+			}
 		});
+
 	},
 
     update(ui, event) {
-
+        console.log("update");
         let id = event.id;
         this.currentSession = this.editSessions[id];
 

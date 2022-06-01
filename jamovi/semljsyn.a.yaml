@@ -244,13 +244,21 @@ options:
              If TRUE, the means of the observed variables enter the model. Required for calculating the intercepts of
              the estimates.
 
-    - name: intercepts
+    - name: int_ov
       type: Bool
-      title: Intercepts of the estimates
+      title: Observed variables
       default: true
       description:
           R: >
-            `TRUE` or `FALSE` (default), calculate and show the intercepts of the parameter estimates
+            `TRUE` or `FALSE` (default), calculate intercepts for observed variables
+
+    - name: int_lv
+      type: Bool
+      title: Latent variables
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), calculate intercepts for latent variables
 
     - name: indirect
       type: Bool
@@ -778,5 +786,26 @@ options:
       description:
           R: >
              Choose the length (characters) of the variable name abbreviations (default: 5).
+
+
+
+    - name: preds_lv 
+      type: Output
+      title: Factor Scores
+      description:
+        R: >
+           save factor scores 
+    - name: preds_ov 
+      type: Output
+      title: Indicators
+      description:
+        R: >
+           save indicators predicted values 
+    - name: preds_dv
+      type: Output
+      title: Dependent variables
+      description:
+        R: >
+           save dependent variables predicted values 
 
 ...

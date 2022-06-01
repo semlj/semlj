@@ -61,7 +61,8 @@ items:
       - estimator
       - likelihood
       - meanstructure  
-      - intercepts  
+      - int_ov
+      - int_lv
       - std_lv
       - std_ov  
       - cov_x  
@@ -91,7 +92,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_lv
+              - int_ov
               - std_lv
               - std_ov  
               - cov_x  
@@ -137,7 +139,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -191,7 +194,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -246,7 +250,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -285,7 +290,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -323,7 +329,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -404,7 +411,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -484,7 +492,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_lv
+              - int_ov
               - std_lv
               - std_ov  
               - cov_x  
@@ -565,7 +574,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -646,7 +656,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -729,7 +740,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -808,7 +820,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -892,7 +905,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -943,7 +957,8 @@ items:
               - estimator
               - likelihood
               - meanstructure  
-              - intercepts  
+              - int_ov
+              - int_lv
               - std_lv
               - std_ov  
               - cov_x  
@@ -1289,7 +1304,8 @@ items:
             - estimator
             - likelihood
             - meanstructure  
-            - intercepts  
+            - int_ov
+            - int_lv
             - std_lv
             - std_ov  
             - cov_x  
@@ -1323,3 +1339,22 @@ items:
         title: ""
 #       description:
         visible: false
+
+
+  - name: preds_lv
+    title: Factor scores
+    type: Output            
+    varDescription: Factor scores
+    initInRun: true 
+
+  - name: preds_ov
+    title: Indicators scores
+    type: Output            
+    varDescription: Indicators scores
+    initInRun: true 
+
+  - name: preds_dv
+    title: Dependent vars scores
+    type: Output            
+    varDescription: Dependent vars scores
+    initInRun: true 

@@ -210,9 +210,11 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
       .run = function() {
         ginfo("MODULE:  #### phase run ####")
 
-        if (self$options$donotrun) {
-          return()
+        if (is.something(self$options$donotrun)) {
+            if (self$options$donotrun) 
+              return()
         }
+        
 
         private$.ready <- readiness(self$options)
         if (!private$.ready$ready) {
@@ -222,6 +224,9 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         data <- private$.data_machine$cleandata(self$data)
         private$.runner_machine$estimate(data)
 
+        ### save predicted if needed
+        private$.runner_machine$savePredRes(self$results,data)
+        
         ### run tables ###
 
         for (smarttab in private$.smartObjs) {
@@ -236,7 +241,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         }
         
 
-      
+        
         ginfo("MODULE:  #### phase end ####")
 
         ginfo("RUN TIME:", Sys.time() - runnow, " secs")

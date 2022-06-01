@@ -40,13 +40,13 @@ children:
                   stretchFactor: 1
                   margin: normal
                 - type: VariablesListBox
+                  name: blocklist
                   valueFilter: unique
                   events:
                     listItemAdded: './gui.events::onChange_items_changed'
                     listItemRemoved: './gui.events::onChange_items_changed'
                   valueKey:
                     - vars
-                  name: blockList
                   isTarget: true
                   height: auto
                   ghostText: drag variables here
@@ -92,14 +92,12 @@ children:
             maxItemCount: 1
             isTarget: true
             itemDropBehaviour: overwrite
-            
   - type: LayoutBox
     margin: large
     style: inline
     children:
       - type: CheckBox
         name: donotrun
-
   - type: CollapseBox
     label: Second Oder Factors
     collapsed: true
@@ -118,55 +116,47 @@ children:
               update: './gui.events::onUpdate_secondorderSupplier'
               change: './gui.events::onChange_secondorderSupplier'
             children:
-                  - type: TargetLayoutBox
-                    label: Second Order Factors
-                    children:
-                      - type: ListBox
-                        name: secondorder
-                        height: large
-                        addButton: Add New Latent
-                        events:
-                          listItemAdded: './gui.events::onChange_items_changed'
-                          listItemRemoved: './gui.events::onChange_items_changed'
-                        templateName: linreg-block-template
-                        template:
-                          type: LayoutBox
+              - type: TargetLayoutBox
+                label: Second Order Factors
+                children:
+                  - type: ListBox
+                    name: secondorder
+                    height: large
+                    addButton: Add New Latent
+                    events:
+                      listItemAdded: './gui.events::onChange_items_changed'
+                      listItemRemoved: './gui.events::onChange_items_changed'
+                    templateName: linreg-block-template
+                    template:
+                      type: LayoutBox
+                      margin: normal
+                      children:
+                        - type: TextBox
+                          events:
+                            change: './gui.events::onChange_SecondName'
+                          valueKey:
+                            - label
+                          borderless: true
+                          name: blockName
+                          stretchFactor: 1
                           margin: normal
-                          children:
-                            - type: TextBox
-                              events:
-                                change: './gui.events::onChange_SecondName'
-                              valueKey:
-                                - label
-                              borderless: true
-                              name: blockName
-                              stretchFactor: 1
-                              margin: normal
-                            - type: VariablesListBox
-                              valueFilter: unique
-                              events:
-                                 listItemAdded: './gui.events::onChange_items_changed'
-                                 listItemRemoved: './gui.events::onChange_items_changed'
-                                 change: './gui.events::onChange_secondorderTerms'
-
-                              valueKey:
-                                - vars
-                              name: blockList
-                              isTarget: true
-                              height: auto
-                              ghostText: drag variables here
-            
-            
-            
-            
-            
+                        - type: VariablesListBox
+                          valueFilter: unique
+                          events:
+                            listItemAdded: './gui.events::onChange_items_changed'
+                            listItemRemoved: './gui.events::onChange_items_changed'
+                            change: './gui.events::onChange_secondorderTerms'
+                          valueKey:
+                            - vars
+                          name: blockList
+                          isTarget: true
+                          height: auto
+                          ghostText: drag variables here
   - type: CollapseBox
     label: Endogenous models
     collapsed: true
     stretchFactor: 1
     children:
-                
-
       - type: LayoutBox
         margin: large
         stretchFactor: 1
@@ -180,36 +170,36 @@ children:
               update: './gui.events::onUpdate_endogenousSupplier'
               change: './gui.events::onChange_endogenousSupplier'
             children:
-                  - type: TargetLayoutBox
-                    label: Endogenous Variables Models
-                    transferAction: interactions
-                    children:
-                      - type: ListBox
-                        name: endogenousTerms
-                        height: large
-                        selectable: true
-                        templateName: linreg-block-template
-                        template:
-                          type: LayoutBox
+              - type: TargetLayoutBox
+                label: Endogenous Variables Models
+                transferAction: interactions
+                children:
+                  - type: ListBox
+                    name: endogenousTerms
+                    height: large
+                    selectable: true
+                    templateName: linreg-block-template
+                    template:
+                      type: LayoutBox
+                      margin: normal
+                      targetArea: true
+                      children:
+                        - type: Label
+                          label: empty
+                          name: blockName
+                          stretchFactor: 1
                           margin: normal
-                          targetArea: true
-                          children:
-                            - type: Label
-                              label: empty
-                              name: blockName
-                              stretchFactor: 1
-                              margin: normal
-                            - type: ListBox
-                              enable: (endogenous)
-                              name: blockList
-                              isTarget: true
-                              valueFilter: unique
-                              height: auto
-                              ghostText: drag variables here
-                              events:
-                                change: './gui.events::onChange_endogenousTerms'
-                              template:
-                                type: TermLabel
+                        - type: ListBox
+                          enable: (endogenous)
+                          name: blockList
+                          isTarget: true
+                          valueFilter: unique
+                          height: auto
+                          ghostText: drag variables here
+                          events:
+                            change: './gui.events::onChange_endogenousTerms'
+                          template:
+                            type: TermLabel
   - type: CollapseBox
     label: Variances and covariances
     collapsed: true
@@ -297,6 +287,7 @@ children:
                           ghostText: write here
   - type: CollapseBox
     label: Model options
+    name: model_options
     collapsed: true
     stretchFactor: 1
     children:
@@ -325,6 +316,7 @@ children:
                 name: cumscoretest
   - type: CollapseBox
     label: Parameters options
+    name: parameters_options
     collapsed: true
     stretchFactor: 1
     children:
@@ -417,18 +409,29 @@ children:
         style: inline
         children:
           - type: Label
-            label: Estimates
+            label: Intercepts
             margin: large
             style: list
             children:
               - type: CheckBox
                 name: meanstructure
-                children:
-                  - type: CheckBox
-                    name: intercepts
-                    enable: (meanstructure)
+              - type: CheckBox
+                name: int_ov
+                enable: (meanstructure)
+              - type: CheckBox
+                name: int_lv
+                enable: (meanstructure)
+          - type: Label
+            label: Estimates
+            margin: large
+            style: list
+            children:
               - type: CheckBox
                 name: indirect
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
           - type: Label
             label: Scale / standardize variables
             margin: large
@@ -446,6 +449,7 @@ children:
                 name: std_ov
   - type: CollapseBox
     label: Multi-group analysis
+    name: multigroup_options
     collapsed: true
     stretchFactor: 1
     style: list
@@ -492,6 +496,7 @@ children:
                     name: eq_lv.covariances
   - type: CollapseBox
     label: Output options
+    name: output_options
     collapsed: true
     stretchFactor: 1
     children:
@@ -584,8 +589,22 @@ children:
                                 name: miThreshold
                                 format: number
                                 enable: (miHideLow)
+                      - type: LayoutBox
+                        margin: large
+                        style: list
+                        children:
+                             - type: Label
+                               label: Save Predicted
+                             - type: Output
+                               name: preds_lv
+                             - type: Output
+                               name: preds_ov
+                             - type: Output
+                               name: preds_dv
+                                
   - type: CollapseBox
     label: Path diagram
+    name: pathdiagram_options
     collapsed: true
     stretchFactor: 1
     style: list

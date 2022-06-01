@@ -1,5 +1,5 @@
-j_DEBUG=F
-j_INFO=F
+j_DEBUG=T
+j_INFO=T
 t_INFO=F
 
 
@@ -61,6 +61,7 @@ WARNS[["cov.lv"]]<-"The covariance matrix of latent variables is not positive de
 
 DATA_WARNS<-list()
 DATA_WARNS[["fac_to_ord"]]<-"Variable ({x}) has been coerced to ordered type."
+DATA_WARNS[["num_to_fac"]]<-"Variable ({x}) has been coerced to nominal type."
 
 ## defined parameters warnings
 DP_WARNS<-list()
@@ -83,6 +84,7 @@ SUB<-list("\u2081","\u2082","\u2083","\u2084","\u2085","\u2086","\u2087","\u2088
 
 TRANS_WARNS<-list()
 TRANS_WARNS[[1]]<-list(original="subscript out of bounds",new="Computation cannot be done") 
+TRANS_WARNS[[2]]<-list(original="lavaan ERROR",new="The model cannot be estimated, please refine it. Reason: {}") 
 
 
 ##### some info ####

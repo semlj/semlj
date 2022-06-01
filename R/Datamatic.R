@@ -14,13 +14,20 @@ Datamatic <- R6::R6Class(
     initialize=function(options,dispatcher,data) {
       
       super$initialize(options,dispatcher)
-      mark("Datamatic")
       astring<-options$code
       reg<-"[=~:+\n]"
+      ## split by syntax operators
       avec<-stringr::str_split(astring,reg)[[1]]
+      ## remove empty lines
       avec<-avec[sapply(avec, function(a) a!="")]
+      ## remove product operator
       vars<-sapply(avec, function(a) trimws(stringr::str_remove(a,'.*[\\*]')))
+      ## remove comments
       vars<-vars[grep("#",vars,fixed=T,invert = T)]
+      vars<-vars[sapply(vars,function(x) x!="")]
+      ## remove constraints numeric values
+      vars<-vars[sapply(vars,function(x) is.na(as.numeric(x)))]
+
       self$vars<-vars
       
       mg<-options$multigroup
@@ -34,17 +41,15 @@ Datamatic <- R6::R6Class(
         if(trimws(ml)=="")
           ml<-NULL
       self$cluster<-ml
-      mark(self$cluster,is.something(self$cluster),class(self$cluster))
       private$.inspect_data(data)
-      
-      
     },
     
     cleandata=function(data) {
-      
       trans<-c()
-      for (var in self$vars) {
-        
+      facts<-c(self$cluster,self$multigroup$var)
+      vars<-setdiff(self$vars,facts)
+      
+      for (var in vars) {
         if (is.factor(data[[var]])) { 
           data[[var]]<-ordered(data[[var]])
           trans<-c(trans,var)
@@ -53,6 +58,19 @@ Datamatic <- R6::R6Class(
       if (is.something(trans))
         self$dispatcher$warnings<-list(topic="info",
                             message=glue::glue(DATA_WARNS[["fac_to_ord"]],x=paste(unique(trans),collapse = ",")))
+
+      
+      trans<-NULL
+      for (var in facts) {
+      if (!is.factor(data[[var]])) { 
+          data[[var]]<-factor(data[[var]])
+          trans<-c(trans,var)
+      }
+      }
+      if (is.something(trans))
+        self$dispatcher$warnings<-list(topic="info",
+                                       message=glue::glue(DATA_WARNS[["num_to_fac"]],x=paste(unique(trans),collapse = ",")))
+
       return(data)
       
     }
@@ -60,18 +78,32 @@ Datamatic <- R6::R6Class(
   ), ### end of public
   private=list(
     .inspect_data=function(data) {
-      
+       
 
+        test<-(make.names(self$vars) %in% self$vars)
+
+        if (!all(test)) {
+          msg<-paste(self$vars[!test],collapse = ",")
+          self$dispatcher$errors <-  list(topic="info", message=paste0(
+                        "Variable name not allowed for variables: ",
+                        msg,
+                        ". Please remove characters that are not letters, numbers, dot or underline. Letters may be defined differently in different locales."),
+                        final=TRUE)
+        }
+        
+        
         if (is.something(self$multigroup)) {
           var<-trimws(self$multigroup)
           levels<-levels(data[,var])
           self$multigroup<-list(var=var,levels=levels,nlevels=length(levels))
         }
         self$observed<-intersect(self$vars,names(data))
+        if (length(self$observed)==0)
+          self$dispatcher$errors <-  list(topic="info", message="No observed variable in the dataset",final=TRUE)
+        
         observed<-self$observed[(!(self$observed %in% c(self$multigroup$var,self$cluster)))]
         self$ordered<-observed[sapply(observed, function(a) any(class(data[[a]]) %in% c("factor","ordered")))]
-        if (is.something(self$ordered))
-            mark(paste("ordered vars:" ,self$ordered))
+
         ### if ordered variables are present, we need to prepare the varTable to give information
         ### about the variables. Since we are in init, we do not have the full dataset, so
         ### varTable() will assign obs=0 and the variable will be ignored by lavaanify().

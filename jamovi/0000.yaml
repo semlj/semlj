@@ -1,7 +1,7 @@
 ---
 title: SEM
 name: semlj
-version: 0.7.0
+version: 0.8.0
 jms: '1.0'
 authors:
   - Marcello Gallucci
@@ -36,6 +36,6 @@ datasets:
     path: secondorder.csv
     description: Example data for second order mediation analysis
 usesNative: true
-minApp: 1.8.0
+minApp: 2.3.12
 
 ...

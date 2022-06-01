@@ -370,8 +370,8 @@ Initer <- R6::R6Class(
       lavoptions <- list(
         model = private$.lavaan_syntax(),
         meanstructure = self$options$meanstructure,           # 'default' for sem + cfa, TRUE for growth (default: FALSE; 'default' is FALSE in most cases)
-        int.ov.free = self$options$intercepts,                # TRUE for sem + cfa, FALSE for growth (default: TRUE)
-        int.lv.free = FALSE,                                  # TRUE for grwoth, FALSE for sem + cfa - to be implemented as option
+        int.ov.free = self$options$int_ov,                # TRUE for sem + cfa, FALSE for growth (default: TRUE)
+        int.lv.free = self$options$int_lv,                    # TRUE for grwoth, FALSE for sem + cfa - to be implemented as option
         # auto.fix.first - see below                          # TRUE (unless std.lv = TRUE) for sem + cfa + growth
         # std.lv - see below                                  # 
         auto.fix.single = TRUE,                               # TRUE for sem + cfa + growth - to be implemented as option
@@ -626,6 +626,19 @@ Initer <- R6::R6Class(
       }
       tabs<-do.call("ebind_square",alist)
       return(as.data.frame(tabs))
+    },
+    
+    .observed_vars=function() {
+      
+      tab<-self$par_table()
+      endo<-unique(tab[tab$op=="~","lhs"])
+      exo<-unique(tab[tab$op=="~" & tab$lhs %in% endo,"rhs"])
+      xnames<-c(exo,unique(tab[tab$op=="=~" & tab$lhs %in% exo,"rhs"]))
+      xnames<-intersect(xnames,self$observed)
+      ynames<-c(endo,unique(tab[tab$op=="=~" & tab$lhs %in% endo,"rhs"]))
+      ynames<-intersect(ynames,self$observed)
+      ynames<-setdiff(ynames,xnames)
+      list(xnames,ynames)
     }
     
     

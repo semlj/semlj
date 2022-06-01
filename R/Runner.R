@@ -12,7 +12,6 @@ Runner <- R6::R6Class("Runner",
                             super$initialize(options,dispatcher,datamatic)
                           },
                           estimate = function(data) {
-                            
                             ## prepare the options based on Syntax definitions
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
@@ -451,11 +450,88 @@ Runner <- R6::R6Class("Runner",
                               tab = NULL;
                             }
                             tab
-                            
-                            
-                            
-                          }
+                          },
+                          savePredRes=function(results,data) {
 
+                            .compute<-function() {
+                            #### this comes from
+                            ###  https://github.com/mjderooij/SEMpredict/blob/main/predicty.lavaan.R
+                            try_hard({
+
+                              Sxx = lavaan::fitted(self$model)$cov[xnames , xnames]
+                              Sxy = lavaan::fitted(self$model)$cov[xnames , ynames]
+                              mx = lavaan::fitted(self$model)$mean[xnames]
+                              my = lavaan::fitted(self$model)$mean[ynames]
+                              
+                              #
+                              Xtest = as.matrix(data[, xnames])
+                              Xtest = scale(Xtest, center = mx, scale = FALSE)
+                              yhat = matrix(my, nrow = nrow(Xtest), ncol = length(ynames), byrow = TRUE) + Xtest %*% solve(Sxx) %*% Sxy
+                              colnames(yhat)<-paste0("PRDV_",ynames)
+                              data.frame(yhat, row.names=rownames(data))
+                            })
+                            }
+                            
+                              
+                              if (self$option("preds_dv") & results$preds_dv$isNotFilled()) {
+                                 ginfo("saving dv predicted")
+                                 .names<-private$.observed_vars()
+                                 xnames<-.names[[1]]
+                                 ynames<-.names[[2]]
+                           
+                                 predsobj<-.compute()
+                                 predsdata<-predsobj$obj
+                                 if (!isFALSE(predsobj$error)) {
+                                   self$dispatcher$warnings<-list(topic="info",message="Dependent variables predicted values cannot be computed for this  model")
+                                 } else {
+                                   results$preds_dv$set(1:ncol(predsdata),
+                                                       names(predsdata),
+                                                       rep("DV Predicted",ncol(predsdata)),
+                                                       rep("continuous",ncol(predsdata)))
+                                   results$preds_dv$setValues(predsdata)
+                                   self$dispatcher$warnings<-list(topic="info",message=paste("Dependent variables predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                                 }                       
+                                 }
+                              
+                              if (self$option("preds_lv") & results$preds_lv$isNotFilled()) {
+                                 ginfo("saving lv predicted")
+                                 predsdata<-as.data.frame(lavaan::lavPredict(self$model,type="lv"))
+                                 if (ncol(predsdata)>0) {
+                                   
+                                   colnames(predsdata)<-paste0("PRFS_",colnames(predsdata))
+                                   results$preds_lv$set(1:ncol(predsdata),
+                                                        names(predsdata),
+                                                        rep("Factor scores ",ncol(predsdata)),
+                                                        rep("continuous",ncol(predsdata)))
+                                   results$preds_lv$setValues(predsdata)
+                                   self$dispatcher$warnings<-list(topic="info",message=paste("Factors scores (latent predicted values) saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                                   
+                                 } else {
+                                   self$dispatcher$warnings<-list(topic="info",message="Factor scores cannot be computed for this model")
+                                   
+                                 }
+                                 
+                              }
+                              if (self$option("preds_ov") && results$preds_ov$isNotFilled()) {
+                                ginfo("saving ov predicted")
+                                predsdata<-as.data.frame(lavaan::lavPredict(self$model,type="ov"))
+                                if (ncol(predsdata)>0) {
+                                  colnames(predsdata)<-paste0("PRIN_",colnames(predsdata))
+                                  results$preds_ov$set(1:ncol(predsdata),
+                                                     names(predsdata),
+                                                     rep("Indicator predicted",ncol(predsdata)),
+                                                     rep("continuous",ncol(predsdata)))
+                                  results$preds_ov$setValues(predsdata)
+                                  self$dispatcher$warnings<-list(topic="info",message=paste("Indicators predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                                } else {
+                                  self$dispatcher$warnings<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
+                                }
+                              }
+
+                  }  ## end of savePredRes
+
+                          
+                          
                           ), # end of public function estimate
 
                         private=list(
@@ -479,6 +555,7 @@ Runner <- R6::R6Class("Runner",
 
                             
                           },  
+
                           .get_par_table=function() {
                             
                             results<-try_hard(
@@ -494,7 +571,11 @@ Runner <- R6::R6Class("Runner",
                             self$dispatcher$errors <- list(topic="info", message=results$error)
                             private$.par_table<-results$obj
                             if (is.null(private$.par_table)) private$.par_table<-FALSE
-                            
+                            userlabel<-grep("^\\p\\d+$",private$.par_table$label,invert = T)
+                            if (length(userlabel)>0) {
+                              ilabel<-paste("(",private$.lav_structure$plabel[userlabel],")")
+                              private$.par_table$label[userlabel]<-paste(private$.par_table$label[userlabel],ilabel)
+                            }
                           },
                           .get_test_info=function() {
                             
