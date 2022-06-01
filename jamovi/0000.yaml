@@ -36,6 +36,7 @@ datasets:
     path: secondorder.csv
     description: Example data for second order mediation analysis
 usesNative: true
-minApp: 1.8.0
+minApp: 2.3.12
+minAppVersion: 2.3.12
 
 ...
