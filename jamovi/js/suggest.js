@@ -50,7 +50,7 @@ module.exports = function(columnSource) {
                     let vars1 = vars.map(v => {
                         return {
                             name: "'" + v + "'",
-                            value: "'" + v + "'",
+                            value: "`" + v + "`",
                             meta: 'variable',
                             type: 'var' }});
 
