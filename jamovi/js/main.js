@@ -239,6 +239,7 @@ const events = {
     return;
     // this was needed in previos versions
     // let's keep it for future referece
+    
 		if ( ! this.currentSession.allColumns)
 			return;
 		if (event.dataType !== 'columns')
