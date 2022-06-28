@@ -1,3 +1,13 @@
+// Here we define the editor, which is largely taken from Rj code.
+// The two issues here (as compared with Rj) is that we need to
+// identify the variables in the dataset in two ways:
+// one is the full list of variables, that are needed to suggest variables
+// to the user.
+// The second is to identify the variables used in the syntax. Please
+// notice that the real parsing of variables and syntax is done in R
+// which receives the syntax as a string. The parsing of observed variables
+// done here is meant to fill `ui.vars` which is required for letting jamovi
+// know what change in the dataset triggers the updating of the variables.
 
 const ace = require('brace');
 
@@ -7,7 +17,6 @@ require('brace/ext/language_tools');
 require('./css');
 const Suggest = require('./suggest');
 const SuggestIcons = require('./suggesticons');
-
 
 
 const events = {
@@ -85,13 +94,11 @@ const events = {
         console.log("loaded code");
        var val = ui.multigroup.value();
 
-
         this.editor = ace.edit('editor');
         this.editor.$blockScrolling = Infinity; // disable a warning
         this.editor.setShowPrintMargin(false);
         this.editor.setHighlightActiveLine(false);
         this.editor.focus();
-
         this.editor.setOptions({
             enableBasicAutocompletion: true,
         });
@@ -139,24 +146,30 @@ const events = {
             return this.getColumnNames();
         }));
 
+// .getColumns() is used to gather all variables in the dataset
+//  only filter variables are filtered out, the actual filtering
+// for variables used by the user's syntax, use .getActiveVariables()
+
         this.getColumnNames = () => {
             return this.requestData('columns', {  })
 				.then((data) => {
-	                return data.columns.map(col => col.name);
-	            }).then((names) => {
-					// exclude filters
-					let index = 0;
-					for (;index < names.length; index++) {
-						let name = names[index];
-						if (/^Filter [1-9][0-9]*$/.exec(name) ||
-							/^F[1-9][0-9]* \([1-9][0-9]*\)$/.exec(name))
-								continue; // a filter
-						else
-							break; // not a filter
-					}
-					return names.slice(index);
-				});
+	                 return data.columns;
+	            }).then((cols) => { 
+ 		        			// exclude filters
+    	            var good=cols.filter(col => {
+        	        var type = col.columnType;
+				        	return(type!=="filter")
+					     }).map(col => col.name);
+					     return good;
+	            });
         };
+
+        this.getActiveVariables = (script) => {
+            var any     =  script.split(/[,.~+=:*\s]/);
+            var present =  this.getColumnNames().then((cols) => 
+                               cols.filter(col=> any.includes(col)));
+            return(present)      
+         };
 
         this.toggleMenu = (ui) => {
             if ( ! this.$menu.hasClass('visible'))
@@ -180,26 +193,11 @@ const events = {
 
             let script = this.currentSession.getDocument().getValue();
 
-            this.getColumnNames().then((columns) => {
-
               ui.view.model.options.beginEdit();
-
-
-                let match = script.match(/^\s*\#\s*\((.*)\)/);
-                if (match !== null) {
-                    let content = match[1];
-                    let vars = content.split(',');
-                    vars = vars.map(s => s.trim());
-                    vars = vars.filter(v => columns.includes(v));
-                    ui.vars.setValue(vars);
-                    ui.code.setValue(script);
-					this.currentSession.allColumns = false;
-                }
-                else {
-                    ui.vars.setValue(columns);
-                    ui.code.setValue(script);
-					this.currentSession.allColumns = true;
-                }
+              ui.code.setValue(script);
+              this.getActiveVariables(script).then((vars) =>
+                        ui.vars.setValue(vars));
+    					this.currentSession.allColumns = true;
 
                 // toggle toggle so the analysis *always* reruns
                 // even if nothing has changed
@@ -208,8 +206,8 @@ const events = {
                 ui.view.model.options.endEdit();
 
                 this.editor.focus();
-            });
-    	};
+            }
+    	
 
         this.$editor.on('keydown', (event) => {
 
@@ -238,6 +236,10 @@ const events = {
 
 	onDataChanged(ui, event) {
 
+    return;
+    // this was needed in previos versions
+    // let's keep it for future referece
+    
 		if ( ! this.currentSession.allColumns)
 			return;
 		if (event.dataType !== 'columns')
@@ -246,8 +248,8 @@ const events = {
       
 		this.getColumnNames().then((columns) => {
 			let old = ui.vars.value();
-			if ( ! columns.every((val, idx) => val === old[idx])) {
-	  			ui.vars.setValue(columns);
+			if (JSON.stringify(columns) !== JSON.stringify(old)) {
+//	  			ui.vars.setValue(columns);
 			}
 		});
 
