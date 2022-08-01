@@ -97,6 +97,12 @@ const events = {
        if (typeof(val)==="string")
              if (val.replace(/ /g,'').length===0)
                 ui.multigroup.setValue(null);
+             else {
+               var vars=ui.vars.value();
+               let newvars=vars.map((x) => x);
+                   if (!newvars.includes(val)) newvars.push(val);
+                   ui.vars.setValue(newvars);
+             }
 
      },
       onChange_cluster: function(ui) {
@@ -105,7 +111,12 @@ const events = {
        if (typeof(val)==="string")
              if (val.replace(/ /g,'').length===0)
                 ui.cluster.setValue(null);
-
+        else {
+               var vars=ui.vars.value();
+               let newvars=vars.map((x) => x);
+                   if (!newvars.includes(val)) newvars.push(val);
+                   ui.vars.setValue(newvars);
+             }        
      },
 
      onEvent_nothing: function(ui) {
