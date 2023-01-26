@@ -21,7 +21,13 @@ Runner <- R6::R6Class("Runner",
                                                likelihood = self$options$likelihood,
                                                std.ov     = self$options$std_ov,
                                                bootstrap  = self$options$bootN,
-                                               fixed.x    = self$options$cov_x
+                                               fixed.x    = self$options$cov_x,
+                                               rotation   = self$options$rotation,
+                                               rotation.args=list(
+                                                 geomin.epsilon=self$options$geomin.epsilon,
+                                                 orthomax.gamma=self$options$orthomax.gamma,
+                                                 oblimin.gamma=self$options$oblimin.gamma
+                                               )
                             )
                             
                             if (self$options$se!="auto") 

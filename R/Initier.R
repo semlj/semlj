@@ -347,7 +347,7 @@ Initer <- R6::R6Class(
         if (!check)
            self$dispatcher$warnings<-list(topic="info",message="A cluster variable was specified, but not levels are defined in the syntax")
       }
-      
+      mark(avec)
       self$user_syntax<-avec
       
       ## some additional tests

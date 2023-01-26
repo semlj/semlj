@@ -1,14 +1,14 @@
 Package: semlj
 Type: Package
 Title: SEM 
-Version: 0.9.5
+Version: 1.0.0
 Author:
   - Marcello Gallucci
   - Sebastian Jentschke
 Maintainer: Marcello Gallucci <mcfanda@gmail.com>
 Description: Structural equation models based on lavaan, with jamovi output style and functions.
              Provides access to lavaan estimation with options for executing most common tasks
-             in SEM analysis. Path diagrams can also be requested.
+             in SEM analysis and ESEM extention. Path diagrams can also be requested.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true

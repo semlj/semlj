@@ -68,6 +68,7 @@ items:
       - cov_x  
       - cov_y  
       - cov_lv      
+      - rotation 
       - cluster  
       - multigroup  
       - eq_loadings  
@@ -100,6 +101,7 @@ items:
               - cov_y 
               - cov_lv      
               - cluster  
+              - rotation 
               - multigroup  
               - eq_loadings  
               - eq_intercepts  
@@ -147,6 +149,7 @@ items:
               - cov_y 
               - cov_lv      
               - cluster  
+              - rotation 
               - multigroup  
               - eq_loadings  
               - eq_intercepts  
@@ -201,7 +204,7 @@ items:
               - cov_x  
               - cov_y 
               - cov_lv      
-              
+              - rotation 
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -257,7 +260,7 @@ items:
               - cov_x  
               - cov_y  
               - cov_lv      
-              
+              - rotation 
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -298,6 +301,7 @@ items:
               - cov_y  
               - cov_lv      
               - cluster  
+              - rotation 
               - multigroup  
               - eq_loadings  
               - eq_intercepts  
@@ -338,6 +342,7 @@ items:
               - cov_lv      
               - cluster  
               - multigroup  
+              - rotation 
               - eq_loadings  
               - eq_intercepts  
               - eq_residuals  
@@ -418,6 +423,7 @@ items:
               - cov_x  
               - cov_y  
               - cov_lv      
+              - rotation 
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -499,6 +505,7 @@ items:
               - cov_x  
               - cov_y  
               - cov_lv      
+              - rotation 
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -581,6 +588,7 @@ items:
               - cov_x  
               - cov_y  
               - cov_lv      
+              - rotation 
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -663,6 +671,7 @@ items:
               - cov_x  
               - cov_y  
               - cov_lv      
+              - rotation 
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -747,6 +756,7 @@ items:
               - cov_x  
               - cov_y  
               - cov_lv      
+              - rotation 
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -820,6 +830,7 @@ items:
               - estimator
               - likelihood
               - meanstructure  
+              - rotation 
               - int_ov
               - int_lv
               - std_lv
@@ -905,6 +916,7 @@ items:
               - estimator
               - likelihood
               - meanstructure  
+              - rotation 
               - int_ov
               - int_lv
               - std_lv
@@ -964,6 +976,7 @@ items:
               - cov_x  
               - cov_y  
               - cov_lv      
+              - rotation 
               - cluster  
               - multigroup  
               - eq_loadings  
@@ -1322,6 +1335,7 @@ items:
             - eq_regressions  
             - eq_lv.variances  
             - eq_lv.covariances  
+            - rotation 
           
             - diag_shape_man
             - diag_shape_lat
