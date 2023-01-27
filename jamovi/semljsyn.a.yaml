@@ -526,29 +526,29 @@ options:
       type: List
       options:
         - name:  geomin
-          title: "geomin"
+          title: "Geomin"
         - name: varimax
           title: "Varimax"
         - name:  orthomax
-          title: "orthomax"
+          title: "Orthomax"
         - name:  quartimin
-          title: "geomin"
+          title: "Quartimin"
         - name:  oblimin
-          title: "oblimin"
+          title: "Oblimin"
         - name: entropy
-          title: "entropy"
+          title: "Entropy"
         - name: mccammon
-          title: "mccammon"
+          title: "Mccammon"
         - name: infomax
-          title: "infomax"
+          title: "Infomax"
         - name: tandem1
-          title: "tandem1"
+          title: "Tandem1"
         - name: oblimax
-          title: "oblimax"
+          title: "Oblimax"
         - name: bentler
-          title: "bentler"
+          title: "Bentler"
         - name: simplimax
-          title: "simplimax"
+          title: "Simplimax"
       default: geomin
       description:
           R: >  
