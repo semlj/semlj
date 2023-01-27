@@ -347,9 +347,8 @@ Initer <- R6::R6Class(
         if (!check)
            self$dispatcher$warnings<-list(topic="info",message="A cluster variable was specified, but not levels are defined in the syntax")
       }
-      mark(avec)
       self$user_syntax<-avec
-      
+      private$.esem_syntax()
       ## some additional tests
       if (self$options$estimator %in% ROBUST_ESTIM | (self$options$estimator=="default" & is.something(self$ordered))) 
                 self$moretests<-TRUE
@@ -362,6 +361,35 @@ Initer <- R6::R6Class(
       i <- glue::glue_collapse(unlist(private$.lav_indirect), sep = "; ")
       paste(f,i, sep="; ")
     },
+    ### we need to check if in the gui users specified some exploratory factor
+    .esem_syntax=function() {
+      
+      avec<-self$user_syntax
+      esem<-c()
+      if (self$option("esem_terms")) {
+        for (i in seq_along(self$options$esem_terms)) {
+          blocks <- list()
+          items  <- list()
+          for (factor in self$options$esem_terms[[i]]) {
+            test<-grep(paste0(factor,"=~"),avec)
+            parts<-stringr::str_split(avec[test],"=~")[[1]]
+            blocks[[length(blocks)+1]]<-trimws(parts[[1]])
+            items[[length(items)+1]]<-parts[[2]]
+            if (length(test)>0) avec<-avec[-test]
+          }
+          form<-paste0("efa(efa",i,")*",blocks,sep="",collapse = "+")
+          fitems<-unique(unlist(stringr::str_split(unlist(items),"\\+")))
+          final<-paste0(form,"=~",paste0(fitems,collapse = "+"))
+          esem<-c(esem,final)
+        }
+        self$user_syntax<-c(esem,avec)
+      }
+
+    },
+    
+    
+    
+    
     ## lavaanify the information available to obtain a info table representing the parameters structure.
     ## That is, the parameter names, labels, etc
     

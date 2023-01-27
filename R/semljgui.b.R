@@ -214,7 +214,6 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
             if (self$options$donotrun) 
               return()
         }
-        
 
         private$.ready <- readiness(self$options)
         if (!private$.ready$ready) {

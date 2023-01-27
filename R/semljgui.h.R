@@ -47,6 +47,15 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             eq_regressions = FALSE,
             eq_lv.variances = FALSE,
             eq_lv.covariances = FALSE,
+            esem_terms = list(
+                list()),
+            rotation = "geomin",
+            algorithm = "gpa",
+            orthogonal = FALSE,
+            efa_std.ov = TRUE,
+            geomin.epsilon = 0.001,
+            orthomax.gamma = 1,
+            oblimin.gamma = 0,
             showlabels = FALSE,
             constraints_examples = FALSE,
             outputAdditionalFitMeasures = FALSE,
@@ -315,6 +324,61 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "eq_lv.covariances",
                 eq_lv.covariances,
                 default=FALSE)
+            private$..esem_terms <- jmvcore::OptionArray$new(
+                "esem_terms",
+                esem_terms,
+                default=list(
+                    list()),
+                template=jmvcore::OptionVariables$new(
+                    "esem_terms",
+                    NULL))
+            private$..rotation <- jmvcore::OptionList$new(
+                "rotation",
+                rotation,
+                options=list(
+                    "geomin",
+                    "varimax",
+                    "orthomax",
+                    "quartimin",
+                    "oblimin",
+                    "entropy",
+                    "mccammon",
+                    "infomax",
+                    "tandem1",
+                    "oblimax",
+                    "bentler",
+                    "simplimax"),
+                default="geomin")
+            private$..algorithm <- jmvcore::OptionList$new(
+                "algorithm",
+                algorithm,
+                options=list(
+                    "gpa",
+                    "pairwise"),
+                default="gpa")
+            private$..orthogonal <- jmvcore::OptionBool$new(
+                "orthogonal",
+                orthogonal,
+                default=FALSE)
+            private$..efa_std.ov <- jmvcore::OptionBool$new(
+                "efa_std.ov",
+                efa_std.ov,
+                default=TRUE)
+            private$..geomin.epsilon <- jmvcore::OptionNumber$new(
+                "geomin.epsilon",
+                geomin.epsilon,
+                min=0,
+                default=0.001)
+            private$..orthomax.gamma <- jmvcore::OptionNumber$new(
+                "orthomax.gamma",
+                orthomax.gamma,
+                min=0,
+                default=1)
+            private$..oblimin.gamma <- jmvcore::OptionNumber$new(
+                "oblimin.gamma",
+                oblimin.gamma,
+                min=0,
+                default=0)
             private$..showlabels <- jmvcore::OptionBool$new(
                 "showlabels",
                 showlabels,
@@ -501,6 +565,14 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..eq_regressions)
             self$.addOption(private$..eq_lv.variances)
             self$.addOption(private$..eq_lv.covariances)
+            self$.addOption(private$..esem_terms)
+            self$.addOption(private$..rotation)
+            self$.addOption(private$..algorithm)
+            self$.addOption(private$..orthogonal)
+            self$.addOption(private$..efa_std.ov)
+            self$.addOption(private$..geomin.epsilon)
+            self$.addOption(private$..orthomax.gamma)
+            self$.addOption(private$..oblimin.gamma)
             self$.addOption(private$..showlabels)
             self$.addOption(private$..constraints_examples)
             self$.addOption(private$..outputAdditionalFitMeasures)
@@ -567,6 +639,14 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         eq_regressions = function() private$..eq_regressions$value,
         eq_lv.variances = function() private$..eq_lv.variances$value,
         eq_lv.covariances = function() private$..eq_lv.covariances$value,
+        esem_terms = function() private$..esem_terms$value,
+        rotation = function() private$..rotation$value,
+        algorithm = function() private$..algorithm$value,
+        orthogonal = function() private$..orthogonal$value,
+        efa_std.ov = function() private$..efa_std.ov$value,
+        geomin.epsilon = function() private$..geomin.epsilon$value,
+        orthomax.gamma = function() private$..orthomax.gamma$value,
+        oblimin.gamma = function() private$..oblimin.gamma$value,
         showlabels = function() private$..showlabels$value,
         constraints_examples = function() private$..constraints_examples$value,
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
@@ -632,6 +712,14 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..eq_regressions = NA,
         ..eq_lv.variances = NA,
         ..eq_lv.covariances = NA,
+        ..esem_terms = NA,
+        ..rotation = NA,
+        ..algorithm = NA,
+        ..orthogonal = NA,
+        ..efa_std.ov = NA,
+        ..geomin.epsilon = NA,
+        ..orthomax.gamma = NA,
+        ..oblimin.gamma = NA,
         ..showlabels = NA,
         ..constraints_examples = NA,
         ..outputAdditionalFitMeasures = NA,
@@ -2131,6 +2219,17 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param eq_lv.covariances \code{TRUE} or \code{FALSE} (default), constrain
 #'   the (residual) covariances of the latent variables to be equal across
 #'   groups (when conducting multi-group analyses)
+#' @param esem_terms A list of list containing blocks of factors to be
+#'   factorialized toghether.
+#' @param rotation Rotation methods as implemented in lavaan >0.6-13
+#' @param algorithm Optional algorithm for rotation, derfaul is \code{gpa}
+#' @param orthogonal \code{TRUE} or \code{FALSE} (default), whether the
+#'   roation should be orthogonal
+#' @param efa_std.ov \code{TRUE} or \code{FALSE} (default), whether observed
+#'   variables should be standardized
+#' @param geomin.epsilon Geomin epsilon, default=.001
+#' @param orthomax.gamma Geomin epsilon, default=.001
+#' @param oblimin.gamma Oblimin gamma, default=0
 #' @param showlabels \code{TRUE} or \code{FALSE} (default), show the labels of
 #'   the parameters in the model
 #' @param constraints_examples \code{TRUE} or \code{FALSE} (default), show
@@ -2268,6 +2367,15 @@ semljgui <- function(
     eq_regressions = FALSE,
     eq_lv.variances = FALSE,
     eq_lv.covariances = FALSE,
+    esem_terms = list(
+                list()),
+    rotation = "geomin",
+    algorithm = "gpa",
+    orthogonal = FALSE,
+    efa_std.ov = TRUE,
+    geomin.epsilon = 0.001,
+    orthomax.gamma = 1,
+    oblimin.gamma = 0,
     showlabels = FALSE,
     constraints_examples = FALSE,
     outputAdditionalFitMeasures = FALSE,
@@ -2303,6 +2411,7 @@ semljgui <- function(
             `if`( ! missing(multigroup), multigroup, NULL))
 
     for (v in multigroup) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    if (inherits(esem_terms, "formula")) esem_terms <- jmvcore::decomposeFormula(esem_terms)
 
     options <- semljguiOptions$new(
         code = code,
@@ -2342,6 +2451,14 @@ semljgui <- function(
         eq_regressions = eq_regressions,
         eq_lv.variances = eq_lv.variances,
         eq_lv.covariances = eq_lv.covariances,
+        esem_terms = esem_terms,
+        rotation = rotation,
+        algorithm = algorithm,
+        orthogonal = orthogonal,
+        efa_std.ov = efa_std.ov,
+        geomin.epsilon = geomin.epsilon,
+        orthomax.gamma = orthomax.gamma,
+        oblimin.gamma = oblimin.gamma,
         showlabels = showlabels,
         constraints_examples = constraints_examples,
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,

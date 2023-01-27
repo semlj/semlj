@@ -283,6 +283,9 @@ children:
                 name: icc
               - type: CheckBox
                 name: mlmeans
+
+
+
   - type: CollapseBox
     label: Exploratory SEM options
     collapsed: true

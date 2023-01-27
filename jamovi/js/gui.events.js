@@ -9,6 +9,7 @@ const events = {
       updateSuppliers(ui,this);
       cleanEndogenousTerms(ui,this);
       cleanSecondOrder(ui,this);
+      cleanEsem(ui,this);
     
       update_syntax(ui,this); 
 
@@ -20,6 +21,7 @@ const events = {
       updateSuppliers(ui,this);
       cleanEndogenousTerms(ui,this);
       cleanSecondOrder(ui,this);
+      cleanEsem(ui,this);
       update_syntax(ui,this);
     },
 
@@ -28,6 +30,7 @@ const events = {
      updateSuppliers(ui,this);
      cleanEndogenousTerms(ui,this);
      cleanSecondOrder(ui,this);
+     cleanEsem(ui,this);
      update_syntax(ui,this);
 
     },
@@ -174,7 +177,12 @@ const updateSuppliers=function(ui, context) {
   var secondorder=getLabels(secondorderIndicators);
 
   var latent=endogenous.concat(exogenous);
-      latent=latent.concat(secondorder);
+
+ // esem accept only  first order factors
+    ui.esemSupplier.setValue(context.valuesToItems(latent, FormatDef.variable));
+
+ // the other suppliers need also the second order factors  
+    latent=latent.concat(secondorder);
 
   let customVariables = [];
     for(let i = 0; i < latent.length; i++) {
@@ -355,6 +363,25 @@ var cleanSelfSecondorder=function(ui,context) {
 
 }
 
+var cleanEsem= function(ui,context) {
+
+    console.log("cleanEsem");
+    var esemTerms = context.cloneArray(ui.esem_terms.value(),[]);
+    console.log(esemTerms);
+    var esemSupplierList = context.cloneArray(context.itemsToValues(ui.esemSupplier.value()),[]);
+    var diff = context.findChanges("esemSupplierList",esemSupplierList,context);
+    console.log(diff);
+
+    if (diff.hasChanged) {
+      
+      var esemTerms = esemTerms.map(x => {
+            var n=x.filter(z => { return(!diff.removed.includes(z))} )
+            return(n)
+            });
+    }
+
+    ui.esem_terms.setValue(esemTerms);
+};
 
 var update_syntax=function(ui,context) {
   
