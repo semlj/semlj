@@ -370,6 +370,9 @@ Initer <- R6::R6Class(
         for (i in seq_along(self$options$esem_terms)) {
           blocks <- list()
           items  <- list()
+          if (length(self$options$esem_terms[[i]])==0)
+             next
+          
           for (factor in self$options$esem_terms[[i]]) {
             test<-grep(paste0(factor,"=~"),avec)
             parts<-stringr::str_split(avec[test],"=~")[[1]]
@@ -377,7 +380,7 @@ Initer <- R6::R6Class(
             items[[length(items)+1]]<-parts[[2]]
             if (length(test)>0) avec<-avec[-test]
           }
-          form<-paste0("efa(efa",i,")*",blocks,sep="",collapse = "+")
+          form<-paste0('efa("efa',i,'")*',blocks,sep="",collapse = "+")
           fitems<-unique(unlist(stringr::str_split(unlist(items),"\\+")))
           final<-paste0(form,"=~",paste0(fitems,collapse = "+"))
           esem<-c(esem,final)
@@ -394,7 +397,7 @@ Initer <- R6::R6Class(
     ## That is, the parameter names, labels, etc
     
     .make_structure = function() {
-      
+      mark(private$.lavaan_syntax())
       lavoptions <- list(
         model = private$.lavaan_syntax(),
         meanstructure = self$options$meanstructure,           # 'default' for sem + cfa, TRUE for growth (default: FALSE; 'default' is FALSE in most cases)

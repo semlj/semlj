@@ -109,6 +109,7 @@ children:
         children:
           - type: Supplier
             name: secondorderSupplier
+            label: Defined Factors
             format: term
             persistentItems: true
             stretchFactor: 1
@@ -162,6 +163,7 @@ children:
         stretchFactor: 1
         children:
           - type: Supplier
+            label: Defined Factors
             name: endogenousSupplier
             format: term
             persistentItems: true
@@ -510,6 +512,7 @@ children:
         stretchFactor: 1
         children:
           - type: Supplier
+            label: Defined Factors
             name: esemSupplier
             format: term
             persistentItems: false
@@ -524,6 +527,7 @@ children:
                     children:
                           - type: ListBox
                             name: esem_terms
+                            label: Factors blocks
                             height: normal
                             addButton: Add factors block
                             events:

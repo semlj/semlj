@@ -12,7 +12,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
       .time = NULL,
       .smartObjs = list(),
       .init = function() {
-        ginfo(paste("MODULE: SEMLj GUI  #### phase init  ####"))
+        ginfo(paste("MODULE: SEMLj SYNTAX  #### phase init  ####"))
 
         private$.time <- Sys.time()
         private$.ready <- readiness(self$options)
