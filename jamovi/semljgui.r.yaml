@@ -80,6 +80,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
          
 
@@ -114,6 +116,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         columns:
           - name: label
@@ -161,6 +165,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         
         columns:
@@ -218,6 +224,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         columns:
           - name: type
@@ -274,6 +282,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
 
         rows: 8
@@ -316,6 +326,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
 
         columns:
@@ -357,6 +369,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
 
         columns:
@@ -404,6 +418,8 @@ items:
               - eq_regressions
               - eq_lv.variances
               - eq_lv.covariances
+              - rotation
+              - algorithm
             ### modeloptions  end
         columns:
           - name:  lgroup
@@ -457,6 +473,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         ### cioptions  begins
                     - bootci
@@ -537,6 +555,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         ### cioptions  begins
                     - bootci
@@ -617,6 +637,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         ### cioptions  begins
                     - bootci
@@ -697,6 +719,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         ### cioptions  begins
                     - bootci
@@ -780,6 +804,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         ### cioptions  begins
                     - bootci
@@ -859,6 +885,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         ### cioptions  begins
                     - bootci
@@ -943,6 +971,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         ### cioptions  begins
                     - bootci
@@ -1030,6 +1060,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
 
         columns:
@@ -1097,6 +1129,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
 
         rows: 2
@@ -1151,6 +1185,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
 
     items:
@@ -1186,6 +1222,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
       
       columns:
@@ -1230,6 +1268,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
 
       visible: (outputImpliedCovariances & !outpuCombineCovariances)
@@ -1278,6 +1318,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
 
       columns:
@@ -1323,6 +1365,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
 
       visible: (outpuCombineCovariances)
@@ -1372,6 +1416,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
       visible: false
       description: A covariance matrix table.
@@ -1419,6 +1465,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
     
     visible: (outputModificationIndices)
@@ -1450,6 +1498,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         
         visible: (outputModificationIndices)
@@ -1522,6 +1572,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         ### diagoptions  begins
                     - diag_shape_man
@@ -1573,6 +1625,8 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - rotation
+                    - algorithm
             ### modeloptions  end
         ### diagoptions  begins
                     - diag_shape_man

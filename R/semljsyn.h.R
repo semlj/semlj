@@ -795,7 +795,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "eq_thresholds",
                     "eq_regressions",
                     "eq_lv.variances",
-                    "eq_lv.covariances"))
+                    "eq_lv.covariances",
+                    "rotation",
+                    "algorithm"))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="main",
@@ -822,7 +824,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="label", 
@@ -868,7 +872,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="type", 
@@ -927,7 +933,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="type", 
@@ -985,7 +993,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             rows=8,
                             columns=list(
                                 list(
@@ -1024,7 +1034,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="name", 
@@ -1061,7 +1073,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1109,7 +1123,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1171,6 +1187,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1255,6 +1273,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1340,6 +1360,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1424,6 +1446,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1508,6 +1532,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1589,6 +1615,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1674,6 +1702,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1726,6 +1756,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1821,7 +1853,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1891,7 +1925,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             rows=2,
                             columns=list(
                                 list(
@@ -1956,7 +1992,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "eq_thresholds",
                     "eq_regressions",
                     "eq_lv.variances",
-                    "eq_lv.covariances"))
+                    "eq_lv.covariances",
+                    "rotation",
+                    "algorithm"))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="observed",
@@ -1984,7 +2022,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -2027,7 +2067,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             visible="(outputImpliedCovariances & !outpuCombineCovariances)",
                             columns=list(
                                 list(
@@ -2072,7 +2114,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -2115,7 +2159,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             visible="(outpuCombineCovariances)",
                             columns=list(
                                 list(
@@ -2164,7 +2210,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             visible=FALSE,
                             columns=list(
                                 list(
@@ -2216,7 +2264,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "eq_thresholds",
                     "eq_regressions",
                     "eq_lv.variances",
-                    "eq_lv.covariances"))
+                    "eq_lv.covariances",
+                    "rotation",
+                    "algorithm"))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="indices",
@@ -2243,7 +2293,9 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             visible="(outputModificationIndices)",
                             notes=list(
                                 `EPC`="expected parameter changes and their standardized forms (sEPC); for latent variables (LV), all variables (all), and latent and observed variables except for the exogenous observed variables (nox)"),
@@ -2324,6 +2376,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "eq_regressions",
                     "eq_lv.variances",
                     "eq_lv.covariances",
+                    "rotation",
+                    "algorithm",
                     "diag_shape_man",
                     "diag_shape_lat",
                     "diag_abbrev",
@@ -2368,6 +2422,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     "eq_regressions",
                                     "eq_lv.variances",
                                     "eq_lv.covariances",
+                                    "rotation",
+                                    "algorithm",
                                     "diag_shape_man",
                                     "diag_shape_lat",
                                     "diag_abbrev",

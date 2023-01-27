@@ -21,6 +21,8 @@ modeloptions:
               - eq_regressions  
               - eq_lv.variances  
               - eq_lv.covariances  
+              - rotation
+              - algorithm
 
 cioptions: 
               - bootci
