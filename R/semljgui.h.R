@@ -47,6 +47,15 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             eq_regressions = FALSE,
             eq_lv.variances = FALSE,
             eq_lv.covariances = FALSE,
+            esem_terms = list(
+                list()),
+            rotation = "geomin",
+            algorithm = "gpa",
+            orthogonal = FALSE,
+            efa_std.ov = TRUE,
+            geomin.epsilon = 0.001,
+            orthomax.gamma = 1,
+            oblimin.gamma = 0,
             showlabels = FALSE,
             constraints_examples = FALSE,
             outputAdditionalFitMeasures = FALSE,
@@ -315,6 +324,61 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "eq_lv.covariances",
                 eq_lv.covariances,
                 default=FALSE)
+            private$..esem_terms <- jmvcore::OptionArray$new(
+                "esem_terms",
+                esem_terms,
+                default=list(
+                    list()),
+                template=jmvcore::OptionVariables$new(
+                    "esem_terms",
+                    NULL))
+            private$..rotation <- jmvcore::OptionList$new(
+                "rotation",
+                rotation,
+                options=list(
+                    "geomin",
+                    "varimax",
+                    "orthomax",
+                    "quartimin",
+                    "oblimin",
+                    "entropy",
+                    "mccammon",
+                    "infomax",
+                    "tandem1",
+                    "oblimax",
+                    "bentler",
+                    "simplimax"),
+                default="geomin")
+            private$..algorithm <- jmvcore::OptionList$new(
+                "algorithm",
+                algorithm,
+                options=list(
+                    "gpa",
+                    "pairwise"),
+                default="gpa")
+            private$..orthogonal <- jmvcore::OptionBool$new(
+                "orthogonal",
+                orthogonal,
+                default=FALSE)
+            private$..efa_std.ov <- jmvcore::OptionBool$new(
+                "efa_std.ov",
+                efa_std.ov,
+                default=TRUE)
+            private$..geomin.epsilon <- jmvcore::OptionNumber$new(
+                "geomin.epsilon",
+                geomin.epsilon,
+                min=0,
+                default=0.001)
+            private$..orthomax.gamma <- jmvcore::OptionNumber$new(
+                "orthomax.gamma",
+                orthomax.gamma,
+                min=0,
+                default=1)
+            private$..oblimin.gamma <- jmvcore::OptionNumber$new(
+                "oblimin.gamma",
+                oblimin.gamma,
+                min=0,
+                default=0)
             private$..showlabels <- jmvcore::OptionBool$new(
                 "showlabels",
                 showlabels,
@@ -501,6 +565,14 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..eq_regressions)
             self$.addOption(private$..eq_lv.variances)
             self$.addOption(private$..eq_lv.covariances)
+            self$.addOption(private$..esem_terms)
+            self$.addOption(private$..rotation)
+            self$.addOption(private$..algorithm)
+            self$.addOption(private$..orthogonal)
+            self$.addOption(private$..efa_std.ov)
+            self$.addOption(private$..geomin.epsilon)
+            self$.addOption(private$..orthomax.gamma)
+            self$.addOption(private$..oblimin.gamma)
             self$.addOption(private$..showlabels)
             self$.addOption(private$..constraints_examples)
             self$.addOption(private$..outputAdditionalFitMeasures)
@@ -567,6 +639,14 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         eq_regressions = function() private$..eq_regressions$value,
         eq_lv.variances = function() private$..eq_lv.variances$value,
         eq_lv.covariances = function() private$..eq_lv.covariances$value,
+        esem_terms = function() private$..esem_terms$value,
+        rotation = function() private$..rotation$value,
+        algorithm = function() private$..algorithm$value,
+        orthogonal = function() private$..orthogonal$value,
+        efa_std.ov = function() private$..efa_std.ov$value,
+        geomin.epsilon = function() private$..geomin.epsilon$value,
+        orthomax.gamma = function() private$..orthomax.gamma$value,
+        oblimin.gamma = function() private$..oblimin.gamma$value,
         showlabels = function() private$..showlabels$value,
         constraints_examples = function() private$..constraints_examples$value,
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
@@ -632,6 +712,14 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..eq_regressions = NA,
         ..eq_lv.variances = NA,
         ..eq_lv.covariances = NA,
+        ..esem_terms = NA,
+        ..rotation = NA,
+        ..algorithm = NA,
+        ..orthogonal = NA,
+        ..efa_std.ov = NA,
+        ..geomin.epsilon = NA,
+        ..orthomax.gamma = NA,
+        ..oblimin.gamma = NA,
         ..showlabels = NA,
         ..constraints_examples = NA,
         ..outputAdditionalFitMeasures = NA,
@@ -735,7 +823,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     indices = function() private$.items[["indices"]],
                     modelbaseline = function() private$.items[["modelbaseline"]],
                     moreindices = function() private$.items[["moreindices"]],
-                    rsquared = function() private$.items[["rsquared"]]),
+                    rsquared = function() private$.items[["rsquared"]],
+                    icc = function() private$.items[["icc"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
@@ -765,7 +854,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "eq_thresholds",
                     "eq_regressions",
                     "eq_lv.variances",
-                    "eq_lv.covariances"))
+                    "eq_lv.covariances",
+                    "rotation",
+                    "algorithm"))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="main",
@@ -792,7 +883,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="label", 
@@ -838,7 +931,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="type", 
@@ -897,7 +992,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="type", 
@@ -955,7 +1052,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             rows=8,
                             columns=list(
                                 list(
@@ -994,7 +1093,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="name", 
@@ -1031,7 +1132,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_thresholds",
                                 "eq_regressions",
                                 "eq_lv.variances",
-                                "eq_lv.covariances"),
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1051,6 +1154,51 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="est", 
                                     `title`="R\u00B2", 
+                                    `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="icc",
+                            title="Intra-class correlations",
+                            visible=FALSE,
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
+                            columns=list(
+                                list(
+                                    `name`="lgroup", 
+                                    `title`="Group", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)", 
+                                    `combineBelow`=TRUE),
+                                list(
+                                    `name`="rhs", 
+                                    `title`="Variable", 
+                                    `type`="text"),
+                                list(
+                                    `name`="est", 
+                                    `title`="ICC", 
                                     `type`="number"))))}))$new(options=options))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
@@ -1097,6 +1245,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1181,6 +1331,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1266,6 +1418,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1350,6 +1504,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1416,8 +1572,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "int_lv",
                                 "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1434,6 +1590,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1515,6 +1673,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1582,8 +1742,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "estimator",
                                 "likelihood",
                                 "meanstructure",
-                                "int_lv",
                                 "int_ov",
+                                "int_lv",
                                 "std_lv",
                                 "std_ov",
                                 "cov_x",
@@ -1600,6 +1760,8 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances",
+                                "rotation",
+                                "algorithm",
                                 "bootci",
                                 "bootN",
                                 "ci",
@@ -1673,6 +1835,31 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Reliability indices",
                             visible=FALSE,
                             refs="semtools",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1720,6 +1907,31 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             title="Mardia's coefficients",
                             refs="semtools",
                             visible="(outputMardiasCoefficients)",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             rows=2,
                             columns=list(
                                 list(
@@ -1761,12 +1973,62 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         super$initialize(
                             options=options,
                             name="covariances",
-                            title="Covariances and correlations")
+                            title="Covariances and correlations",
+                            clearWith=list(
+                    "code",
+                    "estimator",
+                    "likelihood",
+                    "meanstructure",
+                    "int_ov",
+                    "int_lv",
+                    "std_lv",
+                    "std_ov",
+                    "cov_x",
+                    "cov_y",
+                    "cov_lv",
+                    "cluster",
+                    "multigroup",
+                    "eq_loadings",
+                    "eq_intercepts",
+                    "eq_residuals",
+                    "eq_residual.covariances",
+                    "eq_means",
+                    "eq_thresholds",
+                    "eq_regressions",
+                    "eq_lv.variances",
+                    "eq_lv.covariances",
+                    "rotation",
+                    "algorithm"))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="observed",
                             title="Observed covariances (lower triangle) and correlations (upper triangle)",
                             visible="(outputObservedCovariances & !outpuCombineCovariances)",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1787,6 +2049,31 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="implied",
                             title="Fitted covariances (lower triangle) and correlations (upper triangle)",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             visible="(outputImpliedCovariances & !outpuCombineCovariances)",
                             columns=list(
                                 list(
@@ -1809,6 +2096,31 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="residual",
                             title="Residual covariances (lower triangle) and correlations (upper triangle)",
                             visible="(outputResidualCovariances & !outpuCombineCovariances)",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1829,6 +2141,31 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="combined",
                             title="Covariances (lower triangle) and correlations (upper triangle)",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             visible="(outpuCombineCovariances)",
                             columns=list(
                                 list(
@@ -1855,6 +2192,31 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="latent",
                             title="Model-implied Covariances for latent variables",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             visible=FALSE,
                             columns=list(
                                 list(
@@ -1883,11 +2245,61 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         super$initialize(
                             options=options,
                             name="modification",
-                            title="Modifcation indices")
+                            title="Modifcation indices",
+                            clearWith=list(
+                    "code",
+                    "estimator",
+                    "likelihood",
+                    "meanstructure",
+                    "int_ov",
+                    "int_lv",
+                    "std_lv",
+                    "std_ov",
+                    "cov_x",
+                    "cov_y",
+                    "cov_lv",
+                    "cluster",
+                    "multigroup",
+                    "eq_loadings",
+                    "eq_intercepts",
+                    "eq_residuals",
+                    "eq_residual.covariances",
+                    "eq_means",
+                    "eq_thresholds",
+                    "eq_regressions",
+                    "eq_lv.variances",
+                    "eq_lv.covariances",
+                    "rotation",
+                    "algorithm"))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="indices",
                             title="Modification indices",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "multigroup",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "rotation",
+                                "algorithm"),
                             visible="(outputModificationIndices)",
                             notes=list(
                                 `EPC`="expected parameter changes and their standardized forms (sEPC); for latent variables (LV), all variables (all), and latent and observed variables except for the exogenous observed variables (nox)"),
@@ -1944,7 +2356,41 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         super$initialize(
                             options=options,
                             name="pathgroup",
-                            title="Path Model")
+                            title="Path Model",
+                            clearWith=list(
+                    "code",
+                    "estimator",
+                    "likelihood",
+                    "meanstructure",
+                    "int_ov",
+                    "int_lv",
+                    "std_lv",
+                    "std_ov",
+                    "cov_x",
+                    "cov_y",
+                    "cov_lv",
+                    "cluster",
+                    "multigroup",
+                    "eq_loadings",
+                    "eq_intercepts",
+                    "eq_residuals",
+                    "eq_residual.covariances",
+                    "eq_means",
+                    "eq_thresholds",
+                    "eq_regressions",
+                    "eq_lv.variances",
+                    "eq_lv.covariances",
+                    "rotation",
+                    "algorithm",
+                    "diag_shape_man",
+                    "diag_shape_lat",
+                    "diag_abbrev",
+                    "diag_type",
+                    "diag_rotate",
+                    "diag_labsize",
+                    "diag_resid",
+                    "diag_paths",
+                    "diag_intercepts"))
                         self$add(jmvcore::Array$new(
                             options=options,
                             name="diagrams",
@@ -1958,8 +2404,30 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 width=800,
                                 height=600,
                                 clearWith=list(
-                                    "multigroup",
                                     "code",
+                                    "estimator",
+                                    "likelihood",
+                                    "meanstructure",
+                                    "int_ov",
+                                    "int_lv",
+                                    "std_lv",
+                                    "std_ov",
+                                    "cov_x",
+                                    "cov_y",
+                                    "cov_lv",
+                                    "cluster",
+                                    "multigroup",
+                                    "eq_loadings",
+                                    "eq_intercepts",
+                                    "eq_residuals",
+                                    "eq_residual.covariances",
+                                    "eq_means",
+                                    "eq_thresholds",
+                                    "eq_regressions",
+                                    "eq_lv.variances",
+                                    "eq_lv.covariances",
+                                    "rotation",
+                                    "algorithm",
                                     "diag_shape_man",
                                     "diag_shape_lat",
                                     "diag_abbrev",
@@ -2131,6 +2599,17 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param eq_lv.covariances \code{TRUE} or \code{FALSE} (default), constrain
 #'   the (residual) covariances of the latent variables to be equal across
 #'   groups (when conducting multi-group analyses)
+#' @param esem_terms A list of list containing blocks of factors to be
+#'   factorialized toghether.
+#' @param rotation Rotation methods as implemented in lavaan >0.6-13
+#' @param algorithm Optional algorithm for rotation, derfaul is \code{gpa}
+#' @param orthogonal \code{TRUE} or \code{FALSE} (default), whether the
+#'   roation should be orthogonal
+#' @param efa_std.ov \code{TRUE} or \code{FALSE} (default), whether observed
+#'   variables should be standardized
+#' @param geomin.epsilon Geomin epsilon, default=.001
+#' @param orthomax.gamma Geomin epsilon, default=.001
+#' @param oblimin.gamma Oblimin gamma, default=0
 #' @param showlabels \code{TRUE} or \code{FALSE} (default), show the labels of
 #'   the parameters in the model
 #' @param constraints_examples \code{TRUE} or \code{FALSE} (default), show
@@ -2196,6 +2675,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$fit$modelbaseline} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$moreindices} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$rsquared} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$fit$icc} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$coefficients} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$loadings} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$composites} \tab \tab \tab \tab \tab a table \cr
@@ -2268,6 +2748,15 @@ semljgui <- function(
     eq_regressions = FALSE,
     eq_lv.variances = FALSE,
     eq_lv.covariances = FALSE,
+    esem_terms = list(
+                list()),
+    rotation = "geomin",
+    algorithm = "gpa",
+    orthogonal = FALSE,
+    efa_std.ov = TRUE,
+    geomin.epsilon = 0.001,
+    orthomax.gamma = 1,
+    oblimin.gamma = 0,
     showlabels = FALSE,
     constraints_examples = FALSE,
     outputAdditionalFitMeasures = FALSE,
@@ -2303,6 +2792,7 @@ semljgui <- function(
             `if`( ! missing(multigroup), multigroup, NULL))
 
     for (v in multigroup) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
+    if (inherits(esem_terms, "formula")) esem_terms <- jmvcore::decomposeFormula(esem_terms)
 
     options <- semljguiOptions$new(
         code = code,
@@ -2342,6 +2832,14 @@ semljgui <- function(
         eq_regressions = eq_regressions,
         eq_lv.variances = eq_lv.variances,
         eq_lv.covariances = eq_lv.covariances,
+        esem_terms = esem_terms,
+        rotation = rotation,
+        algorithm = algorithm,
+        orthogonal = orthogonal,
+        efa_std.ov = efa_std.ov,
+        geomin.epsilon = geomin.epsilon,
+        orthomax.gamma = orthomax.gamma,
+        oblimin.gamma = oblimin.gamma,
         showlabels = showlabels,
         constraints_examples = constraints_examples,
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,

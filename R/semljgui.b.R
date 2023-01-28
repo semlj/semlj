@@ -66,6 +66,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ## even more fit indices table ###
 
         aSmartObj                 <- SmartTable$new(self$results$fit$modelbaseline, runner_machine)
+        aSmartObj$activateOnData   <- TRUE
         private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
         ## R2 table ###
@@ -214,7 +215,6 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
             if (self$options$donotrun) 
               return()
         }
-        
 
         private$.ready <- readiness(self$options)
         if (!private$.ready$ready) {

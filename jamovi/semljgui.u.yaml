@@ -109,6 +109,7 @@ children:
         children:
           - type: Supplier
             name: secondorderSupplier
+            label: Defined Factors
             format: term
             persistentItems: true
             stretchFactor: 1
@@ -162,6 +163,7 @@ children:
         stretchFactor: 1
         children:
           - type: Supplier
+            label: Defined Factors
             name: endogenousSupplier
             format: term
             persistentItems: true
@@ -250,6 +252,9 @@ children:
                 name: cov_y
               - type: CheckBox
                 name: cov_lv
+
+
+
   - type: CollapseBox
     label: Custom model settings
     collapsed: true
@@ -285,6 +290,7 @@ children:
                           borderless: true
                           height: auto
                           ghostText: write here
+
   - type: CollapseBox
     label: Model options
     name: model_options
@@ -494,6 +500,94 @@ children:
                     name: eq_lv.variances
                   - type: CheckBox
                     name: eq_lv.covariances
+                    
+                    
+  - type: CollapseBox
+    label: Exploratory SEM options
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        children:
+          - type: Supplier
+            label: Defined Factors
+            name: esemSupplier
+            format: term
+            persistentItems: false
+            stretchFactor: 1
+            events:
+              update: './gui.events::onEvent_nothing'
+              change: './gui.events::onEvent_nothing'
+            children:
+                  - type: TargetLayoutBox
+                    transferAction: none
+                    name: esem_layout
+                    children:
+                          - type: ListBox
+                            name: esem_terms
+                            label: Factors blocks
+                            height: normal
+                            addButton: Add factors block
+                            events:
+                                change: './gui.events::onEvent_nothing'
+                            selectable: true
+                            templateName: linreg-block-template
+                            template:
+                                    type: LayoutBox
+                                    margin: normal
+                                    targetArea: true
+                                    children:
+                                           - type: ListBox
+                                             name: factorblockList
+                                             height: auto
+                                             isTarget: true
+                                             valueFilter: unique
+                                             ghostText: drag term here
+                                             template:
+                                                type: VariableLabel
+    
+    
+    
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Rotation
+            margin: large
+            style: list
+            children:
+              - type: ComboBox
+                name: rotation
+              - type: ComboBox
+                name: algorithm
+              - type: CheckBox
+                name: orthogonal
+              - type: CheckBox
+                name: efa_std.ov
+          - type: Label
+            label: Rotations options
+            margin: large
+            style: list
+            children:
+              - type: TextBox
+                name: geomin.epsilon
+                format: number
+                enable: '(rotation:geomin)'
+              - type: TextBox
+                name: orthomax.gamma
+                format: number
+                enable: '(rotation:orthomax)'
+              - type: TextBox
+                name: oblimin.gamma
+                format: number
+                enable: '(rotation:oblimin)'
+
+                    
+                    
+                    
   - type: CollapseBox
     label: Output options
     name: output_options

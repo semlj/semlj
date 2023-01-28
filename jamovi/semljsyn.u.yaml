@@ -283,6 +283,49 @@ children:
                 name: icc
               - type: CheckBox
                 name: mlmeans
+
+
+
+  - type: CollapseBox
+    label: Exploratory SEM options
+    collapsed: true
+    stretchFactor: 1
+    children:
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Rotation
+            margin: large
+            style: list
+            children:
+              - type: ComboBox
+                name: rotation
+              - type: ComboBox
+                name: algorithm
+              - type: CheckBox
+                name: orthogonal
+              - type: CheckBox
+                name: efa_std.ov
+          - type: Label
+            label: Rotations options
+            margin: large
+            style: list
+            children:
+              - type: TextBox
+                name: geomin.epsilon
+                format: number
+                enable: '(rotation:geomin)'
+              - type: TextBox
+                name: orthomax.gamma
+                format: number
+                enable: '(rotation:orthomax)'
+              - type: TextBox
+                name: oblimin.gamma
+                format: number
+                enable: '(rotation:oblimin)'
+
   - type: CollapseBox
     label: Output options
     collapsed: true

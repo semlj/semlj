@@ -516,7 +516,98 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), constrain the (residual) covariances of the latent variables to be equal across groups (when conducting multi-group analyses)
+            
 
+#### Exploratory ESEM options ==============================================
+
+
+    - name: rotation
+      title: Method
+      type: List
+      options:
+        - name:  geomin
+          title: "Geomin"
+        - name: varimax
+          title: "Varimax"
+        - name:  orthomax
+          title: "Orthomax"
+        - name:  quartimin
+          title: "Quartimin"
+        - name:  oblimin
+          title: "Oblimin"
+        - name: entropy
+          title: "Entropy"
+        - name: mccammon
+          title: "Mccammon"
+        - name: infomax
+          title: "Infomax"
+        - name: tandem1
+          title: "Tandem1"
+        - name: oblimax
+          title: "Oblimax"
+        - name: bentler
+          title: "Bentler"
+        - name: simplimax
+          title: "Simplimax"
+      default: geomin
+      description:
+          R: >  
+              Rotation methods as implemented in lavaan >0.6-13
+
+    - name: algorithm
+      title: Algotrithm
+      type: List
+      options:
+        - name:  gpa
+          title: "gpa"
+        - name: pairwise
+          title: "pairwise"
+      default: gpa
+      description:
+          R: > 
+            Optional algorithm for rotation, derfaul is `gpa`
+
+    - name: orthogonal
+      type: Bool
+      title: Orthogonal
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), whether the roation should be orthogonal
+    - name: efa_std.ov
+      type: Bool
+      title: Standardize observed vars
+      default: true
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), whether observed variables should be standardized
+
+    - name: geomin.epsilon
+      title: Geomin Epsilon
+      type: Number
+      min: 0
+      default: .001
+      description:
+          R: >
+             Geomin epsilon, default=.001
+    - name: orthomax.gamma
+      title: Orthomax Gamma
+      type: Number
+      min: 0
+      default: 1
+      description:
+          R: >
+             Geomin epsilon, default=.001
+    - name: oblimin.gamma
+      title: Oblimin Gamma
+      type: Number
+      min: 0
+      default: 0
+      description:
+          R: >
+             Oblimin gamma, default=0
+
+             
 
     ### Output options ========================================================
     - name: showlabels

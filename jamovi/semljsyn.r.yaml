@@ -57,29 +57,34 @@ items:
     type: Group
     visible: false
     clearWith:
-      - code 
-      - estimator
-      - likelihood
-      - meanstructure  
-      - int_ov
-      - int_lv
-      - std_lv
-      - std_ov  
-      - cov_x  
-      - cov_y  
-      - cov_lv      
-      - cluster  
-      - multigroup  
-      - eq_loadings  
-      - eq_intercepts  
-      - eq_residuals  
-      - eq_residual.covariances  
-      - eq_means  
-      - eq_thresholds  
-      - eq_regressions  
-      - eq_lv.variances  
-      - eq_lv.covariances  
-    
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+         
+
     items:
 
       # Model tests -----------------------------------------------------------
@@ -88,30 +93,32 @@ items:
         type: Table
 #       description: 
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_lv
-              - int_ov
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y 
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-        
-
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
         columns:
           - name: label
             title: Label
@@ -135,28 +142,32 @@ items:
 #       description: 
         visible: false
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y 
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
         
         columns:
           - name: type
@@ -190,30 +201,32 @@ items:
         type: Table
 #       description: 
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y 
-              - cov_lv      
-              
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
         columns:
           - name: type
             title: Type
@@ -246,29 +259,34 @@ items:
 #       description:
         visible: true
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+
+        rows: 8
         columns:
           - name: name
             title: ""
@@ -284,30 +302,33 @@ items:
         type: Table
 #       description:
         visible: (outputAdditionalFitMeasures)
-
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
 
         columns:
           - name: name
@@ -325,45 +346,38 @@ items:
 #       description:
         visible: false
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-              
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
 
         columns:
           - name:  lgroup
             title: Group
             type: text
             visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -380,6 +394,33 @@ items:
         title: 'Intra-class correlations'
         type: Table
         visible: false
+        clearWith:
+        ### modeloptions  begins
+              - code
+              - estimator
+              - likelihood
+              - meanstructure
+              - int_ov
+              - int_lv
+              - std_lv
+              - std_ov
+              - cov_x
+              - cov_y
+              - cov_lv
+              - cluster
+              - multigroup
+              - eq_loadings
+              - eq_intercepts
+              - eq_residuals
+              - eq_residual.covariances
+              - eq_means
+              - eq_thresholds
+              - eq_regressions
+              - eq_lv.variances
+              - eq_lv.covariances
+              - rotation
+              - algorithm
+            ### modeloptions  end
         columns:
           - name:  lgroup
             title: Group
@@ -392,6 +433,7 @@ items:
           - name: est
             title: ICC
             type: number
+
 
   # Estimates =================================================================
   - name: models
@@ -407,44 +449,45 @@ items:
         visible: false
 #       description: 
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-              - bootci
-              - bootN 
-              - ci  
-              - ci_width
-              - se
-          
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### cioptions  begins
+                    - bootci
+                    - bootN
+                    - ci
+                    - ci_width
+                    - se
+            ### cioptions  end
+
         columns:
           - name: lgroup
             title: Group
             type: text
             visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -488,33 +531,39 @@ items:
 #       description: 
         visible: false
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_lv
-              - int_ov
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-              - bootci
-              - bootN 
-              - ci  
-              - ci_width
-              - se
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### cioptions  begins
+                    - bootci
+                    - bootN
+                    - ci
+                    - ci_width
+                    - se
+            ### cioptions  end
 
         columns:
           - name: lgroup
@@ -522,12 +571,6 @@ items:
             type: text
             visible: (multigroup)
             combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
-            combineBelow: true
-
           - name: label
             title: Label
             type: text
@@ -570,45 +613,45 @@ items:
 #       description: 
         visible: false
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-              - bootci
-              - bootN 
-              - ci  
-              - ci_width
-              - se
-
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### cioptions  begins
+                    - bootci
+                    - bootN
+                    - ci
+                    - ci_width
+                    - se
+            ### cioptions  end
 
         columns:
           - name: lgroup
             title: Group
             type: text
             visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -652,44 +695,45 @@ items:
         title: Variances and Covariances
         type: Table
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-              - bootci
-              - bootN 
-              - ci  
-              - ci_width
-              - se
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### cioptions  begins
+                    - bootci
+                    - bootN
+                    - ci
+                    - ci_width
+                    - se
+            ### cioptions  end
 
         columns:
                     - name: lgroup
                       title: Group
                       type: text
                       visible: (multigroup)
-                      combineBelow: true
-                    - name: level
-                      title: Level
-                      type: text
-                      visible: (cluster)
                       combineBelow: true
 
                     - name: label
@@ -736,44 +780,45 @@ items:
 #       description: 
         visible: false
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-              - bootci
-              - bootN 
-              - ci  
-              - ci_width
-              - se
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### cioptions  begins
+                    - bootci
+                    - bootN
+                    - ci
+                    - ci_width
+                    - se
+            ### cioptions  end
         
         columns:
           - name: lgroup
             title: Group
             type: text
             visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -816,45 +861,45 @@ items:
 #       description: 
         visible: false
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-              - bootci
-              - bootN 
-              - ci  
-              - ci_width
-              - se
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### cioptions  begins
+                    - bootci
+                    - bootN
+                    - ci
+                    - ci_width
+                    - se
+            ### cioptions  end
 
         columns:
           - name: lgroup
             title: Group
             type: text
             visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -901,34 +946,40 @@ items:
         type: Table
         visible: false
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-              - bootci
-              - bootN 
-              - ci  
-              - ci_width
-              - se
-        
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### cioptions  begins
+                    - bootci
+                    - bootN
+                    - ci
+                    - ci_width
+                    - se
+            ### cioptions  end
+
         columns:
           - name: lgroup
             title: Group
@@ -944,7 +995,7 @@ items:
           - name: est
             title: "Mean"
             type: number
-  
+
 
       # Defined parameters ----------------------------------------------------
       - name: defined
@@ -953,33 +1004,39 @@ items:
 #       description: 
         visible: false
         clearWith:
-              - code 
-              - estimator
-              - likelihood
-              - meanstructure  
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov  
-              - cov_x  
-              - cov_y  
-              - cov_lv      
-              - cluster  
-              - multigroup  
-              - eq_loadings  
-              - eq_intercepts  
-              - eq_residuals  
-              - eq_residual.covariances  
-              - eq_means  
-              - eq_thresholds  
-              - eq_regressions  
-              - eq_lv.variances  
-              - eq_lv.covariances  
-              - bootci
-              - bootN 
-              - ci  
-              - ci_width
-              - se
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### cioptions  begins
+                    - bootci
+                    - bootN
+                    - ci
+                    - ci_width
+                    - se
+            ### cioptions  end
         
         columns:
           - name: lhs
@@ -1035,16 +1092,39 @@ items:
         type: Table
         visible: false
         refs: semtools
+        clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+
         columns:
           - name:  lgroup
             title: Group
             type: text
             visible: (multigroup)
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
-            combineBelow: true
           - name: level
             title: Level
             type: text
@@ -1074,7 +1154,6 @@ items:
             type: number
 
 
-
       # Mardia's coefficients -------------------------------------------------
       - name: mardia
         title: "Mardia's coefficients"
@@ -1082,6 +1161,34 @@ items:
 #       description:
         refs: semtools
         visible: (outputMardiasCoefficients)
+        clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+
         rows: 2
         columns:
         - name: name
@@ -1110,6 +1217,34 @@ items:
     title: "Covariances and correlations"
     type: Group
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances || cov.lv)
+    clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+
     items:
 
     # all tables below have variable number of rows and columns
@@ -1119,25 +1254,80 @@ items:
       type: Table
       visible: (outputObservedCovariances & !outpuCombineCovariances)
       description: A covariance / correlation matrix table.
+      clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+      
       columns:
-                  - name: lgroup
-                    title: Group
-                    type: text
-                    visible: (multigroup)
-                    combineBelow: true
-                  - name: level
-                    title: Level
-                    type: text
-                    visible: (cluster)
-                    combineBelow: true
-                  - name: variable
-                    title: ""
-                    type: text
+      - name: lgroup
+        title: Group
+        type: text
+        visible: (multigroup)
+        combineBelow: true
+      - name: variable
+        title: ""
+        type: text
+      - name: level
+        title: ""
+        type: text
+        visible: false 
 
     # Model-implied / fitted covariances and correlations ---------------------
     - name: implied
       title: Fitted covariances (lower triangle) and correlations (upper triangle)
       type: Table
+      clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+
       visible: (outputImpliedCovariances & !outpuCombineCovariances)
       description: A covariance / correlation matrix table.
       columns:
@@ -1146,14 +1336,13 @@ items:
         type: text
         visible: (multigroup)
         combineBelow: true
-      - name: level
-        title: Level
-        type: text
-        visible: (cluster)
-        combineBelow: true
       - name: variable
         title: ""
         type: text
+      - name: level
+        title: ""
+        type: text
+        visible: false 
 
     # Residual covariances and correlations -----------------------------------
     - name: residual
@@ -1161,26 +1350,81 @@ items:
       type: Table
       visible: (outputResidualCovariances & !outpuCombineCovariances)
       description: A covariance / correlation matrix table.
+      clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+
       columns:
       - name: lgroup
         title: Group
         type: text
         visible: (multigroup)
         combineBelow: true
-      - name: level
-        title: Level
-        type: text
-        visible: (cluster)
-        combineBelow: true
       - name: variable
         title: ""
         type: text
+      - name: level
+        title: ""
+        type: text
+        visible: false 
 
     # Combined covariances and correlations (sorted by variable; observed,
     # implied, residual within a cell -----------------------------------------
     - name: combined
       title: Covariances (lower triangle) and correlations (upper triangle)
       type: Table
+      clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+
       visible: (outpuCombineCovariances)
       description: A covariance / correlation matrix table.
       columns:
@@ -1189,15 +1433,14 @@ items:
         type: text
         visible: (multigroup)
         combineBelow: true
-      - name: level
-        title: Level
-        type: text
-        visible: (cluster)
-        combineBelow: true
       - name: variable
         title: ""
         type: text
         combineBelow: true
+      - name: level
+        title: ""
+        type: text
+        visible: false 
       - name: type
         title: ""
         type: text
@@ -1205,6 +1448,33 @@ items:
     - name: latent
       title: Model-implied Covariances for latent variables
       type: Table
+      clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
       visible: false
       description: A covariance matrix table.
       columns:
@@ -1213,12 +1483,6 @@ items:
         type: text
         visible: (multigroup)
         combineBelow: true
-      - name: level
-        title: Level
-        type: text
-        visible: (cluster)
-        combineBelow: true
-
       - name: variable
         title: ""
         type: text
@@ -1233,11 +1497,67 @@ items:
   - name: modification
     title: "Modifcation indices"
     type: Group
+    clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+    
     visible: (outputModificationIndices)
     items:
       - name: indices
         title: 'Modification indices'
         type: Table
+        clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        
         visible: (outputModificationIndices)
 #       description:
         notes:
@@ -1284,6 +1604,44 @@ items:
     type: Group
     title: Path Model
     visible: (diagram)
+    clearWith:
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### diagoptions  begins
+                    - diag_shape_man
+                    - diag_shape_lat
+                    - diag_abbrev
+                    - diag_type
+                    - diag_rotate
+                    - diag_labsize
+                    - diag_resid
+                    - diag_paths
+                    - diag_intercepts
+            ### diagoptions  end
     items:
 
     # Path diagrams -----------------------------------------------------------
@@ -1300,38 +1658,43 @@ items:
           width: 800
           height: 600
           clearWith:
-            - code 
-            - estimator
-            - likelihood
-            - meanstructure  
-            - int_ov
-            - int_lv
-            - std_lv
-            - std_ov  
-            - cov_x  
-            - cov_y  
-            - cov_lv      
-            - cluster  
-            - multigroup  
-            - eq_loadings  
-            - eq_intercepts  
-            - eq_residuals  
-            - eq_residual.covariances  
-            - eq_means  
-            - eq_thresholds  
-            - eq_regressions  
-            - eq_lv.variances  
-            - eq_lv.covariances  
-          
-            - diag_shape_man
-            - diag_shape_lat
-            - diag_abbrev
-            - diag_type
-            - diag_rotate
-            - diag_labsize
-            - diag_resid
-            - diag_paths
-            - diag_intercepts
+        ### modeloptions  begins
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - rotation
+                    - algorithm
+            ### modeloptions  end
+        ### diagoptions  begins
+                    - diag_shape_man
+                    - diag_shape_lat
+                    - diag_abbrev
+                    - diag_type
+                    - diag_rotate
+                    - diag_labsize
+                    - diag_resid
+                    - diag_paths
+                    - diag_intercepts
+            ### diagoptions  end
 
     # Path diagram notes ------------------------------------------------------
       - name: notes
@@ -1339,7 +1702,6 @@ items:
         title: ""
 #       description:
         visible: false
-
 
   - name: preds_lv
     title: Factor scores
