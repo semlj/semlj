@@ -23,7 +23,9 @@ Runner <- R6::R6Class("Runner",
                                                bootstrap  = self$options$bootN,
                                                fixed.x    = self$options$cov_x,
                                                rotation   = self$options$rotation,
+                                               
                                                rotation.args=list(
+                                                 orthogonal=self$options$orthogonal,
                                                  geomin.epsilon=self$options$geomin.epsilon,
                                                  orthomax.gamma=self$options$orthomax.gamma,
                                                  oblimin.gamma=self$options$oblimin.gamma

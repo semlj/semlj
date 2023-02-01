@@ -23,6 +23,11 @@ modeloptions:
               - eq_lv.covariances  
               - rotation
               - algorithm
+              - orthogonal
+              - efa_std.ov
+              - geomin.epsilon
+              - orthomax.gamma
+              - oblimin.gamma
 
 cioptions: 
               - bootci

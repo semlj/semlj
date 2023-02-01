@@ -82,6 +82,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
          
 
@@ -118,6 +123,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
         columns:
           - name: label
@@ -167,6 +177,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
         
         columns:
@@ -226,6 +241,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
         columns:
           - name: type
@@ -284,6 +304,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
 
         rows: 8
@@ -328,6 +353,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
 
         columns:
@@ -371,6 +401,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
 
         columns:
@@ -420,6 +455,11 @@ items:
               - eq_lv.covariances
               - rotation
               - algorithm
+              - orthogonal
+              - efa_std.ov
+              - geomin.epsilon
+              - orthomax.gamma
+              - oblimin.gamma
                 ### modeloptions  ends
         columns:
           - name:  lgroup
@@ -475,6 +515,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -557,6 +602,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -639,6 +689,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -721,6 +776,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -806,6 +866,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -887,6 +952,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -973,6 +1043,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -1062,6 +1137,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
 
         columns:
@@ -1131,6 +1211,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
 
         rows: 2
@@ -1187,6 +1272,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
 
     items:
@@ -1224,6 +1314,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
       
       columns:
@@ -1270,6 +1365,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
 
       visible: (outputImpliedCovariances & !outpuCombineCovariances)
@@ -1320,6 +1420,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
 
       columns:
@@ -1367,6 +1472,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
 
       visible: (outpuCombineCovariances)
@@ -1418,6 +1528,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
       visible: false
       description: A covariance matrix table.
@@ -1467,6 +1582,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
     
     visible: (outputModificationIndices)
@@ -1500,6 +1620,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
         
         visible: (outputModificationIndices)
@@ -1574,6 +1699,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
                       ### diagoptions  begins
                     - diag_shape_man
@@ -1627,6 +1757,11 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
                       ### modeloptions  ends
                       ### diagoptions  begins
                     - diag_shape_man
