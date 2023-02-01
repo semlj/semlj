@@ -57,7 +57,7 @@ items:
     type: Group
     visible: false
     clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -82,7 +82,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
          
 
     items:
@@ -93,7 +93,7 @@ items:
         type: Table
 #       description: 
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -118,7 +118,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
         columns:
           - name: label
             title: Label
@@ -142,7 +142,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -167,7 +167,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
         
         columns:
           - name: type
@@ -201,7 +201,7 @@ items:
         type: Table
 #       description: 
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -226,7 +226,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
         columns:
           - name: type
             title: Type
@@ -259,7 +259,7 @@ items:
 #       description:
         visible: true
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -284,7 +284,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
 
         rows: 8
         columns:
@@ -303,7 +303,7 @@ items:
 #       description:
         visible: (outputAdditionalFitMeasures)
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -328,7 +328,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
 
         columns:
           - name: name
@@ -346,7 +346,7 @@ items:
 #       description:
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -371,7 +371,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
 
         columns:
           - name:  lgroup
@@ -395,7 +395,7 @@ items:
         type: Table
         visible: false
         clearWith:
-        ### modeloptions  begins
+                ### modeloptions  begins
               - code
               - estimator
               - likelihood
@@ -420,7 +420,7 @@ items:
               - eq_lv.covariances
               - rotation
               - algorithm
-            ### modeloptions  end
+                ### modeloptions  ends
         columns:
           - name:  lgroup
             title: Group
@@ -449,7 +449,7 @@ items:
         visible: false
 #       description: 
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -474,14 +474,14 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
@@ -531,7 +531,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -556,14 +556,14 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
@@ -613,7 +613,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -638,14 +638,14 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
@@ -695,7 +695,7 @@ items:
         title: Variances and Covariances
         type: Table
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -720,14 +720,14 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
                     - name: lgroup
@@ -780,7 +780,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -805,14 +805,14 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
         
         columns:
           - name: lgroup
@@ -861,7 +861,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -886,14 +886,14 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
@@ -946,7 +946,7 @@ items:
         type: Table
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -971,14 +971,14 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
@@ -1004,7 +1004,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1029,14 +1029,14 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
         
         columns:
           - name: lhs
@@ -1093,7 +1093,7 @@ items:
         visible: false
         refs: semtools
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1118,7 +1118,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
 
         columns:
           - name:  lgroup
@@ -1162,7 +1162,7 @@ items:
         refs: semtools
         visible: (outputMardiasCoefficients)
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1187,7 +1187,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
 
         rows: 2
         columns:
@@ -1218,7 +1218,7 @@ items:
     type: Group
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances || cov.lv)
     clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1243,7 +1243,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
 
     items:
 
@@ -1255,7 +1255,7 @@ items:
       visible: (outputObservedCovariances & !outpuCombineCovariances)
       description: A covariance / correlation matrix table.
       clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1280,7 +1280,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
       
       columns:
       - name: lgroup
@@ -1301,7 +1301,7 @@ items:
       title: Fitted covariances (lower triangle) and correlations (upper triangle)
       type: Table
       clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1326,7 +1326,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
 
       visible: (outputImpliedCovariances & !outpuCombineCovariances)
       description: A covariance / correlation matrix table.
@@ -1351,7 +1351,7 @@ items:
       visible: (outputResidualCovariances & !outpuCombineCovariances)
       description: A covariance / correlation matrix table.
       clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1376,7 +1376,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
 
       columns:
       - name: lgroup
@@ -1398,7 +1398,7 @@ items:
       title: Covariances (lower triangle) and correlations (upper triangle)
       type: Table
       clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1423,7 +1423,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
 
       visible: (outpuCombineCovariances)
       description: A covariance / correlation matrix table.
@@ -1449,7 +1449,7 @@ items:
       title: Model-implied Covariances for latent variables
       type: Table
       clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1474,7 +1474,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
       visible: false
       description: A covariance matrix table.
       columns:
@@ -1498,7 +1498,7 @@ items:
     title: "Modifcation indices"
     type: Group
     clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1523,7 +1523,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
     
     visible: (outputModificationIndices)
     items:
@@ -1531,7 +1531,7 @@ items:
         title: 'Modification indices'
         type: Table
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1556,7 +1556,7 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                      ### modeloptions  ends
         
         visible: (outputModificationIndices)
 #       description:
@@ -1605,7 +1605,7 @@ items:
     title: Path Model
     visible: (diagram)
     clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1630,8 +1630,8 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### diagoptions  begins
+                      ### modeloptions  ends
+                      ### diagoptions  begins
                     - diag_shape_man
                     - diag_shape_lat
                     - diag_abbrev
@@ -1641,7 +1641,7 @@ items:
                     - diag_resid
                     - diag_paths
                     - diag_intercepts
-            ### diagoptions  end
+                      ### diagoptions  ends
     items:
 
     # Path diagrams -----------------------------------------------------------
@@ -1658,7 +1658,7 @@ items:
           width: 800
           height: 600
           clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1683,8 +1683,8 @@ items:
                     - eq_lv.covariances
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### diagoptions  begins
+                      ### modeloptions  ends
+                      ### diagoptions  begins
                     - diag_shape_man
                     - diag_shape_lat
                     - diag_abbrev
@@ -1694,7 +1694,7 @@ items:
                     - diag_resid
                     - diag_paths
                     - diag_intercepts
-            ### diagoptions  end
+                      ### diagoptions  ends
 
     # Path diagram notes ------------------------------------------------------
       - name: notes
