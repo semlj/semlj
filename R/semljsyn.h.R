@@ -153,7 +153,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ml",
                     "ml.x",
                     "robust.two.stage",
-                    "two.stage",
                     "pairwise"),
                 default="listwise")
             private$..scoretest <- jmvcore::OptionBool$new(

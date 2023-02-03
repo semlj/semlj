@@ -490,16 +490,20 @@ Runner <- R6::R6Class("Runner",
                           run_covariances_latent=function() {
                             
                             obj<-lavaan::lavInspect(self$model,"cov.lv")
-                            mark(class(obj))
                             
+                            if (self$options$.caller=="gui") {
+                              tab<-private$.make_covcor_table(obj,"none")
+                  
+                              tab
+                            } else {
                             if (!inherits(obj,"list")) obj<-list("1"=obj)
-                            mark(obj)
                             lapply(obj, function(x) {
                               x[upper.tri(x,diag=FALSE)]<-x[lower.tri(x,diag = FALSE)]
                               x<-as.data.frame(x)
                               x$variable<-names(x)
                               x
                               })
+                            }
 
                           },
                           run_modification_indices=function() {

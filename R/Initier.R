@@ -366,9 +366,9 @@ Initer <- R6::R6Class(
   
         if (self$options$.caller=="gui") {
           
-          .length <- length(self$observed)
-          tab <- cbind(variable=self$observed, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
-          names(tab)<-c("variable",self$observed)
+          .length <- length(self$latent)
+          tab <- cbind(variable=self$latent, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
+          names(tab)<-c("variable",self$latent)
           tab<-private$.make_empty_table(tab)
           return(tab)
         }
@@ -711,10 +711,16 @@ Initer <- R6::R6Class(
     },
     .make_covcor_table=function(obj,field="cov") {
       
-      if (field %in% names(obj))   all_obj<-list("1"=obj) else all_obj<-obj
+      if (!inherits(obj,"list")) obj<-list("1"=obj) 
+      if (field %in% names(obj)) obj<-list("1"=obj) 
+    
       alist<-list()
-      for (i in seq_along(all_obj)) {
-        covTab<-all_obj[[i]][[field]]
+      for (i in seq_along(obj)) {
+        if (field!="none")
+          covTab<-obj[[i]][[field]]
+        else 
+          covTab<-obj[[i]]
+        
         corTab<- stats::cov2cor(covTab)
         .names<-colnames(covTab)
         .numVar<-length(.names)

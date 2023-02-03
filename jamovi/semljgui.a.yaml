@@ -253,9 +253,7 @@ options:
         - name: ml.x
           title: "FIML (including fixed x)"
         - name: robust.two.stage
-          title: "Two stages"
-        - name:  two.stage
-          title: "Two stages"
+          title: "Two stages (robust)"
         - name:  pairwise
           title: "pairwise"
 
