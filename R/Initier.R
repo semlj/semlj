@@ -357,7 +357,7 @@ Initer <- R6::R6Class(
           if (self$option("outputImpliedCovariances"))
                 tab2<-self$init_covariances_implied()
           if (self$option("outputResidualCovariances"))
-                tab2<-self$init_covariances_residual()
+                tab3<-self$init_covariances_residual()
           
           rbind(tab1,tab2,tab3)
       },
