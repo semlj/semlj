@@ -50,6 +50,17 @@ children:
                 name: scoretest
               - type: CheckBox
                 name: cumscoretest
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Estimation
+            margin: large
+            style: list
+            children:
+              - type: ComboBox
+                name: missing
   - type: CollapseBox
     label: Parameters options
     collapsed: true
@@ -283,9 +294,6 @@ children:
                 name: icc
               - type: CheckBox
                 name: mlmeans
-
-
-
   - type: CollapseBox
     label: Exploratory SEM options
     collapsed: true
@@ -325,7 +333,6 @@ children:
                 name: oblimin.gamma
                 format: number
                 enable: '(rotation:oblimin)'
-
   - type: CollapseBox
     label: Output options
     collapsed: true
@@ -399,8 +406,6 @@ children:
                         name: outputImpliedCovariances
                       - type: CheckBox
                         name: outputResidualCovariances
-                      - type: CheckBox
-                        name: outpuCombineCovariances
                       - type: CheckBox
                         name: cov.lv
                   - type: LayoutBox

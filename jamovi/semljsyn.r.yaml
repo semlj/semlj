@@ -57,7 +57,7 @@ items:
     type: Group
     visible: false
     clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -80,9 +80,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
          
 
     items:
@@ -93,7 +100,7 @@ items:
         type: Table
 #       description: 
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -116,9 +123,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
         columns:
           - name: label
             title: Label
@@ -142,7 +156,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -165,9 +179,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
         
         columns:
           - name: type
@@ -201,7 +222,7 @@ items:
         type: Table
 #       description: 
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -224,9 +245,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
         columns:
           - name: type
             title: Type
@@ -259,7 +287,7 @@ items:
 #       description:
         visible: true
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -282,9 +310,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
 
         rows: 8
         columns:
@@ -303,7 +338,7 @@ items:
 #       description:
         visible: (outputAdditionalFitMeasures)
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -326,9 +361,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
 
         columns:
           - name: name
@@ -346,7 +388,7 @@ items:
 #       description:
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -369,9 +411,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
 
         columns:
           - name:  lgroup
@@ -395,7 +444,7 @@ items:
         type: Table
         visible: false
         clearWith:
-        ### modeloptions  begins
+                ### modeloptions  begins
               - code
               - estimator
               - likelihood
@@ -418,9 +467,16 @@ items:
               - eq_regressions
               - eq_lv.variances
               - eq_lv.covariances
+              - esem_terms
               - rotation
               - algorithm
-            ### modeloptions  end
+              - orthogonal
+              - efa_std.ov
+              - geomin.epsilon
+              - orthomax.gamma
+              - oblimin.gamma
+              - missing
+                ### modeloptions  ends
         columns:
           - name:  lgroup
             title: Group
@@ -449,7 +505,7 @@ items:
         visible: false
 #       description: 
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -472,16 +528,23 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
@@ -489,6 +552,12 @@ items:
             type: text
             visible: (multigroup)
             combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
+            combineBelow: true            
+
           - name: label
             title: Label
             type: text
@@ -531,7 +600,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -554,16 +623,23 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
@@ -571,6 +647,11 @@ items:
             type: text
             visible: (multigroup)
             combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
+            combineBelow: true            
           - name: label
             title: Label
             type: text
@@ -613,7 +694,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -636,22 +717,34 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
             title: Group
             type: text
             visible: (multigroup)
+            combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -695,7 +788,7 @@ items:
         title: Variances and Covariances
         type: Table
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -718,16 +811,23 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
                     - name: lgroup
@@ -735,7 +835,11 @@ items:
                       type: text
                       visible: (multigroup)
                       combineBelow: true
-
+                    - name: level
+                      title: Level
+                      type: text
+                      visible: (cluster)
+                      combineBelow: true
                     - name: label
                       title: Label
                       type: text
@@ -780,7 +884,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -803,22 +907,34 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
         
         columns:
           - name: lgroup
             title: Group
             type: text
             visible: (multigroup)
+            combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -861,7 +977,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -884,22 +1000,34 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
             title: Group
             type: text
             visible: (multigroup)
+            combineBelow: true
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
             combineBelow: true
           - name: label
             title: Label
@@ -946,7 +1074,7 @@ items:
         type: Table
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -969,16 +1097,23 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
 
         columns:
           - name: lgroup
@@ -1004,7 +1139,7 @@ items:
 #       description: 
         visible: false
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1027,16 +1162,23 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### cioptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### cioptions  begins
                     - bootci
                     - bootN
                     - ci
                     - ci_width
                     - se
-            ### cioptions  end
+                      ### cioptions  ends
         
         columns:
           - name: lhs
@@ -1093,7 +1235,7 @@ items:
         visible: false
         refs: semtools
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1116,9 +1258,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
 
         columns:
           - name:  lgroup
@@ -1162,7 +1311,7 @@ items:
         refs: semtools
         visible: (outputMardiasCoefficients)
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1185,9 +1334,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
 
         rows: 2
         columns:
@@ -1217,280 +1373,66 @@ items:
     title: "Covariances and correlations"
     type: Group
     visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances || cov.lv)
-    clearWith:
-        ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - rotation
-                    - algorithm
-            ### modeloptions  end
-
     items:
 
     # all tables below have variable number of rows and columns
     # Observed covariances and correlations -----------------------------------
     - name: observed
       title: Observed covariances (lower triangle) and correlations (upper triangle)
-      type: Table
-      visible: (outputObservedCovariances & !outpuCombineCovariances)
+      type: Array
+      visible: (outputObservedCovariances)
       description: A covariance / correlation matrix table.
-      clearWith:
-        ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - rotation
-                    - algorithm
-            ### modeloptions  end
-      
-      columns:
-      - name: lgroup
-        title: Group
-        type: text
-        visible: (multigroup)
-        combineBelow: true
-      - name: variable
-        title: ""
-        type: text
-      - name: level
-        title: ""
-        type: text
-        visible: false 
+      template:
+              title:  " ___key___"
+              type: Table
+              columns:
+                      - name: variable
+                        title: ""
+                        type: text
 
     # Model-implied / fitted covariances and correlations ---------------------
     - name: implied
       title: Fitted covariances (lower triangle) and correlations (upper triangle)
-      type: Table
-      clearWith:
-        ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - rotation
-                    - algorithm
-            ### modeloptions  end
-
-      visible: (outputImpliedCovariances & !outpuCombineCovariances)
+      type: Array
+      visible: (outputImpliedCovariances)
       description: A covariance / correlation matrix table.
-      columns:
-      - name: lgroup
-        title: Group
-        type: text
-        visible: (multigroup)
-        combineBelow: true
-      - name: variable
-        title: ""
-        type: text
-      - name: level
-        title: ""
-        type: text
-        visible: false 
+      template:
+              title:  " ___key___"
+              type: Table
+              columns:
+                      - name: variable
+                        title: ""
+                        type: text
+
 
     # Residual covariances and correlations -----------------------------------
     - name: residual
       title: Residual covariances (lower triangle) and correlations (upper triangle)
-      type: Table
-      visible: (outputResidualCovariances & !outpuCombineCovariances)
+      type: Array
+      visible: (outputResidualCovariances)
       description: A covariance / correlation matrix table.
-      clearWith:
-        ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - rotation
-                    - algorithm
-            ### modeloptions  end
+      template:
+              title:  " ___key___"
+              type: Table
+              columns:
+                      - name: variable
+                        title: ""
+                        type: text
 
-      columns:
-      - name: lgroup
-        title: Group
-        type: text
-        visible: (multigroup)
-        combineBelow: true
-      - name: variable
-        title: ""
-        type: text
-      - name: level
-        title: ""
-        type: text
-        visible: false 
-
-    # Combined covariances and correlations (sorted by variable; observed,
-    # implied, residual within a cell -----------------------------------------
-    - name: combined
-      title: Covariances (lower triangle) and correlations (upper triangle)
-      type: Table
-      clearWith:
-        ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - rotation
-                    - algorithm
-            ### modeloptions  end
-
-      visible: (outpuCombineCovariances)
-      description: A covariance / correlation matrix table.
-      columns:
-      - name: lgroup
-        title: Group
-        type: text
-        visible: (multigroup)
-        combineBelow: true
-      - name: variable
-        title: ""
-        type: text
-        combineBelow: true
-      - name: level
-        title: ""
-        type: text
-        visible: false 
-      - name: type
-        title: ""
-        type: text
 
     - name: latent
       title: Model-implied Covariances for latent variables
-      type: Table
-      clearWith:
-        ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - rotation
-                    - algorithm
-            ### modeloptions  end
-      visible: false
-      description: A covariance matrix table.
-      columns:
-      - name: lgroup
-        title: Group
-        type: text
-        visible: (multigroup)
-        combineBelow: true
-      - name: variable
-        title: ""
-        type: text
-        combineBelow: true
-      - name: level
-        title: ""
-        type: text
-        visible: false 
+      type: Array
+      visible: (cov.lv)
+      description: A covariance.
+      template:
+              title:  " ___key___"
+              type: Table
+              columns:
+                      - name: variable
+                        title: ""
+                        type: text
+
 
 
   # Modification indices ======================================================
@@ -1498,7 +1440,7 @@ items:
     title: "Modifcation indices"
     type: Group
     clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1521,9 +1463,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
     
     visible: (outputModificationIndices)
     items:
@@ -1531,7 +1480,7 @@ items:
         title: 'Modification indices'
         type: Table
         clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1554,9 +1503,16 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
         
         visible: (outputModificationIndices)
 #       description:
@@ -1569,6 +1525,12 @@ items:
             title: Group
             type: text
             visible: (multigroup)
+          - name: level
+            title: Level
+            type: text
+            visible: (cluster)
+            combineBelow: true
+
           - name: lhs
             title: ""
             type: text
@@ -1605,7 +1567,7 @@ items:
     title: Path Model
     visible: (diagram)
     clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1628,10 +1590,17 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### diagoptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### diagoptions  begins
                     - diag_shape_man
                     - diag_shape_lat
                     - diag_abbrev
@@ -1641,7 +1610,7 @@ items:
                     - diag_resid
                     - diag_paths
                     - diag_intercepts
-            ### diagoptions  end
+                      ### diagoptions  ends
     items:
 
     # Path diagrams -----------------------------------------------------------
@@ -1658,7 +1627,7 @@ items:
           width: 800
           height: 600
           clearWith:
-        ### modeloptions  begins
+                      ### modeloptions  begins
                     - code
                     - estimator
                     - likelihood
@@ -1681,10 +1650,17 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
-            ### modeloptions  end
-        ### diagoptions  begins
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                      ### modeloptions  ends
+                      ### diagoptions  begins
                     - diag_shape_man
                     - diag_shape_lat
                     - diag_abbrev
@@ -1694,7 +1670,7 @@ items:
                     - diag_resid
                     - diag_paths
                     - diag_intercepts
-            ### diagoptions  end
+                      ### diagoptions  ends
 
     # Path diagram notes ------------------------------------------------------
       - name: notes

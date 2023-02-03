@@ -8,6 +8,7 @@ Runner <- R6::R6Class("Runner",
                         class=TRUE,
                         public=list(
                           model=NULL,
+                          tab_mardia=NULL,
                           initialize=function(options,dispatcher,datamatic) {
                             super$initialize(options,dispatcher,datamatic)
                           },
@@ -22,8 +23,11 @@ Runner <- R6::R6Class("Runner",
                                                std.ov     = self$options$std_ov,
                                                bootstrap  = self$options$bootN,
                                                fixed.x    = self$options$cov_x,
+                                               missing    = self$options$missing,
                                                rotation   = self$options$rotation,
+                                               
                                                rotation.args=list(
+                                                 orthogonal=self$options$orthogonal,
                                                  geomin.epsilon=self$options$geomin.epsilon,
                                                  orthomax.gamma=self$options$orthomax.gamma,
                                                  oblimin.gamma=self$options$oblimin.gamma
@@ -59,6 +63,27 @@ Runner <- R6::R6Class("Runner",
                             self$dispatcher$errors <-  list(topic="info", message=error,final=TRUE)
                             
                             self$model <- results$obj
+                            
+                            ### we need the data for mardia's, so we save them here
+                            
+                            if (self$option("outputMardiasCoefficients")) {
+                                vars<-setdiff(self$datamatic$observed,self$datamatic$ordered)
+                                
+                                if (length(vars)>0) {
+                                  results<-try_hard({
+                                      s<-semTools::mardiaSkew(data[,vars],"pairwise.complete.obs")
+                                      k<-semTools::mardiaKurtosis(data[,vars],"pairwise.complete.obs")
+                                      self$tab_mardia<-list(list(name = "Skewness", coeff=s[[1]], z="",   chi=s[[2]], df=s[[3]], p=s[[4]]),
+                                               list(name = "Kurtosis", coeff=k[[1]], z=k[[2]], chi="",     df="",    p=k[[3]]));
+                              
+                                  })
+                                    if (!isFALSE(results$error))
+                                      self$dispatcher$warnings<-list(topic="additional_mardia",message="Mardia's coefficients not available.")
+                                    if (!isFALSE(results$warning))
+                                      self$dispatcher$warnings<-list(topic="additional_mardia",message=results$earning)
+                                }
+                            }
+                            
                           },
                           
                           par_table=function() {
@@ -354,58 +379,57 @@ Runner <- R6::R6Class("Runner",
                           },
                           run_additional_reliability=function() {
 
-                            tab<-NULL
+                            tab<-list()
                             results<-try_hard(semTools::reliability(self$model))
-                            self$dispatcher$warnings<-list(topic="additional_reliability",results$warning)
-                            self$dispatcher$warnings<-list(topic="additional_reliability",results$error)
+                            self$dispatcher$warnings<-list(topic="additional_reliability",message=results$warning)
+                            self$dispatcher$warnings<-list(topic="additional_reliability",message=results$error)
                             if (isFALSE(results$error))
-                              tab<-private$.make_matrix_table(results$obj,fun=t)
+                                tab<-private$.make_matrix_table(results$obj,fun=t)
+                            else 
+                                self$dispatcher$warnings<-list(topic="additional_reliability",message="Reliabilities not available for this model.")
+                            
                             return(tab)
                             
                           },
                           run_additional_mardia=function() {
                             
-                              ## for multilevel-multigroup it gives an error. For the moment we 
-                              ## we leave it fail in that case
+                              self$tab_mardia
                             
-                              # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
-                              # that are already contained in the lavaan model-fit
-                            
-                                nVar = length(self$model@Data@ov$name);
-                                nObs = self$model@Data@nobs[[1]];
-                                cntDta = as.list(data.frame(t(sweep(self$model@Data@X[[1]], 2, self$model@SampleStats@mean[[1]]))));
-                                invS = self$model@SampleStats@icov[[1]] / nObs * (nObs - 1);
-                                
-                                FUN_S1 <- function(vec1, vec2, invS)     { as.numeric(t(as.matrix(vec1)) %*% invS %*% as.matrix(vec2)) };
-                                FUN_S2 <- function(vec1, listVec2, invS) { sapply(listVec2, FUN_S1, vec1=vec1, invS=invS) };
-                                MS_Cf  <- sum(sapply(cntDta, FUN_S2, listVec2=cntDta, invS=invS) ^ 3) / (nObs ^ 2);
-                                MS_chi <- nObs * MS_Cf / 6;
-                                MS_df  <- nVar * (nVar + 1) * (nVar + 2) / 6;
-                                MS_p   <- pchisq(MS_chi, df = MS_df, lower.tail = FALSE);
-                                
-                                FUNK1 <- function(vec, invS) { as.numeric(t(as.matrix(vec)) %*% invS %*% as.matrix(vec)) };
-                                MK_Cf <- sum(sapply(cntDta, FUNK1, invS=invS) ^ 2) / nObs;
-                                MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
-                                MK_p  <- pnorm(-abs(MK_z)) * 2;
-                                
-                                tab<-list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
-                                     list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
-                                
-                                return(tab)
-
                           },
                           run_covariances_observed=function() {
                             
-                            tab = lavaan::inspect(self$model, "observed")
-                            tab<-private$.make_covcor_table(tab)
-                            tab$type<-"observed"
+                            mat = lavaan::inspect(self$model, "observed")
+                            if (self$options$.caller=="gui") {
+                                  tab<-private$.make_covcor_table(mat)
+                                  tab$type<-"observed"
+                            } else {
+                              
+                              if ("cov" %in% names(mat))   mat<-list("1"=mat) 
+                              
+                              tab<-lapply(mat, function(x) {
+                                one<-private$.make_covcor_table(x) 
+                                one$variable<-names(one)
+                                one
+                                })
+                            }
                             return(tab)
                           },
                           run_covariances_implied=function() {
                             
-                            tab = lavaan::inspect(self$model, "fitted")
-                            tab<-private$.make_covcor_table(tab)
-                            tab$type<-"implied"
+                            mat = lavaan::inspect(self$model, "fitted")
+                            if (self$options$.caller=="gui") {
+                              tab<-private$.make_covcor_table(mat)
+                              tab$type<-"observed"
+                            } else {
+                              
+                              if ("cov" %in% names(mat))   mat<-list("1"=mat) 
+                              
+                              tab<-lapply(mat, function(x) {
+                                one<-private$.make_covcor_table(x) 
+                                one$variable<-names(one)
+                                one
+                              })
+                            }
                             return(tab)
                             
                           },
@@ -414,12 +438,29 @@ Runner <- R6::R6Class("Runner",
                             # calculates the difference between observed and fitted correlations since
                             # using cov2cor(resCov) almost invariably ends in having 0 or NA entries in the
                             # main diagonal (given the small size of the residuals)
-
                             obj1 = lavaan::inspect(self$model, "observed")
                             obj2 = lavaan::inspect(self$model, "fitted")
-                            tab<-private$.make_covcor_diff(obj1,obj2)
-                            tab$type<-"residual"
+                            
+                            if (self$options$.caller=="gui") {
+                                tab<-private$.make_covcor_diff(obj1,obj2)
+                                tab$type<-"residual"
+                                return(tab)
+                              } else {
+                              
+                              if ("cov" %in% names(obj1))   {
+                                   obj1<-list("1"=obj1)
+                                   obj2<-list("1"=obj2)
+                              }
+                              
+                              tab<-lapply(seq_along(obj1), function(i) {
+                                one<-private$.make_covcor_diff(obj1[[i]],obj2[[i]])
+                                one$variable<-names(one)
+                                one
+                              })
+                            }
                             return(tab)
+                            
+                            
                             
                           },
                           run_covariances_combined=function() {
@@ -430,15 +471,28 @@ Runner <- R6::R6Class("Runner",
                             if (self$option("outputImpliedCovariances"))
                               tab2<-self$run_covariances_implied()
                             if (self$option("outputResidualCovariances"))
-                              tab2<-self$run_covariances_residual()
+                              tab3<-self$run_covariances_residual()
                             
                             rbind(tab1,tab2,tab3)
                             
                           },
                           run_covariances_latent=function() {
                             
-                            covs<-lavaan::lavInspect(self$model,"cov.lv")
-                            private$.make_matrix_table(covs)
+                            obj<-lavaan::lavInspect(self$model,"cov.lv")
+                            
+                            if (self$options$.caller=="gui") {
+                              tab<-private$.make_covcor_table(obj,"none")
+                  
+                              tab
+                            } else {
+                            if (!inherits(obj,"list")) obj<-list("1"=obj)
+                            lapply(obj, function(x) {
+                              x[upper.tri(x,diag=FALSE)]<-x[lower.tri(x,diag = FALSE)]
+                              x<-as.data.frame(x)
+                              x$variable<-names(x)
+                              x
+                              })
+                            }
 
                           },
                           run_modification_indices=function() {

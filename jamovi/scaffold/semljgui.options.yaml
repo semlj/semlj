@@ -21,8 +21,15 @@ modeloptions:
               - eq_regressions  
               - eq_lv.variances  
               - eq_lv.covariances  
+              - esem_terms
               - rotation
               - algorithm
+              - orthogonal
+              - efa_std.ov
+              - geomin.epsilon
+              - orthomax.gamma
+              - oblimin.gamma
+              - missing
 
 cioptions: 
               - bootci
