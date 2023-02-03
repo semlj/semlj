@@ -8,6 +8,7 @@ Runner <- R6::R6Class("Runner",
                         class=TRUE,
                         public=list(
                           model=NULL,
+                          tab_mardia=NULL,
                           initialize=function(options,dispatcher,datamatic) {
                             super$initialize(options,dispatcher,datamatic)
                           },
@@ -62,6 +63,27 @@ Runner <- R6::R6Class("Runner",
                             self$dispatcher$errors <-  list(topic="info", message=error,final=TRUE)
                             
                             self$model <- results$obj
+                            
+                            ### we need the data for mardia's, so we save them here
+                            
+                            if (self$option("outputMardiasCoefficients")) {
+                                vars<-setdiff(self$datamatic$observed,self$datamatic$ordered)
+                                
+                                if (length(vars)>0) {
+                                  results<-try_hard({
+                                      s<-semTools::mardiaSkew(data[,vars],"pairwise.complete.obs")
+                                      k<-semTools::mardiaKurtosis(data[,vars],"pairwise.complete.obs")
+                                      self$tab_mardia<-list(list(name = "Skewness", coeff=s[[1]], z="",   chi=s[[2]], df=s[[3]], p=s[[4]]),
+                                               list(name = "Kurtosis", coeff=k[[1]], z=k[[2]], chi="",     df="",    p=k[[3]]));
+                              
+                                  })
+                                    if (!isFALSE(results$error))
+                                      self$dispatcher$warnings<-list(topic="additional_mardia",message="Mardia's coefficients not available.")
+                                    if (!isFALSE(results$warning))
+                                      self$dispatcher$warnings<-list(topic="additional_mardia",message=results$earning)
+                                }
+                            }
+                            
                           },
                           
                           par_table=function() {
@@ -371,41 +393,8 @@ Runner <- R6::R6Class("Runner",
                           },
                           run_additional_mardia=function() {
                             
-                              ## for multilevel-multigroup it gives an error. For the moment we 
-                              ## we leave it fail in that case
+                              self$tab_mardia
                             
-                              # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
-                              # that are already contained in the lavaan model-fit
-                             tab<-list(list(name = "Skewness"),list(name="Kurtosis"))
-                             results<-try_hard({
-                                nVar = length(self$model@Data@ov$name);
-                                nObs = self$model@Data@nobs[[1]];
-                                cntDta = as.list(data.frame(t(sweep(self$model@Data@X[[1]], 2, self$model@SampleStats@mean[[1]]))));
-                                invS = self$model@SampleStats@icov[[1]] / nObs * (nObs - 1);
-                                
-                                FUN_S1 <- function(vec1, vec2, invS)     { as.numeric(t(as.matrix(vec1)) %*% invS %*% as.matrix(vec2)) };
-                                FUN_S2 <- function(vec1, listVec2, invS) { sapply(listVec2, FUN_S1, vec1=vec1, invS=invS) };
-                                MS_Cf  <- sum(sapply(cntDta, FUN_S2, listVec2=cntDta, invS=invS) ^ 3) / (nObs ^ 2);
-                                MS_chi <- nObs * MS_Cf / 6;
-                                MS_df  <- nVar * (nVar + 1) * (nVar + 2) / 6;
-                                MS_p   <- pchisq(MS_chi, df = MS_df, lower.tail = FALSE);
-                                
-                                FUNK1 <- function(vec, invS) { as.numeric(t(as.matrix(vec)) %*% invS %*% as.matrix(vec)) };
-                                MK_Cf <- sum(sapply(cntDta, FUNK1, invS=invS) ^ 2) / nObs;
-                                MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
-                                MK_p  <- pnorm(-abs(MK_z)) * 2;
-                                
-                                list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
-                                          list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
-                             })
-
-                             if (!isFALSE(results$error))   
-                               self$dispatcher$warnings<-list(topic="additional_mardia",message="Mardia's coefficients not available for this model.")
-                             else
-                                tab<-results$obj
-                             
-                             return(tab)
-
                           },
                           run_covariances_observed=function() {
                             
