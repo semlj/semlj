@@ -14,13 +14,20 @@ options:
           R: >
              TO ADD
 
+    - name: .caller
+      type: String
+      title: submodule
+      default: "gui"
+      hidden: true
+      
     - name: code
       default: |
       type: String
       hidden: true
       description:
           R: >
-             TO ADD
+             The lavaan syntax
+             
     - name: donotrun
       type: Bool
       title: Do not run
@@ -234,6 +241,31 @@ options:
              by N-1, and both standard errors and test statistics are based on N-1. If "normal", the normal likelihood approach is used. Here, the covariance
              matrix has been divided by N, and both standard errors and test statistics are based on N. If "default", it depends on the mimic option:
              if mimic="lavaan" or mimic="Mplus", normal likelihood is used; otherwise, wishart likelihood is used.
+
+    - name: missing
+      title: Missing values
+      type: List
+      options:
+        - name: listwise
+          title: "Delete listwise"
+        - name: ml
+          title: "FIML"
+        - name: ml.x
+          title: "FIML (including fixed x)"
+        - name: robust.two.stage
+          title: "Two stages"
+        - name:  two.stage
+          title: "Two stages"
+        - name:  pairwise
+          title: "pairwise"
+
+      default: listwise
+      description:
+          ui: >
+                 Handling of missing values. `listwise` delete rows with missing. ML= case-wise (or ‘full information’) maximum likelihood estimation.      
+          R: >
+                 Handling of missing values. `listwise` delete rows with missing. ML= case-wise (or ‘full information’) maximum likelihood estimation.      
+
 
     ### (b) Constraint Tests --------------------------------------------------
     - name: scoretest

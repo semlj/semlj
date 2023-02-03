@@ -36,7 +36,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ## syntax examples table ###
         EXAMPLES                  <- c(CONT_EXAMPLES, DP_EXAMPLES)
         aSmartObj                 <- SmartTable$new(self$results$synexamples)
-        aSmartObj$initSource(EXAMPLES)
+        aSmartObj$initSource      <- EXAMPLES
         aSmartObj$indent          <- c(-1, -11)
         private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
@@ -150,7 +150,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$observed, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandOnInit       <- TRUE
         aSmartObj$expandFrom       <- 3
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
@@ -158,7 +158,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$implied, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandOnInit       <- TRUE
         aSmartObj$expandFrom       <- 3
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
@@ -166,7 +166,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$residual, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandOnInit       <- TRUE
         aSmartObj$expandFrom       <- 3
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
@@ -174,7 +174,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$combined, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandOnInit       <- TRUE
         aSmartObj$expandFrom       <- 4
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
@@ -182,7 +182,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$covariances$latent, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$activated        <- ((self$options$cov.lv) & is.something(runner_machine$latent))
-        aSmartObj$expandable       <- TRUE
+        aSmartObj$expandOnInit       <- TRUE
         aSmartObj$expandFrom       <- 3
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 

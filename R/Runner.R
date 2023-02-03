@@ -22,6 +22,7 @@ Runner <- R6::R6Class("Runner",
                                                std.ov     = self$options$std_ov,
                                                bootstrap  = self$options$bootN,
                                                fixed.x    = self$options$cov_x,
+                                               missing    = self$options$missing,
                                                rotation   = self$options$rotation,
                                                
                                                rotation.args=list(
@@ -356,12 +357,15 @@ Runner <- R6::R6Class("Runner",
                           },
                           run_additional_reliability=function() {
 
-                            tab<-NULL
+                            tab<-list()
                             results<-try_hard(semTools::reliability(self$model))
-                            self$dispatcher$warnings<-list(topic="additional_reliability",results$warning)
-                            self$dispatcher$warnings<-list(topic="additional_reliability",results$error)
+                            self$dispatcher$warnings<-list(topic="additional_reliability",message=results$warning)
+                            self$dispatcher$warnings<-list(topic="additional_reliability",message=results$error)
                             if (isFALSE(results$error))
-                              tab<-private$.make_matrix_table(results$obj,fun=t)
+                                tab<-private$.make_matrix_table(results$obj,fun=t)
+                            else 
+                                self$dispatcher$warnings<-list(topic="additional_reliability",message="Reliabilities not available for this model.")
+                            
                             return(tab)
                             
                           },
@@ -372,7 +376,8 @@ Runner <- R6::R6Class("Runner",
                             
                               # re-implemented code from semTools → R/dataDiagnosis.R with the aim to re-use statistics. etc.
                               # that are already contained in the lavaan model-fit
-                            
+                             tab<-list(list(name = "Skewness"),list(name="Kurtosis"))
+                             results<-try_hard({
                                 nVar = length(self$model@Data@ov$name);
                                 nObs = self$model@Data@nobs[[1]];
                                 cntDta = as.list(data.frame(t(sweep(self$model@Data@X[[1]], 2, self$model@SampleStats@mean[[1]]))));
@@ -390,24 +395,52 @@ Runner <- R6::R6Class("Runner",
                                 MK_z  <- (MK_Cf - nVar * (nVar + 2)) / sqrt(8 * nVar * (nVar + 2) / nObs);
                                 MK_p  <- pnorm(-abs(MK_z)) * 2;
                                 
-                                tab<-list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
-                                     list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
-                                
-                                return(tab)
+                                list(list(name = "Skewness", coeff=MS_Cf, z="",   chi=MS_chi, df=MS_df, p=MS_p),
+                                          list(name = "Kurtosis", coeff=MK_Cf, z=MK_z, chi="",     df="",    p=MK_p));
+                             })
+
+                             if (!isFALSE(results$error))   
+                               self$dispatcher$warnings<-list(topic="additional_mardia",message="Mardia's coefficients not available for this model.")
+                             else
+                                tab<-results$obj
+                             
+                             return(tab)
 
                           },
                           run_covariances_observed=function() {
                             
-                            tab = lavaan::inspect(self$model, "observed")
-                            tab<-private$.make_covcor_table(tab)
-                            tab$type<-"observed"
+                            mat = lavaan::inspect(self$model, "observed")
+                            if (self$options$.caller=="gui") {
+                                  tab<-private$.make_covcor_table(mat)
+                                  tab$type<-"observed"
+                            } else {
+                              
+                              if ("cov" %in% names(mat))   mat<-list("1"=mat) 
+                              
+                              tab<-lapply(mat, function(x) {
+                                one<-private$.make_covcor_table(x) 
+                                one$variable<-names(one)
+                                one
+                                })
+                            }
                             return(tab)
                           },
                           run_covariances_implied=function() {
                             
-                            tab = lavaan::inspect(self$model, "fitted")
-                            tab<-private$.make_covcor_table(tab)
-                            tab$type<-"implied"
+                            mat = lavaan::inspect(self$model, "fitted")
+                            if (self$options$.caller=="gui") {
+                              tab<-private$.make_covcor_table(mat)
+                              tab$type<-"observed"
+                            } else {
+                              
+                              if ("cov" %in% names(mat))   mat<-list("1"=mat) 
+                              
+                              tab<-lapply(mat, function(x) {
+                                one<-private$.make_covcor_table(x) 
+                                one$variable<-names(one)
+                                one
+                              })
+                            }
                             return(tab)
                             
                           },
@@ -416,12 +449,29 @@ Runner <- R6::R6Class("Runner",
                             # calculates the difference between observed and fitted correlations since
                             # using cov2cor(resCov) almost invariably ends in having 0 or NA entries in the
                             # main diagonal (given the small size of the residuals)
-
                             obj1 = lavaan::inspect(self$model, "observed")
                             obj2 = lavaan::inspect(self$model, "fitted")
-                            tab<-private$.make_covcor_diff(obj1,obj2)
-                            tab$type<-"residual"
+                            
+                            if (self$options$.caller=="gui") {
+                                tab<-private$.make_covcor_diff(obj1,obj2)
+                                tab$type<-"residual"
+                                return(tab)
+                              } else {
+                              
+                              if ("cov" %in% names(obj1))   {
+                                   obj1<-list("1"=obj1)
+                                   obj2<-list("1"=obj2)
+                              }
+                              
+                              tab<-lapply(seq_along(obj1), function(i) {
+                                one<-private$.make_covcor_diff(obj1[[i]],obj2[[i]])
+                                one$variable<-names(one)
+                                one
+                              })
+                            }
                             return(tab)
+                            
+                            
                             
                           },
                           run_covariances_combined=function() {
@@ -439,8 +489,17 @@ Runner <- R6::R6Class("Runner",
                           },
                           run_covariances_latent=function() {
                             
-                            covs<-lavaan::lavInspect(self$model,"cov.lv")
-                            private$.make_matrix_table(covs)
+                            obj<-lavaan::lavInspect(self$model,"cov.lv")
+                            mark(class(obj))
+                            
+                            if (!inherits(obj,"list")) obj<-list("1"=obj)
+                            mark(obj)
+                            lapply(obj, function(x) {
+                              x[upper.tri(x,diag=FALSE)]<-x[lower.tri(x,diag = FALSE)]
+                              x<-as.data.frame(x)
+                              x$variable<-names(x)
+                              x
+                              })
 
                           },
                           run_modification_indices=function() {

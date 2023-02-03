@@ -136,9 +136,19 @@ sourcifyOption<- function(x,...) UseMethod(".sourcifyOption")
   if (is.something(def) & option$name %in% names(def)) {
     test<-all(sapply(alist,function(a) a$type)==def[[option$name]])
     if (test)
-    return("")
+      return('')
   }
   paste0(option$name,"=c(",paste(sapply(alist,function(a) paste0(sourcifyName(a$var),' = \"',a$type,'\"')),collapse=", "),")")
+}
+
+
+.sourcifyOption.OptionList<-function(option,def=NULL) {
+  
+  if (length(option$value)==0)
+    return('')
+  if (option$value==option$default)
+       return('')
+  paste0(option$name,"='",option$value,"'")
 }
 
 
@@ -204,7 +214,7 @@ ebind<-function(...) {
   tabs<-lapply(tabs, function(atab) {
     atab<-as.data.frame(atab)
     for (name in .names)
-      if (!hasName(atab,name))
+      if (!utils::hasName(atab,name))
         atab[[name]]<-NA
     atab
   })
@@ -220,7 +230,7 @@ ebind_square<-function(...) {
   tabs<-lapply(tabs, function(atab) {
     atab<-as.data.frame(atab)
     for (name in .names) 
-      if (!hasName(atab,name))
+      if (!utils::hasName(atab,name))
         atab[[name]]<-NA
     if (dim(atab)[1]<.max)
         atab[(dim(atab)[1]+1):.max,]<-NA
@@ -230,6 +240,17 @@ ebind_square<-function(...) {
   
 }
 
+`ladd<-`<-function(x,value) {
+  x[[length(x)+1]]<-value
+  return(x)
+}
 
+`padd<-` <- function(x, value) {
+  x <- c(0, x)
+  x[[1]] <- value
+  x
+}
+
+###### this is for compatibility with b64 encoding system
 fromb64<-function(x) return(x)
 to64<-function(x) return(x)

@@ -252,9 +252,6 @@ children:
                 name: cov_y
               - type: CheckBox
                 name: cov_lv
-
-
-
   - type: CollapseBox
     label: Custom model settings
     collapsed: true
@@ -290,7 +287,6 @@ children:
                           borderless: true
                           height: auto
                           ghostText: write here
-
   - type: CollapseBox
     label: Model options
     name: model_options
@@ -320,6 +316,17 @@ children:
                 name: scoretest
               - type: CheckBox
                 name: cumscoretest
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Estimation
+            margin: large
+            style: list
+            children:
+              - type: ComboBox
+                name: missing
   - type: CollapseBox
     label: Parameters options
     name: parameters_options
@@ -500,8 +507,6 @@ children:
                     name: eq_lv.variances
                   - type: CheckBox
                     name: eq_lv.covariances
-                    
-                    
   - type: CollapseBox
     label: Exploratory SEM options
     collapsed: true
@@ -521,35 +526,32 @@ children:
               update: './gui.events::onEvent_nothing'
               change: './gui.events::onEvent_nothing'
             children:
-                  - type: TargetLayoutBox
-                    transferAction: none
-                    name: esem_layout
-                    children:
-                          - type: ListBox
-                            name: esem_terms
-                            label: Factors blocks
-                            height: normal
-                            addButton: Add factors block
-                            events:
-                                change: './gui.events::onEvent_nothing'
-                            selectable: true
-                            templateName: linreg-block-template
-                            template:
-                                    type: LayoutBox
-                                    margin: normal
-                                    targetArea: true
-                                    children:
-                                           - type: ListBox
-                                             name: factorblockList
-                                             height: auto
-                                             isTarget: true
-                                             valueFilter: unique
-                                             ghostText: drag term here
-                                             template:
-                                                type: VariableLabel
-    
-    
-    
+              - type: TargetLayoutBox
+                transferAction: none
+                name: esem_layout
+                children:
+                  - type: ListBox
+                    name: esem_terms
+                    label: Factors blocks
+                    height: normal
+                    addButton: Add factors block
+                    events:
+                      change: './gui.events::onEvent_nothing'
+                    selectable: true
+                    templateName: linreg-block-template
+                    template:
+                      type: LayoutBox
+                      margin: normal
+                      targetArea: true
+                      children:
+                        - type: ListBox
+                          name: factorblockList
+                          height: auto
+                          isTarget: true
+                          valueFilter: unique
+                          ghostText: drag term here
+                          template:
+                            type: VariableLabel
       - type: LayoutBox
         margin: large
         style: inline
@@ -584,10 +586,6 @@ children:
                 name: oblimin.gamma
                 format: number
                 enable: '(rotation:oblimin)'
-
-                    
-                    
-                    
   - type: CollapseBox
     label: Output options
     name: output_options
@@ -687,15 +685,14 @@ children:
                         margin: large
                         style: list
                         children:
-                             - type: Label
-                               label: Save Predicted
-                             - type: Output
-                               name: preds_lv
-                             - type: Output
-                               name: preds_ov
-                             - type: Output
-                               name: preds_dv
-                                
+                          - type: Label
+                            label: Save Predicted
+                          - type: Output
+                            name: preds_lv
+                          - type: Output
+                            name: preds_ov
+                          - type: Output
+                            name: preds_dv
   - type: CollapseBox
     label: Path diagram
     name: pathdiagram_options

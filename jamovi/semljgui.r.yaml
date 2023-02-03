@@ -80,6 +80,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -87,6 +88,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
          
 
@@ -121,6 +123,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -128,6 +131,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
         columns:
           - name: label
@@ -175,6 +179,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -182,6 +187,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
         
         columns:
@@ -239,6 +245,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -246,6 +253,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
         columns:
           - name: type
@@ -302,6 +310,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -309,6 +318,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
 
         rows: 8
@@ -351,6 +361,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -358,6 +369,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
 
         columns:
@@ -399,6 +411,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -406,6 +419,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
 
         columns:
@@ -453,6 +467,7 @@ items:
               - eq_regressions
               - eq_lv.variances
               - eq_lv.covariances
+              - esem_terms
               - rotation
               - algorithm
               - orthogonal
@@ -460,6 +475,7 @@ items:
               - geomin.epsilon
               - orthomax.gamma
               - oblimin.gamma
+              - missing
                 ### modeloptions  ends
         columns:
           - name:  lgroup
@@ -513,6 +529,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -520,6 +537,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -600,6 +618,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -607,6 +626,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -687,6 +707,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -694,6 +715,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -774,6 +796,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -781,6 +804,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -864,6 +888,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -871,6 +896,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -950,6 +976,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -957,6 +984,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -1041,6 +1069,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1048,6 +1077,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
                       ### cioptions  begins
                     - bootci
@@ -1135,6 +1165,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1142,6 +1173,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
 
         columns:
@@ -1209,6 +1241,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1216,6 +1249,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
 
         rows: 2
@@ -1270,6 +1304,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1277,6 +1312,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
 
     items:
@@ -1312,6 +1348,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1319,6 +1356,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
       
       columns:
@@ -1363,6 +1401,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1370,6 +1409,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
 
       visible: (outputImpliedCovariances & !outpuCombineCovariances)
@@ -1418,6 +1458,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1425,6 +1466,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
 
       columns:
@@ -1470,6 +1512,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1477,6 +1520,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
 
       visible: (outpuCombineCovariances)
@@ -1526,6 +1570,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1533,6 +1578,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
       visible: false
       description: A covariance matrix table.
@@ -1580,6 +1626,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1587,6 +1634,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
     
     visible: (outputModificationIndices)
@@ -1618,6 +1666,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1625,6 +1674,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
         
         visible: (outputModificationIndices)
@@ -1697,6 +1747,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1704,6 +1755,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
                       ### diagoptions  begins
                     - diag_shape_man
@@ -1755,6 +1807,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
+                    - esem_terms
                     - rotation
                     - algorithm
                     - orthogonal
@@ -1762,6 +1815,7 @@ items:
                     - geomin.epsilon
                     - orthomax.gamma
                     - oblimin.gamma
+                    - missing
                       ### modeloptions  ends
                       ### diagoptions  begins
                     - diag_shape_man
