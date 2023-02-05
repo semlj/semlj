@@ -10,6 +10,7 @@ Datamatic <- R6::R6Class(
     cluster=NULL,
     ordered=NULL,
     varTable=NULL,
+    missing=NULL,
     
     initialize=function(options,dispatcher,data) {
       
@@ -41,6 +42,9 @@ Datamatic <- R6::R6Class(
         if(trimws(ml)=="")
           ml<-NULL
       self$cluster<-ml
+      
+      self$missing<-options$missing
+      
       private$.inspect_data(data)
     },
     
@@ -70,6 +74,13 @@ Datamatic <- R6::R6Class(
       if (is.something(trans))
         self$dispatcher$warnings<-list(topic="info",
                                        message=glue::glue(DATA_WARNS[["num_to_fac"]],x=paste(unique(trans),collapse = ",")))
+      
+      if (self$missing=="listwise" & dim(jmvcore::naOmit(data))[1]!=dim(data[1])) {
+        
+        self$dispatcher$warnings<-list(topic="info",
+                                       message=DATA_WARNS[["missing"]])
+        
+      }
 
       return(data)
       

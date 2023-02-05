@@ -41,6 +41,17 @@ children:
               - type: ComboBox
                 name: likelihood
                 enable: '(estimator:ML || estimator:PML)'
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Data
+            margin: large
+            style: list
+            children:
+              - type: ComboBox
+                name: missing
           - type: Label
             label: Constraints tests
             margin: large
@@ -50,17 +61,6 @@ children:
                 name: scoretest
               - type: CheckBox
                 name: cumscoretest
-      - type: LayoutBox
-        margin: large
-        style: inline
-        children:
-          - type: Label
-            label: Estimation
-            margin: large
-            style: list
-            children:
-              - type: ComboBox
-                name: missing
   - type: CollapseBox
     label: Parameters options
     collapsed: true
@@ -373,9 +373,12 @@ children:
                           - type: CheckBox
                             name: outputAdditionalFitMeasures
                           - type: CheckBox
+                            name: outputMardiasCoefficients
+                          - type: CheckBox
                             name: reliability
                           - type: CheckBox
-                            name: outputMardiasCoefficients
+                            name: htmt
+
                       - type: LayoutBox
                         margin: large
                         style: list

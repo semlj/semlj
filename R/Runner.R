@@ -9,6 +9,7 @@ Runner <- R6::R6Class("Runner",
                         public=list(
                           model=NULL,
                           tab_mardia=NULL,
+                          tab_htmt=NULL,
                           initialize=function(options,dispatcher,datamatic) {
                             super$initialize(options,dispatcher,datamatic)
                           },
@@ -84,6 +85,20 @@ Runner <- R6::R6Class("Runner",
                                 }
                             }
                             
+                            ### we need the data for htmt, so we save them here
+                            if (self$options$htmt) {
+                                  results<-try_hard(semTools::htmt(model = self$user_syntax, 
+                                                      data = data,
+                                                      missing="default",ordered=self$datamatic$ordered))
+                                  mark(results)
+                                  if (!isFALSE(results$error))
+                                    self$dispatcher$warnings<-list(topic="additional_htmt",message="HTMT indices not available for this model.")
+                                  if (!isFALSE(results$warning))
+                                    self$dispatcher$warnings<-list(topic="additional_htmt",message=results$warning)
+                                  
+                                 self$tab_htmt<-as.data.frame(results$obj)
+                                      
+                            }
                           },
                           
                           par_table=function() {
@@ -381,6 +396,7 @@ Runner <- R6::R6Class("Runner",
 
                             tab<-list()
                             results<-try_hard(semTools::reliability(self$model))
+                            results$htmt<-private$.htmt()
                             self$dispatcher$warnings<-list(topic="additional_reliability",message=results$warning)
                             self$dispatcher$warnings<-list(topic="additional_reliability",message=results$error)
                             if (isFALSE(results$error))
@@ -391,6 +407,12 @@ Runner <- R6::R6Class("Runner",
                             return(tab)
                             
                           },
+                          run_additional_htmt=function() {
+                            
+                            self$tab_htmt
+                            
+                          },
+                          
                           run_additional_mardia=function() {
                             
                               self$tab_mardia
@@ -710,7 +732,12 @@ Runner <- R6::R6Class("Runner",
                                                      rep("continuous",ncol(predsdata)))
                               results$preds_ov$setValues(predsdata)
                               self$dispatcher$warnings<-list(topic="info",message=paste("Indicators predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
-                              }
+                          },
+                        .htmt=function() {
+                          
+
+
+                        }
 
 
                         ) #end of private

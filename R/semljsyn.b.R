@@ -154,6 +154,16 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
           aSmartObj$setColumnVisible <- "alpha.ord"
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
+        ## htmt matrix table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$additional$htmt, runner_machine)
+        aSmartObj$expandOnInit     <- TRUE
+        aSmartObj$expandFrom       <- 2
+        ladd(private$.smartObjs)   <- aSmartObj
+        
+        
+        
+        
         ## mardia matrix table ###
         
         aSmartObj                  <- SmartTable$new(self$results$additional$mardia, runner_machine)

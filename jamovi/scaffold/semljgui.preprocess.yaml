@@ -656,6 +656,17 @@ items:
             type: number
 
 
+      - name: htmt
+        title: Heterotrait-monotrait (HTMT) ratio of correlations
+        type: Table
+        visible: (htmt)
+        refs: semtools
+        columns:
+                      - name: variable
+                        title: ""
+                        type: text
+
+
       # Mardia's coefficients -------------------------------------------------
       - name: mardia
         title: "Mardia's coefficients"

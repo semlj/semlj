@@ -827,6 +827,15 @@ options:
               compute R-squared for all endogenous variables (`Endogenous`) or for
               all variables in the model (`All`). `None` for no R-squared.
 
+    - name: htmt
+      type: Bool
+      title: "HTMT"
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show Heterotrait-monotrait (HTMT) ratio of correlations
+
+
     - name: outputMardiasCoefficients
       type: Bool
       title: "Mardia's coefficients"

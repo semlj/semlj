@@ -256,6 +256,23 @@ Initer <- R6::R6Class(
        private$.make_empty_table(tab) 
 
     },
+    init_additional_htmt=function() {
+
+      .length <- length(self$latent)
+      if (.length==0) return(list(list(variable=".")))
+      tab <- cbind(variable=self$latent, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
+      names(tab)<-c("variable",self$latent)
+      return(tab)
+      
+
+    },
+
+
+
+
+
+
+
     init_covariances_observed=function() {
      
        ###      

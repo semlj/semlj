@@ -62,6 +62,7 @@ WARNS[["cov.lv"]]<-"The covariance matrix of latent variables is not positive de
 DATA_WARNS<-list()
 DATA_WARNS[["fac_to_ord"]]<-"Variable ({x}) has been coerced to ordered type."
 DATA_WARNS[["num_to_fac"]]<-"Variable ({x}) has been coerced to nominal type."
+DATA_WARNS[["missing"]]<-"There are missing values in the data and they are removed listwise. Please consider other methods of handling missing values available in Model Options. "
 
 ## defined parameters warnings
 DP_WARNS<-list()
@@ -70,7 +71,7 @@ DP_WARNS[["p"]]<-"Warming: {x} is a reserved word (pN) for parameters labels. Pl
 
 
 ERRS<-list()
-ERRS[["noluck"]]<-"The model cannot be estimated. Please refine the model"
+ERRS[["noluck"]]<-"The model cannot be estimated. Please refine the model."
 
 PLOT_WARNS<-list()
 PLOT_WARNS[["nocircle"]]<-"Circle layout requires rotation to be `Exogenous Top` or `Exogenous Bottom`"
@@ -85,6 +86,7 @@ SUB<-list("\u2081","\u2082","\u2083","\u2084","\u2085","\u2086","\u2087","\u2088
 TRANS_WARNS<-list()
 TRANS_WARNS[[1]]<-list(original="subscript out of bounds",new="Computation cannot be done") 
 TRANS_WARNS[[2]]<-list(original="lavaan ERROR",new="The model cannot be estimated, please refine it. Reason: {}") 
+TRANS_WARNS[[3]]<-list(original="covariance matrix of latent",new="Covariance matrix of latent variables is not positive definite.") 
 
 
 ##### some info ####
@@ -104,3 +106,6 @@ INFO_SE[["standard"]]<-"Standard"
 INFO_SE[["robust.sem"]]<-"Robust"
 INFO_SE[["boot"]]<-"Bootstrap"
 INFO_SE[["robust.huber.white"]]<-"Robust Huber and White"
+
+
+

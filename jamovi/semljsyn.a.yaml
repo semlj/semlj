@@ -683,6 +683,15 @@ options:
           R: >
             `TRUE` or `FALSE` (default), show additional reliability indices
 
+    - name: htmt
+      type: Bool
+      title: "HTMT"
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show Heterotrait-monotrait (HTMT) ratio of correlations
+
+
     - name: outputMardiasCoefficients
       type: Bool
       title: "Mardia's coefficients"

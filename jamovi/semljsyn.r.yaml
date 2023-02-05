@@ -1301,6 +1301,20 @@ items:
           - name: avevar
             title: AVE
             type: number
+          - name: htmt
+            title: htmt
+            type: number
+
+
+      - name: htmt
+        title: Heterotrait-monotrait (HTMT) ratio of correlations
+        type: Table
+        visible: (htmt)
+        refs: semtools
+        columns:
+                      - name: variable
+                        title: ""
+                        type: text
 
 
       # Mardia's coefficients -------------------------------------------------

@@ -63,6 +63,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             outputAdditionalFitMeasures = FALSE,
             reliability = FALSE,
             r2 = "none",
+            htmt = FALSE,
             outputMardiasCoefficients = FALSE,
             outputObservedCovariances = FALSE,
             outputImpliedCovariances = FALSE,
@@ -421,6 +422,10 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "endo",
                     "all"),
                 default="none")
+            private$..htmt <- jmvcore::OptionBool$new(
+                "htmt",
+                htmt,
+                default=FALSE)
             private$..outputMardiasCoefficients <- jmvcore::OptionBool$new(
                 "outputMardiasCoefficients",
                 outputMardiasCoefficients,
@@ -597,6 +602,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..outputAdditionalFitMeasures)
             self$.addOption(private$..reliability)
             self$.addOption(private$..r2)
+            self$.addOption(private$..htmt)
             self$.addOption(private$..outputMardiasCoefficients)
             self$.addOption(private$..outputObservedCovariances)
             self$.addOption(private$..outputImpliedCovariances)
@@ -673,6 +679,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
         reliability = function() private$..reliability$value,
         r2 = function() private$..r2$value,
+        htmt = function() private$..htmt$value,
         outputMardiasCoefficients = function() private$..outputMardiasCoefficients$value,
         outputObservedCovariances = function() private$..outputObservedCovariances$value,
         outputImpliedCovariances = function() private$..outputImpliedCovariances$value,
@@ -748,6 +755,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..outputAdditionalFitMeasures = NA,
         ..reliability = NA,
         ..r2 = NA,
+        ..htmt = NA,
         ..outputMardiasCoefficients = NA,
         ..outputObservedCovariances = NA,
         ..outputImpliedCovariances = NA,
@@ -1949,6 +1957,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     reliability = function() private$.items[["reliability"]],
+                    htmt = function() private$.items[["htmt"]],
                     mardia = function() private$.items[["mardia"]]),
                 private = list(),
                 public=list(
@@ -2036,6 +2045,17 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="avevar", 
                                     `title`="AVE", 
                                     `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="htmt",
+                            title="Heterotrait-monotrait (HTMT) ratio of correlations",
+                            visible="(htmt)",
+                            refs="semtools",
+                            columns=list(
+                                list(
+                                    `name`="variable", 
+                                    `title`="", 
+                                    `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="mardia",
@@ -2836,6 +2856,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   reliability indices
 #' @param r2 compute R-squared for all endogenous variables (\code{endo}) or
 #'   for all variables in the model (\code{all}). \code{none} for no R-squared
+#' @param htmt \code{TRUE} or \code{FALSE} (default), show
+#'   Heterotrait-monotrait (HTMT) ratio of correlations
 #' @param outputMardiasCoefficients \code{TRUE} or \code{FALSE} (default),
 #'   show Mardia's coefficients for multivariate skewness and kurtosis
 #' @param outputObservedCovariances \code{TRUE} or \code{FALSE} (default),
@@ -2900,6 +2922,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$models$thresholds} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$reliability} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$additional$htmt} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$mardia} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$covariances$observed} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$covariances$implied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
@@ -2980,6 +3003,7 @@ semljgui <- function(
     outputAdditionalFitMeasures = FALSE,
     reliability = FALSE,
     r2 = "none",
+    htmt = FALSE,
     outputMardiasCoefficients = FALSE,
     outputObservedCovariances = FALSE,
     outputImpliedCovariances = FALSE,
@@ -3065,6 +3089,7 @@ semljgui <- function(
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,
         reliability = reliability,
         r2 = r2,
+        htmt = htmt,
         outputMardiasCoefficients = outputMardiasCoefficients,
         outputObservedCovariances = outputObservedCovariances,
         outputImpliedCovariances = outputImpliedCovariances,

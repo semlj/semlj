@@ -131,7 +131,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$activateOnData   <-TRUE
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-        ## raliability matrix table ###
+        ## reliability matrix table ###
         
         aSmartObj                  <- SmartTable$new(self$results$additional$reliability, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
@@ -140,6 +140,13 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
              aSmartObj$setColumnVisible <- "alpha.ord"
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
+        ## htmt matrix table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$additional$htmt, runner_machine)
+        aSmartObj$expandOnInit     <- TRUE
+        aSmartObj$expandFrom       <- 2
+        ladd(private$.smartObjs)   <- aSmartObj
+        
         ## mardia matrix table ###
         
         aSmartObj                  <- SmartTable$new(self$results$additional$mardia, runner_machine)
