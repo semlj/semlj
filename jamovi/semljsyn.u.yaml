@@ -134,17 +134,17 @@ children:
                 style: list
                 children:
                   - type: LayoutBox
-                    style: inline
+                    style: list
                     children:
                       - type: CheckBox
-                        name: ci
-                        margin: none
+                        name: est_ci
+                      - type: CheckBox
+                        name: beta_ci
                       - type: TextBox
                         name: ci_width
-                        label: Interval
-                        suffix: '%'
                         format: number
-                        enable: (ci)
+                        suffix: "%"
+                        enable: (est_ci || beta_ci)
               - type: Label
                 label: Constraints
                 margin: large

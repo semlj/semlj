@@ -329,6 +329,7 @@ Runner <- R6::R6Class("Runner",
                             tab<-self$par_table()
                             tab<-tab[tab$op=="~",]
                             if (nrow(tab)==0) tab<-NULL
+                            mark(tab)
                             return(tab)
                             
                           },
@@ -573,7 +574,7 @@ Runner <- R6::R6Class("Runner",
                             results<-try_hard(
                               lavaan::parameterestimates(
                                 self$model,
-                                ci = self$options$ci,
+                                ci = self$options$est_ci,
                                 standardized = T,
                                 level = self$options$ci_width/100,
                                 boot.ci.type = self$options$bootci
@@ -588,6 +589,15 @@ Runner <- R6::R6Class("Runner",
                               ilabel<-paste("(",private$.lav_structure$plabel[userlabel],")")
                               private$.par_table$label[userlabel]<-paste(private$.par_table$label[userlabel],ilabel)
                             }
+                            z<-lavaan::standardizedSolution(self$model,
+                                                            se=TRUE,
+                                                            zstat=FALSE,
+                                                            pvalue=FALSE,
+                                                            ci=TRUE,
+                                                            level = self$options$ci_width/100)
+
+                            private$.par_table$std.ci.lower<-z$ci.lower
+                            private$.par_table$std.ci.upper<-z$ci.upper
                           },
                           .get_test_info=function() {
                             

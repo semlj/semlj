@@ -345,13 +345,23 @@ options:
              The number of bootstrap samples for estimating confidence intervals.
 
     ### (c) Confidence intervals ----------------------------------------------
-    - name: ci
-      title: ""
+
+    - name: est_ci
+      title: "Estimates"
       type: Bool
       default: true
       description:
           R: >
-            `TRUE` or `FALSE` (default), show confidence intervals
+            `TRUE` or `FALSE` (default), show confidence intervals for estimates
+
+    - name: beta_ci
+      title: "Betas"
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show confidence intervals for standardized estimates
+
     - name: ci_width
       title: Confidence level
       type: Number

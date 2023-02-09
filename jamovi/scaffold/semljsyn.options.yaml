@@ -34,7 +34,8 @@ modeloptions:
 cioptions: 
               - bootci
               - bootN 
-              - ci  
+              - est_ci
+              - beta_ci
               - ci_width
               - se
 diagoptions:

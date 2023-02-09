@@ -81,6 +81,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                 <- SmartTable$new(self$results$models$coefficients, runner_machine)
         aSmartObj$spaceBy         <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData  <-  TRUE
         private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
 
@@ -89,6 +90,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$models$loadings, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData   <-TRUE
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
@@ -97,14 +99,16 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$models$composites, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData   <- TRUE
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
-        ## factor composites table ###
+        ## factor varviances covariances table ###
 
         aSmartObj                  <- SmartTable$new(self$results$models$covariances, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
         ## intercepts table ###
@@ -128,6 +132,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
 
         aSmartObj                  <- SmartTable$new(self$results$models$defined, runner_machine)
         aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData   <-TRUE
         private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
 
