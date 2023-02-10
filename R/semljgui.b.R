@@ -27,29 +27,30 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         dispatcher               <- Dispatch$new(self$results)
         data_machine             <- Datamatic$new(self$options, dispatcher, self$data)
         runner_machine           <- Runner$new(self$options, dispatcher, data_machine)
-
-
+        
+        runner_machine$storage   <- self$results$fit
+        
         ### info table ###
         aSmartObj                <- SmartTable$new(self$results$info, runner_machine)
-        private$.smartObjs       <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs) <- aSmartObj
 
         ## syntax examples table ###
         EXAMPLES                  <- c(CONT_EXAMPLES, DP_EXAMPLES)
         aSmartObj                 <- SmartTable$new(self$results$synexamples)
         aSmartObj$initSource      <- EXAMPLES
         aSmartObj$indent          <- c(-1, -11)
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
 
         ## main fit table ###
         aSmartObj                 <- SmartTable$new(self$results$fit$main, runner_machine)
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## constraints test table ###
         aSmartObj                 <- SmartTable$new(self$results$fit$constraints, runner_machine)
         aSmartObj$activateOnData  <-TRUE
         aSmartObj$spaceBy         <- "type"
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
 
         ## fit basic indices table ###
@@ -57,24 +58,24 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$ci("rmsea", self$options$ci_width)
         if (runner_machine$moretests)
           aSmartObj$setColumnVisible<-"type"     
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## more fit indices table ###
         aSmartObj                 <- SmartTable$new(self$results$fit$moreindices, runner_machine)
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## even more fit indices table ###
 
         aSmartObj                 <- SmartTable$new(self$results$fit$modelbaseline, runner_machine)
-        aSmartObj$activateOnData   <- TRUE
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        aSmartObj$activateOnData  <- TRUE
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## R2 table ###
 
         aSmartObj                 <- SmartTable$new(self$results$fit$rsquared, runner_machine)
         aSmartObj$activated       <- (self$options$r2 != "none")
         aSmartObj$spaceBy         <- "lgroup"
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## regression coefficients ###
 
@@ -83,7 +84,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData  <-  TRUE
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <-  aSmartObj
 
         ## factor loadings table ###
 
@@ -92,7 +93,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData   <-TRUE
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## factor composite table ###
 
@@ -101,7 +102,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData   <- TRUE
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## factor varviances covariances table ###
 
@@ -109,7 +110,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$ci("std", self$options$ci_width, label="β")
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## intercepts table ###
 
@@ -117,7 +118,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$activateOnData   <-TRUE
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## thresholds table ###
         
@@ -125,7 +126,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$spaceBy          <- c("lgroup","level","lhs")
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$activated        <- is.something(data_machine$ordered)
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
         
         
         ## defined parameters table ###
@@ -134,7 +135,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData   <-TRUE
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## reliability matrix table ###
         
@@ -143,7 +144,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$activated        <-(self$options$reliability & is.something(runner_machine$latent))
         if (is.something(runner_machine$ordered))
              aSmartObj$setColumnVisible <- "alpha.ord"
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## htmt matrix table ###
         
@@ -156,52 +157,52 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         
         aSmartObj                  <- SmartTable$new(self$results$additional$mardia, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## observed covariances table ###
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$observed, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        aSmartObj$expandOnInit       <- TRUE
+        aSmartObj$expandOnInit     <- TRUE
         aSmartObj$expandFrom       <- 3
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## implied covariances table ###
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$implied, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        aSmartObj$expandOnInit       <- TRUE
+        aSmartObj$expandOnInit     <- TRUE
         aSmartObj$expandFrom       <- 3
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## residuals covariances table ###
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$residual, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        aSmartObj$expandOnInit       <- TRUE
+        aSmartObj$expandOnInit     <- TRUE
         aSmartObj$expandFrom       <- 3
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## combined covariances table ###
         
         aSmartObj                  <- SmartTable$new(self$results$covariances$combined, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        aSmartObj$expandOnInit       <- TRUE
+        aSmartObj$expandOnInit     <- TRUE
         aSmartObj$expandFrom       <- 4
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## latent covariances table ###
         aSmartObj                  <- SmartTable$new(self$results$covariances$latent, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$activated        <- ((self$options$cov.lv) & is.something(runner_machine$latent))
-        aSmartObj$expandOnInit       <- TRUE
+        aSmartObj$expandOnInit     <- TRUE
         aSmartObj$expandFrom       <- 3
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## modification indices table ###
         aSmartObj                  <- SmartTable$new(self$results$modification$indices, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
 
 
@@ -222,6 +223,8 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
       },
       .run = function() {
         ginfo("MODULE:  #### phase run ####")
+        
+    
 
         if (is.something(self$options$donotrun)) {
             if (self$options$donotrun) 
@@ -253,7 +256,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         }
         
 
-        
+        self$results$.setModel(list(model=private$.runner_machine$model))
         ginfo("MODULE:  #### phase end ####")
 
         ginfo("RUN TIME:", Sys.time() - runnow, " secs")

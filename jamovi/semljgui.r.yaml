@@ -8,7 +8,10 @@ items:
   - name: model
     type: Property
     description: The underlying `lavaan` object
-    visible: (FALSE)
+    visible: false
+    clearWith:
+       - estimator
+
 
 
 

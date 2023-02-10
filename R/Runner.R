@@ -17,6 +17,10 @@ Runner <- R6::R6Class("Runner",
                             ## prepare the options based on Syntax definitions
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
+                            if (is.something(self$storage) && is.something(self$storage$state)) {
+                                 self$model<-self$storage$state$model
+                            } else {
+                            
                             lavoptions <- list(model = private$.lav_structure, 
                                                data = data,
                                                estimator  = self$options$estimator,
@@ -64,7 +68,7 @@ Runner <- R6::R6Class("Runner",
                             self$dispatcher$errors <-  list(topic="info", message=error,final=TRUE)
                             
                             self$model <- results$obj
-                            
+                            self$storage$setState(list(model=self$model))
                             ### we need the data for mardia's, so we save them here
                             
                             if (self$option("outputMardiasCoefficients")) {
@@ -84,13 +88,13 @@ Runner <- R6::R6Class("Runner",
                                       self$dispatcher$warnings<-list(topic="additional_mardia",message=results$earning)
                                 }
                             }
+                            } ### end of model estimation
                             
                             ### we need the data for htmt, so we save them here
                             if (self$options$htmt) {
                                   results<-try_hard(semTools::htmt(model = self$user_syntax, 
                                                       data = data,
                                                       missing="default",ordered=self$datamatic$ordered))
-                                  mark(results)
                                   if (!isFALSE(results$error))
                                     self$dispatcher$warnings<-list(topic="additional_htmt",message="HTMT indices not available for this model.")
                                   if (!isFALSE(results$warning))
@@ -329,7 +333,6 @@ Runner <- R6::R6Class("Runner",
                             tab<-self$par_table()
                             tab<-tab[tab$op=="~",]
                             if (nrow(tab)==0) tab<-NULL
-                            mark(tab)
                             return(tab)
                             
                           },

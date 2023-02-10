@@ -40,7 +40,7 @@ Initer <- R6::R6Class(
 
     }, # here initialize ends
     #### init functions #####
-    
+
     init_info=function() {
       
       ### info contains the info table, with some loose information about the model
@@ -417,7 +417,7 @@ Initer <- R6::R6Class(
   ),   # End public
   
   private=list(
-        
+    .storage=NULL,    
     .lav_terms=NULL,
     .lav_structure=NULL,
     .lav_indirect=NULL,
