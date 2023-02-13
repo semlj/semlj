@@ -593,6 +593,7 @@ Runner <- R6::R6Class("Runner",
                               private$.par_table$label[userlabel]<-paste(private$.par_table$label[userlabel],ilabel)
                             }
                             z<-lavaan::standardizedSolution(self$model,
+                                                            type="std.all",
                                                             se=TRUE,
                                                             zstat=FALSE,
                                                             pvalue=FALSE,
