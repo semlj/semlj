@@ -198,7 +198,7 @@ options:
              least squares, and "DLS" for distributionally-weighted least squares. These are the main options that affect the estimation. For convenience,
              the "ML" option can be extended as "MLM", "MLMV", "MLMVS", "MLF", and "MLR". The estimation will still be plain "ML", but now with robust
              standard errors and a robust (scaled) test statistic. For "MLM", "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem");
-             for "MLF", standard errors are based on first-order derivatives (information = "first.order"); for "MLR", `Huber-White' robust standard errors
+             for "MLF", standard errors are based on first-order derivatives (information = "first.order"); for "MLR", `Huber-White` robust standard errors
              are used (se="robust.huber.white"). In addition, "MLM" will compute a Satorra-Bentler scaled (mean adjusted) test statistic (test="satorra.bentler"),
              "MLMVS" will compute a mean and variance adjusted test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV" will compute a mean and
              variance adjusted test statistic (scaled and shifted) (test="scaled.shifted"), and "MLR" will compute a test statistic which is asymptotically
@@ -211,7 +211,7 @@ options:
              least squares, and "DLS" for distributionally-weighted least squares. These are the main options that affect the estimation. For convenience,
              the "ML" option can be extended as "MLM", "MLMV", "MLMVS", "MLF", and "MLR". The estimation will still be plain "ML", but now with robust
              standard errors and a robust (scaled) test statistic. For "MLM", "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem");
-             for "MLF", standard errors are based on first-order derivatives (information = "first.order"); for "MLR", `Huber-White' robust standard errors
+             for "MLF", standard errors are based on first-order derivatives (information = "first.order"); for "MLR", `Huber-White` robust standard errors
              are used (se="robust.huber.white"). In addition, "MLM" will compute a Satorra-Bentler scaled (mean adjusted) test statistic (test="satorra.bentler"),
              "MLMVS" will compute a mean and variance adjusted test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV" will compute a mean and
              variance adjusted test statistic (scaled and shifted) (test="scaled.shifted"), and "MLR" will compute a test statistic which is asymptotically
@@ -259,10 +259,20 @@ options:
 
       default: listwise
       description:
-          ui: >
-                 Handling of missing values. `listwise` delete rows with missing. ML= case-wise (or ‘full information’) maximum likelihood estimation.      
           R: >
-                 Handling of missing values. `listwise` delete rows with missing. ML= case-wise (or ‘full information’) maximum likelihood estimation.      
+                 Handling of missing values. `listwise` delete rows with missing. 
+                 `missing=ml` for ‘full information’ maximum likelihood estimation.
+                 `missing=ml.x` for ‘full information’ maximum likelihood estimation 
+                 that includes also the fixed exogenous variables. `ml=robust.two.stage`
+                 uses a two stage appraoch whereas `ml=pairwise` delete case pairwise
+                 before computing the covariances between variables.
+          ui: >
+                Handling of missing values. `listwise` delete rows with missing. 
+                 `FIML` for ‘full information’ maximum likelihood estimation.
+                 `FIML (including fixed x)` for ‘full information’ maximum likelihood estimation 
+                 that includes also the fixed exogenous variables. `Two stages (robust)`
+                 uses a two stage appraoch whereas `Pairwise` deletes case pairwise
+                 before computing the covariances between variables.
 
 
     ### (b) Constraint Tests --------------------------------------------------
@@ -282,7 +292,7 @@ options:
       default: false
       description:
           ui: >
-             Score test for all fixed or constrained parameters in model (overall test).
+             Score test for all fixed or constrained parameters in model (cumulative tests).
           R: >
              TO ADD
 
@@ -843,7 +853,8 @@ options:
       default: false
       description:
           R: >
-            `TRUE` or `FALSE` (default), show Heterotrait-monotrait (HTMT) ratio of correlations
+            `TRUE` or `FALSE` (default), show Heterotrait-monotrait (HTMT) ratio of correlations 
+            as reccomended by @henseler2015new
 
 
     - name: outputMardiasCoefficients

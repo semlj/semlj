@@ -24,6 +24,7 @@ children:
             name: donotrun
   - type: CollapseBox
     label: Model options
+    name: panel_modeloptions
     collapsed: true
     stretchFactor: 1
     children:
