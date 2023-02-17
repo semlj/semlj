@@ -2811,9 +2811,9 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   robust standard errors and a robust (scaled) test statistic. For "MLM",
 #'   "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem");
 #'   for "MLF", standard errors are based on first-order derivatives
-#'   (information = "first.order"); for "MLR", `Huber-White' robust standard
-#'   errors are used (se="robust.huber.white"). In addition, "MLM" will compute
-#'   a Satorra-Bentler scaled (mean adjusted) test statistic
+#'   (information = "first.order"); for "MLR", \code{Huber-White} robust
+#'   standard errors are used (se="robust.huber.white"). In addition, "MLM" will
+#'   compute a Satorra-Bentler scaled (mean adjusted) test statistic
 #'   (test="satorra.bentler"), "MLMVS" will compute a mean and variance adjusted
 #'   test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV"
 #'   will compute a mean and variance adjusted test statistic (scaled and
@@ -2834,8 +2834,12 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   mimic option: if mimic="lavaan" or mimic="Mplus", normal likelihood is
 #'   used; otherwise, wishart likelihood is used.
 #' @param missing Handling of missing values. \code{listwise} delete rows with
-#'   missing. ML= case-wise (or ‘full information’) maximum likelihood
-#'   estimation.
+#'   missing.  \code{missing=ml} for ‘full information’ maximum likelihood
+#'   estimation. \code{missing=ml.x} for ‘full information’ maximum likelihood
+#'   estimation  that includes also the fixed exogenous variables.
+#'   \code{ml=robust.two.stage} uses a two stage appraoch whereas
+#'   \code{ml=pairwise} delete case pairwise before computing the covariances
+#'   between variables.
 #' @param scoretest TO ADD
 #' @param cumscoretest TO ADD
 #' @param se Standard error method.
@@ -2925,7 +2929,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param r2 compute R-squared for all endogenous variables (\code{endo}) or
 #'   for all variables in the model (\code{all}). \code{none} for no R-squared
 #' @param htmt \code{TRUE} or \code{FALSE} (default), show
-#'   Heterotrait-monotrait (HTMT) ratio of correlations
+#'   Heterotrait-monotrait (HTMT) ratio of correlations  as reccomended by
+#'   @henseler2015new
 #' @param outputMardiasCoefficients \code{TRUE} or \code{FALSE} (default),
 #'   show Mardia's coefficients for multivariate skewness and kurtosis
 #' @param outputObservedCovariances \code{TRUE} or \code{FALSE} (default),

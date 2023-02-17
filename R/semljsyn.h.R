@@ -2614,8 +2614,12 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   mimic option: if mimic="lavaan" or mimic="Mplus", normal likelihood is
 #'   used; otherwise, wishart likelihood is used.
 #' @param missing Handling of missing values. \code{listwise} delete rows with
-#'   missing.  ML= case-wise (or ‘full information’) maximum likelihood
-#'   estimation.
+#'   missing.  \code{missing=ml} for ‘full information’ maximum likelihood
+#'   estimation. \code{missing=ml.x} for ‘full information’ maximum likelihood
+#'   estimation  that includes also the fixed exogenous variables.
+#'   \code{ml=robust.two.stage} uses a two stage appraoch whereas
+#'   \code{ml=pairwise} delete case pairwise before computing the covariances
+#'   between variables.
 #' @param scoretest TO ADD
 #' @param cumscoretest TO ADD
 #' @param se TO ADD
@@ -2706,7 +2710,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param reliability \code{TRUE} or \code{FALSE} (default), show additional
 #'   reliability indices
 #' @param htmt \code{TRUE} or \code{FALSE} (default), show
-#'   Heterotrait-monotrait (HTMT) ratio of correlations
+#'   Heterotrait-monotrait (HTMT) ratio of correlations  as reccomended by
+#'   @henseler2015new
 #' @param outputMardiasCoefficients \code{TRUE} or \code{FALSE} (default),
 #'   show Mardia's coefficients for multivariate skewness and kurtosis
 #' @param outputObservedCovariances \code{TRUE} or \code{FALSE} (default),
