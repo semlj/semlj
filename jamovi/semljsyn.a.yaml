@@ -167,7 +167,19 @@ options:
       description:
           R: >
                  Handling of missing values. `listwise` delete rows with missing. 
-                 ML= case-wise (or ‘full information’) maximum likelihood estimation.      
+                 `missing=ml` for ‘full information’ maximum likelihood estimation.
+                 `missing=ml.x` for ‘full information’ maximum likelihood estimation 
+                 that includes also the fixed exogenous variables. `ml=robust.two.stage`
+                 uses a two stage appraoch whereas `ml=pairwise` delete case pairwise
+                 before computing the covariances between variables.
+          ui: >
+                Handling of missing values. `listwise` delete rows with missing. 
+                 `FIML` for ‘full information’ maximum likelihood estimation.
+                 `FIML (including fixed x)` for ‘full information’ maximum likelihood estimation 
+                 that includes also the fixed exogenous variables. `Two stages (robust)`
+                 uses a two stage appraoch whereas `Pairwise` deletes case pairwise
+                 before computing the covariances between variables.
+
 
 
 
@@ -177,6 +189,8 @@ options:
       title: Univariate
       default: true
       description:
+          ui: >
+             Score test (or Lagrange Multiplier test) for fixed or constrained parameters in model.
           R: >
              TO ADD
 
@@ -185,6 +199,8 @@ options:
       title: Cumulative
       default: false
       description:
+          ui: >
+             Score test for all fixed or constrained parameters in model (cumulative tests).
           R: >
              TO ADD
 
@@ -245,13 +261,22 @@ options:
              The number of bootstrap samples for estimating confidence intervals.
 
     ### (c) Confidence intervals ----------------------------------------------
-    - name: ci
-      title: ""
+    - name: est_ci
+      title: "Estimates"
       type: Bool
       default: true
       description:
           R: >
-            `TRUE` or `FALSE` (default), show confidence intervals
+            `TRUE` or `FALSE` (default), show confidence intervals for estimates
+
+    - name: beta_ci
+      title: "Betas"
+      type: Bool
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show confidence intervals for standardized estimates
+
     - name: ci_width
       title: Confidence level
       type: Number
@@ -682,6 +707,16 @@ options:
       description:
           R: >
             `TRUE` or `FALSE` (default), show additional reliability indices
+
+    - name: htmt
+      type: Bool
+      title: "HTMT"
+      default: false
+      description:
+          R: >
+            `TRUE` or `FALSE` (default), show Heterotrait-monotrait (HTMT) ratio of correlations 
+            as reccomended by @henseler2015new
+
 
     - name: outputMardiasCoefficients
       type: Bool

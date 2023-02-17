@@ -283,14 +283,23 @@ items:
           - name: ci.lower
             type: number
             title: Lower
-            visible: (ci)
+            visible: (est_ci)
           - name: ci.upper
             type: number
             title: Upper
-            visible: (ci)
+            visible: (est_ci)
           - name: std.all
             type: number
             title: β
+          - name: std.ci.lower
+            type: number
+            title: Lower
+            visible: (beta_ci)
+          - name: std.ci.upper
+            type: number
+            title: Upper
+            visible: (beta_ci)
+
           - name: z
             title: "z"
             type: number
@@ -340,14 +349,23 @@ items:
           - name: ci.lower
             type: number
             title: Lower
-            visible: (ci)
+            visible: (est_ci)
           - name: ci.upper
             type: number
             title: Upper
-            visible: (ci)
+            visible: (est_ci)
           - name: std.all
             type: number
             title: β
+          - name: std.ci.lower
+            type: number
+            title: Lower
+            visible: (beta_ci)
+          - name: std.ci.upper
+            type: number
+            title: Upper
+            visible: (beta_ci)
+            
           - name: z
             title: "z"
             type: number
@@ -396,14 +414,22 @@ items:
           - name: ci.lower
             type: number
             title: Lower
-            visible: (ci)
+            visible: (est_ci)
           - name: ci.upper
             type: number
             title: Upper
-            visible: (ci)
+            visible: (est_ci)
           - name: std.all
             type: number
             title: β
+          - name: std.ci.lower
+            type: number
+            title: Lower
+            visible: (beta_ci)
+          - name: std.ci.upper
+            type: number
+            title: Upper
+            visible: (beta_ci)
           - name: z
             title: "z"
             type: number
@@ -451,14 +477,22 @@ items:
                     - name: ci.lower
                       type: number
                       title: Lower
-                      visible: (ci)
+                      visible: (est_ci)
                     - name: ci.upper
                       type: number
                       title: Upper
-                      visible: (ci)
+                      visible: (est_ci)
                     - name: std.all
                       type: number
                       title: β
+                    - name: std.ci.lower
+                      type: number
+                      title: Lower
+                      visible: (beta_ci)
+                    - name: std.ci.upper
+                      type: number
+                      title: Upper
+                      visible: (beta_ci)
                     - name: z
                       title: "z"
                       type: number
@@ -508,12 +542,12 @@ items:
           - name: ci.lower
             type: number
             title: Lower
-            visible: (ci)
+            visible: (est_ci)
             format: zto
           - name: ci.upper
             type: number
             title: Upper
-            visible: (ci)
+            visible: (est_ci)
             format: zto
           - name: z
             title: "z"
@@ -567,12 +601,12 @@ items:
           - name: ci.lower
             type: number
             title: Lower
-            visible: (ci)
+            visible: (est_ci)
             format: zto
           - name: ci.upper
             type: number
             title: Upper
-            visible: (ci)
+            visible: (est_ci)
             format: zto
           - name: z
             title: "z"
@@ -641,17 +675,25 @@ items:
           - name: ci.lower
             type: number
             title: Lower
-            visible: (ci)
+            visible: (est_ci)
             format: zto
           - name: ci.upper
             type: number
             title: Upper
-            visible: (ci)
+            visible: (est_ci)
             format: zto
           - name: std.all
             type: number
             title: β
             format: zto
+          - name: std.ci.lower
+            type: number
+            title: Lower
+            visible: (beta_ci)
+          - name: std.ci.upper
+            type: number
+            title: Upper
+            visible: (beta_ci)
           - name: z
             title: "z"
             type: number
@@ -709,6 +751,20 @@ items:
           - name: avevar
             title: AVE
             type: number
+          - name: htmt
+            title: htmt
+            type: number
+
+
+      - name: htmt
+        title: Heterotrait-monotrait (HTMT) ratio of correlations
+        type: Table
+        visible: (htmt)
+        refs: semtools
+        columns:
+                      - name: variable
+                        title: ""
+                        type: text
 
 
       # Mardia's coefficients -------------------------------------------------

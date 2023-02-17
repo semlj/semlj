@@ -40,7 +40,7 @@ Initer <- R6::R6Class(
 
     }, # here initialize ends
     #### init functions #####
-    
+
     init_info=function() {
       
       ### info contains the info table, with some loose information about the model
@@ -256,6 +256,23 @@ Initer <- R6::R6Class(
        private$.make_empty_table(tab) 
 
     },
+    init_additional_htmt=function() {
+
+      .length <- length(self$latent)
+      if (.length==0) return(list(list(variable=".")))
+      tab <- cbind(variable=self$latent, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
+      names(tab)<-c("variable",self$latent)
+      return(tab)
+      
+
+    },
+
+
+
+
+
+
+
     init_covariances_observed=function() {
      
        ###      
@@ -400,7 +417,7 @@ Initer <- R6::R6Class(
   ),   # End public
   
   private=list(
-        
+    .storage=NULL,    
     .lav_terms=NULL,
     .lav_structure=NULL,
     .lav_indirect=NULL,

@@ -24,6 +24,7 @@ children:
             name: donotrun
   - type: CollapseBox
     label: Model options
+    name: panel_modeloptions
     collapsed: true
     stretchFactor: 1
     children:
@@ -41,6 +42,17 @@ children:
               - type: ComboBox
                 name: likelihood
                 enable: '(estimator:ML || estimator:PML)'
+      - type: LayoutBox
+        margin: large
+        style: inline
+        children:
+          - type: Label
+            label: Data
+            margin: large
+            style: list
+            children:
+              - type: ComboBox
+                name: missing
           - type: Label
             label: Constraints tests
             margin: large
@@ -50,17 +62,6 @@ children:
                 name: scoretest
               - type: CheckBox
                 name: cumscoretest
-      - type: LayoutBox
-        margin: large
-        style: inline
-        children:
-          - type: Label
-            label: Estimation
-            margin: large
-            style: list
-            children:
-              - type: ComboBox
-                name: missing
   - type: CollapseBox
     label: Parameters options
     collapsed: true
@@ -134,17 +135,17 @@ children:
                 style: list
                 children:
                   - type: LayoutBox
-                    style: inline
+                    style: list
                     children:
                       - type: CheckBox
-                        name: ci
-                        margin: none
+                        name: est_ci
+                      - type: CheckBox
+                        name: beta_ci
                       - type: TextBox
                         name: ci_width
-                        label: Interval
-                        suffix: '%'
                         format: number
-                        enable: (ci)
+                        suffix: "%"
+                        enable: (est_ci || beta_ci)
               - type: Label
                 label: Constraints
                 margin: large
@@ -373,9 +374,12 @@ children:
                           - type: CheckBox
                             name: outputAdditionalFitMeasures
                           - type: CheckBox
+                            name: outputMardiasCoefficients
+                          - type: CheckBox
                             name: reliability
                           - type: CheckBox
-                            name: outputMardiasCoefficients
+                            name: htmt
+
                       - type: LayoutBox
                         margin: large
                         style: list

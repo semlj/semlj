@@ -138,7 +138,7 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               if (is.null(label)) label="" 
                               alist<-list(root=aroot,label=label,width=width,format=format)
-                              self$ci_info<-append_list(self$ci_info,alist)
+                              ladd(self$ci_info)<-alist
 
                             },
                             
@@ -395,8 +395,12 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               if (is.something(attr(rtable,"titles")))
                                 .titles<-attr(rtable,"titles")
-                              else
-                                .titles<-fromb64(.names)
+                              else 
+                                 if (exists("fromb64"))
+                                           .titles<-fromb64(.names)
+                                 else 
+                                            .titles<-.names
+                              
                                 k<-self$expandFrom-1
 
                                 for (i in seq_along(.names)) {

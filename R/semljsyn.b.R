@@ -28,90 +28,95 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         data_machine             <- Datamatic$new(self$options, dispatcher, self$data)
         runner_machine           <- Runner$new(self$options, dispatcher, data_machine)
 
-
+        runner_machine$storage   <- self$results$fit
+        
         ### info table ###
         aSmartObj                <- SmartTable$new(self$results$info, runner_machine)
-        private$.smartObjs       <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs) <- aSmartObj
 
         ## syntax examples table ###
         EXAMPLES                  <- c(CONT_EXAMPLES, DP_EXAMPLES)
         aSmartObj                 <- SmartTable$new(self$results$synexamples)
         aSmartObj$initSource      <- EXAMPLES
         aSmartObj$indent          <- c(-1, -11)
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
 
         ## main fit table ###
         aSmartObj                 <- SmartTable$new(self$results$fit$main, runner_machine)
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## constraints test table ###
         aSmartObj                 <- SmartTable$new(self$results$fit$constraints, runner_machine)
         aSmartObj$activateOnData  <-TRUE
         aSmartObj$spaceBy         <- "type"
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
 
         ## fit basic indices table ###
         aSmartObj                 <- SmartTable$new(self$results$fit$indices, runner_machine)
         aSmartObj$ci("rmsea", self$options$ci_width)
         if (runner_machine$moretests)
-          aSmartObj$setColumnVisible<-"type"     
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+            aSmartObj$setColumnVisible<-"type"     
+        ladd(private$.smartObjs)    <- aSmartObj
 
         ## more fit indices table ###
         aSmartObj                 <- SmartTable$new(self$results$fit$moreindices, runner_machine)
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## even more fit indices table ###
 
         aSmartObj                 <- SmartTable$new(self$results$fit$modelbaseline, runner_machine)
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## R2 table ###
 
         aSmartObj                 <- SmartTable$new(self$results$fit$rsquared, runner_machine)
         aSmartObj$activated       <- (self$options$r2 != "none")
         aSmartObj$spaceBy         <- "lgroup"
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## icc table ###
         
         aSmartObj                  <- SmartTable$new(self$results$fit$icc, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$activated        <-(self$options$icc & is.something(data_machine$cluster))
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
         
         ## regression coefficients ###
 
         aSmartObj                 <- SmartTable$new(self$results$models$coefficients, runner_machine)
         aSmartObj$spaceBy         <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData  <-  TRUE
-        private$.smartObjs        <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         ## factor loadings table ###
 
         aSmartObj                  <- SmartTable$new(self$results$models$loadings, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData   <-TRUE
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## factor composite table ###
 
         aSmartObj                  <- SmartTable$new(self$results$models$composites, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData   <- TRUE
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## factor composites table ###
 
         aSmartObj                  <- SmartTable$new(self$results$models$covariances, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## intercepts table ###
 
@@ -119,7 +124,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$activateOnData   <-TRUE
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <-  aSmartObj
 
         ## thresholds table ###
         
@@ -127,7 +132,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$spaceBy          <- c("lgroup","level","lhs")
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$activated        <- is.something(data_machine$ordered)
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
         
 
         ## mlmeans table ###
@@ -135,14 +140,15 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$models$mlmeans, runner_machine)
         aSmartObj$spaceBy          <- c("lgroup","level")
         aSmartObj$activated        <- (self$options$mlmeans & is.something(runner_machine$cluster))
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
         
         ## defined parameters table ###
 
         aSmartObj                  <- SmartTable$new(self$results$models$defined, runner_machine)
         aSmartObj$ci(NULL, self$options$ci_width)
+        aSmartObj$ci("std", self$options$ci_width, label="β")
         aSmartObj$activateOnData   <-TRUE
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         
         ## raliability matrix table ###
@@ -152,13 +158,23 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$activated        <-(self$options$reliability & is.something(runner_machine$latent))
         if (is.something(runner_machine$ordered))
           aSmartObj$setColumnVisible <- "alpha.ord"
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)     <- aSmartObj
 
+        ## htmt matrix table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$additional$htmt, runner_machine)
+        aSmartObj$expandOnInit     <- TRUE
+        aSmartObj$expandFrom       <- 2
+        ladd(private$.smartObjs)   <- aSmartObj
+        
+        
+        
+        
         ## mardia matrix table ###
         
         aSmartObj                  <- SmartTable$new(self$results$additional$mardia, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
         ## observed covariances table ###
         
@@ -195,7 +211,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ## modification indices table ###
         aSmartObj                  <- SmartTable$new(self$results$modification$indices, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
-        private$.smartObjs         <- append_list(private$.smartObjs, aSmartObj)
+        ladd(private$.smartObjs)   <- aSmartObj
 
 
 

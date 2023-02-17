@@ -21,7 +21,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             se = "auto",
             bootci = "perc",
             bootN = 1000,
-            ci = TRUE,
+            est_ci = TRUE,
+            beta_ci = FALSE,
             ci_width = 95,
             meanstructure = TRUE,
             int_ov = TRUE,
@@ -57,6 +58,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             outputAdditionalFitMeasures = FALSE,
             r2 = "none",
             reliability = FALSE,
+            htmt = FALSE,
             outputMardiasCoefficients = FALSE,
             outputObservedCovariances = FALSE,
             outputImpliedCovariances = FALSE,
@@ -187,10 +189,14 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 bootN,
                 min=50,
                 default=1000)
-            private$..ci <- jmvcore::OptionBool$new(
-                "ci",
-                ci,
+            private$..est_ci <- jmvcore::OptionBool$new(
+                "est_ci",
+                est_ci,
                 default=TRUE)
+            private$..beta_ci <- jmvcore::OptionBool$new(
+                "beta_ci",
+                beta_ci,
+                default=FALSE)
             private$..ci_width <- jmvcore::OptionNumber$new(
                 "ci_width",
                 ci_width,
@@ -364,6 +370,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "reliability",
                 reliability,
                 default=FALSE)
+            private$..htmt <- jmvcore::OptionBool$new(
+                "htmt",
+                htmt,
+                default=FALSE)
             private$..outputMardiasCoefficients <- jmvcore::OptionBool$new(
                 "outputMardiasCoefficients",
                 outputMardiasCoefficients,
@@ -499,7 +509,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..se)
             self$.addOption(private$..bootci)
             self$.addOption(private$..bootN)
-            self$.addOption(private$..ci)
+            self$.addOption(private$..est_ci)
+            self$.addOption(private$..beta_ci)
             self$.addOption(private$..ci_width)
             self$.addOption(private$..meanstructure)
             self$.addOption(private$..int_ov)
@@ -535,6 +546,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..outputAdditionalFitMeasures)
             self$.addOption(private$..r2)
             self$.addOption(private$..reliability)
+            self$.addOption(private$..htmt)
             self$.addOption(private$..outputMardiasCoefficients)
             self$.addOption(private$..outputObservedCovariances)
             self$.addOption(private$..outputImpliedCovariances)
@@ -573,7 +585,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         se = function() private$..se$value,
         bootci = function() private$..bootci$value,
         bootN = function() private$..bootN$value,
-        ci = function() private$..ci$value,
+        est_ci = function() private$..est_ci$value,
+        beta_ci = function() private$..beta_ci$value,
         ci_width = function() private$..ci_width$value,
         meanstructure = function() private$..meanstructure$value,
         int_ov = function() private$..int_ov$value,
@@ -609,6 +622,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
         r2 = function() private$..r2$value,
         reliability = function() private$..reliability$value,
+        htmt = function() private$..htmt$value,
         outputMardiasCoefficients = function() private$..outputMardiasCoefficients$value,
         outputObservedCovariances = function() private$..outputObservedCovariances$value,
         outputImpliedCovariances = function() private$..outputImpliedCovariances$value,
@@ -646,7 +660,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..se = NA,
         ..bootci = NA,
         ..bootN = NA,
-        ..ci = NA,
+        ..est_ci = NA,
+        ..beta_ci = NA,
         ..ci_width = NA,
         ..meanstructure = NA,
         ..int_ov = NA,
@@ -682,6 +697,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..outputAdditionalFitMeasures = NA,
         ..r2 = NA,
         ..reliability = NA,
+        ..htmt = NA,
         ..outputMardiasCoefficients = NA,
         ..outputObservedCovariances = NA,
         ..outputImpliedCovariances = NA,
@@ -1269,7 +1285,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "missing",
                                 "bootci",
                                 "bootN",
-                                "ci",
+                                "est_ci",
+                                "beta_ci",
                                 "ci_width",
                                 "se"),
                             columns=list(
@@ -1310,16 +1327,26 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="ci.lower", 
                                     `type`="number", 
                                     `title`="Lower", 
-                                    `visible`="(ci)"),
+                                    `visible`="(est_ci)"),
                                 list(
                                     `name`="ci.upper", 
                                     `type`="number", 
                                     `title`="Upper", 
-                                    `visible`="(ci)"),
+                                    `visible`="(est_ci)"),
                                 list(
                                     `name`="std.all", 
                                     `type`="number", 
                                     `title`="\u03B2"),
+                                list(
+                                    `name`="std.ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(beta_ci)"),
+                                list(
+                                    `name`="std.ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(beta_ci)"),
                                 list(
                                     `name`="z", 
                                     `title`="z", 
@@ -1368,7 +1395,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "missing",
                                 "bootci",
                                 "bootN",
-                                "ci",
+                                "est_ci",
+                                "beta_ci",
                                 "ci_width",
                                 "se"),
                             columns=list(
@@ -1410,16 +1438,26 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="ci.lower", 
                                     `type`="number", 
                                     `title`="Lower", 
-                                    `visible`="(ci)"),
+                                    `visible`="(est_ci)"),
                                 list(
                                     `name`="ci.upper", 
                                     `type`="number", 
                                     `title`="Upper", 
-                                    `visible`="(ci)"),
+                                    `visible`="(est_ci)"),
                                 list(
                                     `name`="std.all", 
                                     `type`="number", 
                                     `title`="\u03B2"),
+                                list(
+                                    `name`="std.ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(beta_ci)"),
+                                list(
+                                    `name`="std.ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(beta_ci)"),
                                 list(
                                     `name`="z", 
                                     `title`="z", 
@@ -1468,7 +1506,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "missing",
                                 "bootci",
                                 "bootN",
-                                "ci",
+                                "est_ci",
+                                "beta_ci",
                                 "ci_width",
                                 "se"),
                             columns=list(
@@ -1510,16 +1549,26 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="ci.lower", 
                                     `type`="number", 
                                     `title`="Lower", 
-                                    `visible`="(ci)"),
+                                    `visible`="(est_ci)"),
                                 list(
                                     `name`="ci.upper", 
                                     `type`="number", 
                                     `title`="Upper", 
-                                    `visible`="(ci)"),
+                                    `visible`="(est_ci)"),
                                 list(
                                     `name`="std.all", 
                                     `type`="number", 
                                     `title`="\u03B2"),
+                                list(
+                                    `name`="std.ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(beta_ci)"),
+                                list(
+                                    `name`="std.ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(beta_ci)"),
                                 list(
                                     `name`="z", 
                                     `title`="z", 
@@ -1567,7 +1616,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "missing",
                                 "bootci",
                                 "bootN",
-                                "ci",
+                                "est_ci",
+                                "beta_ci",
                                 "ci_width",
                                 "se"),
                             columns=list(
@@ -1608,16 +1658,26 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="ci.lower", 
                                     `type`="number", 
                                     `title`="Lower", 
-                                    `visible`="(ci)"),
+                                    `visible`="(est_ci)"),
                                 list(
                                     `name`="ci.upper", 
                                     `type`="number", 
                                     `title`="Upper", 
-                                    `visible`="(ci)"),
+                                    `visible`="(est_ci)"),
                                 list(
                                     `name`="std.all", 
                                     `type`="number", 
                                     `title`="\u03B2"),
+                                list(
+                                    `name`="std.ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(beta_ci)"),
+                                list(
+                                    `name`="std.ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(beta_ci)"),
                                 list(
                                     `name`="z", 
                                     `title`="z", 
@@ -1666,7 +1726,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "missing",
                                 "bootci",
                                 "bootN",
-                                "ci",
+                                "est_ci",
+                                "beta_ci",
                                 "ci_width",
                                 "se"),
                             columns=list(
@@ -1705,13 +1766,13 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="ci.lower", 
                                     `type`="number", 
                                     `title`="Lower", 
-                                    `visible`="(ci)", 
+                                    `visible`="(est_ci)", 
                                     `format`="zto"),
                                 list(
                                     `name`="ci.upper", 
                                     `type`="number", 
                                     `title`="Upper", 
-                                    `visible`="(ci)", 
+                                    `visible`="(est_ci)", 
                                     `format`="zto"),
                                 list(
                                     `name`="z", 
@@ -1762,7 +1823,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "missing",
                                 "bootci",
                                 "bootN",
-                                "ci",
+                                "est_ci",
+                                "beta_ci",
                                 "ci_width",
                                 "se"),
                             columns=list(
@@ -1805,13 +1867,13 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="ci.lower", 
                                     `type`="number", 
                                     `title`="Lower", 
-                                    `visible`="(ci)", 
+                                    `visible`="(est_ci)", 
                                     `format`="zto"),
                                 list(
                                     `name`="ci.upper", 
                                     `type`="number", 
                                     `title`="Upper", 
-                                    `visible`="(ci)", 
+                                    `visible`="(est_ci)", 
                                     `format`="zto"),
                                 list(
                                     `name`="z", 
@@ -1862,7 +1924,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "missing",
                                 "bootci",
                                 "bootN",
-                                "ci",
+                                "est_ci",
+                                "beta_ci",
                                 "ci_width",
                                 "se"),
                             columns=list(
@@ -1923,7 +1986,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "missing",
                                 "bootci",
                                 "bootN",
-                                "ci",
+                                "est_ci",
+                                "beta_ci",
                                 "ci_width",
                                 "se"),
                             columns=list(
@@ -1953,19 +2017,29 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `name`="ci.lower", 
                                     `type`="number", 
                                     `title`="Lower", 
-                                    `visible`="(ci)", 
+                                    `visible`="(est_ci)", 
                                     `format`="zto"),
                                 list(
                                     `name`="ci.upper", 
                                     `type`="number", 
                                     `title`="Upper", 
-                                    `visible`="(ci)", 
+                                    `visible`="(est_ci)", 
                                     `format`="zto"),
                                 list(
                                     `name`="std.all", 
                                     `type`="number", 
                                     `title`="\u03B2", 
                                     `format`="zto"),
+                                list(
+                                    `name`="std.ci.lower", 
+                                    `type`="number", 
+                                    `title`="Lower", 
+                                    `visible`="(beta_ci)"),
+                                list(
+                                    `name`="std.ci.upper", 
+                                    `type`="number", 
+                                    `title`="Upper", 
+                                    `visible`="(beta_ci)"),
                                 list(
                                     `name`="z", 
                                     `title`="z", 
@@ -1980,6 +2054,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
                     reliability = function() private$.items[["reliability"]],
+                    htmt = function() private$.items[["htmt"]],
                     mardia = function() private$.items[["mardia"]]),
                 private = list(),
                 public=list(
@@ -2066,7 +2141,22 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="avevar", 
                                     `title`="AVE", 
+                                    `type`="number"),
+                                list(
+                                    `name`="htmt", 
+                                    `title`="htmt", 
                                     `type`="number"))))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="htmt",
+                            title="Heterotrait-monotrait (HTMT) ratio of correlations",
+                            visible="(htmt)",
+                            refs="semtools",
+                            columns=list(
+                                list(
+                                    `name`="variable", 
+                                    `title`="", 
+                                    `type`="text"))))
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="mardia",
@@ -2534,7 +2624,10 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   - basic).
 #' @param bootN The number of bootstrap samples for estimating confidence
 #'   intervals.
-#' @param ci \code{TRUE} or \code{FALSE} (default), show confidence intervals
+#' @param est_ci \code{TRUE} or \code{FALSE} (default), show confidence
+#'   intervals for estimates
+#' @param beta_ci \code{TRUE} or \code{FALSE} (default), show confidence
+#'   intervals for standardized estimates
 #' @param ci_width A number between 50 and 99.9 (default: 95) specifying the
 #'   confidence interval width for the parameter estimates.
 #' @param meanstructure If TRUE, the means of the observed variables enter the
@@ -2612,6 +2705,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param r2 .
 #' @param reliability \code{TRUE} or \code{FALSE} (default), show additional
 #'   reliability indices
+#' @param htmt \code{TRUE} or \code{FALSE} (default), show
+#'   Heterotrait-monotrait (HTMT) ratio of correlations
 #' @param outputMardiasCoefficients \code{TRUE} or \code{FALSE} (default),
 #'   show Mardia's coefficients for multivariate skewness and kurtosis
 #' @param outputObservedCovariances \code{TRUE} or \code{FALSE} (default),
@@ -2673,6 +2768,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$models$mlmeans} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$reliability} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$additional$htmt} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$mardia} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$covariances$observed} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$covariances$implied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
@@ -2710,7 +2806,8 @@ semljsyn <- function(
     se = "auto",
     bootci = "perc",
     bootN = 1000,
-    ci = TRUE,
+    est_ci = TRUE,
+    beta_ci = FALSE,
     ci_width = 95,
     meanstructure = TRUE,
     int_ov = TRUE,
@@ -2746,6 +2843,7 @@ semljsyn <- function(
     outputAdditionalFitMeasures = FALSE,
     r2 = "none",
     reliability = FALSE,
+    htmt = FALSE,
     outputMardiasCoefficients = FALSE,
     outputObservedCovariances = FALSE,
     outputImpliedCovariances = FALSE,
@@ -2794,7 +2892,8 @@ semljsyn <- function(
         se = se,
         bootci = bootci,
         bootN = bootN,
-        ci = ci,
+        est_ci = est_ci,
+        beta_ci = beta_ci,
         ci_width = ci_width,
         meanstructure = meanstructure,
         int_ov = int_ov,
@@ -2830,6 +2929,7 @@ semljsyn <- function(
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,
         r2 = r2,
         reliability = reliability,
+        htmt = htmt,
         outputMardiasCoefficients = outputMardiasCoefficients,
         outputObservedCovariances = outputObservedCovariances,
         outputImpliedCovariances = outputImpliedCovariances,

@@ -9,6 +9,7 @@ Runner <- R6::R6Class("Runner",
                         public=list(
                           model=NULL,
                           tab_mardia=NULL,
+                          tab_htmt=NULL,
                           initialize=function(options,dispatcher,datamatic) {
                             super$initialize(options,dispatcher,datamatic)
                           },
@@ -16,6 +17,10 @@ Runner <- R6::R6Class("Runner",
                             ## prepare the options based on Syntax definitions
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
+                            if (is.something(self$storage) && is.something(self$storage$state)) {
+                                 self$model<-self$storage$state$model
+                            } else {
+                            
                             lavoptions <- list(model = private$.lav_structure, 
                                                data = data,
                                                estimator  = self$options$estimator,
@@ -63,7 +68,7 @@ Runner <- R6::R6Class("Runner",
                             self$dispatcher$errors <-  list(topic="info", message=error,final=TRUE)
                             
                             self$model <- results$obj
-                            
+                            self$storage$setState(list(model=self$model))
                             ### we need the data for mardia's, so we save them here
                             
                             if (self$option("outputMardiasCoefficients")) {
@@ -83,7 +88,21 @@ Runner <- R6::R6Class("Runner",
                                       self$dispatcher$warnings<-list(topic="additional_mardia",message=results$earning)
                                 }
                             }
+                            } ### end of model estimation
                             
+                            ### we need the data for htmt, so we save them here
+                            if (self$options$htmt) {
+                                  results<-try_hard(semTools::htmt(model = self$user_syntax, 
+                                                      data = data,
+                                                      missing="default",ordered=self$datamatic$ordered))
+                                  if (!isFALSE(results$error))
+                                    self$dispatcher$warnings<-list(topic="additional_htmt",message="HTMT indices not available for this model.")
+                                  if (!isFALSE(results$warning))
+                                    self$dispatcher$warnings<-list(topic="additional_htmt",message=results$warning)
+                                  
+                                 self$tab_htmt<-as.data.frame(results$obj)
+                                      
+                            }
                           },
                           
                           par_table=function() {
@@ -381,6 +400,7 @@ Runner <- R6::R6Class("Runner",
 
                             tab<-list()
                             results<-try_hard(semTools::reliability(self$model))
+                            results$htmt<-private$.htmt()
                             self$dispatcher$warnings<-list(topic="additional_reliability",message=results$warning)
                             self$dispatcher$warnings<-list(topic="additional_reliability",message=results$error)
                             if (isFALSE(results$error))
@@ -391,6 +411,12 @@ Runner <- R6::R6Class("Runner",
                             return(tab)
                             
                           },
+                          run_additional_htmt=function() {
+                            
+                            self$tab_htmt
+                            
+                          },
+                          
                           run_additional_mardia=function() {
                             
                               self$tab_mardia
@@ -551,7 +577,7 @@ Runner <- R6::R6Class("Runner",
                             results<-try_hard(
                               lavaan::parameterestimates(
                                 self$model,
-                                ci = self$options$ci,
+                                ci = self$options$est_ci,
                                 standardized = T,
                                 level = self$options$ci_width/100,
                                 boot.ci.type = self$options$bootci
@@ -566,6 +592,16 @@ Runner <- R6::R6Class("Runner",
                               ilabel<-paste("(",private$.lav_structure$plabel[userlabel],")")
                               private$.par_table$label[userlabel]<-paste(private$.par_table$label[userlabel],ilabel)
                             }
+                            z<-lavaan::standardizedSolution(self$model,
+                                                            type="std.all",
+                                                            se=TRUE,
+                                                            zstat=FALSE,
+                                                            pvalue=FALSE,
+                                                            ci=TRUE,
+                                                            level = self$options$ci_width/100)
+
+                            private$.par_table$std.ci.lower<-z$ci.lower
+                            private$.par_table$std.ci.upper<-z$ci.upper
                           },
                           .get_test_info=function() {
                             
@@ -710,7 +746,12 @@ Runner <- R6::R6Class("Runner",
                                                      rep("continuous",ncol(predsdata)))
                               results$preds_ov$setValues(predsdata)
                               self$dispatcher$warnings<-list(topic="info",message=paste("Indicators predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
-                              }
+                          },
+                        .htmt=function() {
+                          
+
+
+                        }
 
 
                         ) #end of private
