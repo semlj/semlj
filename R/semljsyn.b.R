@@ -24,6 +24,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         }
 
         ### set up the R6 workhorse class
+
         dispatcher               <- Dispatch$new(self$results)
         data_machine             <- Datamatic$new(self$options, dispatcher, self$data)
         runner_machine           <- Runner$new(self$options, dispatcher, data_machine)
