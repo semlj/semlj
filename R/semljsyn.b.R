@@ -254,7 +254,8 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ginfo("RUN TIME:", Sys.time() - runnow, " secs")
 
         ginfo("TIME:", Sys.time() - private$.time, " secs")
-
+        ginfo("MEM:", pryr::mem_used()/10e5)
+        
         return()
       },
 
