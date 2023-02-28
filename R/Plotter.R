@@ -93,7 +93,7 @@ Plotter <- R6::R6Class(
         rotation<-as.numeric(self$options$diag_rotate)
         if (layout %in% c("circle") & rotation %in% c(2,4)) {
             rotation<-1
-            self$dispatcher$warnings=list(topic="pathgroup_notes",message=PLOT_WARNS[["rotation"]])
+            self$warning=list(topic="pathgroup_notes",message=PLOT_WARNS[["rotation"]])
         }
 
 

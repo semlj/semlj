@@ -278,8 +278,6 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         jinfo("MEM: (data)",pryr::object_size(data)/10e5)
         jinfo("MEM: (datamatic)",pryr::object_size(private$.runner_machine)/10e5)
         jinfo("MEM: (runner)",pryr::object_size(private$.data_machine)/10e5)
-        private$.data_machine<-NULL
-        private$.runner_machine<-NULL
         jinfo("MEM: (analysis end)",pryr::object_size(self)/10e5)
         
         
