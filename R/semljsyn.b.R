@@ -211,7 +211,6 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ladd(private$.smartObjs)   <- aSmartObj
 
 
-
         for (tab in private$.smartObjs) {
           tab$initTable()
         }
