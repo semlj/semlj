@@ -18,9 +18,9 @@ Initer <- R6::R6Class(
     user_syntax=NULL,
     moretests=FALSE,
     indirect_names=NULL,
-    initialize=function(options,dispatcher,datamatic) {
+    initialize=function(jmvobj,datamatic) {
       
-      super$initialize(options,dispatcher)
+      super$initialize(jmvobj)
       self$datamatic<-datamatic
 
       self$observed    <- datamatic$observed
@@ -71,7 +71,7 @@ Initer <- R6::R6Class(
       
       
       if (self$option("se","boot"))
-          self$dispatcher$warnings<-list(topic="info",message="Bootstrap confidence intervals may take a while. Please be patient.",init=TRUE)
+          self$warning<-list(topic="info",message="Bootstrap confidence intervals may take a while. Please be patient.",init=TRUE)
       
       return(alist)
     },
@@ -242,7 +242,7 @@ Initer <- R6::R6Class(
         if (is.something(self$multigroup)) {
           msg<-paste(1:self$multigroup$nlevels,self$multigroup$levels,sep="= group ",collapse = ", ")
           msg<-paste("Description subscripts refer to groups, with",msg)
-          self$dispatcher$warnings<-list(topic="models_defined",message=msg) 
+          self$warning<-list(topic="models_defined",message=msg) 
         }
       }
       if (nrow(tab)==0) tab<-NULL
@@ -266,11 +266,6 @@ Initer <- R6::R6Class(
       
 
     },
-
-
-
-
-
 
 
     init_covariances_observed=function() {
@@ -414,6 +409,8 @@ Initer <- R6::R6Class(
 
 
 
+
+
   ),   # End public
   
   private=list(
@@ -436,7 +433,7 @@ Initer <- R6::R6Class(
       if (length(check)>0)
         for (st in check) {
           msg<-glue::glue(DP_WARNS[[".p."]],x=st)
-          self$dispatcher$warnings<-list(topic="info",message=msg)
+          self$warning<-list(topic="info",message=msg)
         }
       
       # here we check if the user used custom group names 
@@ -454,7 +451,7 @@ Initer <- R6::R6Class(
       if (is.something(self$cluster)) {
         check<-any(stringr::str_detect(tolower(gsub(" ","",avec)), "^level:(?!\\=)"))
         if (!check)
-           self$dispatcher$warnings<-list(topic="info",message="A cluster variable was specified, but not levels are defined in the syntax")
+           self$warning<-list(topic="info",message="A cluster variable was specified, but not levels are defined in the syntax")
       }
       self$user_syntax<-avec
       private$.esem_syntax()
@@ -566,9 +563,9 @@ Initer <- R6::R6Class(
       
       results <- try_hard({ do.call(lavaan::lavaanify, lavoptions) })
       if (!isFALSE(results$warning))
-           self$dispatcher$warnings <- list(topic="info", message = paste("Model set-up:",results$warning))
+           self$warning <- list(topic="info", message = paste("Model set-up:",results$warning))
       
-      self$dispatcher$errors   <- list(topic="info", message = results$error,final=TRUE)
+      self$error   <- list(topic="info", message = results$error,final=TRUE)
       
       private$.lav_structure <- results$obj
       ## if not user defined, create easy labels to be used by the user in constraints and defined parameters  
@@ -580,7 +577,7 @@ Initer <- R6::R6Class(
         for (i in check) {
           st<-tvec[[i]]
           msg<-glue::glue(DP_WARNS[["p"]],x=st)
-          self$dispatcher$warnings<-list(topic="info",message=msg)
+          self$warning<-list(topic="info",message=msg)
         }
       
       def <- ulabels!=""
@@ -659,7 +656,7 @@ Initer <- R6::R6Class(
       deps<-unique(setdiff(tab$lhs,tab$rhs))
       
       if (length(deps)==0) {
-        self$dispatcher$warnings<-list(topic="models_defined",message=WARNS[["noindirect"]])
+        self$warning<-list(topic="models_defined",message=WARNS[["noindirect"]])
         return()
       }
 
@@ -675,7 +672,7 @@ Initer <- R6::R6Class(
             .doit(tabs[[i]],term=tt)
         })
         if (.results$error!=FALSE)
-          self$dispatcher$warnings<-list(topic="models_defined",message=WARNS[["noindirect"]])
+          self$warning<-list(topic="models_defined",message=WARNS[["noindirect"]])
         results[[i]]<-.results
       }
       pars<-sapply(labslist,paste,collapse="*")

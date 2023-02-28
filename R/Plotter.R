@@ -8,9 +8,9 @@ Plotter <- R6::R6Class(
   inherit = Scaffold,
   public=list(
       semPathsOptions=NULL,
-      initialize=function(options,runnerobj,resultsplots) {
+      initialize=function(jmvobj,runnerobj,resultsplots) {
 
-            super$initialize(options,runnerobj$dispatcher)
+            super$initialize(jmvobj)
             private$.plotgroup<-resultsplots
             private$.operator<-runnerobj
             

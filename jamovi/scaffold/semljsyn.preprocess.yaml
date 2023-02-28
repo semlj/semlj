@@ -200,10 +200,6 @@ items:
             type: text
             visible: (multigroup)
             combineBelow: true
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
           - name: rhs
             title: "Variable"
             type: text
@@ -746,9 +742,6 @@ items:
             type: number
           - name: avevar
             title: AVE
-            type: number
-          - name: htmt
-            title: htmt
             type: number
 
 

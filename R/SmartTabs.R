@@ -3,9 +3,9 @@
 ###  groupname 
 ###  groupname_tablename
 ###  arrayname
-###  arrayname_key
-###  arrayname_key_tablename
-###  arrayname_!_tablename
+###  arrayname_tablename
+###  arrayname_tablename_[n] n is the index of the table in the array
+
 
 
 
@@ -32,8 +32,9 @@ SmartTable <- R6::R6Class("SmartTable",
                             combineBelow=0,
                             ci_info=list(),
                             columnTitles=list(),
-
                             initialize=function(table,estimator=NULL) {
+
+                              if (exists("t_INFO")) private$.debug<-t_INFO
                               
                               OK<-FALSE
 
@@ -72,31 +73,34 @@ SmartTable <- R6::R6Class("SmartTable",
                                 self$columnTitles           <- private$.estimator$columnTitles
                                 self$indent                 <- private$.estimator$indent                            
                                 self$activateOnData         <- private$.estimator$activateOnData
+                                self$hideOn                 <- private$.estimator$hideOn
+                                
                               }
-                              
+                              ## some coherence setting
+                              if (isTRUE(self$activateOnData)) self$activated<-TRUE
 
                             },
                             initTable=function() {
+
+                              private$.debug_msg("checked for init.")
                               
-                              private$.phase<-"init"
                               # prepare some fast stuff anyway, because the table may be already saved 
                               # and should be inited properly
+                              if (isFALSE(self$activated)) 
+                                 return()
+                              
                               private$.setColumnTitle()
                               private$.ci()
                               self$title
-                              self$setTopics()
+                              self$table$setState(list(status="checked"))
 
-                              ### check if we need to fill it (it may be empty)
-                              if (private$.stop()) {
-                                return()
-                              }
-                              
                               ### fill with initial values###
 
                               rtable<-private$.getData()
                               
                               if (is.null(rtable))
                                   return()
+
                               ### this should go after the data
                               self$retrieveNotes()
                               
@@ -107,30 +111,43 @@ SmartTable <- R6::R6Class("SmartTable",
                               private$.spaceBy()
                               ## in case is a go, the table may be invisible (if activatedOnData). turn visibility on
                               self$table$setVisible(TRUE)
-                              
-                              tinfo("TABLES: table",self$nickname,"inited")
+                              self$table$setState(list(status="inited"))
+                              private$.debug_msg("inited")
                             },
                             
                             runTable=function() {
                             
-                              tinfo("TABLES: table",self$nickname,"checked for run")
+                              private$.debug_msg("checked for run: state",self$table$state)
+
+                              private$.clean
+                              
+                              if (!self$activated)
+                                return()
+
+                              if (utils::hasName(self$table$state,"status") && self$table$state[["status"]]=="complete")
+                                return()
                               
                               private$.phase<-"run"
-                              if (private$.stop()) {
-                                self$retrieveNotes()
-                                return()
-                              }
-                              
                               rtable<-private$.getData()
-                              self$retrieveNotes()
                               
                               if (is.null(rtable))
                                 return()
                               
+                              ### check if new column titles are passed
+                              .attr <- private$.getAttributes(rtable)
+                              if (utils::hasName(.attr,"titles"))
+                                  for (.name in names(.attr$titles)) {
+                                         self$setColumnTitle(.name,.attr$titles[[.name]])
+                                  }
+
                               if (self$expandOnRun) private$.expand(rtable)
+                              
                               private$.fill(self$table,rtable)
-                              self$table$setVisible(TRUE)
-                              tinfo("TABLES: table",self$nickname,"run")
+                              private$.finalize()
+                              
+                              private$.debug_msg("run")
+                              if (utils::hasName(self$table$state,"status") && self$table$state[["status"]]=="inited")
+                                          self$table$setState(list(status="complete"))
                               
                             },
                             
@@ -141,45 +158,14 @@ SmartTable <- R6::R6Class("SmartTable",
                               ladd(self$ci_info)<-alist
 
                             },
-                            
-
-                            setTopics=function() {
-
-                              .names<-stringr::str_split(self$nickname,"_")[[1]]
-                              alist<-list(.names[1])
-                              
-                              for (aname in .names[-1])
-                                   alist[[length(alist)+1]]<-paste(alist[[length(alist)]],aname,sep ="_")
-                               
-                              self$topics<-unlist(alist)
-                              if (is.something(self$key)) {
-                                 key<-private$.nice_name(self$key)
-                                 others<-stringr::str_replace_all(self$topics,paste0("_",key,"_"),"_*_")
-                                 self$topics<-unique(c(others,self$topics))
-                              }
-                              
-                            },
                             retrieveNotes=function(dispatcher=NULL) {
 
-                                  notes<-self$table$state$notes
-                                  ### remove init only message
-                                  presentnotes<-notes
-                                  if (private$.phase=="run") 
-                                      for (i in seq_along(notes)) {
-                                          anote<-notes[[i]]
-                                          if (anote$topic %in% self$topics) {
-                                                if (isTRUE(as.logical(anote$init))) {
-                                                     self$table$setNote(anote$id,NULL)
-                                                     presentnotes[[i]]<-NULL
-                                                }
-                                          }
-                                      }
+                                  notes<-self$table$notes
+                                  lapply(notes,function(x) {
+                                    if (isTRUE(x$init))
+                                       self$table$setNote(x$key,NULL)
+                                  })
 
-                                   for (anote in presentnotes) {
-                                     if (anote$topic %in% self$topics)
-                                         self$table$setNote(anote$id,anote$message)
-                                    }
-                              
                             },
                             
                             setNotes=function(dispatcher=NULL) {
@@ -226,7 +212,7 @@ SmartTable <- R6::R6Class("SmartTable",
                                return(private$.activateOnData) 
                               }
                               private$.activateOnData<-value
-                              
+                              if (isTRUE(value)) self$activated<-TRUE                    
                             },
                             title=function(aname) {
                               
@@ -274,6 +260,19 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               for (name in varnames)
                                 self$table$getColumn(name)$setVisible(TRUE)
+                            },
+                            hideOn=function(alist) {
+                              
+                              if (missing(alist))
+                                 private$.hideOn
+                              else
+                                private$.hideOn<-alist
+                            } ,
+                            debug=function(value) {
+                              if (missing(value))
+                                   private$.debug
+                              else
+                                   private$.debug<-value
                             }
                             
                           ), #end of active
@@ -286,40 +285,8 @@ SmartTable <- R6::R6Class("SmartTable",
                             .new_columns=NULL,
                             .activateOnData=FALSE,
                             .column_title=list(),
-                            
-                            .stop=function() {
-                              
-                              if (private$.phase=="init") {
-                                fun<-private$.init_source
-                                filled<-FALSE
-                              } else {
-                                
-                                fun<-private$.run_source
-                                filled<-!self$table$isNotFilled()
-                                
-                                if (filled & ("rowCount" %in% names(self$table))) 
-                                  filled<-self$table$rowCount>0
-                              }
-                            
-
-                              if (private$.activateOnData)
-                                return(FALSE)
-                              
-                              if (!self$activated)
-                                return(TRUE)
-
-                              if (is.null(fun)) 
-                                return(TRUE)
-
-                              if (is.character(fun))
-                                   if (!(fun %in% names(private$.estimator))) 
-                                        return(TRUE)
-                              
-                             
-                              return(filled)
-                              
-                            },
-                            
+                            .hideOn=NULL,
+                            .debug=FALSE,
                             .getData=function(when) {
                               
                               ## check in which phase we are
@@ -331,36 +298,44 @@ SmartTable <- R6::R6Class("SmartTable",
                               ### check how to retrieve the data
                               if (inherits(fun,"character") ) {
                                 
+                                if (!(fun %in% names(private$.estimator)))
+                                    return(NULL)
+                                
                                 output<-try_hard(private$.estimator[[fun]]())
                                 rtable<-output$obj
                                 error<-output$error
                                 warning<-output$warning
                                 
                                 if (error!=FALSE) {
-                                  ginfo("TABLES: Error in ",fun,error)
+                                  private$.debug_msg("ERROR",fun,error)
                                   self$table$setError(error)
                                   return()
                                 }
                                 
                                 if (warning!=FALSE) {
-                                  if ("notes" %in% names(self$table)) {
+                                  if (inherits(self$table,"Table")) 
                                       self$table$setNote(jmvcore::toB64(warning),warning,init=FALSE)
-                                  } 
+                                  
+                                  if (inherits(self$table,"Array"))
+                                      for (obj in self$table$items)
+                                        obj$setNote(jmvcore::toB64(warning),warning,init=FALSE)
+
                                 }
                                 return(rtable) 
                               }
                               if (inherits(fun,"function") ) {
-                                tinfo("TABLES: ",self$nickname," function is ",class(fun))
+                                private$.debug_msg("function is ",class(fun))
                                 return(fun())
                               }
                               ## if here, fun is a table (data.frame or list)
-                              tinfo("TABLES: ",self$nickname," function is ",class(fun))
+                              private$.debug_msg("function is ",class(fun))
                               return(fun)
 
                               
                               
                             },
                             .fill=function(jtable,rtable) {
+                              
                               maxrow<-jtable$rowCount
                               
                               .insert<-function(i,w) {
@@ -377,8 +352,28 @@ SmartTable <- R6::R6Class("SmartTable",
                                 t[which(t==".")]<-NA
                                 .insert(i,t)
                               }
+                            },
+                            .finalize=function() {
                               
+                              private$.setColumnTitle()
+                              private$.setHideOn()
+                              self$table$setVisible(TRUE)
 
+                            },
+                            .setHideOn=function() {
+                              
+                              if (is.something(private$.hideOn)) {
+                                rtable<-self$table$asDF
+                                what<-names(rtable)
+                                for (col in names(private$.hideOn))
+                                  if (col %in% what) {
+                                    test<-all(rtable[[col]] %in% private$.hideOn[[col]])
+                                    if (test) 
+                                      self$table$getColumn(col)$setVisible(FALSE)
+                                    else
+                                      self$table$getColumn(col)$setVisible(TRUE)
+                                  }
+                              }
                             },
                             .expand=function(rtable) {
                               
@@ -392,7 +387,6 @@ SmartTable <- R6::R6Class("SmartTable",
                               .present<-names(self$table$columns)
                               .ncols<-length(.present)
                               .names<-setdiff(.names,.present)
-                              
                               if (is.something(attr(rtable,"titles")))
                                 .titles<-attr(rtable,"titles")
                               else 
@@ -426,6 +420,7 @@ SmartTable <- R6::R6Class("SmartTable",
                                 
                             },
                             .setColumnTitle=function() {
+                              
                               what<-names(self$table$columns)
                               
                               for (col in names(self$columnTitles))
@@ -524,6 +519,11 @@ SmartTable <- R6::R6Class("SmartTable",
                               .attr<-private$.getAttributes(adata)
                               .res<-NULL
                               if (inherits(adata,"data.frame")) {
+                                
+                                for (var in names(adata))
+                                    if (is.factor(adata[[var]])) 
+                                         adata[[var]]<-as.character(adata[[var]])
+                                
                                 .res <- lapply(1:dim(adata)[1], function(a) {
                                   .al<-as.list(adata[a, ])
                                   names(.al)<-names(adata)
@@ -576,6 +576,13 @@ SmartTable <- R6::R6Class("SmartTable",
                               a<-strsplit(a,".",fixed = T)
                               a<-make.names(a)
                               paste(a,collapse = ".")
+                            },
+                            .debug_msg=function(...) {
+                              if (private$.debug) {
+                                msg<-paste(list(...))
+                                cat(paste0("(",class(self)[1],")"),self$nickname,":",msg)
+                                cat("\n")
+                              }
                             }
 
                             
@@ -605,29 +612,37 @@ SmartArray <- R6::R6Class("SmartArray",
                               
                             },
                             initTable=function() {
-                              
-                              if (private$.stop())
+
+                              private$.debug_msg("check for init")
+
+                              if (isFALSE(self$activated))
                                 return()
-                              
-                              tinfo("TABLES: array",self$nickname,"initiating")
+
                               self$table$setVisible(TRUE)
                               self$title
+
+                              self$table$setState(list(status="inited"))
+                              
                               rtables<-private$.getData()
+                              if (is.null(rtables))
+                                return()
+                              
                               .keys<-names(rtables)
                               if (is.something(attr(rtables,"keys")))
                                     .keys<-attr(rtables,"keys")
 
+
                               if (!is.something(self$table$items)) {
-                                
+                                library(jmvcore)
+                                  
                                 for (i in seq_along(rtables)) {
-                                  
-                                  
+                                
                                   if (is.something(.keys))
                                     .key<-.keys[[i]]
                                   else 
                                     .key<-i
+
                                   self$table$addItem(key = .key)
-                                  
                                 }
                                 
                                 self$children<-seq_along(rtables)
@@ -656,36 +671,43 @@ SmartArray <- R6::R6Class("SmartArray",
                               }
                               for (obj in self$childrenObjs)
                                 obj$initTable()
-                              
-                              tinfo("TABLES: array",self$nickname,"inited")
+
+                              self$table$setState(list(status="mother"))
+                              private$.debug_msg("inited")
                               
                             },
                             
                             runTable=function() {
-                              
+
                               private$.phase<-"run"
-                              tinfo("TABLES: array",self$nickname,"checked for run")
+                              private$.debug_msg("checked for run: status",self$table$state)
                               self$retrieveNotes()
                               
                               if (private$.stop()) 
                                 return()
                               
                               
-                              tinfo("TABLES: array",self$nickname,"run")
-                              
                               rtables<-private$.getData()
-                              
-                              for (i in seq_along(self$childrenObjs)) {
-                                obj<-self$childrenObjs[[i]]
-                                obj$runSource<-rtables[[i]]
-                                obj$runTable()
-                                
-                              }
 
+                              if (!is.something(self$childrenObjs))
+                                   self$initTable()
+
+                              nfound<-length(rtables)
+                              for (i in seq_along(self$childrenObjs)) {
+                                 obj<-self$childrenObjs[[i]]
+                                 if (i<=nfound) {
+                                     obj$runSource<-rtables[[i]]
+                                     obj$runTable()
+                                 } else {
+                                   obj$table$setVisible(FALSE)
+                                 }
+                             }
+                              private$.debug_msg("run")
+
+                              self$table$setState(list(status="complete"))
                             },
                             retrieveNotes=function() {
                               
-
                               for (child in self$childrenObjs) {
                                     child$table$setState(self$table$state)
                                     child$retrieveNotes()
@@ -705,7 +727,37 @@ SmartArray <- R6::R6Class("SmartArray",
                           private=list(
                             .ci=NULL,
                             .ciwidth=NULL,
-                            .ciformat=NULL
+                            .ciformat=NULL,
+                            .stop=function() {
+
+                              if (private$.activateOnData)
+                                return(FALSE)
+                              if (!self$activated)
+                                return(TRUE)
+                              
+                              if (private$.phase=="init") {
+                                fun<-private$.init_source
+                                filled<-FALSE
+                              } else {
+                                
+                                fun<-private$.run_source
+                                filled<-!self$table$isNotFilled()
+                              }
+                              
+                              if (is.null(fun)) 
+                                return(TRUE)
+                              
+                              if (is.character(fun))
+                                if (!(fun %in% names(private$.estimator))) 
+                                  return(TRUE)
+                              
+                              if (is.something(self$table$state) && self$table$state[["status"]]!="mother")
+                                   return(FALSE)
+                              
+                              return(filled)
+                              
+                            }
+                            
                             
                             
                             

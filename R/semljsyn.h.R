@@ -1161,11 +1161,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
-                                    `name`="label", 
-                                    `title`="Label", 
-                                    `type`="text", 
-                                    `visible`="(showlabels)"),
-                                list(
                                     `name`="rhs", 
                                     `title`="Variable", 
                                     `type`="text"),
@@ -2138,10 +2133,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="avevar", 
                                     `title`="AVE", 
-                                    `type`="number"),
-                                list(
-                                    `name`="htmt", 
-                                    `title`="htmt", 
                                     `type`="number"))))
                         self$add(jmvcore::Table$new(
                             options=options,

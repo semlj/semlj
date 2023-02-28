@@ -4,7 +4,6 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
     "semljsynClass",
     inherit = semljsynBase,
     private = list(
-      .dispatcher = NULL,
       .data_machine = NULL,
       .runner_machine = NULL,
       .plotter_machine = NULL,
@@ -12,7 +11,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
       .time = NULL,
       .smartObjs = list(),
       .init = function() {
-        ginfo(paste("MODULE: SEMLj SYNTAX  #### phase init  ####"))
+        jinfo(paste("MODULE: SEMLj SYNTAX  #### phase init  ####"))
 
         private$.time <- Sys.time()
         private$.ready <- readiness(self$options)
@@ -25,9 +24,8 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
 
         ### set up the R6 workhorse class
 
-        dispatcher               <- Dispatch$new(self$results)
-        data_machine             <- Datamatic$new(self$options, dispatcher, self$data)
-        runner_machine           <- Runner$new(self$options, dispatcher, data_machine)
+        data_machine             <- Datamatic$new(self)
+        runner_machine           <- Runner$new(self,data_machine)
 
         ### info table ###
         aSmartObj                <- SmartTable$new(self$results$info, runner_machine)
@@ -223,14 +221,16 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         private$.runner_machine <- runner_machine
 
         ######## plotting class #######
-        private$.plotter_machine<-Plotter$new(self$options,runner_machine,self$results$pathgroup)
+        private$.plotter_machine<-Plotter$new(self,runner_machine,self$results$pathgroup)
         private$.plotter_machine$initPlots()
 
         now <- Sys.time()
-        ginfo("INIT TIME:", now - private$.time, " secs")
+        jinfo("MEM: (end init)",pryr::mem_used()/10e5)
+        jinfo("INIT TIME:", now - private$.time, " secs")
+        
       },
       .run = function() {
-        ginfo("MODULE:  #### phase run ####")
+        jinfo("MODULE:  #### phase run ####")
 
         if (is.something(self$options$donotrun)) {
           if (self$options$donotrun) 
@@ -242,9 +242,11 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
           return()
         }
         runnow <- Sys.time()
-        data <- private$.data_machine$cleandata(self$data)
+        data <- private$.data_machine$cleandata()
+        jinfo("MEM: (before estimate)",pryr::mem_used()/10e5)
         private$.runner_machine$estimate(data)
-
+        jinfo("MEM: (after estimate)",pryr::mem_used()/10e5)
+        
         ### save predicted if needed
         private$.runner_machine$savePredRes(self$results,data)
         
@@ -254,7 +256,8 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         for (smarttab in private$.smartObjs) {
           smarttab$runTable()
         }
-
+        jinfo("MEM: (after table run)",pryr::mem_used()/10e5)
+        
         private$.plotter_machine$preparePlots()   
         if (is.something(private$.plotter_machine$warnings$diagram)) {
           for (i in seq_along(private$.plotter_machine$warnings$diagram))
@@ -264,13 +267,13 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         
 
       
-        ginfo("MODULE:  #### phase end ####")
+        jinfo("MODULE:  #### phase end ####")
 
-        ginfo("RUN TIME:", Sys.time() - runnow, " secs")
+        jinfo("RUN TIME:", Sys.time() - runnow, " secs")
 
-        ginfo("TIME:", Sys.time() - private$.time, " secs")
+        jinfo("TIME:", Sys.time() - private$.time, " secs")
         
-        ginfo("MEM:", pryr::mem_used()/10e5)
+        jinfo("MEM:", pryr::mem_used()/10e5)
         
 
         return()

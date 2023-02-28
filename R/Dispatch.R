@@ -37,7 +37,7 @@ Dispatch <- R6::R6Class(
                                 
                                 if (!is.something(table)) stop("SCAFFOLD: a message was sent to a non-existing result object: ",obj$topic)
                                 state<-as.list(table$state)
-                                if (!hasName(obj,"id")) obj$id<-jmvcore::toB64(obj$message)
+                                if (!hasName(obj,"key")) obj$key<-jmvcore::toB64(obj$message)
                                 
                                 obj$message<-private$.translate(obj$message)
                                 
@@ -47,15 +47,18 @@ Dispatch <- R6::R6Class(
                                   table$setVisible(TRUE)
                                   return()
                                 }
-                                     
+                                init<-(hasName(obj,"initOnly") && obj[["initOnly"]]) 
                                 
-                                if (!inherits(table,"Table")) 
-                                     what<-obj$id
-                                else
-                                     what<-length(state$notes)+1
+                                if (inherits(table,"Array")) {
+                                  for (one in table$items)
+                                    one$setNote(obj$key,obj$message,init=init)
+                                  return()
+                                }
                                 
-                               state$notes[[what]]<-obj
-                               table$setState(state)
+                                table$setNote(obj$key,obj$message,init=init)
+                                
+                               
+                               
                                
                         },
                         errors=function(obj) {
@@ -108,12 +111,23 @@ Dispatch <- R6::R6Class(
                       },
                       .translate=function(msg) {
       
-                            for (w in TRANS_WARNS) {
-                                 test<-grep(w$original,msg,fixed=T)
-                                 if (length(test)>0)
-                                    msg<-jmvcore::format(w$new,msg)
-                            }
-                           return(msg)
+                        .translate=function(msg) {
+                          
+                          if (!exists("TRANS_WARNS")) return(msg)
+                          
+                          where<-unlist(lapply(TRANS_WARNS,function(x) length(grep(x$original,msg))>0))
+                          where<-which(where)
+                          
+                          if (is.something(where))
+                            if (is.something(TRANS_WARNS[[where]]$new))
+                              msg<-gsub(TRANS_WARNS[[where]]$original,TRANS_WARNS[[where]]$new,msg,fixed=T)
+                          else
+                            msg<-NULL
+                          
+                          return(msg)
+                          
+                        }
+                        return(msg)
 
                        }
                        

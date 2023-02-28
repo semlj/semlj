@@ -12,10 +12,11 @@ Datamatic <- R6::R6Class(
     varTable=NULL,
     missing=NULL,
     
-    initialize=function(options,dispatcher,data) {
+    initialize=function(jmvobj) {
       
-      super$initialize(options,dispatcher)
-      astring<-options$code
+      super$initialize(jmvobj)
+      
+      astring<-self$options$code
       reg<-"[=~:+\n]"
       ## split by syntax operators
       avec<-stringr::str_split(astring,reg)[[1]]
@@ -31,25 +32,26 @@ Datamatic <- R6::R6Class(
 
       self$vars<-vars
       
-      mg<-options$multigroup
+      mg<-self$options$multigroup
       if (is.character(mg))
         if(trimws(mg)=="")
           mg<-NULL
       self$multigroup=mg
       
-      ml<-options$cluster
+      ml<-self$options$cluster
       if (is.character(ml))
         if(trimws(ml)=="")
           ml<-NULL
       self$cluster<-ml
       
-      self$missing<-options$missing
+      self$missing<-self$options$missing
       
-      private$.inspect_data(data)
+      private$.inspect_data()
     },
     
-    cleandata=function(data) {
+    cleandata=function() {
       
+      data<-self$analysis$data
       trans<-c()
       facts<-c(self$cluster,self$multigroup$var)
       vars<-setdiff(self$vars,facts)
@@ -90,9 +92,10 @@ Datamatic <- R6::R6Class(
 
   ), ### end of public
   private=list(
-    .inspect_data=function(data) {
+    .inspect_data=function() {
        
-
+        data<-self$analysis$data
+        
         test<-(make.names(self$vars) %in% self$vars)
 
         if (!all(test)) {

@@ -1228,11 +1228,6 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
                                 list(
-                                    `name`="label", 
-                                    `title`="Label", 
-                                    `type`="text", 
-                                    `visible`="(showlabels)"),
-                                list(
                                     `name`="rhs", 
                                     `title`="Variable", 
                                     `type`="text"),

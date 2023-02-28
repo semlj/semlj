@@ -200,10 +200,6 @@ items:
             type: text
             visible: (multigroup)
             combineBelow: true
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
           - name: rhs
             title: "Variable"
             type: text
