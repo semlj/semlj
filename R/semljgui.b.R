@@ -27,8 +27,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         data_machine             <- Datamatic$new(self$options, dispatcher, self$data)
         runner_machine           <- Runner$new(self$options, dispatcher, data_machine)
         
-        runner_machine$storage   <- self$results$fit
-        
+
         ### info table ###
         aSmartObj                <- SmartTable$new(self$results$info, runner_machine)
         ladd(private$.smartObjs) <- aSmartObj

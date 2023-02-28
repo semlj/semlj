@@ -17,10 +17,7 @@ Runner <- R6::R6Class("Runner",
                             ## prepare the options based on Syntax definitions
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
-                            if (is.something(self$storage) && is.something(self$storage$state)) {
-                                 self$model<-self$storage$state$model
-                            } else {
-                            
+
                             lavoptions <- list(model = private$.lav_structure, 
                                                data = data,
                                                estimator  = self$options$estimator,
@@ -68,7 +65,7 @@ Runner <- R6::R6Class("Runner",
                             self$dispatcher$errors <-  list(topic="info", message=error,final=TRUE)
                             
                             self$model <- results$obj
-                            self$storage$setState(list(model=self$model))
+                            
                             ### we need the data for mardia's, so we save them here
                             
                             if (self$option("outputMardiasCoefficients")) {
@@ -87,9 +84,8 @@ Runner <- R6::R6Class("Runner",
                                     if (!isFALSE(results$warning))
                                       self$dispatcher$warnings<-list(topic="additional_mardia",message=results$earning)
                                 }
-                            }
-                            } ### end of model estimation
-                            
+                                
+
                             ### we need the data for htmt, so we save them here
                             if (self$options$htmt) {
                                   results<-try_hard(semTools::htmt(model = self$user_syntax, 
@@ -101,7 +97,7 @@ Runner <- R6::R6Class("Runner",
                                     self$dispatcher$warnings<-list(topic="additional_htmt",message=results$warning)
                                   
                                  self$tab_htmt<-as.data.frame(results$obj)
-                                      
+                            }
                             }
                           },
                           
