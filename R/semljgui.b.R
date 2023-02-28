@@ -13,7 +13,6 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
       .smartObjs = list(),
       .init = function() {
         ginfo(paste("MODULE: SEMLj GUI  #### phase init  ####"))
-
         private$.time <- Sys.time()
         private$.ready <- readiness(self$options)
         if (!private$.ready$ready) {
@@ -262,7 +261,9 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ginfo("RUN TIME:", Sys.time() - runnow, " secs")
 
         ginfo("TIME:", Sys.time() - private$.time, " secs")
-
+        
+        ginfo("MEM:", pryr::mem_used()/10e5)
+        
         return()
       },
 
