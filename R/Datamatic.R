@@ -49,6 +49,7 @@ Datamatic <- R6::R6Class(
     },
     
     cleandata=function(data) {
+      
       trans<-c()
       facts<-c(self$cluster,self$multigroup$var)
       vars<-setdiff(self$vars,facts)
@@ -75,11 +76,12 @@ Datamatic <- R6::R6Class(
         self$dispatcher$warnings<-list(topic="info",
                                        message=glue::glue(DATA_WARNS[["num_to_fac"]],x=paste(unique(trans),collapse = ",")))
       
-      if (self$missing=="listwise" & dim(jmvcore::naOmit(data))[1]!=dim(data[1])) {
-        
-        self$dispatcher$warnings<-list(topic="info",
+      if (self$missing=="listwise") {
+        cdata<-jmvcore::naOmit(data)
+        if (dim(cdata)[1]!=dim(data[1])) 
+                        self$dispatcher$warnings<-list(topic="info",
                                        message=DATA_WARNS[["missing"]])
-        
+        return(cdata)
       }
 
       return(data)
