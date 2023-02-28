@@ -254,7 +254,6 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         }
         
 
-        self$results$.setModel(list(model=private$.runner_machine$model))
         ginfo("MODULE:  #### phase end ####")
 
         ginfo("RUN TIME:", Sys.time() - runnow, " secs")
