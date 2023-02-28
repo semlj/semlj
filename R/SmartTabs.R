@@ -144,11 +144,10 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               private$.fill(self$table,rtable)
                               private$.finalize()
-                              
+
                               private$.debug_msg("run")
                               if (utils::hasName(self$table$state,"status") && self$table$state[["status"]]=="inited")
                                           self$table$setState(list(status="complete"))
-                              
                             },
                             
                             ci=function(aroot,width=95,label=NULL,format="{}% Confidence Intervals"){

@@ -63,7 +63,7 @@ Datamatic <- R6::R6Class(
         }
       }
       if (is.something(trans))
-        self$dispatcher$warnings<-list(topic="info",
+        self$warning<-list(topic="info",
                             message=glue::glue(DATA_WARNS[["fac_to_ord"]],x=paste(unique(trans),collapse = ",")))
 
       
@@ -75,13 +75,13 @@ Datamatic <- R6::R6Class(
       }
       }
       if (is.something(trans))
-        self$dispatcher$warnings<-list(topic="info",
+        self$warning<-list(topic="info",
                                        message=glue::glue(DATA_WARNS[["num_to_fac"]],x=paste(unique(trans),collapse = ",")))
       
       if (self$missing=="listwise") {
         cdata<-jmvcore::naOmit(data)
         if (dim(cdata)[1]!=dim(data[1])) 
-                        self$dispatcher$warnings<-list(topic="info",
+                        self$warning<-list(topic="info",
                                        message=DATA_WARNS[["missing"]])
         return(cdata)
       }
@@ -100,7 +100,7 @@ Datamatic <- R6::R6Class(
 
         if (!all(test)) {
           msg<-paste(self$vars[!test],collapse = ",")
-          self$dispatcher$errors <-  list(topic="info", message=paste0(
+          self$error <-  list(topic="info", message=paste0(
                         "Variable name not allowed for variables: ",
                         msg,
                         ". Please remove characters that are not letters, numbers, dot or underline. Letters may be defined differently in different locales."),
@@ -115,7 +115,7 @@ Datamatic <- R6::R6Class(
         }
         self$observed<-intersect(self$vars,names(data))
         if (length(self$observed)==0)
-          self$dispatcher$errors <-  list(topic="info", message="No observed variable in the dataset",final=TRUE)
+          self$error <-  list(topic="info", message="No observed variable in the dataset",final=TRUE)
         
         observed<-self$observed[(!(self$observed %in% c(self$multigroup$var,self$cluster)))]
         self$ordered<-observed[sapply(observed, function(a) any(class(data[[a]]) %in% c("factor","ordered")))]
