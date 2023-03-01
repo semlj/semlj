@@ -12,10 +12,11 @@ Datamatic <- R6::R6Class(
     varTable=NULL,
     missing=NULL,
     
-    initialize=function(options,dispatcher,data) {
+    initialize=function(jmvobj) {
       
-      super$initialize(options,dispatcher)
-      astring<-options$code
+      super$initialize(jmvobj)
+      
+      astring<-self$options$code
       reg<-"[=~:+\n]"
       ## split by syntax operators
       avec<-stringr::str_split(astring,reg)[[1]]
@@ -31,24 +32,26 @@ Datamatic <- R6::R6Class(
 
       self$vars<-vars
       
-      mg<-options$multigroup
+      mg<-self$options$multigroup
       if (is.character(mg))
         if(trimws(mg)=="")
           mg<-NULL
       self$multigroup=mg
       
-      ml<-options$cluster
+      ml<-self$options$cluster
       if (is.character(ml))
         if(trimws(ml)=="")
           ml<-NULL
       self$cluster<-ml
       
-      self$missing<-options$missing
+      self$missing<-self$options$missing
       
-      private$.inspect_data(data)
+      private$.inspect_data()
     },
     
-    cleandata=function(data) {
+    cleandata=function() {
+      
+      data<-self$analysis$data
       trans<-c()
       facts<-c(self$cluster,self$multigroup$var)
       vars<-setdiff(self$vars,facts)
@@ -60,7 +63,7 @@ Datamatic <- R6::R6Class(
         }
       }
       if (is.something(trans))
-        self$dispatcher$warnings<-list(topic="info",
+        self$warning<-list(topic="info",
                             message=glue::glue(DATA_WARNS[["fac_to_ord"]],x=paste(unique(trans),collapse = ",")))
 
       
@@ -72,14 +75,15 @@ Datamatic <- R6::R6Class(
       }
       }
       if (is.something(trans))
-        self$dispatcher$warnings<-list(topic="info",
+        self$warning<-list(topic="info",
                                        message=glue::glue(DATA_WARNS[["num_to_fac"]],x=paste(unique(trans),collapse = ",")))
       
-      if (self$missing=="listwise" & dim(jmvcore::naOmit(data))[1]!=dim(data[1])) {
-        
-        self$dispatcher$warnings<-list(topic="info",
+      if (self$missing=="listwise") {
+        cdata<-jmvcore::naOmit(data)
+        if (dim(cdata)[1]!=dim(data[1])) 
+                        self$warning<-list(topic="info",
                                        message=DATA_WARNS[["missing"]])
-        
+        return(cdata)
       }
 
       return(data)
@@ -88,14 +92,15 @@ Datamatic <- R6::R6Class(
 
   ), ### end of public
   private=list(
-    .inspect_data=function(data) {
+    .inspect_data=function() {
        
-
+        data<-self$analysis$data
+        
         test<-(make.names(self$vars) %in% self$vars)
 
         if (!all(test)) {
           msg<-paste(self$vars[!test],collapse = ",")
-          self$dispatcher$errors <-  list(topic="info", message=paste0(
+          self$error <-  list(topic="info", message=paste0(
                         "Variable name not allowed for variables: ",
                         msg,
                         ". Please remove characters that are not letters, numbers, dot or underline. Letters may be defined differently in different locales."),
@@ -110,7 +115,7 @@ Datamatic <- R6::R6Class(
         }
         self$observed<-intersect(self$vars,names(data))
         if (length(self$observed)==0)
-          self$dispatcher$errors <-  list(topic="info", message="No observed variable in the dataset",final=TRUE)
+          self$error <-  list(topic="info", message="No observed variable in the dataset",final=TRUE)
         
         observed<-self$observed[(!(self$observed %in% c(self$multigroup$var,self$cluster)))]
         self$ordered<-observed[sapply(observed, function(a) any(class(data[[a]]) %in% c("factor","ordered")))]

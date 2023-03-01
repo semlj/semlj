@@ -8,9 +8,9 @@ Plotter <- R6::R6Class(
   inherit = Scaffold,
   public=list(
       semPathsOptions=NULL,
-      initialize=function(options,runnerobj,resultsplots) {
+      initialize=function(jmvobj,runnerobj,resultsplots) {
 
-            super$initialize(options,runnerobj$dispatcher)
+            super$initialize(jmvobj)
             private$.plotgroup<-resultsplots
             private$.operator<-runnerobj
             
@@ -93,7 +93,7 @@ Plotter <- R6::R6Class(
         rotation<-as.numeric(self$options$diag_rotate)
         if (layout %in% c("circle") & rotation %in% c(2,4)) {
             rotation<-1
-            self$dispatcher$warnings=list(topic="pathgroup_notes",message=PLOT_WARNS[["rotation"]])
+            self$warning=list(topic="pathgroup_notes",message=PLOT_WARNS[["rotation"]])
         }
 
 

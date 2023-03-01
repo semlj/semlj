@@ -725,7 +725,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "semljsynResults",
     inherit = jmvcore::Group,
     active = list(
-        model = function() private$..model,
         info = function() private$.items[["info"]],
         synexamples = function() private$.items[["synexamples"]],
         fit = function() private$.items[["fit"]],
@@ -737,15 +736,13 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         preds_lv = function() private$.items[["preds_lv"]],
         preds_ov = function() private$.items[["preds_ov"]],
         preds_dv = function() private$.items[["preds_dv"]]),
-    private = list(
-        ..model = NA),
+    private = list(),
     public=list(
         initialize=function(options) {
             super$initialize(
                 options=options,
                 name="",
                 title="Structural Equation Modelling")
-            private$..model <- NULL
             self$add(jmvcore::Table$new(
                 options=options,
                 name="info",
@@ -1163,11 +1160,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `type`="text", 
                                     `visible`="(multigroup)", 
                                     `combineBelow`=TRUE),
-                                list(
-                                    `name`="label", 
-                                    `title`="Label", 
-                                    `type`="text", 
-                                    `visible`="(showlabels)"),
                                 list(
                                     `name`="rhs", 
                                     `title`="Variable", 
@@ -2141,10 +2133,6 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="avevar", 
                                     `title`="AVE", 
-                                    `type`="number"),
-                                list(
-                                    `name`="htmt", 
-                                    `title`="htmt", 
                                     `type`="number"))))
                         self$add(jmvcore::Table$new(
                             options=options,
@@ -2546,8 +2534,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="preds_dv",
                 title="Dependent vars scores",
                 varDescription="Dependent vars scores",
-                initInRun=TRUE))},
-        .setModel=function(x) private$..model <- x))
+                initInRun=TRUE))}))
 
 semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "semljsynBase",
@@ -2754,7 +2741,6 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   abbreviations (default: 5).
 #' @return A results object containing:
 #' \tabular{llllll}{
-#'   \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$synexamples} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr

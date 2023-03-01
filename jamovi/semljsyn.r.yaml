@@ -5,10 +5,6 @@ jrs: '1.0'
 
 
 items:
-  - name: model
-    type: Property
-    description: The underlying `lavaan` object
-    visible: (FALSE)
 
 
 
@@ -428,10 +424,6 @@ items:
             type: text
             visible: (multigroup)
             combineBelow: true
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
           - name: rhs
             title: "Variable"
             type: text
@@ -1350,9 +1342,6 @@ items:
             type: number
           - name: avevar
             title: AVE
-            type: number
-          - name: htmt
-            title: htmt
             type: number
 
 

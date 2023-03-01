@@ -1,3 +1,7 @@
+j_DEBUG <- T
+j_INFO  <- T
+t_INFO  <- F
+
 #### Helper functions used by Scaffold (not exported)
 
 tinfo <- function(...) {
@@ -8,7 +12,7 @@ tinfo <- function(...) {
 }
 
 
-ginfo <- function(...) {
+jinfo <- function(...) {
   if (j_INFO) {
     cat("\n")
     cat(paste(list(...)))
@@ -16,16 +20,6 @@ ginfo <- function(...) {
   }
 }
 
-gstart <- function(...) {
-  if (j_INFO) {
-    cat(paste(paste(list(...)),"..."))
-  }
-}
-gend <- function() {
-  if (j_INFO) {
-    cat(".......................................done\n")
-  }
-}
 
 
 mark <- function(...) {
@@ -180,7 +174,7 @@ smartTableName<-function(root,alist,end=NULL) {
 
 transnames<-function(original,ref) {
   unlist(lapply(original,function(x) {
-    i<-names(ref)[sapply(ref,function(y) any(y %in% x))]
+    i<-names(ref)[sapply(ref,function(y) any(y %in% trimws(x)))]
     ifelse(length(i)>0,i,x)
   }))
 }

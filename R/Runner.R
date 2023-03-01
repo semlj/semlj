@@ -10,17 +10,11 @@ Runner <- R6::R6Class("Runner",
                           model=NULL,
                           tab_mardia=NULL,
                           tab_htmt=NULL,
-                          initialize=function(options,dispatcher,datamatic) {
-                            super$initialize(options,dispatcher,datamatic)
-                          },
                           estimate = function(data) {
                             ## prepare the options based on Syntax definitions
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
-                            if (is.something(self$storage) && is.something(self$storage$state)) {
-                                 self$model<-self$storage$state$model
-                            } else {
-                            
+
                             lavoptions <- list(model = private$.lav_structure, 
                                                data = data,
                                                estimator  = self$options$estimator,
@@ -55,20 +49,20 @@ Runner <- R6::R6Class("Runner",
                             }
 
                             ## estimate the models
-                            ginfo("Estimating the model...")
+                            jinfo("Estimating the model...")
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
-                            ginfo("Estimating the model...done")
+                            jinfo("Estimating the model...done")
                             
                             ## check if warnings or errors are produced
-                            self$dispatcher$warnings <-  list(topic="info", message=results$warning)
+                            self$warning <-  list(topic="info", message=results$warning)
                             ## it it fails here, we should stop
                             error<-results$error
                             if (length(grep("subscript out of bound",error,fixed=T))>0) 
                                    error<-"Model cannot be estimated. Please refine the model or choose different options."
-                            self$dispatcher$errors <-  list(topic="info", message=error,final=TRUE)
+                            self$error <-  list(topic="info", message=error,final=TRUE)
                             
                             self$model <- results$obj
-                            self$storage$setState(list(model=self$model))
+                            
                             ### we need the data for mardia's, so we save them here
                             
                             if (self$option("outputMardiasCoefficients")) {
@@ -83,26 +77,27 @@ Runner <- R6::R6Class("Runner",
                               
                                   })
                                     if (!isFALSE(results$error))
-                                      self$dispatcher$warnings<-list(topic="additional_mardia",message="Mardia's coefficients not available.")
+                                      self$warning<-list(topic="additional_mardia",message="Mardia's coefficients not available.")
                                     if (!isFALSE(results$warning))
-                                      self$dispatcher$warnings<-list(topic="additional_mardia",message=results$earning)
+                                      self$warning<-list(topic="additional_mardia",message=results$earning)
                                 }
                             }
-                            } ### end of model estimation
-                            
+                                
+
                             ### we need the data for htmt, so we save them here
+
                             if (self$options$htmt) {
                                   results<-try_hard(semTools::htmt(model = self$user_syntax, 
                                                       data = data,
                                                       missing="default",ordered=self$datamatic$ordered))
                                   if (!isFALSE(results$error))
-                                    self$dispatcher$warnings<-list(topic="additional_htmt",message="HTMT indices not available for this model.")
+                                    self$warning<-list(topic="additional_htmt",message="HTMT indices not available for this model.")
                                   if (!isFALSE(results$warning))
-                                    self$dispatcher$warnings<-list(topic="additional_htmt",message=results$warning)
+                                    self$warning<-list(topic="additional_htmt",message=results$warning)
                                   
                                  self$tab_htmt<-as.data.frame(results$obj)
-                                      
                             }
+                            
                           },
                           
                           par_table=function() {
@@ -400,13 +395,12 @@ Runner <- R6::R6Class("Runner",
 
                             tab<-list()
                             results<-try_hard(semTools::reliability(self$model))
-                            results$htmt<-private$.htmt()
-                            self$dispatcher$warnings<-list(topic="additional_reliability",message=results$warning)
-                            self$dispatcher$warnings<-list(topic="additional_reliability",message=results$error)
+                            self$warning<-list(topic="additional_reliability",message=results$warning)
+                            self$warning<-list(topic="additional_reliability",message=results$error)
                             if (isFALSE(results$error))
                                 tab<-private$.make_matrix_table(results$obj,fun=t)
                             else 
-                                self$dispatcher$warnings<-list(topic="additional_reliability",message="Reliabilities not available for this model.")
+                                self$warning<-list(topic="additional_reliability",message="Reliabilities not available for this model.")
                             
                             return(tab)
                             
@@ -583,8 +577,8 @@ Runner <- R6::R6Class("Runner",
                                 boot.ci.type = self$options$bootci
                               )
                             )
-                            self$dispatcher$warnings <- list(topic="info", message=results$warning)
-                            self$dispatcher$errors <- list(topic="info", message=results$error)
+                            self$warning <- list(topic="info", message=results$warning)
+                            self$error <- list(topic="info", message=results$error)
                             private$.par_table<-results$obj
                             if (is.null(private$.par_table)) private$.par_table<-FALSE
                             userlabel<-grep("^\\p\\d+$",private$.par_table$label,invert = T)
@@ -625,10 +619,10 @@ Runner <- R6::R6Class("Runner",
                             if (!(results$preds_dv$isNotFilled()))
                               return()
 
-                            ginfo("Trying saving dv predicted")
+                            jinfo("Trying saving dv predicted")
                             
                             if (is.something(self$multigroup)) {
-                              self$dispatcher$warnings<-list(topic="info",message="Dependent variables predicted values not implemented for multigroup analysis")
+                              self$warning<-list(topic="info",message="Dependent variables predicted values not implemented for multigroup analysis")
                               return()
                             }
                             
@@ -651,7 +645,7 @@ Runner <- R6::R6Class("Runner",
                               })
                             }
                             
-                            ginfo("saving dv predicted")
+                            jinfo("saving dv predicted")
                               
                               
                             .names<-private$.observed_vars()
@@ -661,7 +655,7 @@ Runner <- R6::R6Class("Runner",
                             predsobj<-.compute()
                             predsdata<-predsobj$obj
                             if (!isFALSE(predsobj$error)) {
-                                self$dispatcher$warnings<-list(topic="info",message="Dependent variables predicted values cannot be computed for this  model")
+                                self$warning<-list(topic="info",message="Dependent variables predicted values cannot be computed for this  model")
                                 return()
                               } 
                               
@@ -670,7 +664,7 @@ Runner <- R6::R6Class("Runner",
                                                      rep("DV Predicted",ncol(predsdata)),
                                                      rep("continuous",ncol(predsdata)))
                             results$preds_dv$setValues(predsdata)
-                            self$dispatcher$warnings<-list(topic="info",message=paste("Dependent variables predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                            self$warning<-list(topic="info",message=paste("Dependent variables predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
                             },
                             
                         .saveLv=function(results) {
@@ -681,22 +675,22 @@ Runner <- R6::R6Class("Runner",
                              if (!results$preds_lv$isNotFilled())
                                  return()
 
-                             ginfo("Trying saving lv predicted")
+                             jinfo("Trying saving lv predicted")
                           
                             obj<-try_hard(lavaan::lavPredict(self$model,type="lv",assemble = TRUE))
                             if (!isFALSE(obj$error)) {
-                                self$dispatcher$warnings<-list(topic="info",message="Factor scores cannot be computed for this model")
+                                self$warning<-list(topic="info",message="Factor scores cannot be computed for this model")
                                 return()
                             }
 
                             predsdata<-as.data.frame(obj$obj)
 
                             if (ncol(predsdata)==0) {
-                                self$dispatcher$warnings<-list(topic="info",message="Factor scores cannot be computed for this model")
+                                self$warning<-list(topic="info",message="Factor scores cannot be computed for this model")
                                 return()
                               }
                             
-                            ginfo("saving lv predicted")
+                            jinfo("saving lv predicted")
                             
                             colnames(predsdata)<-paste0("PRFS_",colnames(predsdata))
                             results$preds_lv$set(1:ncol(predsdata),
@@ -704,7 +698,7 @@ Runner <- R6::R6Class("Runner",
                                                    rep("Factor scores ",ncol(predsdata)),
                                                    rep("continuous",ncol(predsdata)))
                             results$preds_lv$setValues(predsdata)
-                            self$dispatcher$warnings<-list(topic="info",message=paste("Factors scores (latent predicted values) saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                            self$warning<-list(topic="info",message=paste("Factors scores (latent predicted values) saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
                             },
                           
                           .saveOv=function(results) {
@@ -716,42 +710,37 @@ Runner <- R6::R6Class("Runner",
                             if (!results$preds_ov$isNotFilled())
                               return()
 
-                            ginfo("Trying saving ov predicted")
+                            jinfo("Trying saving ov predicted")
                             
                             obj<-try_hard(lavaan::lavPredict(self$model,type="ov",assemble = TRUE))
                               
                             if (!isFALSE(obj$error)) {
-                                self$dispatcher$warnings<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
+                                self$warning<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
                                 return()
                             }
 
                             predsdata<-as.data.frame(obj$obj)
                             if (ncol(predsdata)==0) {
-                                self$dispatcher$warnings<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
+                                self$warning<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
                                 return()
                             }
                               
                               predsdata<-as.data.frame(obj$obj)
                               
                               if (ncol(predsdata)==0) {
-                                self$dispatcher$warnings<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
+                                self$warning<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
                                 return()
                               }
                               
-                              ginfo("saving ov predicted")
+                              jinfo("saving ov predicted")
                               colnames(predsdata)<-paste0("PRIN_",colnames(predsdata))
                               results$preds_ov$set(1:ncol(predsdata),
                                                      names(predsdata),
                                                      rep("Indicator predicted",ncol(predsdata)),
                                                      rep("continuous",ncol(predsdata)))
                               results$preds_ov$setValues(predsdata)
-                              self$dispatcher$warnings<-list(topic="info",message=paste("Indicators predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
-                          },
-                        .htmt=function() {
-                          
-
-
-                        }
+                              self$warning<-list(topic="info",message=paste("Indicators predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
+                          }
 
 
                         ) #end of private
