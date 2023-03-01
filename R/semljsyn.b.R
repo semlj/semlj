@@ -23,8 +23,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         }
 
         ### set up the R6 workhorse class
-        jinfo("MEM: (analysis new)",pryr::object_size(self)/10e5)
-        
+
         data_machine             <- Datamatic$new(self)
         runner_machine           <- Runner$new(self,data_machine)
 
@@ -225,7 +224,6 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         private$.plotter_machine$initPlots()
 
         now <- Sys.time()
-        jinfo("MEM: (end init)",pryr::mem_used()/10e5)
         jinfo("INIT TIME:", now - private$.time, " secs")
         
       },
@@ -244,7 +242,6 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         runnow <- Sys.time()
         data <- private$.data_machine$cleandata()
         
-        jinfo("MEM: (before estimate)",pryr::mem_used()/10e5)
         private$.runner_machine$estimate(data)
         ### save predicted if needed
         private$.runner_machine$savePredRes(self$results,data)
@@ -255,9 +252,6 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         for (smarttab in private$.smartObjs) {
           smarttab$runTable()
         }
-        
-
-        jinfo("MEM: (after table run)",pryr::mem_used()/10e5)
         
         private$.plotter_machine$preparePlots()   
         if (is.something(private$.plotter_machine$warnings$diagram)) {
@@ -274,15 +268,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
 
         jinfo("TIME:", Sys.time() - private$.time, " secs")
 
-        jinfo("MEM: (after estimate)",pryr::mem_used()/10e5)
-        jinfo("MEM: (data)",pryr::object_size(data)/10e5)
-        jinfo("MEM: (datamatic)",pryr::object_size(private$.runner_machine)/10e5)
-        jinfo("MEM: (runner)",pryr::object_size(private$.data_machine)/10e5)
-        jinfo("MEM: (analysis end)",pryr::object_size(self)/10e5)
-        
-        
-        jinfo("MEM:", pryr::mem_used()/10e5)
-        
+
 
         return()
       },

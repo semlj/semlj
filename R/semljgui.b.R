@@ -259,8 +259,6 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
 
         jinfo("TIME:", Sys.time() - private$.time, " secs")
         
-        jinfo("MEM:", pryr::mem_used()/10e5)
-        
         return()
       },
 
