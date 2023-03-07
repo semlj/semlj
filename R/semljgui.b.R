@@ -79,7 +79,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                 <- SmartTable$new(self$results$models$coefficients, runner_machine)
         aSmartObj$spaceBy         <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
-        aSmartObj$ci("std", self$options$ci_width, label="β")
+        aSmartObj$ci("std", self$options$ci_width, label='\u03b2')
         aSmartObj$activateOnData  <-  TRUE
         ladd(private$.smartObjs)  <-  aSmartObj
 
@@ -88,7 +88,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$models$loadings, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
-        aSmartObj$ci("std", self$options$ci_width, label="β")
+        aSmartObj$ci("std", self$options$ci_width, label='\u03b2')
         aSmartObj$activateOnData   <-TRUE
         ladd(private$.smartObjs)   <- aSmartObj
 
@@ -97,7 +97,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$models$composites, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
-        aSmartObj$ci("std", self$options$ci_width, label="β")
+        aSmartObj$ci("std", self$options$ci_width, label='\u03b2')
         aSmartObj$activateOnData   <- TRUE
         ladd(private$.smartObjs)   <- aSmartObj
 
@@ -106,7 +106,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                  <- SmartTable$new(self$results$models$covariances, runner_machine)
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
-        aSmartObj$ci("std", self$options$ci_width, label="β")
+        aSmartObj$ci("std", self$options$ci_width, label='\u03b2')
         ladd(private$.smartObjs)   <- aSmartObj
 
         ## intercepts table ###
@@ -130,7 +130,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
 
         aSmartObj                  <- SmartTable$new(self$results$models$defined, runner_machine)
         aSmartObj$ci(NULL, self$options$ci_width)
-        aSmartObj$ci("std", self$options$ci_width, label="β")
+        aSmartObj$ci("std", self$options$ci_width, label='\u03b2')
         aSmartObj$activateOnData   <-TRUE
         ladd(private$.smartObjs)   <- aSmartObj
 
