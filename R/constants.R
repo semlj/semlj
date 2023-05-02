@@ -97,7 +97,7 @@ INFO_TEST<-list()
 INFO_TEST[["satorra.bentler"]]   <- "Satorra-Bentler mean adjusted"
 INFO_TEST[["scaled.shifted"]]    <- "Mean adjusted scaled and shifted"
 INFO_TEST[["mean.var.adjusted"]] <- "Mean and variance adjusted"
-
+INFO_TEST[["yuan.bentler.mplus"]]<- " Yuan-Bentler T2*"
 INFO_ML<-c("ML","MLM","MLMV","MLMVS")
 
 
@@ -113,9 +113,10 @@ INFO_INDICES=list(
                 nnfi  = "Bentler-Bonett Non-normed Fit Index (NNFI)",
                 rni   = "Relative Noncentrality Index (RNI)",
                 nfi   = "Bentler-Bonett Normed Fit Index (NFI)",
-                pnfi   = "Parsimony Normed Fit Index (PNFI)",
                 rfi   = "Bollen's Relative Fit Index (RFI)",
-                ifi   = "Bollen's Incremental Fit Index (IFI)"
+                ifi   = "Bollen's Incremental Fit Index (IFI)",
+                pnfi   = "Parsimony Normed Fit Index (PNFI)"
+                
                 )
 INFO_MOREINDICES=list(
   

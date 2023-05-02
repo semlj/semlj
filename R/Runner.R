@@ -258,8 +258,6 @@ Runner <- R6::R6Class("Runner",
                               item$name<-INFO_INDICES[[x]]
                               item
                             })
-
-
                           },
                           run_fit_moreindices=function() {
                             fit<-self$fit_measures()
@@ -271,7 +269,6 @@ Runner <- R6::R6Class("Runner",
                                   item$name<-INFO_MOREINDICES[[x]]
                               item
                             })
-                            mark(alist)
                             return(alist)
                             
                           },
@@ -603,7 +600,8 @@ Runner <- R6::R6Class("Runner",
                                 return("")
 
                             tests<-names(self$model@test)
-
+                            mark(tests)
+                            
                             if (length(tests)<2)
                               return("None")
                             
