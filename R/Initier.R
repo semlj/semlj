@@ -89,29 +89,15 @@ Initer <- R6::R6Class(
     
     init_fit_modelbaseline=function() {
       
-    alist<-list()
-    alist[[length(alist) + 1]]  <- list(name = "Comparative Fit Index (CFI)");
-    alist[[length(alist) + 1]]  <- list(name = "Tucker-Lewis Index (TLI)");
-    alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Non-normed Fit Index (NNFI)");
-    alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Normed Fit Index (NFI)");
-    alist[[length(alist) + 1]]  <- list(name = "Parsimony Normed Fit Index (PNFI)");
-    alist[[length(alist) + 1]]  <- list(name = "Bollen's Relative Fit Index (RFI)");
-    alist[[length(alist) + 1]]  <- list(name = "Bollen's Incremental Fit Index (IFI)");
-    alist[[length(alist) + 1]]  <- list(name = "Relative Noncentrality Index (RNI)");
-    
+    alist<-lapply(INFO_INDICES, function(x) list(name=x))  
     return(alist)
     },
     init_fit_moreindices=function() {
       
       
-      tab<-lapply(1:5,function(a) list(name="."))
-      if (self$options$estimator %in% INFO_ML) {
-          tab[[6]]<-list(name=".")
-          tab[[7]]<-list(name=".")
-      }
+      alist<-lapply(INFO_MOREINDICES, function(x) list(name=x))  
       
-
-      return(tab)      
+      return(alist)      
     },
     
     init_fit_constraints=function() {

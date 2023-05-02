@@ -130,6 +130,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "MLM",
                     "MLMV",
                     "MLMVS",
+                    "MLR",
                     "PML",
                     "GLS",
                     "WLS",

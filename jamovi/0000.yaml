@@ -19,6 +19,7 @@ analyses:
     menuTitle: SEM (syntax)
     description: Syntax based Structural Equation Models
     arbitraryCode: true
+    arbitraryCode2: true
   - title: Structural Equation Models
     name: semljgui
     ns: semlj
@@ -27,6 +28,7 @@ analyses:
     menuTitle: SEM (interactive)
     description: GUI-based Structural Equation Model Analyses
     arbitraryCode: true
+    arbitraryCode2: true
 datasets:
   - name: pathjdata
     path: pathjdata.csv

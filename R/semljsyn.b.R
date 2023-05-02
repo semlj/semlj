@@ -23,7 +23,6 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         }
 
         ### set up the R6 workhorse class
-
         data_machine             <- Datamatic$new(self)
         runner_machine           <- Runner$new(self,data_machine)
 
@@ -229,7 +228,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
       },
       .run = function() {
         jinfo("MODULE:  #### phase run ####")
-
+        
         if (is.something(self$options$donotrun)) {
           if (self$options$donotrun) 
             return()
