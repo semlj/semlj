@@ -130,6 +130,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "MLM",
                     "MLMV",
                     "MLMVS",
+                    "MLR",
                     "PML",
                     "GLS",
                     "WLS",
@@ -1068,6 +1069,18 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 list(
                                     `name`="statistics", 
                                     `title`="Model", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="scaled", 
+                                    `visible`=TRUE, 
+                                    `title`="Scaled", 
+                                    `type`="number", 
+                                    `format`="zto"),
+                                list(
+                                    `name`="robust", 
+                                    `visible`=TRUE, 
+                                    `title`="Robust", 
                                     `type`="number", 
                                     `format`="zto"))))
                         self$add(jmvcore::Table$new(

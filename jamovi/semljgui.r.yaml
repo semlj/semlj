@@ -326,6 +326,16 @@ items:
             title: Model
             type: number
             format: zto
+          - name: scaled
+            visible: true
+            title: Scaled
+            type: number
+            format: zto
+          - name: robust
+            visible: true
+            title: Robust
+            type: number
+            format: zto
 
       # Additional fit measures (2): Other fit indices ------------------------
       - name: moreindices

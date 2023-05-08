@@ -220,7 +220,7 @@ Runner <- R6::R6Class("Runner",
                                          )
                             
                             if (hasName(fi,"rmsea.robust")) {
-                              
+                              mark(fi)
                               tab[[2]]  <-  list(srmr=fi$srmr_bentler,
                                                  rmsea=fi$rmsea.robust,
                                                  rmsea.ci.lower=fi$rmsea.ci.lower.robust,
@@ -228,7 +228,7 @@ Runner <- R6::R6Class("Runner",
                                                  rmsea.pvalue=fi$rmsea.pvalue.robust
                                                  )
                             }
-                            if (hasName(fi,"rmsea.scaled") ) {
+                            if (utils::hasName(fi,"rmsea.scaled") ) {
                               
                               tab[[length(tab)+1]]<-list(srmr=fi$srmr_bentler,
                                                          rmsea=fi$rmsea.scaled,
@@ -242,37 +242,34 @@ Runner <- R6::R6Class("Runner",
                           },
                           run_fit_modelbaseline=function() {
                             
+                            fun<-function(aname) {
+                              item<-list(statistics=fit[[aname]],scaled=NA,robust=NA)
+                              scaled<-paste0(aname,".scaled")
+                              if (scaled %in% names(fit))
+                                 item[["scaled"]]<-fit[[scaled]]
+                              robust<-paste0(aname,".robust")
+                              if (robust %in% names(fit))
+                                item[["robust"]]<-fit[[robust]]
+                              return(item)
+                            }
                             fit<-self$fit_measures()
-                            alist<-list()
-                            alist[[length(alist) + 1]]  <- list(name = "Comparative Fit Index (CFI)",                statistics = fit[["cfi"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Tucker-Lewis Index (TLI)",                   statistics = fit[["tli"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Non-normed Fit Index (NNFI)", statistics = fit[["nnfi"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Bentler-Bonett Normed Fit Index (NFI)",      statistics = fit[["nfi"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Parsimony Normed Fit Index (PNFI)",          statistics = fit[["pnfi"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Bollen's Relative Fit Index (RFI)",          statistics = fit[["rfi"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Bollen's Incremental Fit Index (IFI)",       statistics = fit[["ifi"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Relative Noncentrality Index (RNI)",         statistics = fit[["rni"]]);
-                            return(alist)
-                            
+                            alist<-lapply(names(INFO_INDICES),function(x) {
+                              item<-fun(x)
+                              item$name<-INFO_INDICES[[x]]
+                              item
+                            })
                           },
                           run_fit_moreindices=function() {
-                            
-                            
                             fit<-self$fit_measures()
-                            alist<-list()
-                            if (hasName(fit,"logl"))
-                               alist[[length(alist) + 1]]  <- list(name = "Log Likelihood",            statistics = fit[["logl"]]);
-
-                            if (hasName(fit,"unrestricted.logl"))
-                              alist[[length(alist) + 1]]  <- list(name = "Unrestricted Log Likelihood",            statistics = fit[["unrestricted.logl"]]);
-                            
-                            alist[[length(alist) + 1]]  <- list(name = "Hoelter Critical N (CN), α=0.05",            statistics = fit[["cn_05"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Hoelter Critical N (CN), α=0.01",            statistics = fit[["cn_01"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Goodness of Fit Index (GFI)",                statistics = fit[["gfi"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "Parsimony Goodness of Fit Index (GFI)",      statistics = fit[["pgfi"]]);
-                            alist[[length(alist) + 1]]  <- list(name = "McDonald Fit Index (MFI)",                   statistics = fit[["mfi"]]);
+                            alist<-lapply(names(INFO_MOREINDICES),function(x) {
+                              item<-list()
+                              if (hasName(fit,x))
+                                  item$statistics=fit[[x]]
+                              if (is.something(item))
+                                  item$name<-INFO_MOREINDICES[[x]]
+                              item
+                            })
                             return(alist)
-                            
                             
                           },
                           run_fit_rsquared=function() {
@@ -603,7 +600,8 @@ Runner <- R6::R6Class("Runner",
                                 return("")
 
                             tests<-names(self$model@test)
-
+                            mark(tests)
+                            
                             if (length(tests)<2)
                               return("None")
                             

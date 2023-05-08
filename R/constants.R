@@ -1,5 +1,5 @@
-j_DEBUG=T
-j_INFO=T
+j_DEBUG=F
+j_INFO=F
 t_INFO=F
 
 
@@ -91,13 +91,13 @@ TRANS_WARNS[[3]]<-list(original="covariance matrix of latent",new="Covariance ma
 
 ##### some info ####
 
-ROBUST_ESTIM<-c("MLM","MLMV","MLMVS","WLSM","WLSMV","WLSMVS")
+ROBUST_ESTIM<-c("MLR", "MLM","MLMV","MLMVS","WLSM","WLSMV","WLSMVS")
 
 INFO_TEST<-list()
 INFO_TEST[["satorra.bentler"]]   <- "Satorra-Bentler mean adjusted"
 INFO_TEST[["scaled.shifted"]]    <- "Mean adjusted scaled and shifted"
 INFO_TEST[["mean.var.adjusted"]] <- "Mean and variance adjusted"
-
+INFO_TEST[["yuan.bentler.mplus"]]<- " Yuan-Bentler T2*"
 INFO_ML<-c("ML","MLM","MLMV","MLMVS")
 
 
@@ -107,5 +107,31 @@ INFO_SE[["robust.sem"]]<-"Robust"
 INFO_SE[["boot"]]<-"Bootstrap"
 INFO_SE[["robust.huber.white"]]<-"Robust Huber and White"
 
+INFO_INDICES=list(
+                cfi   =  "Comparative Fit Index (CFI)" , 
+                tli   = "Tucker-Lewis Index (TLI)",
+                nnfi  = "Bentler-Bonett Non-normed Fit Index (NNFI)",
+                rni   = "Relative Noncentrality Index (RNI)",
+                nfi   = "Bentler-Bonett Normed Fit Index (NFI)",
+                rfi   = "Bollen's Relative Fit Index (RFI)",
+                ifi   = "Bollen's Incremental Fit Index (IFI)",
+                pnfi   = "Parsimony Normed Fit Index (PNFI)"
+                
+                )
+INFO_MOREINDICES=list(
+  
+  cn_05 = "Hoelter Critical N (CN), α=0.05",  
+  cn_01 = "Hoelter Critical N (CN), α=0.01", 
+  gfi   = "Goodness of Fit Index (GFI)",
+  agfi  = "Adjusted Goodness of Fit Index (AGFI)",
+  pgfi  =  "Parsimony Goodness of Fit Index (PGFI)",
+  mfi   =  "McDonald Fit Index (MFI)",
+  ecvi  =  "Expected Cross-Validation Index (ECVI)",
+  logl  =  "Loglikelihood user model (H0)"  ,
+  unrestricted.logl = "Loglikelihood unrestricted model (H1)",
+  aic   =  "Akaike (AIC)",
+  bic   =  "Bayesian (BIC)",
+  bic2  =   "Sample-size adjusted Bayesian (SABIC)"
+)                
 
 

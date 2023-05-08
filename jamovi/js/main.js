@@ -165,9 +165,12 @@ const events = {
         };
 
         this.getActiveVariables = (script) => {
-            var any     =  script.split(/[,.~+=:*\s]/);
+            var any     =  script.split(/[,~+=:*\s]/);
+            console.log(any)
+
             var present =  this.getColumnNames().then((cols) => 
                                cols.filter(col=> any.includes(col)));
+            console.log(present)
             return(present)      
          };
 
