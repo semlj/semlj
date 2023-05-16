@@ -260,6 +260,7 @@ SmartTable <- R6::R6Class("SmartTable",
                               for (name in varnames)
                                 self$table$getColumn(name)$setVisible(TRUE)
                             },
+                            showOn=function(alist) {self$hideOn<-alist},
                             hideOn=function(alist) {
                               
                               if (missing(alist))
@@ -343,7 +344,7 @@ SmartTable <- R6::R6Class("SmartTable",
                                 else
                                   jtable$setRow(rowNo=i,w)
                               }
-                              
+                              private$.setHideOn(rtable)
                               rlist <-private$.listify(rtable)
                               for (i in seq_along(rlist)) {
                                 t<-rlist[[i]]
@@ -355,18 +356,19 @@ SmartTable <- R6::R6Class("SmartTable",
                             .finalize=function() {
                               
                               private$.setColumnTitle()
-                              private$.setHideOn()
                               self$table$setVisible(TRUE)
 
                             },
-                            .setHideOn=function() {
+                            .setHideOn=function(rtable) {
                               
                               if (is.something(private$.hideOn)) {
-                                rtable<-self$table$asDF
+                                
+                                if (inherits(rtable,"list"))
+                                     rtable<-as.data.frame(do.call(rbind,rtable))
                                 what<-names(rtable)
                                 for (col in names(private$.hideOn))
                                   if (col %in% what) {
-                                    test<-all(rtable[[col]] %in% private$.hideOn[[col]])
+                                    test<-all(unlist(rtable[[col]]) %in% private$.hideOn[[col]])
                                     if (test) 
                                       self$table$getColumn(col)$setVisible(FALSE)
                                     else

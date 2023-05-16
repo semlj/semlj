@@ -220,7 +220,6 @@ Runner <- R6::R6Class("Runner",
                                          )
                             
                             if (hasName(fi,"rmsea.robust")) {
-                              mark(fi)
                               tab[[2]]  <-  list(srmr=fi$srmr_bentler,
                                                  rmsea=fi$rmsea.robust,
                                                  rmsea.ci.lower=fi$rmsea.ci.lower.robust,
@@ -600,8 +599,7 @@ Runner <- R6::R6Class("Runner",
                                 return("")
 
                             tests<-names(self$model@test)
-                            mark(tests)
-                            
+
                             if (length(tests)<2)
                               return("None")
                             

@@ -41,6 +41,11 @@ Dispatch <- R6::R6Class(
                                 
                                 obj$message<-private$.translate(obj$message)
                                 
+                                if (is.null(obj$message))
+                                  return()
+                                
+                                if (exists("fromb64")) obj$message<-fromb64(obj$message)
+                                
                                 if (inherits(table,"Html")) {
                                   content<-table$content
                                   content<-table$setContent(paste(content,"<div><i>Note:</i>",obj$message,"</div>"))
@@ -49,16 +54,17 @@ Dispatch <- R6::R6Class(
                                 }
                                 init<-(hasName(obj,"initOnly") && obj[["initOnly"]]) 
                                 
-                                if (inherits(table,"Array")) {
-                                  for (one in table$items)
-                                    one$setNote(obj$key,obj$message,init=init)
-                                  return()
-                                }
+                                .fun<-function(table,id,msg,init) {
+                                  
+                                  if (table$.has("items"))
+                                    for (x in table$items)
+                                      .fun(x,id,msg,init)
+                                  else
+                                    table$setNote(obj$key,obj$message,init=init)
+                                  
+                                }  
+                                .fun(table,obj$id,obj$message,init)
                                 
-                                table$setNote(obj$key,obj$message,init=init)
-                                
-                               
-                               
                                
                         },
                         errors=function(obj) {
@@ -110,25 +116,20 @@ Dispatch <- R6::R6Class(
                         
                       },
                       .translate=function(msg) {
-      
-                        .translate=function(msg) {
                           
-                          if (!exists("TRANS_WARNS")) return(msg)
-                          
-                          where<-unlist(lapply(TRANS_WARNS,function(x) length(grep(x$original,msg))>0))
-                          where<-which(where)
-                          
-                          if (is.something(where))
-                            if (is.something(TRANS_WARNS[[where]]$new))
-                              msg<-gsub(TRANS_WARNS[[where]]$original,TRANS_WARNS[[where]]$new,msg,fixed=T)
+                        if (!exists("TRANS_WARNS")) return(msg)
+                        
+                        where<-unlist(lapply(TRANS_WARNS,function(x) length(grep(x$original,msg))>0))
+                        where<-which(where)
+                        
+                        if (is.something(where)) {
+                          if (length(where)>1) where<-where[[1]]
+                          if (is.something(TRANS_WARNS[[where]]$new))
+                             msg<-gsub(TRANS_WARNS[[where]]$original,TRANS_WARNS[[where]]$new,msg,fixed=T)
                           else
-                            msg<-NULL
-                          
-                          return(msg)
-                          
-                        }
-                        return(msg)
-
+                             msg<-NULL
+                        }                  
+                        return(msg)                          
                        }
                        
             ) #end of private

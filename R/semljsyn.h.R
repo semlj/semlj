@@ -1073,13 +1073,13 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `format`="zto"),
                                 list(
                                     `name`="scaled", 
-                                    `visible`=TRUE, 
+                                    `visible`=FALSE, 
                                     `title`="Scaled", 
                                     `type`="number", 
                                     `format`="zto"),
                                 list(
                                     `name`="robust", 
-                                    `visible`=TRUE, 
+                                    `visible`=FALSE, 
                                     `title`="Robust", 
                                     `type`="number", 
                                     `format`="zto"))))

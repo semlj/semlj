@@ -65,6 +65,7 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
 
         aSmartObj                 <- SmartTable$new(self$results$fit$modelbaseline, runner_machine)
         aSmartObj$activateOnData  <- TRUE
+        aSmartObj$showOn          <- list(scaled=NA, robust=NA)
         ladd(private$.smartObjs)  <- aSmartObj
 
         ## R2 table ###
