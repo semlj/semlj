@@ -327,12 +327,12 @@ items:
             type: number
             format: zto
           - name: scaled
-            visible: true
+            visible: false
             title: Scaled
             type: number
             format: zto
           - name: robust
-            visible: true
+            visible: false
             title: Robust
             type: number
             format: zto
