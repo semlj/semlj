@@ -63,7 +63,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         ## even more fit indices table ###
 
         aSmartObj                 <- SmartTable$new(self$results$fit$modelbaseline, runner_machine)
-        aSmartObj$showOn          <- list(scaled=NA, robust=NA)
+        aSmartObj$hideOn          <- list(scaled=NA, robust=NA)
         ladd(private$.smartObjs)  <- aSmartObj
 
         ## R2 table ###
