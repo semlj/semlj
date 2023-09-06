@@ -327,15 +327,15 @@ items:
             type: number
             format: zto
           - name: scaled
-            visible: false
             title: Scaled
             type: number
             format: zto
-          - name: robust
             visible: false
+          - name: robust
             title: Robust
             type: number
             format: zto
+            visible: false
 
       # Additional fit measures (2): Other fit indices ------------------------
       - name: moreindices
