@@ -10,11 +10,16 @@ Runner <- R6::R6Class("Runner",
                           model=NULL,
                           tab_mardia=NULL,
                           tab_htmt=NULL,
+                          rownames=NULL,
                           estimate = function(data) {
+                            
+                            ## save rownames for predicted with missing
+                            self$rownames<-rownames(data)
                             ## prepare the options based on Syntax definitions
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
 
+                            
                             lavoptions <- list(model = private$.lav_structure, 
                                                data = data,
                                                estimator  = self$options$estimator,
@@ -659,6 +664,8 @@ Runner <- R6::R6Class("Runner",
                                                      names(predsdata),
                                                      rep("DV Predicted",ncol(predsdata)),
                                                      rep("continuous",ncol(predsdata)))
+                            results$preds_dv$setRowNums(self$rownames)
+                            rownames(predsdata)<-self$rownames
                             results$preds_dv$setValues(predsdata)
                             self$warning<-list(topic="info",message=paste("Dependent variables predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
                             },
@@ -673,14 +680,13 @@ Runner <- R6::R6Class("Runner",
 
                              jinfo("Trying saving lv predicted")
                           
-                            obj<-try_hard(lavaan::lavPredict(self$model,type="lv",assemble = TRUE))
+                            obj<-try_hard(lavaan::lavPredict(self$model,type="lv",assemble = TRUE, append.data = T))
                             if (!isFALSE(obj$error)) {
                                 self$warning<-list(topic="info",message="Factor scores cannot be computed for this model")
                                 return()
                             }
-
                             predsdata<-as.data.frame(obj$obj)
-
+           
                             if (ncol(predsdata)==0) {
                                 self$warning<-list(topic="info",message="Factor scores cannot be computed for this model")
                                 return()
@@ -693,6 +699,8 @@ Runner <- R6::R6Class("Runner",
                                                    names(predsdata),
                                                    rep("Factor scores ",ncol(predsdata)),
                                                    rep("continuous",ncol(predsdata)))
+                            results$preds_lv$setRowNums(self$rownames)
+                            rownames(predsdata)<-self$rownames
                             results$preds_lv$setValues(predsdata)
                             self$warning<-list(topic="info",message=paste("Factors scores (latent predicted values) saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
                             },
@@ -720,9 +728,7 @@ Runner <- R6::R6Class("Runner",
                                 self$warning<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
                                 return()
                             }
-                              
-                              predsdata<-as.data.frame(obj$obj)
-                              
+
                               if (ncol(predsdata)==0) {
                                 self$warning<-list(topic="info",message="Indicators predicted values cannot be computed for this model")
                                 return()
@@ -734,6 +740,9 @@ Runner <- R6::R6Class("Runner",
                                                      names(predsdata),
                                                      rep("Indicator predicted",ncol(predsdata)),
                                                      rep("continuous",ncol(predsdata)))
+                              results$preds_ov$setRowNums(self$rownames)
+                              rownames(predsdata)<-self$rownames
+                              results$preds_ov$setRowNums(rownames(predsdata))
                               results$preds_ov$setValues(predsdata)
                               self$warning<-list(topic="info",message=paste("Indicators predicted values saved in the dataset. Varnames:",paste(names(predsdata),collapse = ", ")))
                           }

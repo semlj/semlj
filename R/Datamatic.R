@@ -83,6 +83,7 @@ Datamatic <- R6::R6Class(
         if (dim(cdata)[1]!=dim(data[1])) 
                         self$warning<-list(topic="info",
                                        message=DATA_WARNS[["missing"]])
+        mark(head(cdata))
         return(cdata)
       }
 
