@@ -125,6 +125,10 @@ children:
                 name: bootN
                 format: number
                 enable: '(se:boot)'
+              - type: CheckBox
+                name: parallel
+                enable: '(se:boot)'
+                
           - type: LayoutBox
             margin: large
             style: list

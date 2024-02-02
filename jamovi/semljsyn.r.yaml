@@ -547,6 +547,7 @@ items:
                     - beta_ci
                     - ci_width
                     - se
+                    - parallel
                       ### cioptions  ends
 
         columns:
@@ -652,6 +653,7 @@ items:
                     - beta_ci
                     - ci_width
                     - se
+                    - parallel
                       ### cioptions  ends
 
         columns:
@@ -756,6 +758,7 @@ items:
                     - beta_ci
                     - ci_width
                     - se
+                    - parallel
                       ### cioptions  ends
 
         columns:
@@ -859,6 +862,7 @@ items:
                     - beta_ci
                     - ci_width
                     - se
+                    - parallel
                       ### cioptions  ends
 
         columns:
@@ -964,6 +968,7 @@ items:
                     - beta_ci
                     - ci_width
                     - se
+                    - parallel
                       ### cioptions  ends
         
         columns:
@@ -1058,6 +1063,7 @@ items:
                     - beta_ci
                     - ci_width
                     - se
+                    - parallel
                       ### cioptions  ends
 
         columns:
@@ -1156,6 +1162,7 @@ items:
                     - beta_ci
                     - ci_width
                     - se
+                    - parallel
                       ### cioptions  ends
 
         columns:
@@ -1222,6 +1229,7 @@ items:
                     - beta_ci
                     - ci_width
                     - se
+                    - parallel
                       ### cioptions  ends
         
         columns:
