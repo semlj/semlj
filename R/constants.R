@@ -85,7 +85,7 @@ SUB<-list("\u2081","\u2082","\u2083","\u2084","\u2085","\u2086","\u2087","\u2088
 
 TRANS_WARNS<-list()
 TRANS_WARNS[[1]]<-list(original="subscript out of bounds",new="Computation cannot be done") 
-TRANS_WARNS[[2]]<-list(original="lavaan ERROR",new="The model cannot be estimated, please refine it. Reason: {}") 
+TRANS_WARNS[[2]]<-list(original="lavaan ERROR",sub="The model cannot be estimated, please refine it. Reason: " ) 
 TRANS_WARNS[[3]]<-list(original="covariance matrix of latent",new="Covariance matrix of latent variables is not positive definite.") 
 
 
