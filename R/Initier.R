@@ -88,8 +88,16 @@ Initer <- R6::R6Class(
     },
     
     init_fit_modelbaseline=function() {
-      
-    alist<-lapply(INFO_INDICES, function(x) list(name=x))  
+    
+    onelist<-list(name="")   
+    ## we need this otherwise robust and scaled column disappear when changing unrelated options
+    if (self$optionValue("estimator") %in% ROBUST_ESTIM)
+       onelist<-c(scaled="",robust="")
+    alist<-lapply(INFO_INDICES, function(x) {
+       onelist["name"]<-x
+       onelist
+      })
+    
     return(alist)
     },
     init_fit_moreindices=function() {
