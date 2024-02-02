@@ -60,12 +60,12 @@ Runner <- R6::R6Class("Runner",
                             
                             ## check if warnings or errors are produced
                             self$warning <-  list(topic="info", message=results$warning)
-                            ## it it fails here, we should stop
+                            ## if it fails here, we should stop
                             error<-results$error
                             if (length(grep("subscript out of bound",error,fixed=T))>0) 
                                    error<-"Model cannot be estimated. Please refine the model or choose different options."
                             self$error <-  list(topic="info", message=error,final=TRUE)
-                            
+
                             self$model <- results$obj
                             
                             ### we need the data for mardia's, so we save them here
