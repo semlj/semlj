@@ -40,6 +40,14 @@ Runner <- R6::R6Class("Runner",
                             
                             if (self$options$se!="auto") 
                                 lavoptions[["se"]]<-self$options$se
+                            
+                            if (self$options$se=="boot" && self$option("parallel")) {
+                               method<-"multicore"
+                               if (.Platform$OS.type == "windows")
+                                   method<-"snow"
+                               lavoptions[["parallel"]]<-method
+                            }
+                            
 
                             if (is.something(self$multigroup)) {
                               lavoptions[["group"]] <- self$multigroup$var

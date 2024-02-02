@@ -21,6 +21,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             se = "auto",
             bootci = "perc",
             bootN = 1000,
+            parallel = FALSE,
             est_ci = TRUE,
             beta_ci = FALSE,
             ci_width = 95,
@@ -190,6 +191,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 bootN,
                 min=50,
                 default=1000)
+            private$..parallel <- jmvcore::OptionBool$new(
+                "parallel",
+                parallel,
+                default=FALSE)
             private$..est_ci <- jmvcore::OptionBool$new(
                 "est_ci",
                 est_ci,
@@ -510,6 +515,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..se)
             self$.addOption(private$..bootci)
             self$.addOption(private$..bootN)
+            self$.addOption(private$..parallel)
             self$.addOption(private$..est_ci)
             self$.addOption(private$..beta_ci)
             self$.addOption(private$..ci_width)
@@ -586,6 +592,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         se = function() private$..se$value,
         bootci = function() private$..bootci$value,
         bootN = function() private$..bootN$value,
+        parallel = function() private$..parallel$value,
         est_ci = function() private$..est_ci$value,
         beta_ci = function() private$..beta_ci$value,
         ci_width = function() private$..ci_width$value,
@@ -661,6 +668,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..se = NA,
         ..bootci = NA,
         ..bootN = NA,
+        ..parallel = NA,
         ..est_ci = NA,
         ..beta_ci = NA,
         ..ci_width = NA,
@@ -1293,7 +1301,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "est_ci",
                                 "beta_ci",
                                 "ci_width",
-                                "se"),
+                                "se",
+                                "parallel"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1403,7 +1412,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "est_ci",
                                 "beta_ci",
                                 "ci_width",
-                                "se"),
+                                "se",
+                                "parallel"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1514,7 +1524,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "est_ci",
                                 "beta_ci",
                                 "ci_width",
-                                "se"),
+                                "se",
+                                "parallel"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1624,7 +1635,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "est_ci",
                                 "beta_ci",
                                 "ci_width",
-                                "se"),
+                                "se",
+                                "parallel"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1734,7 +1746,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "est_ci",
                                 "beta_ci",
                                 "ci_width",
-                                "se"),
+                                "se",
+                                "parallel"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1831,7 +1844,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "est_ci",
                                 "beta_ci",
                                 "ci_width",
-                                "se"),
+                                "se",
+                                "parallel"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1932,7 +1946,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "est_ci",
                                 "beta_ci",
                                 "ci_width",
-                                "se"),
+                                "se",
+                                "parallel"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -1994,7 +2009,8 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "est_ci",
                                 "beta_ci",
                                 "ci_width",
-                                "se"),
+                                "se",
+                                "parallel"),
                             columns=list(
                                 list(
                                     `name`="lhs", 
@@ -2629,6 +2645,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   - basic).
 #' @param bootN The number of bootstrap samples for estimating confidence
 #'   intervals.
+#' @param parallel use parallel computation for bootstrap C.I
 #' @param est_ci \code{TRUE} or \code{FALSE} (default), show confidence
 #'   intervals for estimates
 #' @param beta_ci \code{TRUE} or \code{FALSE} (default), show confidence
@@ -2811,6 +2828,7 @@ semljsyn <- function(
     se = "auto",
     bootci = "perc",
     bootN = 1000,
+    parallel = FALSE,
     est_ci = TRUE,
     beta_ci = FALSE,
     ci_width = 95,
@@ -2897,6 +2915,7 @@ semljsyn <- function(
         se = se,
         bootci = bootci,
         bootN = bootN,
+        parallel = parallel,
         est_ci = est_ci,
         beta_ci = beta_ci,
         ci_width = ci_width,

@@ -38,6 +38,7 @@ cioptions:
               - beta_ci
               - ci_width
               - se
+              - parallel
 diagoptions:
             - diag_shape_man
             - diag_shape_lat

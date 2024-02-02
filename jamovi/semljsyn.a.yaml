@@ -261,6 +261,13 @@ options:
       description:
           R: >
              The number of bootstrap samples for estimating confidence intervals.
+    - name: parallel
+      title: Parallel Computation
+      type: Bool
+      default: false
+      description:
+          R: >
+             use parallel computation for bootstrap C.I
 
     ### (c) Confidence intervals ----------------------------------------------
     - name: est_ci
