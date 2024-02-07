@@ -52,6 +52,7 @@ options:
       
     - name: donotrun
       type: Bool
+      default: false
       title: Do not run
       description: not present in R. Halt running for more confortable input
       
