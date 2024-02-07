@@ -270,6 +270,13 @@ Runner <- R6::R6Class("Runner",
                               item$name<-INFO_INDICES[[x]]
                               item
                             })
+                            if (self$optionValue("estimator") %in% ROBUST_ESTIM) {
+                              test<-all(sapply(alist,function(x) is.na(x$robust)))
+                              if (test)
+                                warning("Robust indices cannot be computed for this model/estimator combination. The scaled stistics can be used instead.")
+                              
+                            }
+                            alist
                           },
                           run_fit_moreindices=function() {
                             fit<-self$fit_measures()
