@@ -12,7 +12,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             fonts = "small",
             vars = list(),
             toggle = FALSE,
-            donotrun = NULL,
+            donotrun = FALSE,
             estimator = "default",
             likelihood = "default",
             missing = "listwise",
@@ -121,7 +121,8 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 hidden=TRUE)
             private$..donotrun <- jmvcore::OptionBool$new(
                 "donotrun",
-                donotrun)
+                donotrun,
+                default=FALSE)
             private$..estimator <- jmvcore::OptionList$new(
                 "estimator",
                 estimator,
@@ -2819,7 +2820,7 @@ semljsyn <- function(
     fonts = "small",
     vars = list(),
     toggle = FALSE,
-    donotrun,
+    donotrun = FALSE,
     estimator = "default",
     likelihood = "default",
     missing = "listwise",
