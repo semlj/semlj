@@ -398,10 +398,13 @@ Initer <- R6::R6Class(
           return(tab)
         }
         
+      },
+      init_lavaanoptions=function() {
+        
+        tab<-list(rep(list(opt1="",value1="",opt2=""),10))
+
+        return(tab)
       }
-
-
-
 
 
 

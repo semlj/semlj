@@ -29,23 +29,6 @@ items:
         title: ""
         combineBelow: true
 
-  - name: synexamples
-    type: Table
-#   description:     
-    visible: (constraints_examples)
-    title: "Syntax examples"
-    clearWith:
-    columns:
-      - name: info
-        type: text
-        title: Aim
-      - name: example
-        type: text
-        title: Example
-      - name: com
-        type: text
-        title: Outcome
-
 
   # Overall Tests =============================================================
   - name: fit
@@ -1920,3 +1903,48 @@ items:
     type: Output            
     varDescription: Dependent vars scores
     initInRun: true 
+
+
+
+  - name: synexamples
+    type: Table
+#   description:     
+    visible: (constraints_examples)
+    title: "Syntax examples"
+    clearWith:
+    columns:
+      - name: info
+        type: text
+        title: Aim
+      - name: example
+        type: text
+        title: Example
+      - name: com
+        type: text
+        title: Outcome
+
+  - name: lavaanoptions
+    type: Table
+    visible: (lavaan_options)
+    title: "Lavaan Options"
+    refs: 
+      - lavaan
+    columns:
+      - name: opt1
+        type: text
+        title: Option
+      - name: value1
+        type: text
+        title: Value
+      - name: opt2
+        type: text
+        title: Option
+      - name: value2
+        type: text
+        title: Value
+      - name: opt3
+        type: text
+        title: Option
+      - name: value3
+        type: text
+        title: Value

@@ -357,10 +357,14 @@ children:
                 children:
                   - type: Label
                     label: Information
-                  - type: CheckBox
-                    name: showlabels
-                  - type: CheckBox
-                    name: constraints_examples
+                    children:
+                    - type: CheckBox
+                      name: showlabels
+                    - type: CheckBox
+                      name: constraints_examples
+                    - type: CheckBox
+                      name: lavaan_options
+
               - type: LayoutBox
                 margin: large
                 style: inline

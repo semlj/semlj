@@ -56,6 +56,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             oblimin.gamma = 0,
             showlabels = FALSE,
             constraints_examples = FALSE,
+            lavaan_options = FALSE,
             outputAdditionalFitMeasures = FALSE,
             r2 = "none",
             reliability = FALSE,
@@ -360,6 +361,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "constraints_examples",
                 constraints_examples,
                 default=FALSE)
+            private$..lavaan_options <- jmvcore::OptionBool$new(
+                "lavaan_options",
+                lavaan_options,
+                default=FALSE)
             private$..outputAdditionalFitMeasures <- jmvcore::OptionBool$new(
                 "outputAdditionalFitMeasures",
                 outputAdditionalFitMeasures,
@@ -551,6 +556,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..oblimin.gamma)
             self$.addOption(private$..showlabels)
             self$.addOption(private$..constraints_examples)
+            self$.addOption(private$..lavaan_options)
             self$.addOption(private$..outputAdditionalFitMeasures)
             self$.addOption(private$..r2)
             self$.addOption(private$..reliability)
@@ -628,6 +634,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         oblimin.gamma = function() private$..oblimin.gamma$value,
         showlabels = function() private$..showlabels$value,
         constraints_examples = function() private$..constraints_examples$value,
+        lavaan_options = function() private$..lavaan_options$value,
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
         r2 = function() private$..r2$value,
         reliability = function() private$..reliability$value,
@@ -704,6 +711,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..oblimin.gamma = NA,
         ..showlabels = NA,
         ..constraints_examples = NA,
+        ..lavaan_options = NA,
         ..outputAdditionalFitMeasures = NA,
         ..r2 = NA,
         ..reliability = NA,
@@ -742,6 +750,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         additional = function() private$.items[["additional"]],
         covariances = function() private$.items[["covariances"]],
         modification = function() private$.items[["modification"]],
+        lavaanoptions = function() private$.items[["lavaanoptions"]],
         pathgroup = function() private$.items[["pathgroup"]],
         preds_lv = function() private$.items[["preds_lv"]],
         preds_ov = function() private$.items[["preds_ov"]],
@@ -2436,6 +2445,38 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="sEPC (nox)", 
                                     `type`="number", 
                                     `format`="zto"))))}))$new(options=options))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="lavaanoptions",
+                visible="(lavaan_options)",
+                title="Lavaan Options",
+                refs=list(
+                    "lavaan"),
+                columns=list(
+                    list(
+                        `name`="opt1", 
+                        `type`="text", 
+                        `title`="Option"),
+                    list(
+                        `name`="value1", 
+                        `type`="text", 
+                        `title`="Value"),
+                    list(
+                        `name`="opt2", 
+                        `type`="text", 
+                        `title`="Option"),
+                    list(
+                        `name`="value2", 
+                        `type`="text", 
+                        `title`="Value"),
+                    list(
+                        `name`="opt3", 
+                        `type`="text", 
+                        `title`="Option"),
+                    list(
+                        `name`="value3", 
+                        `type`="text", 
+                        `title`="Value"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -2723,6 +2764,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   the parameters in the model
 #' @param constraints_examples \code{TRUE} or \code{FALSE} (default), show
 #'   examples of the lavaan model syntax
+#' @param lavaan_options \code{TRUE} or \code{FALSE} (default), show options
+#'   of the lavaan model
 #' @param outputAdditionalFitMeasures \code{TRUE} or \code{FALSE} (default),
 #'   show additional fit measures (e.g., CFI, TLI, etc.)
 #' @param r2 .
@@ -2798,6 +2841,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$covariances$residual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$covariances$latent} \tab \tab \tab \tab \tab A covariance. \cr
 #'   \code{results$modification$indices} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$lavaanoptions} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
 #'   \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$preds_lv} \tab \tab \tab \tab \tab an output \cr
@@ -2864,6 +2908,7 @@ semljsyn <- function(
     oblimin.gamma = 0,
     showlabels = FALSE,
     constraints_examples = FALSE,
+    lavaan_options = FALSE,
     outputAdditionalFitMeasures = FALSE,
     r2 = "none",
     reliability = FALSE,
@@ -2951,6 +2996,7 @@ semljsyn <- function(
         oblimin.gamma = oblimin.gamma,
         showlabels = showlabels,
         constraints_examples = constraints_examples,
+        lavaan_options = lavaan_options,
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,
         r2 = r2,
         reliability = reliability,

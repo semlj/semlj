@@ -87,9 +87,11 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               # prepare some fast stuff anyway, because the table may be already saved 
                               # and should be inited properly
-                              if (isFALSE(self$activated)) 
-                                 return()
-                              
+                              if (isFALSE(self$activated)) {
+                                private$.debug_msg("Not activated")
+                                return()
+                                
+                              }
                               private$.setColumnTitle()
                               private$.ci()
                               self$title
@@ -98,8 +100,11 @@ SmartTable <- R6::R6Class("SmartTable",
 
                               rtable<-private$.getData()
                               
-                              if (is.null(rtable))
-                                  return()
+                              if (is.null(rtable)) {
+                                private$.debug_msg("No data")
+                                return()
+                                
+                              }
 
                               ### expand it if needed
                               if (self$expandOnInit) private$.expand(rtable)
@@ -287,8 +292,15 @@ SmartTable <- R6::R6Class("SmartTable",
                               ### check how to retrieve the data
                               if (inherits(fun,"character") ) {
                                 
-                                if (!(fun %in% names(private$.estimator)))
-                                    return(NULL)
+                                if (!(fun %in% names(private$.estimator))) {
+                                  
+                                  private$.debug_msg(fun," not in estimator")
+                                  if (is.null(private$.estimator))
+                                      private$.debug_msg(fun," estimator is NULL")
+                                  
+
+                                  return(NULL)
+                                }
                                 
                                 output<-try_hard(private$.estimator[[fun]]())
                                 rtable<-output$obj

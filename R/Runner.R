@@ -547,6 +547,29 @@ Runner <- R6::R6Class("Runner",
                             }
                             tab
                           },
+                          run_lavaanoptions=function() {
+                            
+                            alist<-self$model@Options
+                            alist[26]<-NULL # to ugly to show
+                            results<-try_hard({
+                             alist[sapply(alist,is.null)]<-"NULL"
+                             alist[sapply(alist,function(x) length(x)==0)]<-"EMPTY"
+                             alist<-sapply(alist,function(x)  {
+                                   if (length(x)>1) 
+                                     paste(x,collapse = ",")
+                                   else 
+                                      x})
+                             blist<-names(alist)
+                             amat<-as.data.frame(matrix(unlist(alist),ncol=3))
+                             names(amat)<-c("value1","value2","value3")
+                             bmat<-as.data.frame(matrix(blist,ncol=3))
+                             names(bmat)<-c("opt1","opt2","opt3")
+                             tab<-as.data.frame(cbind(bmat,amat))
+                             tab
+                            })
+                            results$obj
+                          },
+                          
                           savePredRes=function(results,data) {
                              
                             private$.saveDv(results,data)
