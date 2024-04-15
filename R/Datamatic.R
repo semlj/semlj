@@ -80,9 +80,11 @@ Datamatic <- R6::R6Class(
       
       if (self$missing=="listwise") {
         cdata<-jmvcore::naOmit(data)
-        if (dim(cdata)[1]!=dim(data[1])) 
+      
+        if (dim(cdata)[1] != dim(data)[1]) 
                         self$warning<-list(topic="info",
                                        message=DATA_WARNS[["missing"]])
+     
         return(cdata)
       }
 
