@@ -815,6 +815,20 @@ options:
             `TRUE` or `FALSE` (default), show examples of the lavaan model syntax
 
     ### (a) Additional outputs ------------------------------------------------
+    
+    - name: lavaan_options
+      type: Bool
+      title: Show Lavaan Options
+      default: false
+      description:
+          ui: >
+             show options of the lavaan model 
+          R: >
+            `TRUE` or `FALSE` (default), show options of the lavaan model
+    
+    
+    
+    
     - name: outputAdditionalFitMeasures
       type: Bool
       title: "Additional fit measures"

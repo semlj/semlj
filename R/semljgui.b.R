@@ -31,12 +31,6 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj                <- SmartTable$new(self$results$info, runner_machine)
         ladd(private$.smartObjs) <- aSmartObj
 
-        ## syntax examples table ###
-        EXAMPLES                  <- c(CONT_EXAMPLES, DP_EXAMPLES)
-        aSmartObj                 <- SmartTable$new(self$results$synexamples)
-        aSmartObj$initSource      <- EXAMPLES
-        aSmartObj$indent          <- c(-1, -11)
-        ladd(private$.smartObjs)  <- aSmartObj
 
 
         ## main fit table ###
@@ -202,7 +196,17 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$spaceBy          <- "lgroup"
         ladd(private$.smartObjs)   <- aSmartObj
 
+        ## syntax examples table ###
+        EXAMPLES                  <- c(CONT_EXAMPLES, DP_EXAMPLES)
+        aSmartObj                 <- SmartTable$new(self$results$synexamples)
+        aSmartObj$initSource      <- EXAMPLES
+        aSmartObj$indent          <- c(-1, -11)
+        ladd(private$.smartObjs)  <- aSmartObj
 
+        ## lavaan options table ###
+        aSmartObj                 <- SmartTable$new(self$results$lavaanoptions,runner_machine)
+        ladd(private$.smartObjs)  <- aSmartObj
+        
 
         for (tab in private$.smartObjs) {
           tab$initTable()

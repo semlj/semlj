@@ -62,6 +62,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             oblimin.gamma = 0,
             showlabels = FALSE,
             constraints_examples = FALSE,
+            lavaan_options = FALSE,
             outputAdditionalFitMeasures = FALSE,
             reliability = FALSE,
             r2 = "none",
@@ -416,6 +417,10 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "constraints_examples",
                 constraints_examples,
                 default=FALSE)
+            private$..lavaan_options <- jmvcore::OptionBool$new(
+                "lavaan_options",
+                lavaan_options,
+                default=FALSE)
             private$..outputAdditionalFitMeasures <- jmvcore::OptionBool$new(
                 "outputAdditionalFitMeasures",
                 outputAdditionalFitMeasures,
@@ -612,6 +617,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..oblimin.gamma)
             self$.addOption(private$..showlabels)
             self$.addOption(private$..constraints_examples)
+            self$.addOption(private$..lavaan_options)
             self$.addOption(private$..outputAdditionalFitMeasures)
             self$.addOption(private$..reliability)
             self$.addOption(private$..r2)
@@ -691,6 +697,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         oblimin.gamma = function() private$..oblimin.gamma$value,
         showlabels = function() private$..showlabels$value,
         constraints_examples = function() private$..constraints_examples$value,
+        lavaan_options = function() private$..lavaan_options$value,
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
         reliability = function() private$..reliability$value,
         r2 = function() private$..r2$value,
@@ -769,6 +776,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..oblimin.gamma = NA,
         ..showlabels = NA,
         ..constraints_examples = NA,
+        ..lavaan_options = NA,
         ..outputAdditionalFitMeasures = NA,
         ..reliability = NA,
         ..r2 = NA,
@@ -802,7 +810,6 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         info = function() private$.items[["info"]],
-        synexamples = function() private$.items[["synexamples"]],
         fit = function() private$.items[["fit"]],
         models = function() private$.items[["models"]],
         additional = function() private$.items[["additional"]],
@@ -811,7 +818,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         pathgroup = function() private$.items[["pathgroup"]],
         preds_lv = function() private$.items[["preds_lv"]],
         preds_ov = function() private$.items[["preds_ov"]],
-        preds_dv = function() private$.items[["preds_dv"]]),
+        preds_dv = function() private$.items[["preds_dv"]],
+        synexamples = function() private$.items[["synexamples"]],
+        lavaanoptions = function() private$.items[["lavaanoptions"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -841,25 +850,6 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text", 
                         `title`="", 
                         `combineBelow`=TRUE))))
-            self$add(jmvcore::Table$new(
-                options=options,
-                name="synexamples",
-                visible="(constraints_examples)",
-                title="Syntax examples",
-                clearWith=NULL,
-                columns=list(
-                    list(
-                        `name`="info", 
-                        `type`="text", 
-                        `title`="Aim"),
-                    list(
-                        `name`="example", 
-                        `type`="text", 
-                        `title`="Example"),
-                    list(
-                        `name`="com", 
-                        `type`="text", 
-                        `title`="Outcome"))))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -2776,7 +2766,58 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="preds_dv",
                 title="Dependent vars scores",
                 varDescription="Dependent vars scores",
-                initInRun=TRUE))}))
+                initInRun=TRUE))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="synexamples",
+                visible="(constraints_examples)",
+                title="Syntax examples",
+                clearWith=NULL,
+                columns=list(
+                    list(
+                        `name`="info", 
+                        `type`="text", 
+                        `title`="Aim"),
+                    list(
+                        `name`="example", 
+                        `type`="text", 
+                        `title`="Example"),
+                    list(
+                        `name`="com", 
+                        `type`="text", 
+                        `title`="Outcome"))))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="lavaanoptions",
+                visible="(lavaan_options)",
+                title="Lavaan Options",
+                refs=list(
+                    "lavaan"),
+                columns=list(
+                    list(
+                        `name`="opt1", 
+                        `type`="text", 
+                        `title`="Option"),
+                    list(
+                        `name`="value1", 
+                        `type`="text", 
+                        `title`="Value"),
+                    list(
+                        `name`="opt2", 
+                        `type`="text", 
+                        `title`="Option"),
+                    list(
+                        `name`="value2", 
+                        `type`="text", 
+                        `title`="Value"),
+                    list(
+                        `name`="opt3", 
+                        `type`="text", 
+                        `title`="Option"),
+                    list(
+                        `name`="value3", 
+                        `type`="text", 
+                        `title`="Value"))))}))
 
 semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "semljguiBase",
@@ -2943,6 +2984,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   the parameters in the model
 #' @param constraints_examples \code{TRUE} or \code{FALSE} (default), show
 #'   examples of the lavaan model syntax
+#' @param lavaan_options \code{TRUE} or \code{FALSE} (default), show options
+#'   of the lavaan model
 #' @param outputAdditionalFitMeasures \code{TRUE} or \code{FALSE} (default),
 #'   show additional fit measures (e.g., CFI, TLI, etc.)
 #' @param reliability \code{TRUE} or \code{FALSE} (default), show additional
@@ -2999,7 +3042,6 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$synexamples} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$constraints} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
@@ -3028,6 +3070,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$preds_lv} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$preds_ov} \tab \tab \tab \tab \tab an output \cr
 #'   \code{results$preds_dv} \tab \tab \tab \tab \tab an output \cr
+#'   \code{results$synexamples} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$lavaanoptions} \tab \tab \tab \tab \tab a table \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -3095,6 +3139,7 @@ semljgui <- function(
     oblimin.gamma = 0,
     showlabels = FALSE,
     constraints_examples = FALSE,
+    lavaan_options = FALSE,
     outputAdditionalFitMeasures = FALSE,
     reliability = FALSE,
     r2 = "none",
@@ -3183,6 +3228,7 @@ semljgui <- function(
         oblimin.gamma = oblimin.gamma,
         showlabels = showlabels,
         constraints_examples = constraints_examples,
+        lavaan_options = lavaan_options,
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,
         reliability = reliability,
         r2 = r2,

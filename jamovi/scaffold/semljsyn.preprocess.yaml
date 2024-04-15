@@ -926,6 +926,31 @@ items:
             title: sEPC (nox)
             type: number
             format: zto
+  - name: lavaanoptions
+    type: Table
+    visible: (lavaan_options)
+    title: "Lavaan Options"
+    refs: 
+      - lavaan
+    columns:
+      - name: opt1
+        type: text
+        title: Option
+      - name: value1
+        type: text
+        title: Value
+      - name: opt2
+        type: text
+        title: Option
+      - name: value2
+        type: text
+        title: Value
+      - name: opt3
+        type: text
+        title: Option
+      - name: value3
+        type: text
+        title: Value
 
 
   # Path model ================================================================
