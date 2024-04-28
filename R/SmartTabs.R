@@ -459,13 +459,12 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               if (is.null(self$spaceBy))
                                    return()
-                              
-                              if (self$spaceBy==0)
+                              if (length(self$spaceBy)==1 && self$spaceBy==0)
                                    return()
                               
                               try_hard({
                                 
-                                if (self$spaceBy=="new!")
+                                if ("new!" %in% self$spaceBy)
                                      .spaceBy=private$.new_columns
                                 else 
                                      .spaceBy=self$spaceBy
