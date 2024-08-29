@@ -57,7 +57,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             algorithm = "gpa",
             orthogonal = FALSE,
             efa_std.ov = TRUE,
-            geomin.epsilon = 0.5,
+            geomin.epsilon = 0.001,
             orthomax.gamma = 1,
             oblimin.gamma = 0,
             showlabels = FALSE,
@@ -398,7 +398,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "geomin.epsilon",
                 geomin.epsilon,
                 min=0,
-                default=0.5)
+                default=0.001)
             private$..orthomax.gamma <- jmvcore::OptionNumber$new(
                 "orthomax.gamma",
                 orthomax.gamma,
@@ -2977,7 +2977,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   roation should be orthogonal
 #' @param efa_std.ov \code{TRUE} or \code{FALSE} (default), whether observed
 #'   variables should be standardized
-#' @param geomin.epsilon Geomin epsilon, default=.50
+#' @param geomin.epsilon Geomin epsilon, default=.001
 #' @param orthomax.gamma Geomin epsilon, default=.001
 #' @param oblimin.gamma Oblimin gamma, default=0
 #' @param showlabels \code{TRUE} or \code{FALSE} (default), show the labels of
@@ -3134,7 +3134,7 @@ semljgui <- function(
     algorithm = "gpa",
     orthogonal = FALSE,
     efa_std.ov = TRUE,
-    geomin.epsilon = 0.5,
+    geomin.epsilon = 0.001,
     orthomax.gamma = 1,
     oblimin.gamma = 0,
     showlabels = FALSE,
