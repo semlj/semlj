@@ -1,1181 +1,864 @@
----
 name: semljgui
 title: Structural Equation Models
 menuGroup: SEM
 menuTitle: SEM (interactive)
-version: '1.0.0'
+version: 1.0.0
 jas: '1.2'
 arbitraryCode: true
-
 options:
-    - name: data
-      type: Data
-      description:
-          R: >
-             TO ADD
-
-    - name: .caller
-      type: String
-      title: submodule
-      default: "gui"
-      hidden: true
-      
-    - name: code
-      default: |
-      type: String
-      hidden: true
-      description:
-          R: >
-             The lavaan syntax
-             
-    - name: donotrun
-      type: Bool
-      title: Do not run
-      description: not present in R. Halt running for more confortable input
-
-
-    # Interface for selecting latent variables and the grouping variable ======
-    - name: endogenous
-      type: Array
-      default:
-        - label: Endogenous1
-          vars: []
-      template:
-          type: Group
-          elements:
-            - name: label
-              type: String
-            - name: vars
-              type: Variables
-              suggested:
-                - continuous
-              permitted:
-                - numeric
-      description:
-          R: >
-             A list containing named lists that define the `label` of the latent endogenous variable(s) and
-             the `vars` that belong to that latent.
-
-    - name: exogenous
-      type: Array
-      default:
-        - label: Exogenous1
-          vars: []
-      template:
-          type: Group
-          elements:
-            - name: label
-              type: String
-            - name: vars
-              type: Variables
-              suggested:
-                - continuous
-              permitted:
-                - numeric
-      description:
-          R: >
-            A list containing named lists that define the `label` of the latent exogenous variables and
-            the `vars` that belong to that latent.
-
-
-
-
-#    # TO ADD?: input format
-#    - name: inputformat
-#      title: "Input data format"
-#      hidden: true
-#      type: List
-#      options:
-#        - name: dataraw
-#          title: "Raw"
-#        - name: varcov
-#          title: "Variance-covariance matrix"
-#      default: dataraw
-#      description:
-#          R: >
-#             TO ADD
-#    - name: samplesize
-#      title: "– Sample size"
-#      hidden: true
-#      type: Integer
-#      default: 0
-#      description:
-#          R: >
-#             TO ADD
-
-
-    ### OPTIONS #########
-
-    ### second order factors  =====================================================
-
-    - name: secondorder
-      type: Array
-      default:
-        - label: Factor1
-          vars: []
-      template:
-          type: Group
-          elements:
-            - name: label
-              type: String
-            - name: vars
-              type: Terms
-      description:
-          R: >
-            A list containing named lists that define the `label` of the second order latent factors  and
-            the `vars` that belong to that latent.
-
-
-
-    ### Endogenous models =====================================================
-    - name: endogenousTerms
-      title: Endogenous Latent Variable Models
-      type: Array
-      default: [[]]
-      template:
-          type: Terms
-      description:
-          R: >
-             A list of lists specifying the models for with the mediators as dependent variables.
-
-    ### Variances and covariances =============================================
-    - name: varcov
-      title: Select pairs
-      type: Pairs
-      description:
-          R: >
-             A list of lists specifying the  covariances that need to be estimated.
-
-
-    ### Custom model settings =================================================
-    - name: constraints
-      title: Insert contraints or defined parameters
-      type: Array
-      default: []
-      template:
-          type: String
-      description:
-          R: >
-             A list of lists specifying the models random effects.
-
-    ### Model options =========================================================
-    ### (a) Estimation --------------------------------------------------------
-    - name: estimator
-      title: Method
-      type: List
-      options:
-        - name: default
-          title: "Automatic"
-        - name:  ML
-          title: "Maximum Likelihood (ML)"
-        - name:  MLM
-          title: "Robust Maximum Likelihood (MLM)"
-        - name:  MLMV
-          title: "Robust Maximum Likelihood (MLMV)"
-        - name:  MLMVS
-          title: "Robust Maximum Likelihood (MLMVS)"
-        - name:  MLR
-          title: "Robust Maximum Likelihood (MLR)"
-        - name: PML
-          title: "Pairwise maximum likelihood (PML)"
-        - name: GLS
-          title: "Generalized Least Squares (GSL)"
-        - name: WLS
-          title: "Weighted Least Squares (WLS)"
-        - name: DWLS
-          title: "Diagonally weighted Least Squares (DWLS)"
-        - name: WLSM
-          title: "Robust Weighted Least Squares (WLSM)"
-        - name: WLSMV
-          title: "Robust Weighted Least Squares (WLSMV)"
-        - name: WLSMVS
-          title: "Robust Weighted Least Squares (WLSMVS)"
-        - name: ULS
-          title: "Unweighted Least Squares"
-      default: default
-      description:
-          ui: >
-             The estimator to be used (cf. lavaan R package). Can be one of the following: "ML" for maximum likelihood, "GLS" for (normal theory) generalized least squares,
-             "WLS" for weighted least squares (sometimes called ADF estimation), "ULS" for unweighted least squares, "DWLS" for diagonally weighted
-             least squares, and "DLS" for distributionally-weighted least squares. These are the main options that affect the estimation. For convenience,
-             the "ML" option can be extended as "MLM", "MLMV", "MLMVS", "MLF", and "MLR". The estimation will still be plain "ML", but now with robust
-             standard errors and a robust (scaled) test statistic. For "MLM", "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem");
-             for "MLF", standard errors are based on first-order derivatives (information = "first.order"); for "MLR", `Huber-White` robust standard errors
-             are used (se="robust.huber.white"). In addition, "MLM" will compute a Satorra-Bentler scaled (mean adjusted) test statistic (test="satorra.bentler"),
-             "MLMVS" will compute a mean and variance adjusted test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV" will compute a mean and
-             variance adjusted test statistic (scaled and shifted) (test="scaled.shifted"), and "MLR" will compute a test statistic which is asymptotically
-             equivalent to the Yuan-Bentler T2-star test statistic (test="yuan.bentler.mplus"). Analogously, the estimators "WLSM" and "WLSMV" imply the
-             "DWLS" estimator (not the "WLS" estimator) with robust standard errors and a mean or mean and variance adjusted test statistic. Estimators
-             "ULSM" and "ULSMV" imply the "ULS" estimator with robust standard errors and a mean or mean and variance adjusted test statistic.
-          R: >
-             The estimator to be used. Can be one of the following: "ML" for maximum likelihood, "GLS" for (normal theory) generalized least squares,
-             "WLS" for weighted least squares (sometimes called ADF estimation), "ULS" for unweighted least squares, "DWLS" for diagonally weighted
-             least squares, and "DLS" for distributionally-weighted least squares. These are the main options that affect the estimation. For convenience,
-             the "ML" option can be extended as "MLM", "MLMV", "MLMVS", "MLF", and "MLR". The estimation will still be plain "ML", but now with robust
-             standard errors and a robust (scaled) test statistic. For "MLM", "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem");
-             for "MLF", standard errors are based on first-order derivatives (information = "first.order"); for "MLR", `Huber-White` robust standard errors
-             are used (se="robust.huber.white"). In addition, "MLM" will compute a Satorra-Bentler scaled (mean adjusted) test statistic (test="satorra.bentler"),
-             "MLMVS" will compute a mean and variance adjusted test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV" will compute a mean and
-             variance adjusted test statistic (scaled and shifted) (test="scaled.shifted"), and "MLR" will compute a test statistic which is asymptotically
-             equivalent to the Yuan-Bentler T2-star test statistic (test="yuan.bentler.mplus"). Analogously, the estimators "WLSM" and "WLSMV" imply the
-             "DWLS" estimator (not the "WLS" estimator) with robust standard errors and a mean or mean and variance adjusted test statistic. Estimators
-             "ULSM" and "ULSMV" imply the "ULS" estimator with robust standard errors and a mean or mean and variance adjusted test statistic.
-
-    - name: likelihood
-      title: ML likelihood approach
-      type: List
-      options:
-        - name: default
-          title: "Automatic"
-        - name: normal
-          title: "Normal"
-        - name:  wishart
-          title: "Wishart"
-      default: default
-      description:
-          ui: >
-             Only relevant for ML estimation. If "Wishart", the Wishart likelihood approach is used. In this approach, the covariance matrix has been divided
-             by N-1, and both standard errors and test statistics are based on N-1. If "Normal" or "Automatic", the normal likelihood approach is used. Here, the covariance
-             matrix has been divided by N, and both standard errors and test statistics are based on N.
-      
-          R: >
-             Only relevant for ML estimation. If "wishart", the wishart likelihood approach is used. In this approach, the covariance matrix has been divided
-             by N-1, and both standard errors and test statistics are based on N-1. If "normal", the normal likelihood approach is used. Here, the covariance
-             matrix has been divided by N, and both standard errors and test statistics are based on N. If "default", it depends on the mimic option:
-             if mimic="lavaan" or mimic="Mplus", normal likelihood is used; otherwise, wishart likelihood is used.
-
-    - name: missing
-      title: Missing values
-      type: List
-      options:
-        - name: listwise
-          title: "Delete listwise"
-        - name: ml
-          title: "FIML"
-        - name: ml.x
-          title: "FIML (including fixed x)"
-        - name: robust.two.stage
-          title: "Two stages (robust)"
-        - name:  pairwise
-          title: "pairwise"
-
-      default: listwise
-      description:
-          R: >
-                 Handling of missing values. `listwise` delete rows with missing. 
-                 `missing=ml` for ‘full information’ maximum likelihood estimation.
-                 `missing=ml.x` for ‘full information’ maximum likelihood estimation 
-                 that includes also the fixed exogenous variables. `ml=robust.two.stage`
-                 uses a two stage appraoch whereas `ml=pairwise` delete case pairwise
-                 before computing the covariances between variables.
-          ui: >
-                Handling of missing values. `listwise` delete rows with missing. 
-                 `FIML` for ‘full information’ maximum likelihood estimation.
-                 `FIML (including fixed x)` for ‘full information’ maximum likelihood estimation 
-                 that includes also the fixed exogenous variables. `Two stages (robust)`
-                 uses a two stage appraoch whereas `Pairwise` deletes case pairwise
-                 before computing the covariances between variables.
-
-
-    ### (b) Constraint Tests --------------------------------------------------
-    - name: scoretest
-      type: Bool
-      title: Univariate
-      default: true
-      description:
-          ui: >
-             Score test (or Lagrange Multiplier test) for fixed or constrained parameters in model.
-          R: >
-             TO ADD
-
-    - name: cumscoretest
-      type: Bool
-      title: Cumulative
-      default: false
-      description:
-          ui: >
-             Score test for all fixed or constrained parameters in model (cumulative tests).
-          R: >
-             TO ADD
-
-#   - name: orthogonal
-#     type: Bool
-#     title: "Assume factors uncorrelated"
-#     default: false
-#     description:
-#         R: >
-#            TO ADD
-
-
-    ### Parameter options =====================================================
-    ### (a) Standard errors ---------------------------------------------------
-    - name: se
-      type: List
-      title: Standard errors
-      options:
-        - name: auto
-          title: Automatic
-        - name: standard
-          title: Standard
-        - name: robust.sem
-          title: Robust
-        - name: robust.sem
-          title: Robust for Clusters
-        - name: robust.huber.white
-          title: Pseudo ML
-        - name: boot
-          title: Bootstrap
-      default: auto
-      description:
-          R: >
-             Standard error method.
-
-    ### (b) Bootstrap options -------------------------------------------------s
-    - name: bootci
-      title: Bootstrap C.I
-      type: List
-      options:
-        - name: perc
-          title: percentiles
-        - name: bca.simple
-          title: adjusted bias-corrected
-        - name: norm
-          title: normal
-        - name: basic
-          title: basic
-      default: perc
-      description:
-          R: >
-             Choose the confidence interval type ("perc" - percentiles [default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic" - basic).
-    - name: bootN
-      title: Bootstrap Rep.
-      type: Number
-      min: 50
-      default: 1000
-      description:
-          R: >
-             The number of bootstrap samples for estimating confidence intervals.
-
-    - name: parallel
-      title: Parallel Computation
-      type: Bool
-      default: false
-      description:
-          R: >
-             use parallel computation for bootstrap C.I
-
-
-    ### (c) Confidence intervals ----------------------------------------------
-
-    - name: est_ci
-      title: "Estimates"
-      type: Bool
-      default: true
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), show confidence intervals for estimates
-
-    - name: beta_ci
-      title: "Betas"
-      type: Bool
-      default: false
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), show confidence intervals for standardized estimates
-
-    - name: ci_width
-      title: Confidence level
-      type: Number
-      min: 50
-      max: 99.9
-      default: 95
-      description:
-          R: >
-             A number between 50 and 99.9 (default: 95) specifying the confidence
-             interval width for the parameter estimates.
-
-    ### (d) Estimates ---------------------------------------------------------
-    - name: meanstructure
-      type: Bool
-      title: Mean structure
-      default: true
-      description:
-          R: >
-             If TRUE, the means of the observed variables enter the model. Required for calculating the intercepts of
-             the estimates.
-
-    - name: int_ov
-      type: Bool
-      title: Observed variables
-      default: true
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), calculate intercepts for observed variables
-
-    - name: int_lv
-      type: Bool
-      title: Latent variables
-      default: false
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), calculate intercepts for latent variables
-
-
-    - name: indirect
-      type: Bool
-      title: Indirect Effects
-      default: false
-      description:
-          ui: >
-            compute the indirect effect by finding all paths from exogenous
-            to endogenous variables, and multiply the coefficients along the path.
-
-          R: >
-            `TRUE` or `FALSE` (default), TO ADD
-
-    ### (e) Scale / standardize variables -------------------------------------
-    - name: std_lv
-      title: Scale / stand. latent vars.
-      type: List
-      options:
-        - name: fix_first
-          title: "Latent vars.: Fix first indicator (to 1)"
-        - name: std_res
-          title: "Latent vars.: Fix residual variances (to 1)"
-      default: fix_first
-      description:
-          ui: >
-             If `Fix first indicator` (default), the factor loading of the first indicator is set to 1.0 for every latent variable.
-             If `Fix residual variances`, the metric of each latent variable is determined by fixing their (residual) variances to 1.0.
-             If there are multiple groups, `Fix residual variances` is chosen and "loadings" is included in the group.label argument,
-             then only the latent variances i of the first group will be fixed to 1.0, while the latent variances of other
-             groups are set free.
-
-          R: >
-             If `fix_first` (default), the factor loading of the first indicator is set to 1.0 for every latent variable.
-             If `std_res`, the metric of each latent variable is determined by fixing their (residual) variances to 1.0.
-             If there are multiple groups, "std_res" is chosen and "loadings" is included in the group.label argument,
-             then only the latent variances i of the first group will be fixed to 1.0, while the latent variances of other
-             groups are set free.
-
-#   - name: effect.coding
-#     title: Effects coding
-#     type: Bool
-#     default: false
-#     description:
-#         R: >
-#           Can be logical or character string. If logical and `TRUE`, this implies effect.coding = c("loadings", "intercepts").
-#           If logical and `FALSE`, it is set equal to the empty string. If "loadings" is included, equality constraints are
-#           used so that the average of the factor loadings (per latent variable) equals 1. Note that this should not be used
-#           together with std.lv = TRUE. If "intercepts" is included, equality constraints are used so that the sum of the
-#           intercepts (belonging to the indicators of a single latent variable) equals zero. As a result, the latent mean will
-#           be freely estimated and usually equal the average of the means of the involved indicators.
-
-    - name: std_ov
-      type: Bool
-      title: "Observed vars.: Standardize before estimation"
-      default: false
-      description:
-          R: >
-             If TRUE, all observed variables are standardized before entering the analysis.
-          ui: >
-             If set, all observed variables are standardized before entering the analysis.
-
-
-#    # (f) Miscellaneous 
-    # TO-DO: find a better name than miscellaneous; perhaps: Constraints
-    # lavOption: fixed.x
-    - name: cov_x
-      type: Bool
-      title: Fix exogenous covariates
-      default: false
-      description:
-          R: >
-             If `TRUE`, the exogenous covariates are considered fixed variables and the means, variances and covariances of these
-             variables are fixed to their sample values. If `FALSE`, they are considered random, and the means, variances and
-             covariances are free parameters. If "default", the value is set depending on the mimic option.
-
-    - name: cov_y
-      type: Bool    
-      title: Dependent vars (y)
-      default: true
-      description:
-          R: >
-             `TRUE` (default) or `FALSE`, TO ADD
-
-    - name: cov_lv
-      type: Bool    
-      title: Latent vars 
-      default: true
-      description:
-          R: >
-             `TRUE` (default) or `FALSE`, is the negation of orthogonal option
-
-
-    #   FURTHER OPTIONS (included in JASP-SEM)
-#    - name: int.ov.fixed
-#      type: Bool
-#      title: "Fix manifest intercepts to zero"
-#      default: false
-#      description:
-#          R: >
-#            `TRUE` or `FALSE` (default), TO BE ADDED
-#    - name: int.lv.fixed
-#      type: Bool
-#      title: "Fix latent intercepts to zero"
-#      default: false
-#      description:
-#          R: >
-#            `TRUE` or `FALSE` (default), TO BE ADDED
-#    - name: auto.fix.single
-#      type: Bool
-#      title: "Omit residual single indicator"
-#      default: true
-#      description:
-#          R: >
-#            `TRUE` (default) or `FALSE`, TO BE ADDED
-#    - name: auto.var
-#      type: Bool
-#      title: "Include residual variances"
-#      default: true
-#      description:
-#          R: >
-#            `TRUE` (default) or `FALSE`, TO BE ADDED
-#    - name: auto.cov.lv.x
-#      type: Bool
-#      title: "Correlate exogenous latents"
-#      default: true
-#      description:
-#          R: >
-#            `TRUE` (default) or `FALSE`, TO BE ADDED
-#    - name: auto.cov.y
-#      type: Bool
-#      title: "Correlate dependent variables"
-#      default: true
-#      description:
-#          R: >
-#            `TRUE` (default) or `FALSE`, TO BE ADDED
-#    - name: auto.th
-#      type: Bool
-#      title: "Add thresholds"
-#      default: true
-#      description:
-#          R: >
-#            `TRUE` (default) or `FALSE`, TO BE ADDED
-#    - name: auto.delta
-#      type: Bool
-#      title: "Add scaling parameters"
-#      default: true
-#      description:
-#          R: >
-#            `TRUE` (default) or `FALSE`, TO BE ADDED
-#    - name: auto.efa
-#      type: Bool
-#      title: "Constrain EFA blocks"
-#      default: true
-#      description:
-#          R: >
-#            `TRUE` (default) or `FALSE`, TO BE ADDED
-
-
-##   we need this also in GUI otherwise the syntax machine does not work. We do not use it (yet)
-##   so we keep it hidden
-    - name: cluster
-      default: ""
-      type: String
-      hidden: true
-      description:
-          R: >
-             Not used in gui
-
-
-    ### Multigroup options / equality constraints =============================
-    
-    - name: multigroup
-      title: Multigroup Analysis Factor
-      type: Variable
-      suggested:
-        - nominal
-        - ordinal
-      permitted:
-        - factor
-      default:
-      description:
-          R: Factor defining groups for multigroup analysis.
-
-
-    
-    #   For the GUI-version, the GUI-element multigroup is part of the inter-
-    #   face to elect variables
-
-    - name: eq_loadings
-      type: Bool
-      title: "Loadings"
-      default: false
-      description:
-          ui: >
-            constrain the factor loadings to be equal across groups (when conducting multi-group analyses)
-          R: >
-            `TRUE` or `FALSE` (default), constrain the factor loadings to be equal across groups (when conducting multi-group analyses)
-    - name: eq_intercepts
-      type: Bool
-      title: "Intercepts"
-      default: false
-      description:
-          ui: >
-            constrain the intercepts of the observed variables to be equal across groups (when conducting multi-group analyses)
-          R: >
-            `TRUE` or `FALSE` (default), constrain the intercepts of the observed variables to be equal across groups (when conducting multi-group analyses)
-    - name: eq_residuals
-      type: Bool
-      title: "Residuals"
-      default: false
-      description:
-          ui: >
-            constrain the residual variances of the observed variables to be equal across groups (when conducting multi-group analyses)
-          R: >
-            `TRUE` or `FALSE` (default), constrain the residual variances of the observed variables to be equal across groups (when conducting multi-group analyses)
-    - name: eq_residual.covariances
-      type: Bool
-      title: "Residual covariances"
-      default: false
-      description:
-          ui: >
-            constrain the residual covariances of the observed variables to be equal across groups (when conducting multi-group analyses)
-          R: >
-            `TRUE` or `FALSE` (default), constrain the residual covariances of the observed variables to be equal across groups (when conducting multi-group analyses)
-    - name: eq_means
-      type: Bool
-      title: "Means"
-      default: false
-      description:
-          ui: >
-            constrain the intercepts / means of the latent variables to be equal across groups (when conducting multi-group analyses)
-          R: >
-            `TRUE` or `FALSE` (default), constrain the intercepts / means of the latent variables to be equal across groups (when conducting multi-group analyses)
-    - name: eq_thresholds
-      type: Bool
-      title: "Threshold"
-      default: false
-      description:
-          ui: >
-            constrain the sample-based thresholds (means for continuous observed mvariables) to be equal across groups (when conducting multi-group analyses)
-          R: >
-            `TRUE` or `FALSE` (default), constrain the sample-based thresholds (means for continuous observed mvariables) to be equal across groups (when conducting multi-group analyses)
-    - name: eq_regressions
-      type: Bool
-      title: "Regressions"
-      default: false
-      description:
-          ui: >
-            constrain all regression coefficients in the model to be equal across groups (when conducting multi-group analyses)
-          R: >
-            `TRUE` or `FALSE` (default), constrain all regression coefficients in the model to be equal across groups (when conducting multi-group analyses)
-    - name: eq_lv.variances
-      type: Bool
-      title: "Latent variances"
-      default: false
-      description:
-          ui: >
-            constrain the (residual) variances of the latent variables to be equal across groups (when conducting multi-group analyses)
-          R: >
-            `TRUE` or `FALSE` (default), constrain the (residual) variances of the latent variables to be equal across groups (when conducting multi-group analyses)
-    - name: eq_lv.covariances
-      type: Bool
-      title: "Latent covariances"
-      default: false
-      description:
-          ui: >
-            constrain the (residual) covariances of the latent variables to be equal across groups (when conducting multi-group analyses)
-          R: >
-            `TRUE` or `FALSE` (default), constrain the (residual) covariances of the latent variables to be equal across groups (when conducting multi-group analyses)
-
-
-#### Exploratory ESEM options ==============================================
-
-    - name: esem_terms
-      type: Array
-      default: [[]]
-      template:
-          type: Variables
-      description:
-          R: >
-            A list of list containing blocks of factors to be factorialized toghether.
-
-
-
-    - name: rotation
-      title: Method
-      type: List
-      options:
-        - name:  geomin
-          title: "Geomin"
-        - name: varimax
-          title: "Varimax"
-        - name:  orthomax
-          title: "Orthomax"
-        - name:  quartimin
-          title: "Quartimin"
-        - name:  oblimin
-          title: "Oblimin"
-        - name: entropy
-          title: "Entropy"
-        - name: mccammon
-          title: "Mccammon"
-        - name: infomax
-          title: "Infomax"
-        - name: tandem1
-          title: "Tandem1"
-        - name: oblimax
-          title: "Oblimax"
-        - name: bentler
-          title: "Bentler"
-        - name: simplimax
-          title: "Simplimax"
-      default: geomin
-      description:
-          R: >  
-              Rotation methods as implemented in lavaan >0.6-13
-
-    - name: algorithm
-      title: Algotrithm
-      type: List
-      options:
-        - name:  gpa
-          title: "gpa"
-        - name: pairwise
-          title: "pairwise"
-      default: gpa
-      description:
-          R: > 
-            Optional algorithm for rotation, derfaul is `gpa`
-
-    - name: orthogonal
-      type: Bool
-      title: Orthogonal
-      default: false
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), whether the roation should be orthogonal
-    - name: efa_std.ov
-      type: Bool
-      title: Standardize observed vars
-      default: true
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), whether observed variables should be standardized
-
-    - name: geomin.epsilon
-      title: Geomin Epsilon
-      type: Number
-      min: 0
-      default: .001
-      description:
-          R: >
-             Geomin epsilon, default=.001
-    - name: orthomax.gamma
-      title: Orthomax Gamma
-      type: Number
-      min: 0
-      default: 1
-      description:
-          R: >
-             Geomin epsilon, default=.001
-    - name: oblimin.gamma
-      title: Oblimin Gamma
-      type: Number
-      min: 0
-      default: 0
-      description:
-          R: >
-             Oblimin gamma, default=0
-
-             
-
-
-
-    ### Output options ========================================================
-    - name: showlabels
-      type: Bool
-      title: Show parameters labels
-      default: false
-      description:
-          ui: >
-            show the labels of the parameters in the model
-          R: >
-            `TRUE` or `FALSE` (default), show the labels of the parameters in the model
-    - name: constraints_examples
-      type: Bool
-      title: Show syntax examples
-      default: false
-      description:
-          ui: >
-             show examples of the lavaan model syntax
-          R: >
-            `TRUE` or `FALSE` (default), show examples of the lavaan model syntax
-
-    ### (a) Additional outputs ------------------------------------------------
-    
-    - name: lavaan_options
-      type: Bool
-      title: Show Lavaan Options
-      default: false
-      description:
-          ui: >
-             show options of the lavaan model 
-          R: >
-            `TRUE` or `FALSE` (default), show options of the lavaan model
-    
-    
-    
-    
-    - name: outputAdditionalFitMeasures
-      type: Bool
-      title: "Additional fit measures"
-      default: false
-      description:
-          ui: >
-             show additional fit measures (e.g., CFI, TLI, etc.)
-          R: >
-            `TRUE` or `FALSE` (default), show additional fit measures (e.g., CFI, TLI, etc.)
-            
-    - name: reliability
-      type: Bool
-      title: "Reliability indices"
-      default: false
-      description:
-          ui: >
-             shows additional reliability indices
-          R: >
-            `TRUE` or `FALSE` (default), show additional reliability indices
-            
-            
-    - name: r2
-      type: List
-      title: R-squared
-      options:
-        - name:  none
-          title: None
-        - name:  all
-          title: All
-        - name:  endo
-          title: Endogenous
-        - name:  all
-          title: All
-      default: none
-      description:
-          R: >
-              compute R-squared for all endogenous variables (`endo`) or for
-              all variables in the model (`all`). `none` for no R-squared
-
-          ui: >
-              compute R-squared for all endogenous variables (`Endogenous`) or for
-              all variables in the model (`All`). `None` for no R-squared.
-
-    - name: htmt
-      type: Bool
-      title: "HTMT"
-      default: false
-      description:
-          R: >
-            `TRUE` or `FALSE` (default), show Heterotrait-monotrait (HTMT) ratio of correlations 
-            as reccomended by @henseler2015new
-
-
-    - name: outputMardiasCoefficients
-      type: Bool
-      title: "Mardia's coefficients"
-      default: false
-      description:
-          ui: >
-             show Mardia's coefficients for multivariate skewness and kurtosis
-          R: >
-            `TRUE` or `FALSE` (default), show Mardia's coefficients for multivariate skewness and kurtosis
-
-    ### (b) Covariances and correlations --------------------------------------
-    - name: outputObservedCovariances
-      type: Bool
-      title: "Observed"
-      default: false
-      description:
-          ui: >
-            show the covariances and correlations between the observed values of the (manifest) variables
-          R: >
-            `TRUE` or `FALSE` (default), show the covariances and correlations between the observed values of the (manifest) variables
-    - name: outputImpliedCovariances
-      type: Bool
-      title: "Model-implied (fitted)"
-      default: false
-      description:
-          ui: >
-             show the covariances and correlations between the model-implied / fitted values of the (manifest) variables
-          R: >
-            `TRUE` or `FALSE` (default), show the covariances and correlations between the model-implied / fitted values of the (manifest) variables
-    - name: outputResidualCovariances
-      type: Bool
-      title: "Residual"
-      default: false
-      description:
-          ui: >
-              show the covariances and correlations between the residuals of the (manifest) variables.
-          R: >
-             `TRUE` or `FALSE` (default), show the covariances and correlations between the residuals of the (manifest) variables.
-
-    - name: outpuCombineCovariances
-      type: Bool
-      title: "Combined into one table"
-      default: false
-      description:
-          ui: >
-             combine the (up to) three covariance / correlation tables into one table (i.e., showing
-             observed, model-implied and residual values for each variable combination underneath each other)
-          R: >
-             `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing
-             observed, model-implied and residual values for each variable combination underneath each other)
-
-    - name: cov.lv
-      type: Bool
-      title: "Model-implied latent"
-      default: false
-      description:
-          ui: >
-             show model-implied latent covariances
-          R: >
-             `TRUE` or `FALSE` (default), model-implied latent covariances
-
-
-    ### (c) Modification indices ----------------------------------------------
-    - name: outputModificationIndices
-      type: Bool
-      title: "Modification indices"
-      default: false
-      description:
-          ui: >
-             show modification indices for if certain terms were removed from the model
-          R: >
-            `TRUE` or `FALSE` (default), show modification indices for if certain terms were removed from the model
-    - name: miHideLow
-      type: Bool
-      title: "Hide low indices"
-      default: false
-      description:
-          ui: >
-             hide modification indices below a certain threshold.
-          R: >
-             `TRUE` or `FALSE` (default), hide modification indices below a certain threshold.
-    - name: miThreshold
-      type: Number
-      title: "Threshold"
-      default: 10
-      min: 0
-      description:
-          R: >
-             Numeric (default: 10), set a threshold the modification indices must exceed in order to be shown.
-
-
-    ### Path diagram ==========================================================
-    ### (a) Enable diagram, residuals and intercept ---------------------------
-    - name: diagram
-      title: "Path diagram"
-      type: Bool
-      default: false
-      description:
-          ui: >
-              produce a path diagram.
-          R: >
-             `TRUE` or `FALSE` (default), produce a path diagram.
-    - name: diag_resid
-      title: show residuals
-      type: Bool
-      default: false
-      description:
-          ui: >
-             show the residuals (for the observed variables).
-          R: >
-             `TRUE` or `FALSE` (default), show the residuals (for the observed variables).
-    - name: diag_intercepts
-      title: show intercepts
-      type: Bool
-      default: false
-      description:
-          ui: >
-             show the variable intercepts.
-          R: >
-             `TRUE` or `FALSE` (default), show the variable intercepts.
-
-    ### (b) Paths -------------------------------------------------------------
-    - name: diag_paths
-      title: Paths Labels
-      type: List
-      options:
-        - name:  est
-          title: Coefficients
-        - name: stand
-          title: Betas
-        - name: name
-          title: Labels
-        - name: hide
-          title: None
-      default: est
-      description:
-          ui: >
-             Choose the values shown along the paths.
-          R: >
-             Choose the values shown along the paths ("est" [coeffic., default], "stand" [betas], "name" [labels], "hide" [nothing]).
-
-    ### (c) Layout ------------------------------------------------------------
-    - name: diag_type
-      title: Type
-      type: List
-      options:
-        - name:  "tree"
-          title: Tree-like
-        - name:  "tree2"
-          title: Tree-like alt.
-        - name: "circle"
-          title: Circular
-        - name: "circle2"
-          title: Circular alt.
-        - name: "spring"
-          title: Spring
-      default: "tree"
-      description:
-          ui: >
-             Choose the layout of the path diagram: `Tree`, `Tree2`,`Circle`,`Circle2` , `Spring`).
-          R: >
-             Choose the layout of the path diagram ("tree" [default], "tree2", "circle", "circle2", "spring").
-    - name: diag_rotate
-      title: Rotate
-      type: List
-      options:
-        - name: "1"
-          title: Exog. top
-        - name: "2"
-          title: Exog. left
-        - name: "3"
-          title: Exog. bottom
-        - name: "4"
-          title: Exog. right
-      default: "2"
-      description:
-          ui: >
-             Choose the rotation of the path diagram in terms of placement of the exog. variables.
-          R: >
-             Choose the rotation of the path diagram (placement of the exog. variables; "1": top, "2": left (default), "3": bottom, "4": right).
-
-    ### (d) Nodes -------------------------------------------------------------
-    - name: diag_labsize
-      title: Node Size
-      type: List
-      options:
-        - name: "small"
-          title: Small
-        - name: "medium"
-          title: Medium
-        - name: "large"
-          title: Large
-        - name: "vlarge"
-          title: Very Large
-      default: "medium"
-      description:
-          R: >
-             Choose the node size for the variables (default: "medium").
-    - name: diag_shape_man
-      title: Manifest shapes
-      type: List
-      options:
-        - name:  "rectangle"
-          title:  Rectangles
-        - name:  "square"
-          title:  Squares
-        - name: "circle"
-          title: Circles
-        - name: "ellipse"
-          title: Ellipses
-        - name: "diamond"
-          title: Diamonds
-      default: "rectangle"
-      description:
-          R: >
-             Choose the shape for the manifest variables (default: "rectangle").
-
-    - name: diag_shape_lat
-      title: Latent shapes
-      type: List
-      options:
-        - name: "circle"
-          title: Circles
-        - name:  "rectangle"
-          title:  Rectangles
-        - name:  "square"
-          title:  Squares
-        - name: "ellipse"
-          title: Ellipses
-        - name: "diamond"
-          title: Diamonds
-      default: "circle"
-      description:
-          R: >
-             Choose the shape for the latent variables (default: "circle").
-    - name: diag_abbrev
-      title: Abbreviate
-      type: List
-      options:
-        - name:  "0"
-          title:  No abbrev.
-        - name:  "5"
-          title:  "5"
-        - name:  "10"
-          title:  "10"
-        - name:  "15"
-          title:  "15"
-        - name:  "20"
-          title:  "20"
-        - name:  "25"
-          title:  "25"
-      default: "5"
-      description:
-          R: >
-             Choose the length (characters) of the variable name abbreviations (default: 5).
-
-
-    - name: preds_lv 
-      type: Output
-      title: Factor Scores
-      description:
-        R: >
-           none
-        ui: >
-           this option saves, for each participant, the latent variables predicted
-           values based on the latent variables estimation. The values are obtained
-           with `lavaan::lavPredict(..,type="lv")`. See @lavaan for details. The values
-           are basically factor scores.
-    - name: preds_ov 
-      type: Output
-      title: Indicators
-      description:
-        R: >
-           none
-        ui: >
-           this option saves, for each participant, the observed variables predicted
-           values based on the latent variables estimation. The values are obtained
-           with `lavaan::lavPredict(..,type="ov")`. See @lavaan for details
-    - name: preds_dv
-      type: Output
-      title: Dependent variables
-      description:
-        R: >
-           this option saves, for each participant, the model based predicted values
-           of the observed variables involved in the measurement of purely endogenous
-           dependent variables. The predicted values computation is based on
-           @predict, and the implementation is adapted from
-           [github SEMpredict](https://github.com/mjderooij/SEMpredict)
-        ui: >
-           this option saves, for each participant, the model based predicted values
-           of the observed variables involved in the measurement of purely endogenous
-           dependent variables. The predicted values computation is based on
-           @predict, and the implementation is adpted from
-           [github SEMpredict](https://github.com/mjderooij/SEMpredict)
- 
-
-...
+    -   name: data
+        type: Data
+        description:
+            R: |
+                TO ADD
+    -   name: .caller
+        type: String
+        title: submodule
+        default: gui
+        hidden: true
+    -   name: code
+        default: ~
+        type: String
+        hidden: true
+        description:
+            R: |
+                The lavaan syntax
+    -   name: donotrun
+        type: Bool
+        title: Do not run
+        description: not present in R. Halt running for more confortable input
+    -   name: endogenous
+        type: Array
+        default:
+            -   label: Endogenous1
+                vars: []
+        template:
+            type: Group
+            elements:
+                -   name: label
+                    type: String
+                -   name: vars
+                    type: Variables
+                    suggested: continuous
+                    permitted: numeric
+        description:
+            R: |
+                A list containing named lists that define the `label` of the latent endogenous variable(s) and the `vars` that belong to that latent.
+    -   name: exogenous
+        type: Array
+        default:
+            -   label: Exogenous1
+                vars: []
+        template:
+            type: Group
+            elements:
+                -   name: label
+                    type: String
+                -   name: vars
+                    type: Variables
+                    suggested: continuous
+                    permitted: numeric
+        description:
+            R: |
+                A list containing named lists that define the `label` of the latent exogenous variables and the `vars` that belong to that latent.
+    -   name: secondorder
+        type: Array
+        default:
+            -   label: Factor1
+                vars: []
+        template:
+            type: Group
+            elements:
+                -   name: label
+                    type: String
+                -   name: vars
+                    type: Terms
+        description:
+            R: |
+                A list containing named lists that define the `label` of the second order latent factors  and the `vars` that belong to that latent.
+    -   name: endogenousTerms
+        title: Endogenous Latent Variable Models
+        type: Array
+        default:
+            - []
+        template:
+            type: Terms
+        description:
+            R: |
+                A list of lists specifying the models for with the mediators as dependent variables.
+    -   name: varcov
+        title: Select pairs
+        type: Pairs
+        description:
+            R: |
+                A list of lists specifying the  covariances that need to be estimated.
+    -   name: constraints
+        title: Insert contraints or defined parameters
+        type: Array
+        default: []
+        template:
+            type: String
+        description:
+            R: |
+                A list of lists specifying the models random effects.
+    -   name: estimator
+        title: Method
+        type: List
+        options:
+            -   name: default
+                title: Automatic
+            -   name: ML
+                title: Maximum Likelihood (ML)
+            -   name: MLM
+                title: Robust Maximum Likelihood (MLM)
+            -   name: MLMV
+                title: Robust Maximum Likelihood (MLMV)
+            -   name: MLMVS
+                title: Robust Maximum Likelihood (MLMVS)
+            -   name: MLR
+                title: Robust Maximum Likelihood (MLR)
+            -   name: PML
+                title: Pairwise maximum likelihood (PML)
+            -   name: GLS
+                title: Generalized Least Squares (GSL)
+            -   name: WLS
+                title: Weighted Least Squares (WLS)
+            -   name: DWLS
+                title: Diagonally weighted Least Squares (DWLS)
+            -   name: WLSM
+                title: Robust Weighted Least Squares (WLSM)
+            -   name: WLSMV
+                title: Robust Weighted Least Squares (WLSMV)
+            -   name: WLSMVS
+                title: Robust Weighted Least Squares (WLSMVS)
+            -   name: ULS
+                title: Unweighted Least Squares
+        default: default
+        description:
+            ui: |
+                The estimator to be used (cf. lavaan R package). Can be one of the following: "ML" for maximum likelihood, "GLS" for (normal theory) generalized least squares, "WLS" for weighted least squares (sometimes called ADF estimation), "ULS" for unweighted least squares, "DWLS" for diagonally weighted least squares, and "DLS" for distributionally-weighted least squares. These are the main options that affect the estimation. For convenience, the "ML" option can be extended as "MLM", "MLMV", "MLMVS", "MLF", and "MLR". The estimation will still be plain "ML", but now with robust standard errors and a robust (scaled) test statistic. For "MLM", "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem"); for "MLF", standard errors are based on first-order derivatives (information = "first.order"); for "MLR", `Huber-White` robust standard errors are used (se="robust.huber.white"). In addition, "MLM" will compute a Satorra-Bentler scaled (mean adjusted) test statistic (test="satorra.bentler"), "MLMVS" will compute a mean and variance adjusted test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV" will compute a mean and variance adjusted test statistic (scaled and shifted) (test="scaled.shifted"), and "MLR" will compute a test statistic which is asymptotically equivalent to the Yuan-Bentler T2-star test statistic (test="yuan.bentler.mplus"). Analogously, the estimators "WLSM" and "WLSMV" imply the "DWLS" estimator (not the "WLS" estimator) with robust standard errors and a mean or mean and variance adjusted test statistic. Estimators "ULSM" and "ULSMV" imply the "ULS" estimator with robust standard errors and a mean or mean and variance adjusted test statistic.
+            R: |
+                The estimator to be used. Can be one of the following: "ML" for maximum likelihood, "GLS" for (normal theory) generalized least squares, "WLS" for weighted least squares (sometimes called ADF estimation), "ULS" for unweighted least squares, "DWLS" for diagonally weighted least squares, and "DLS" for distributionally-weighted least squares. These are the main options that affect the estimation. For convenience, the "ML" option can be extended as "MLM", "MLMV", "MLMVS", "MLF", and "MLR". The estimation will still be plain "ML", but now with robust standard errors and a robust (scaled) test statistic. For "MLM", "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem"); for "MLF", standard errors are based on first-order derivatives (information = "first.order"); for "MLR", `Huber-White` robust standard errors are used (se="robust.huber.white"). In addition, "MLM" will compute a Satorra-Bentler scaled (mean adjusted) test statistic (test="satorra.bentler"), "MLMVS" will compute a mean and variance adjusted test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV" will compute a mean and variance adjusted test statistic (scaled and shifted) (test="scaled.shifted"), and "MLR" will compute a test statistic which is asymptotically equivalent to the Yuan-Bentler T2-star test statistic (test="yuan.bentler.mplus"). Analogously, the estimators "WLSM" and "WLSMV" imply the "DWLS" estimator (not the "WLS" estimator) with robust standard errors and a mean or mean and variance adjusted test statistic. Estimators "ULSM" and "ULSMV" imply the "ULS" estimator with robust standard errors and a mean or mean and variance adjusted test statistic.
+    -   name: likelihood
+        title: ML likelihood approach
+        type: List
+        options:
+            -   name: default
+                title: Automatic
+            -   name: normal
+                title: Normal
+            -   name: wishart
+                title: Wishart
+        default: default
+        description:
+            ui: |
+                Only relevant for ML estimation. If "Wishart", the Wishart likelihood approach is used. In this approach, the covariance matrix has been divided by N-1, and both standard errors and test statistics are based on N-1. If "Normal" or "Automatic", the normal likelihood approach is used. Here, the covariance matrix has been divided by N, and both standard errors and test statistics are based on N.
+            R: |
+                Only relevant for ML estimation. If "wishart", the wishart likelihood approach is used. In this approach, the covariance matrix has been divided by N-1, and both standard errors and test statistics are based on N-1. If "normal", the normal likelihood approach is used. Here, the covariance matrix has been divided by N, and both standard errors and test statistics are based on N. If "default", it depends on the mimic option: if mimic="lavaan" or mimic="Mplus", normal likelihood is used; otherwise, wishart likelihood is used.
+    -   name: missing
+        title: Missing values
+        type: List
+        options:
+            -   name: listwise
+                title: Delete listwise
+            -   name: ml
+                title: FIML
+            -   name: ml.x
+                title: FIML (including fixed x)
+            -   name: robust.two.stage
+                title: Two stages (robust)
+            -   name: pairwise
+                title: pairwise
+        default: listwise
+        description:
+            R: |
+                Handling of missing values. `listwise` delete rows with missing.  `missing=ml` for ‘full information’ maximum likelihood estimation. `missing=ml.x` for ‘full information’ maximum likelihood estimation  that includes also the fixed exogenous variables. `ml=robust.two.stage` uses a two stage appraoch whereas `ml=pairwise` delete case pairwise before computing the covariances between variables.
+            ui: "Handling of missing values. `listwise` delete rows with missing.
+                \n `FIML` for ‘full information’ maximum likelihood estimation.\n
+                `FIML (including fixed x)` for ‘full information’ maximum likelihood
+                estimation \n that includes also the fixed exogenous variables. `Two
+                stages (robust)`\n uses a two stage appraoch whereas `Pairwise` deletes
+                case pairwise\n before computing the covariances between variables.\n"
+    -   name: scoretest
+        type: Bool
+        title: Univariate
+        default: true
+        description:
+            ui: |
+                Score test (or Lagrange Multiplier test) for fixed or constrained parameters in model.
+            R: |
+                TO ADD
+    -   name: cumscoretest
+        type: Bool
+        title: Cumulative
+        default: false
+        description:
+            ui: |
+                Score test for all fixed or constrained parameters in model (cumulative tests).
+            R: |
+                TO ADD
+    -   name: se
+        type: List
+        title: Standard errors
+        options:
+            -   name: auto
+                title: Automatic
+            -   name: standard
+                title: Standard
+            -   name: robust.sem
+                title: Robust
+            -   name: robust.sem
+                title: Robust for Clusters
+            -   name: robust.huber.white
+                title: Pseudo ML
+            -   name: boot
+                title: Bootstrap
+        default: auto
+        description:
+            R: |
+                Standard error method.
+    -   name: bootci
+        title: Bootstrap C.I
+        type: List
+        options:
+            -   name: perc
+                title: percentiles
+            -   name: bca.simple
+                title: adjusted bias-corrected
+            -   name: norm
+                title: normal
+            -   name: basic
+                title: basic
+        default: perc
+        description:
+            R: |
+                Choose the confidence interval type ("perc" - percentiles [default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic" - basic).
+    -   name: bootN
+        title: Bootstrap Rep.
+        type: Number
+        min: 50
+        default: 1000
+        description:
+            R: |
+                The number of bootstrap samples for estimating confidence intervals.
+    -   name: parallel
+        title: Parallel Computation
+        type: Bool
+        default: false
+        description:
+            R: |
+                use parallel computation for bootstrap C.I
+    -   name: est_ci
+        title: Estimates
+        type: Bool
+        default: true
+        description:
+            R: |
+                `TRUE` or `FALSE` (default), show confidence intervals for estimates
+    -   name: beta_ci
+        title: Betas
+        type: Bool
+        default: false
+        description:
+            R: |
+                `TRUE` or `FALSE` (default), show confidence intervals for standardized estimates
+    -   name: ci_width
+        title: Confidence level
+        type: Number
+        min: 50
+        max: 99.9
+        default: 95
+        description:
+            R: |
+                A number between 50 and 99.9 (default: 95) specifying the confidence interval width for the parameter estimates.
+    -   name: meanstructure
+        type: Bool
+        title: Mean structure
+        default: true
+        description:
+            R: |
+                If TRUE, the means of the observed variables enter the model. Required for calculating the intercepts of the estimates.
+    -   name: int_ov
+        type: Bool
+        title: Observed variables
+        default: true
+        description:
+            R: |
+                `TRUE` or `FALSE` (default), calculate intercepts for observed variables
+    -   name: int_lv
+        type: Bool
+        title: Latent variables
+        default: false
+        description:
+            R: |
+                `TRUE` or `FALSE` (default), calculate intercepts for latent variables
+    -   name: indirect
+        type: Bool
+        title: Indirect Effects
+        default: false
+        description:
+            ui: |
+                compute the indirect effect by finding all paths from exogenous to endogenous variables, and multiply the coefficients along the path.
+            R: |
+                `TRUE` or `FALSE` (default), TO ADD
+    -   name: std_lv
+        title: Scale / stand. latent vars.
+        type: List
+        options:
+            -   name: fix_first
+                title: 'Latent vars.: Fix first indicator (to 1)'
+            -   name: std_res
+                title: 'Latent vars.: Fix residual variances (to 1)'
+        default: fix_first
+        description:
+            ui: |
+                If `Fix first indicator` (default), the factor loading of the first indicator is set to 1.0 for every latent variable. If `Fix residual variances`, the metric of each latent variable is determined by fixing their (residual) variances to 1.0. If there are multiple groups, `Fix residual variances` is chosen and "loadings" is included in the group.label argument, then only the latent variances i of the first group will be fixed to 1.0, while the latent variances of other groups are set free.
+            R: |
+                If `fix_first` (default), the factor loading of the first indicator is set to 1.0 for every latent variable. If `std_res`, the metric of each latent variable is determined by fixing their (residual) variances to 1.0. If there are multiple groups, "std_res" is chosen and "loadings" is included in the group.label argument, then only the latent variances i of the first group will be fixed to 1.0, while the latent variances of other groups are set free.
+    -   name: std_ov
+        type: Bool
+        title: 'Observed vars.: Standardize before estimation'
+        default: false
+        description:
+            R: |
+                If TRUE, all observed variables are standardized before entering the analysis.
+            ui: |
+                If set, all observed variables are standardized before entering the analysis.
+    -   name: cov_x
+        type: Bool
+        title: Fix exogenous covariates
+        default: false
+        description:
+            R: |
+                If `TRUE`, the exogenous covariates are considered fixed variables and the means, variances and covariances of these variables are fixed to their sample values. If `FALSE`, they are considered random, and the means, variances and covariances are free parameters. If "default", the value is set depending on the mimic option.
+    -   name: cov_y
+        type: Bool
+        title: Dependent vars (y)
+        default: true
+        description:
+            R: |
+                `TRUE` (default) or `FALSE`, TO ADD
+    -   name: cov_lv
+        type: Bool
+        title: Latent vars
+        default: true
+        description:
+            R: |
+                `TRUE` (default) or `FALSE`, is the negation of orthogonal option
+    -   name: cluster
+        default: ''
+        type: String
+        hidden: true
+        description:
+            R: |
+                Not used in gui
+    -   name: multigroup
+        title: Multigroup Analysis Factor
+        type: Variable
+        suggested:
+            - nominal
+            - ordinal
+        permitted: factor
+        default: ~
+        description:
+            R: Factor defining groups for multigroup analysis.
+    -   name: eq_loadings
+        type: Bool
+        title: Loadings
+        default: false
+        description:
+            ui: |
+                constrain the factor loadings to be equal across groups (when conducting multi-group analyses)
+            R: |
+                `TRUE` or `FALSE` (default), constrain the factor loadings to be equal across groups (when conducting multi-group analyses)
+    -   name: eq_intercepts
+        type: Bool
+        title: Intercepts
+        default: false
+        description:
+            ui: |
+                constrain the intercepts of the observed variables to be equal across groups (when conducting multi-group analyses)
+            R: |
+                `TRUE` or `FALSE` (default), constrain the intercepts of the observed variables to be equal across groups (when conducting multi-group analyses)
+    -   name: eq_residuals
+        type: Bool
+        title: Residuals
+        default: false
+        description:
+            ui: |
+                constrain the residual variances of the observed variables to be equal across groups (when conducting multi-group analyses)
+            R: |
+                `TRUE` or `FALSE` (default), constrain the residual variances of the observed variables to be equal across groups (when conducting multi-group analyses)
+    -   name: eq_residual.covariances
+        type: Bool
+        title: Residual covariances
+        default: false
+        description:
+            ui: |
+                constrain the residual covariances of the observed variables to be equal across groups (when conducting multi-group analyses)
+            R: |
+                `TRUE` or `FALSE` (default), constrain the residual covariances of the observed variables to be equal across groups (when conducting multi-group analyses)
+    -   name: eq_means
+        type: Bool
+        title: Means
+        default: false
+        description:
+            ui: |
+                constrain the intercepts / means of the latent variables to be equal across groups (when conducting multi-group analyses)
+            R: |
+                `TRUE` or `FALSE` (default), constrain the intercepts / means of the latent variables to be equal across groups (when conducting multi-group analyses)
+    -   name: eq_thresholds
+        type: Bool
+        title: Threshold
+        default: false
+        description:
+            ui: |
+                constrain the sample-based thresholds (means for continuous observed mvariables) to be equal across groups (when conducting multi-group analyses)
+            R: |
+                `TRUE` or `FALSE` (default), constrain the sample-based thresholds (means for continuous observed mvariables) to be equal across groups (when conducting multi-group analyses)
+    -   name: eq_regressions
+        type: Bool
+        title: Regressions
+        default: false
+        description:
+            ui: |
+                constrain all regression coefficients in the model to be equal across groups (when conducting multi-group analyses)
+            R: |
+                `TRUE` or `FALSE` (default), constrain all regression coefficients in the model to be equal across groups (when conducting multi-group analyses)
+    -   name: eq_lv.variances
+        type: Bool
+        title: Latent variances
+        default: false
+        description:
+            ui: |
+                constrain the (residual) variances of the latent variables to be equal across groups (when conducting multi-group analyses)
+            R: |
+                `TRUE` or `FALSE` (default), constrain the (residual) variances of the latent variables to be equal across groups (when conducting multi-group analyses)
+    -   name: eq_lv.covariances
+        type: Bool
+        title: Latent covariances
+        default: false
+        description:
+            ui: |
+                constrain the (residual) covariances of the latent variables to be equal across groups (when conducting multi-group analyses)
+            R: |
+                `TRUE` or `FALSE` (default), constrain the (residual) covariances of the latent variables to be equal across groups (when conducting multi-group analyses)
+    -   name: esem_terms
+        type: Array
+        default:
+            - []
+        template:
+            type: Variables
+        description:
+            R: |
+                A list of list containing blocks of factors to be factorialized toghether.
+    -   name: rotation
+        title: Method
+        type: List
+        options:
+            -   name: geomin
+                title: Geomin
+            -   name: varimax
+                title: Varimax
+            -   name: orthomax
+                title: Orthomax
+            -   name: quartimin
+                title: Quartimin
+            -   name: oblimin
+                title: Oblimin
+            -   name: entropy
+                title: Entropy
+            -   name: mccammon
+                title: Mccammon
+            -   name: infomax
+                title: Infomax
+            -   name: tandem1
+                title: Tandem1
+            -   name: oblimax
+                title: Oblimax
+            -   name: bentler
+                title: Bentler
+            -   name: simplimax
+                title: Simplimax
+        default: geomin
+        description:
+            R: |
+                Rotation methods as implemented in lavaan >0.6-13
+    -   name: algorithm
+        title: Algotrithm
+        type: List
+        options:
+            -   name: gpa
+                title: gpa
+            -   name: pairwise
+                title: pairwise
+        default: gpa
+        description:
+            R: |
+                Optional algorithm for rotation, derfaul is `gpa`
+    -   name: orthogonal
+        type: Bool
+        title: Orthogonal
+        default: false
+        description:
+            R: |
+                `TRUE` or `FALSE` (default), whether the roation should be orthogonal
+    -   name: efa_std.ov
+        type: Bool
+        title: Standardize observed vars
+        default: true
+        description:
+            R: |
+                `TRUE` or `FALSE` (default), whether observed variables should be standardized
+    -   name: geomin.epsilon
+        title: Geomin Epsilon
+        type: Number
+        min: 0
+        default: 0.001
+        description:
+            R: |
+                Geomin epsilon, default=.001
+    -   name: orthomax.gamma
+        title: Orthomax Gamma
+        type: Number
+        min: 0
+        default: 1
+        description:
+            R: |
+                Geomin epsilon, default=.001
+    -   name: oblimin.gamma
+        title: Oblimin Gamma
+        type: Number
+        min: 0
+        default: 0
+        description:
+            R: |
+                Oblimin gamma, default=0
+    -   name: showlabels
+        type: Bool
+        title: Show parameters labels
+        default: false
+        description:
+            ui: |
+                show the labels of the parameters in the model
+            R: |
+                `TRUE` or `FALSE` (default), show the labels of the parameters in the model
+    -   name: constraints_examples
+        type: Bool
+        title: Show syntax examples
+        default: false
+        description:
+            ui: |
+                show examples of the lavaan model syntax
+            R: |
+                `TRUE` or `FALSE` (default), show examples of the lavaan model syntax
+    -   name: lavaan_options
+        type: Bool
+        title: Show Lavaan Options
+        default: false
+        description:
+            ui: "show options of the lavaan model \n"
+            R: |
+                `TRUE` or `FALSE` (default), show options of the lavaan model
+    -   name: outputAdditionalFitMeasures
+        type: Bool
+        title: Additional fit measures
+        default: false
+        description:
+            ui: |
+                show additional fit measures (e.g., CFI, TLI, etc.)
+            R: |
+                `TRUE` or `FALSE` (default), show additional fit measures (e.g., CFI, TLI, etc.)
+    -   name: reliability
+        type: Bool
+        title: Reliability indices
+        default: false
+        description:
+            ui: |
+                shows additional reliability indices
+            R: |
+                `TRUE` or `FALSE` (default), show additional reliability indices
+    -   name: r2
+        type: List
+        title: R-squared
+        options:
+            -   name: none
+                title: None
+            -   name: all
+                title: All
+            -   name: endo
+                title: Endogenous
+            -   name: all
+                title: All
+        default: none
+        description:
+            R: |
+                compute R-squared for all endogenous variables (`endo`) or for all variables in the model (`all`). `none` for no R-squared
+            ui: |
+                compute R-squared for all endogenous variables (`Endogenous`) or for all variables in the model (`All`). `None` for no R-squared.
+    -   name: htmt
+        type: Bool
+        title: HTMT
+        default: false
+        description:
+            R: |
+                `TRUE` or `FALSE` (default), show Heterotrait-monotrait (HTMT) ratio of correlations  as reccomended by @henseler2015new
+    -   name: outputMardiasCoefficients
+        type: Bool
+        title: Mardia's coefficients
+        default: false
+        description:
+            ui: |
+                show Mardia's coefficients for multivariate skewness and kurtosis
+            R: |
+                `TRUE` or `FALSE` (default), show Mardia's coefficients for multivariate skewness and kurtosis
+    -   name: outputObservedCovariances
+        type: Bool
+        title: Observed
+        default: false
+        description:
+            ui: |
+                show the covariances and correlations between the observed values of the (manifest) variables
+            R: |
+                `TRUE` or `FALSE` (default), show the covariances and correlations between the observed values of the (manifest) variables
+    -   name: outputImpliedCovariances
+        type: Bool
+        title: Model-implied (fitted)
+        default: false
+        description:
+            ui: |
+                show the covariances and correlations between the model-implied / fitted values of the (manifest) variables
+            R: |
+                `TRUE` or `FALSE` (default), show the covariances and correlations between the model-implied / fitted values of the (manifest) variables
+    -   name: outputResidualCovariances
+        type: Bool
+        title: Residual
+        default: false
+        description:
+            ui: |
+                show the covariances and correlations between the residuals of the (manifest) variables.
+            R: |
+                `TRUE` or `FALSE` (default), show the covariances and correlations between the residuals of the (manifest) variables.
+    -   name: outpuCombineCovariances
+        type: Bool
+        title: Combined into one table
+        default: false
+        description:
+            ui: |
+                combine the (up to) three covariance / correlation tables into one table (i.e., showing observed, model-implied and residual values for each variable combination underneath each other)
+            R: |
+                `TRUE` or `FALSE` (default), combine the (up to) three covariance / correlation tables into one table (i.e., showing observed, model-implied and residual values for each variable combination underneath each other)
+    -   name: cov.lv
+        type: Bool
+        title: Model-implied latent
+        default: false
+        description:
+            ui: |
+                show model-implied latent covariances
+            R: |
+                `TRUE` or `FALSE` (default), model-implied latent covariances
+    -   name: outputModificationIndices
+        type: Bool
+        title: Modification indices
+        default: false
+        description:
+            ui: |
+                show modification indices for if certain terms were removed from the model
+            R: |
+                `TRUE` or `FALSE` (default), show modification indices for if certain terms were removed from the model
+    -   name: miHideLow
+        type: Bool
+        title: Hide low indices
+        default: false
+        description:
+            ui: |
+                hide modification indices below a certain threshold.
+            R: |
+                `TRUE` or `FALSE` (default), hide modification indices below a certain threshold.
+    -   name: miThreshold
+        type: Number
+        title: Threshold
+        default: 10
+        min: 0
+        description:
+            R: |
+                Numeric (default: 10), set a threshold the modification indices must exceed in order to be shown.
+    -   name: diagram
+        title: Path diagram
+        type: Bool
+        default: false
+        description:
+            ui: |
+                produce a path diagram.
+            R: |
+                `TRUE` or `FALSE` (default), produce a path diagram.
+    -   name: diag_resid
+        title: show residuals
+        type: Bool
+        default: false
+        description:
+            ui: |
+                show the residuals (for the observed variables).
+            R: |
+                `TRUE` or `FALSE` (default), show the residuals (for the observed variables).
+    -   name: diag_intercepts
+        title: show intercepts
+        type: Bool
+        default: false
+        description:
+            ui: |
+                show the variable intercepts.
+            R: |
+                `TRUE` or `FALSE` (default), show the variable intercepts.
+    -   name: diag_paths
+        title: Paths Labels
+        type: List
+        options:
+            -   name: est
+                title: Coefficients
+            -   name: stand
+                title: Betas
+            -   name: name
+                title: Labels
+            -   name: hide
+                title: None
+        default: est
+        description:
+            ui: |
+                Choose the values shown along the paths.
+            R: |
+                Choose the values shown along the paths ("est" [coeffic., default], "stand" [betas], "name" [labels], "hide" [nothing]).
+    -   name: diag_type
+        title: Type
+        type: List
+        options:
+            -   name: tree
+                title: Tree-like
+            -   name: tree2
+                title: Tree-like alt.
+            -   name: circle
+                title: Circular
+            -   name: circle2
+                title: Circular alt.
+            -   name: spring
+                title: Spring
+        default: tree
+        description:
+            ui: |
+                Choose the layout of the path diagram: `Tree`, `Tree2`,`Circle`,`Circle2` , `Spring`).
+            R: |
+                Choose the layout of the path diagram ("tree" [default], "tree2", "circle", "circle2", "spring").
+    -   name: diag_rotate
+        title: Rotate
+        type: List
+        options:
+            -   name: '1'
+                title: Exog. top
+            -   name: '2'
+                title: Exog. left
+            -   name: '3'
+                title: Exog. bottom
+            -   name: '4'
+                title: Exog. right
+        default: '2'
+        description:
+            ui: |
+                Choose the rotation of the path diagram in terms of placement of the exog. variables.
+            R: |
+                Choose the rotation of the path diagram (placement of the exog. variables; "1": top, "2": left (default), "3": bottom, "4": right).
+    -   name: diag_labsize
+        title: Node Size
+        type: List
+        options:
+            -   name: small
+                title: Small
+            -   name: medium
+                title: Medium
+            -   name: large
+                title: Large
+            -   name: vlarge
+                title: Very Large
+        default: medium
+        description:
+            R: |
+                Choose the node size for the variables (default: "medium").
+    -   name: diag_shape_man
+        title: Manifest shapes
+        type: List
+        options:
+            -   name: rectangle
+                title: Rectangles
+            -   name: square
+                title: Squares
+            -   name: circle
+                title: Circles
+            -   name: ellipse
+                title: Ellipses
+            -   name: diamond
+                title: Diamonds
+        default: rectangle
+        description:
+            R: |
+                Choose the shape for the manifest variables (default: "rectangle").
+    -   name: diag_shape_lat
+        title: Latent shapes
+        type: List
+        options:
+            -   name: circle
+                title: Circles
+            -   name: rectangle
+                title: Rectangles
+            -   name: square
+                title: Squares
+            -   name: ellipse
+                title: Ellipses
+            -   name: diamond
+                title: Diamonds
+        default: circle
+        description:
+            R: |
+                Choose the shape for the latent variables (default: "circle").
+    -   name: diag_abbrev
+        title: Abbreviate
+        type: List
+        options:
+            -   name: '0'
+                title: No abbrev.
+            -   name: '5'
+                title: '5'
+            -   name: '10'
+                title: '10'
+            -   name: '15'
+                title: '15'
+            -   name: '20'
+                title: '20'
+            -   name: '25'
+                title: '25'
+        default: '5'
+        description:
+            R: |
+                Choose the length (characters) of the variable name abbreviations (default: 5).
+    -   name: preds_lv
+        type: Output
+        title: Factor Scores
+        description:
+            R: |
+                none
+            ui: |
+                this option saves, for each participant, the latent variables predicted values based on the latent variables estimation. The values are obtained with `lavaan::lavPredict(..,type="lv")`. See @lavaan for details. The values are basically factor scores.
+    -   name: preds_ov
+        type: Output
+        title: Indicators
+        description:
+            R: |
+                none
+            ui: |
+                this option saves, for each participant, the observed variables predicted values based on the latent variables estimation. The values are obtained with `lavaan::lavPredict(..,type="ov")`. See @lavaan for details
+    -   name: preds_dv
+        type: Output
+        title: Dependent variables
+        description:
+            R: |
+                this option saves, for each participant, the model based predicted values of the observed variables involved in the measurement of purely endogenous dependent variables. The predicted values computation is based on @predict, and the implementation is adapted from [github SEMpredict](https://github.com/mjderooij/SEMpredict)
+            ui: |
+                this option saves, for each participant, the model based predicted values of the observed variables involved in the measurement of purely endogenous dependent variables. The predicted values computation is based on @predict, and the implementation is adpted from [github SEMpredict](https://github.com/mjderooij/SEMpredict)

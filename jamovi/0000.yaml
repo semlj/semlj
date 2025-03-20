@@ -1,45 +1,42 @@
----
 title: SEM
 name: semlj
 version: 1.2.4
 jms: '1.0'
 authors:
-  - Marcello Gallucci
-  - Sebastian Jentschke
+    - Marcello Gallucci
+    - Sebastian Jentschke
 maintainer: Marcello Gallucci <mcfanda@gmail.com>
 date: 2022-1-1
 type: R
 description: Structural Equation Models based on lavaan
 analyses:
-  - title: Structural Equation Models
-    name: semljsyn
-    ns: semlj
-    menuGroup: SEM
-    menuSubgroup: SEMLj
-    menuTitle: SEM (syntax)
-    description: Syntax based Structural Equation Models
-    arbitraryCode: true
-    arbitraryCode2: true
-  - title: Structural Equation Models
-    name: semljgui
-    ns: semlj
-    menuGroup: SEM
-    menuSubgroup: SEMLj
-    menuTitle: SEM (interactive)
-    description: GUI-based Structural Equation Model Analyses
-    arbitraryCode: true
-    arbitraryCode2: true
+    -   title: Structural Equation Models
+        name: semljsyn
+        ns: semlj
+        menuGroup: SEM
+        menuSubgroup: SEMLj
+        menuTitle: SEM (syntax)
+        description: Syntax based Structural Equation Models
+        arbitraryCode: true
+        arbitraryCode2: true
+    -   title: Structural Equation Models
+        name: semljgui
+        ns: semlj
+        menuGroup: SEM
+        menuSubgroup: SEMLj
+        menuTitle: SEM (interactive)
+        description: GUI-based Structural Equation Model Analyses
+        arbitraryCode: true
+        arbitraryCode2: true
 datasets:
-  - name: pathjdata
-    path: pathjdata.csv
-    description: Example data for SEMLj tests
-  - name: ordereditems
-    path: ordereditems.csv
-    description: Example of ordinal variables for SEMLj
-  - name: secondorder
-    path: secondorder.csv
-    description: Example data for second order mediation analysis
+    -   name: pathjdata
+        path: pathjdata.csv
+        description: Example data for SEMLj tests
+    -   name: ordereditems
+        path: ordereditems.csv
+        description: Example of ordinal variables for SEMLj
+    -   name: secondorder
+        path: secondorder.csv
+        description: Example data for second order mediation analysis
 usesNative: true
 minApp: 2.3.12
-
-...

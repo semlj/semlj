@@ -1,158 +1,81 @@
----
 name: semljsyn
 title: Structural Equation Modelling
 jrs: '1.0'
-
-
 items:
-
-
-
-  # Model overview and examples ===============================================
-  - name: info
-    title: Models Info
-    type: Table
-#   description: 
-    refs: 
-      - semlj
-      - lavaan
-    columns:
-      - name: info
-        type: text
-        title: ""
-        combineBelow: true
-      - name: value
-        type: text
-        title: ""
-      - name: specs
-        type: text
-        title: ""
-        combineBelow: true
-
-  - name: synexamples
-    type: Table
-#   description:     
-    visible: (constraints_examples)
-    title: "Syntax examples"
-    clearWith:
-    columns:
-      - name: info
-        type: text
-        title: Aim
-      - name: example
-        type: text
-        title: Example
-      - name: com
-        type: text
-        title: Outcome
-
-
-  # Overall Tests =============================================================
-  - name: fit
-    title: "Overall Tests"
-    type: Group
-    visible: false
-    clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-         
-
-    items:
-
-      # Model tests -----------------------------------------------------------
-      - name: main
-        title: Model tests
+    -   name: info
+        title: Models Info
         type: Table
-#       description: 
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
+        refs:
+            - semlj
+            - lavaan
         columns:
-          - name: label
-            title: Label
-            type: text
-          - name: chisq
-            title:  X²
-            type: number
-          - name:  df
-            title: "df"
-            type: integer
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-
-      # Constraints score tests -----------------------------------------------
-      # OUTPUT DOESN'T SEEM TO BE IMPLEMENTED YET
-      - name: constraints
-        title: Constraints score tests
+            -   name: info
+                type: text
+                title: ''
+                combineBelow: true
+            -   name: value
+                type: text
+                title: ''
+            -   name: specs
+                type: text
+                title: ''
+                combineBelow: true
+    -   name: synexamples
         type: Table
-#       description: 
+        visible: (constraints_examples)
+        title: Syntax examples
+        clearWith: ~
+        columns:
+            -   name: info
+                type: text
+                title: Aim
+            -   name: example
+                type: text
+                title: Example
+            -   name: com
+                type: text
+                title: Outcome
+    -   name: fit
+        title: Overall Tests
+        type: Group
         visible: false
         clearWith:
-                      ### modeloptions  begins
+            - code
+            - estimator
+            - likelihood
+            - meanstructure
+            - int_ov
+            - int_lv
+            - std_lv
+            - std_ov
+            - cov_x
+            - cov_y
+            - cov_lv
+            - cluster
+            - multigroup
+            - eq_loadings
+            - eq_intercepts
+            - eq_residuals
+            - eq_residual.covariances
+            - eq_means
+            - eq_thresholds
+            - eq_regressions
+            - eq_lv.variances
+            - eq_lv.covariances
+            - esem_terms
+            - rotation
+            - algorithm
+            - orthogonal
+            - efa_std.ov
+            - geomin.epsilon
+            - orthomax.gamma
+            - oblimin.gamma
+            - missing
+        items:
+            -   name: main
+                title: Model tests
+                type: Table
+                clearWith:
                     - code
                     - estimator
                     - likelihood
@@ -184,1611 +107,1503 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
-                      ### modeloptions  ends
-        
-        columns:
-          - name: type
-            type: text
-            title: Type
-            visible: true
-            combineBelow: true
-          - name: lhs
-            title: Par 1
-            type: text
-          - name: op
-            title: ""
-            type: text
-          - name: rhs
-            title: Par 2
-            type: text
-          - name: chisq
-            title:  X²
-            type: number
-          - name:  df
-            title: "df"
-            type: integer
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-
-      # Fit indices -----------------------------------------------------------
-      - name: indices
-        title: Fit indices
-        type: Table
-#       description: 
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-        columns:
-          - name: type
-            title: Type
-            visible: false
-          - name:  srmr
-            title: SRMR
-            type: number
-            format: zto
-          - name: rmsea
-            title:  RMSEA
-            type: number
-            format: zto
-          - name:  rmsea.ci.lower
-            title: Lower
-            type: number
-            format: zto
-          - name:  rmsea.ci.upper
-            title: Upper
-            type: number
-            format: zto
-          - name: rmsea.pvalue
-            title: 'RMSEA p'
-            type: number
-            format: zto,pvalue
-
-      # Additional fit measures (1): User model versus baseline model ---------
-      - name: modelbaseline
-        title: 'User model versus baseline model'
-        type: Table
-#       description:
-        visible: true
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-
-        rows: 8
-        columns:
-          - name: name
-            title: ""
-            type: text
-          - name: statistics
-            title: Model
-            type: number
-            format: zto
-          - name: scaled
-            title: Scaled
-            type: number
-            format: zto
-            visible: false
-          - name: robust
-            title: Robust
-            type: number
-            format: zto
-            visible: false
-
-      # Additional fit measures (2): Other fit indices ------------------------
-      - name: moreindices
-        title: 'Additional fit indices'
-        type: Table
-#       description:
-        visible: (outputAdditionalFitMeasures)
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-
-        columns:
-          - name: name
-            title: ""
-            type: text
-          - name: statistics
-            title: Model
-            type: number
-
-
-      # R² measures -----------------------------------------------------------
-      - name: rsquared
-        title: 'R²'
-        type: Table
-#       description:
-        visible: false
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-
-        columns:
-          - name:  lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: rhs
-            title: "Variable"
-            type: text
-          - name: est
-            title: R²
-            type: number
-
-      - name: icc
-        title: 'Intra-class correlations'
-        type: Table
-        visible: false
-        clearWith:
-                ### modeloptions  begins
-              - code
-              - estimator
-              - likelihood
-              - meanstructure
-              - int_ov
-              - int_lv
-              - std_lv
-              - std_ov
-              - cov_x
-              - cov_y
-              - cov_lv
-              - cluster
-              - multigroup
-              - eq_loadings
-              - eq_intercepts
-              - eq_residuals
-              - eq_residual.covariances
-              - eq_means
-              - eq_thresholds
-              - eq_regressions
-              - eq_lv.variances
-              - eq_lv.covariances
-              - esem_terms
-              - rotation
-              - algorithm
-              - orthogonal
-              - efa_std.ov
-              - geomin.epsilon
-              - orthomax.gamma
-              - oblimin.gamma
-              - missing
-                ### modeloptions  ends
-        columns:
-          - name:  lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: rhs
-            title: "Variable"
-            type: text
-          - name: est
-            title: ICC
-            type: number
-
-
-  # Estimates =================================================================
-  - name: models
-    title: "Estimates"
-    type: Group
-    visible: false
-    items:
-
-      # Parameter estimates ---------------------------------------------------
-      - name: coefficients
-        title: Parameters estimates
-        type: Table
-        visible: false
-#       description: 
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### cioptions  begins
-                    - bootci
-                    - bootN
-                    - est_ci
-                    - beta_ci
-                    - ci_width
-                    - se
-                    - parallel
-                      ### cioptions  ends
-
-        columns:
-          - name: lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
-            combineBelow: true            
-
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
-          - name: lhs
-            title: "Dep"
-            type: text
-          - name:  rhs
-            title: "Pred"
-            type: text
-          - name: est
-            title: "Estimate"
-            type: number
-          - name: se
-            title: "SE"
-            type: number
-          - name: ci.lower
-            type: number
-            title: Lower
-            visible: (est_ci)
-          - name: ci.upper
-            type: number
-            title: Upper
-            visible: (est_ci)
-          - name: std.all
-            type: number
-            title: β
-          - name: std.ci.lower
-            type: number
-            title: Lower
-            visible: (beta_ci)
-          - name: std.ci.upper
-            type: number
-            title: Upper
-            visible: (beta_ci)
-
-          - name: z
-            title: "z"
-            type: number
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-
-      # Measurement model -----------------------------------
-      - name: loadings
-        title: Measurement model
-        type: Table
-#       description: 
-        visible: false
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### cioptions  begins
-                    - bootci
-                    - bootN
-                    - est_ci
-                    - beta_ci
-                    - ci_width
-                    - se
-                    - parallel
-                      ### cioptions  ends
-
-        columns:
-          - name: lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
-            combineBelow: true            
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
-          - name: lhs
-            title: "Latent"
-            type: text
-            combineBelow: true
-          - name:  rhs
-            title: "Observed"
-            type: text
-          - name: est
-            title: "Estimate"
-            type: number
-          - name: se
-            title: "SE"
-            type: number
-          - name: ci.lower
-            type: number
-            title: Lower
-            visible: (est_ci)
-          - name: ci.upper
-            type: number
-            title: Upper
-            visible: (est_ci)
-          - name: std.all
-            type: number
-            title: β
-          - name: std.ci.lower
-            type: number
-            title: Lower
-            visible: (beta_ci)
-          - name: std.ci.upper
-            type: number
-            title: Upper
-            visible: (beta_ci)
-            
-          - name: z
-            title: "z"
-            type: number
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-
-      - name: composites
-        title: Composites
-        type: Table
-#       description: 
-        visible: false
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### cioptions  begins
-                    - bootci
-                    - bootN
-                    - est_ci
-                    - beta_ci
-                    - ci_width
-                    - se
-                    - parallel
-                      ### cioptions  ends
-
-        columns:
-          - name: lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
-            combineBelow: true
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
-          - name: lhs
-            title: "Formative"
-            type: text
-            combineBelow: true
-          - name:  rhs
-            title: "Observed"
-            type: text
-          - name: est
-            title: "Estimate"
-            type: number
-          - name: se
-            title: "SE"
-            type: number
-          - name: ci.lower
-            type: number
-            title: Lower
-            visible: (est_ci)
-          - name: ci.upper
-            type: number
-            title: Upper
-            visible: (est_ci)
-          - name: std.all
-            type: number
-            title: β
-          - name: std.ci.lower
-            type: number
-            title: Lower
-            visible: (beta_ci)
-          - name: std.ci.upper
-            type: number
-            title: Upper
-            visible: (beta_ci)
-          - name: z
-            title: "z"
-            type: number
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-      
-      # variances and covariances  ------------------------------------------------------------
-      
-      - name: covariances
-        title: Variances and Covariances
-        type: Table
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### cioptions  begins
-                    - bootci
-                    - bootN
-                    - est_ci
-                    - beta_ci
-                    - ci_width
-                    - se
-                    - parallel
-                      ### cioptions  ends
-
-        columns:
-                    - name: lgroup
-                      title: Group
-                      type: text
-                      visible: (multigroup)
-                      combineBelow: true
-                    - name: level
-                      title: Level
-                      type: text
-                      visible: (cluster)
-                      combineBelow: true
-                    - name: label
-                      title: Label
-                      type: text
-                      visible: (showlabels)
-                    - name: lhs
-                      title: "Variable 1"
-                      type: text
-                    - name:  rhs
-                      title: "Variable 2"
-                      type: text
-                    - name: est
-                      title: "Estimate"
-                      type: number
-                    - name: se
-                      title: "SE"
-                      type: number
-                    - name: ci.lower
-                      type: number
-                      title: Lower
-                      visible: (est_ci)
-                    - name: ci.upper
-                      type: number
-                      title: Upper
-                      visible: (est_ci)
-                    - name: std.all
-                      type: number
-                      title: β
-                    - name: std.ci.lower
-                      type: number
-                      title: Lower
-                      visible: (beta_ci)
-                    - name: std.ci.upper
-                      type: number
-                      title: Upper
-                      visible: (beta_ci)
-                    - name: z
-                      title: "z"
-                      type: number
-                    - name: pvalue
-                      title: "p"
-                      type: number
-                      format: zto,pvalue
-
-
-
-      # Intercepts ------------------------------------------------------------
-      - name: intercepts
-        title: Intercepts
-        type: Table
-#       description: 
-        visible: false
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### cioptions  begins
-                    - bootci
-                    - bootN
-                    - est_ci
-                    - beta_ci
-                    - ci_width
-                    - se
-                    - parallel
-                      ### cioptions  ends
-        
-        columns:
-          - name: lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
-            combineBelow: true
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
-          - name: lhs
-            title: "Variable"
-            type: text
-          - name: est
-            title: "Intercept"
-            type: number
-            format: zto
-          - name: se
-            title: "SE"
-            type: number
-            format: zto
-          - name: ci.lower
-            type: number
-            title: Lower
-            visible: (est_ci)
-            format: zto
-          - name: ci.upper
-            type: number
-            title: Upper
-            visible: (est_ci)
-            format: zto
-          - name: z
-            title: "z"
-            type: number
-            format: zto
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-
-      # Thresholds ------------------------------------------------------------
-      - name: thresholds
-        title: Thresholds
-        type: Table
-#       description: 
-        visible: false
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### cioptions  begins
-                    - bootci
-                    - bootN
-                    - est_ci
-                    - beta_ci
-                    - ci_width
-                    - se
-                    - parallel
-                      ### cioptions  ends
-
-        columns:
-          - name: lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
-            combineBelow: true
-          - name: label
-            title: Label
-            type: text
-            visible: (showlabels)
-          - name: lhs
-            title: "Variable"
-            type: text
-          - name: rhs
-            title: "Step"
-            type: text
-
-          - name: est
-            title: "Thresholds"
-            type: number
-            format: zto
-          - name: se
-            title: "SE"
-            type: number
-            format: zto
-          - name: ci.lower
-            type: number
-            title: Lower
-            visible: (est_ci)
-            format: zto
-          - name: ci.upper
-            type: number
-            title: Upper
-            visible: (est_ci)
-            format: zto
-          - name: z
-            title: "z"
-            type: number
-            format: zto
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-
-
-      # Multilevel means ------------------------------------------------------------
-      - name: mlmeans
-        title: Expected Means
-        type: Table
-        visible: false
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### cioptions  begins
-                    - bootci
-                    - bootN
-                    - est_ci
-                    - beta_ci
-                    - ci_width
-                    - se
-                    - parallel
-                      ### cioptions  ends
-
-        columns:
-          - name: lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-            combineBelow: true
-          - name: level
-            title: Level
-            type: text
-          - name: lhs
-            title: "Variable"
-            type: text
-          - name: est
-            title: "Mean"
-            type: number
-
-
-      # Defined parameters ----------------------------------------------------
-      - name: defined
-        title: Defined parameters
-        type: Table
-#       description: 
-        visible: false
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### cioptions  begins
-                    - bootci
-                    - bootN
-                    - est_ci
-                    - beta_ci
-                    - ci_width
-                    - se
-                    - parallel
-                      ### cioptions  ends
-        
-        columns:
-          - name: lhs
-            title: "Label"
-            type: text
-          - name: desc
-            title: "Description"
-            type: text
-          - name:  rhs
-            title: "Parameter"
-            type: text
-          - name: est
-            title: "Estimate"
-            type: number
-            format: zto
-          - name: se
-            title: "SE"
-            type: number
-            format: zto
-          - name: ci.lower
-            type: number
-            title: Lower
-            visible: (est_ci)
-            format: zto
-          - name: ci.upper
-            type: number
-            title: Upper
-            visible: (est_ci)
-            format: zto
-          - name: std.all
-            type: number
-            title: β
-            format: zto
-          - name: std.ci.lower
-            type: number
-            title: Lower
-            visible: (beta_ci)
-          - name: std.ci.upper
-            type: number
-            title: Upper
-            visible: (beta_ci)
-          - name: z
-            title: "z"
-            type: number
-            format: zto
-          - name: pvalue
-            title: "p"
-            type: number
-            format: zto,pvalue
-
-
-  # Additional outputs ========================================================
-  - name: additional
-    title: "Additional outputs"
-    type: Group
-    visible: (outputAdditionalFitMeasures || (r2) || outputMardiasCoefficients)
-    items:
-
-      - name: reliability
-        title: 'Reliability indices'
-        type: Table
-        visible: false
-        refs: semtools
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-
-        columns:
-          - name:  lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-          - name: level
-            title: Level
-            type: text
-            visible: false
-            combineBelow: true
-          - name: variable
-            title: "Variable"
-            type: text
-          - name: alpha
-            title: α
-            type: number
-          - name: alpha.ord
-            title: Ordinal α
-            type: number
-            visible: false
-          - name: omega
-            title: ω₁
-            type: number
-          - name: omega2
-            title: ω₂
-            type: number
-          - name: omega3
-            title: ω₃
-            type: number
-          - name: avevar
-            title: AVE
-            type: number
-
-
-      - name: htmt
-        title: Heterotrait-monotrait (HTMT) ratio of correlations
-        type: Table
-        visible: (htmt)
-        refs: semtools
-        columns:
-                      - name: variable
-                        title: ""
+                columns:
+                    -   name: label
+                        title: Label
                         type: text
-
-
-      # Mardia's coefficients -------------------------------------------------
-      - name: mardia
-        title: "Mardia's coefficients"
-        type: Table
-#       description:
-        refs: semtools
-        visible: (outputMardiasCoefficients)
+                    -   name: chisq
+                        title: X²
+                        type: number
+                    -   name: df
+                        title: df
+                        type: integer
+                    -   name: pvalue
+                        title: p
+                        type: number
+                        format: zto,pvalue
+            -   name: constraints
+                title: Constraints score tests
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                columns:
+                    -   name: type
+                        type: text
+                        title: Type
+                        visible: true
+                        combineBelow: true
+                    -   name: lhs
+                        title: Par 1
+                        type: text
+                    -   name: op
+                        title: ''
+                        type: text
+                    -   name: rhs
+                        title: Par 2
+                        type: text
+                    -   name: chisq
+                        title: X²
+                        type: number
+                    -   name: df
+                        title: df
+                        type: integer
+                    -   name: pvalue
+                        title: p
+                        type: number
+                        format: zto,pvalue
+            -   name: indices
+                title: Fit indices
+                type: Table
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                columns:
+                    -   name: type
+                        title: Type
+                        visible: false
+                    -   name: srmr
+                        title: SRMR
+                        type: number
+                        format: zto
+                    -   name: rmsea
+                        title: RMSEA
+                        type: number
+                        format: zto
+                    -   name: rmsea.ci.lower
+                        title: Lower
+                        type: number
+                        format: zto
+                    -   name: rmsea.ci.upper
+                        title: Upper
+                        type: number
+                        format: zto
+                    -   name: rmsea.pvalue
+                        title: RMSEA p
+                        type: number
+                        format: zto,pvalue
+            -   name: modelbaseline
+                title: User model versus baseline model
+                type: Table
+                visible: true
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                rows: 8
+                columns:
+                    -   name: name
+                        title: ''
+                        type: text
+                    -   name: statistics
+                        title: Model
+                        type: number
+                        format: zto
+                    -   name: scaled
+                        title: Scaled
+                        type: number
+                        format: zto
+                        visible: false
+                    -   name: robust
+                        title: Robust
+                        type: number
+                        format: zto
+                        visible: false
+            -   name: moreindices
+                title: Additional fit indices
+                type: Table
+                visible: (outputAdditionalFitMeasures)
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                columns:
+                    -   name: name
+                        title: ''
+                        type: text
+                    -   name: statistics
+                        title: Model
+                        type: number
+            -   name: rsquared
+                title: R²
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                        combineBelow: true
+                    -   name: rhs
+                        title: Variable
+                        type: text
+                    -   name: est
+                        title: R²
+                        type: number
+            -   name: icc
+                title: Intra-class correlations
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                        combineBelow: true
+                    -   name: rhs
+                        title: Variable
+                        type: text
+                    -   name: est
+                        title: ICC
+                        type: number
+    -   name: models
+        title: Estimates
+        type: Group
+        visible: false
+        items:
+            -   name: coefficients
+                title: Parameters estimates
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                    - bootci
+                    - bootN
+                    - est_ci
+                    - beta_ci
+                    - ci_width
+                    - se
+                    - parallel
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                        combineBelow: true
+                    -   name: level
+                        title: Level
+                        type: text
+                        visible: (cluster)
+                        combineBelow: true
+                    -   name: label
+                        title: Label
+                        type: text
+                        visible: (showlabels)
+                    -   name: lhs
+                        title: Dep
+                        type: text
+                    -   name: rhs
+                        title: Pred
+                        type: text
+                    -   name: est
+                        title: Estimate
+                        type: number
+                    -   name: se
+                        title: SE
+                        type: number
+                    -   name: ci.lower
+                        type: number
+                        title: Lower
+                        visible: (est_ci)
+                    -   name: ci.upper
+                        type: number
+                        title: Upper
+                        visible: (est_ci)
+                    -   name: std.all
+                        type: number
+                        title: β
+                    -   name: std.ci.lower
+                        type: number
+                        title: Lower
+                        visible: (beta_ci)
+                    -   name: std.ci.upper
+                        type: number
+                        title: Upper
+                        visible: (beta_ci)
+                    -   name: z
+                        title: z
+                        type: number
+                    -   name: pvalue
+                        title: p
+                        type: number
+                        format: zto,pvalue
+            -   name: loadings
+                title: Measurement model
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                    - bootci
+                    - bootN
+                    - est_ci
+                    - beta_ci
+                    - ci_width
+                    - se
+                    - parallel
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                        combineBelow: true
+                    -   name: level
+                        title: Level
+                        type: text
+                        visible: (cluster)
+                        combineBelow: true
+                    -   name: label
+                        title: Label
+                        type: text
+                        visible: (showlabels)
+                    -   name: lhs
+                        title: Latent
+                        type: text
+                        combineBelow: true
+                    -   name: rhs
+                        title: Observed
+                        type: text
+                    -   name: est
+                        title: Estimate
+                        type: number
+                    -   name: se
+                        title: SE
+                        type: number
+                    -   name: ci.lower
+                        type: number
+                        title: Lower
+                        visible: (est_ci)
+                    -   name: ci.upper
+                        type: number
+                        title: Upper
+                        visible: (est_ci)
+                    -   name: std.all
+                        type: number
+                        title: β
+                    -   name: std.ci.lower
+                        type: number
+                        title: Lower
+                        visible: (beta_ci)
+                    -   name: std.ci.upper
+                        type: number
+                        title: Upper
+                        visible: (beta_ci)
+                    -   name: z
+                        title: z
+                        type: number
+                    -   name: pvalue
+                        title: p
+                        type: number
+                        format: zto,pvalue
+            -   name: composites
+                title: Composites
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                    - bootci
+                    - bootN
+                    - est_ci
+                    - beta_ci
+                    - ci_width
+                    - se
+                    - parallel
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                        combineBelow: true
+                    -   name: level
+                        title: Level
+                        type: text
+                        visible: (cluster)
+                        combineBelow: true
+                    -   name: label
+                        title: Label
+                        type: text
+                        visible: (showlabels)
+                    -   name: lhs
+                        title: Formative
+                        type: text
+                        combineBelow: true
+                    -   name: rhs
+                        title: Observed
+                        type: text
+                    -   name: est
+                        title: Estimate
+                        type: number
+                    -   name: se
+                        title: SE
+                        type: number
+                    -   name: ci.lower
+                        type: number
+                        title: Lower
+                        visible: (est_ci)
+                    -   name: ci.upper
+                        type: number
+                        title: Upper
+                        visible: (est_ci)
+                    -   name: std.all
+                        type: number
+                        title: β
+                    -   name: std.ci.lower
+                        type: number
+                        title: Lower
+                        visible: (beta_ci)
+                    -   name: std.ci.upper
+                        type: number
+                        title: Upper
+                        visible: (beta_ci)
+                    -   name: z
+                        title: z
+                        type: number
+                    -   name: pvalue
+                        title: p
+                        type: number
+                        format: zto,pvalue
+            -   name: covariances
+                title: Variances and Covariances
+                type: Table
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                    - bootci
+                    - bootN
+                    - est_ci
+                    - beta_ci
+                    - ci_width
+                    - se
+                    - parallel
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                        combineBelow: true
+                    -   name: level
+                        title: Level
+                        type: text
+                        visible: (cluster)
+                        combineBelow: true
+                    -   name: label
+                        title: Label
+                        type: text
+                        visible: (showlabels)
+                    -   name: lhs
+                        title: Variable 1
+                        type: text
+                    -   name: rhs
+                        title: Variable 2
+                        type: text
+                    -   name: est
+                        title: Estimate
+                        type: number
+                    -   name: se
+                        title: SE
+                        type: number
+                    -   name: ci.lower
+                        type: number
+                        title: Lower
+                        visible: (est_ci)
+                    -   name: ci.upper
+                        type: number
+                        title: Upper
+                        visible: (est_ci)
+                    -   name: std.all
+                        type: number
+                        title: β
+                    -   name: std.ci.lower
+                        type: number
+                        title: Lower
+                        visible: (beta_ci)
+                    -   name: std.ci.upper
+                        type: number
+                        title: Upper
+                        visible: (beta_ci)
+                    -   name: z
+                        title: z
+                        type: number
+                    -   name: pvalue
+                        title: p
+                        type: number
+                        format: zto,pvalue
+            -   name: intercepts
+                title: Intercepts
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                    - bootci
+                    - bootN
+                    - est_ci
+                    - beta_ci
+                    - ci_width
+                    - se
+                    - parallel
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                        combineBelow: true
+                    -   name: level
+                        title: Level
+                        type: text
+                        visible: (cluster)
+                        combineBelow: true
+                    -   name: label
+                        title: Label
+                        type: text
+                        visible: (showlabels)
+                    -   name: lhs
+                        title: Variable
+                        type: text
+                    -   name: est
+                        title: Intercept
+                        type: number
+                        format: zto
+                    -   name: se
+                        title: SE
+                        type: number
+                        format: zto
+                    -   name: ci.lower
+                        type: number
+                        title: Lower
+                        visible: (est_ci)
+                        format: zto
+                    -   name: ci.upper
+                        type: number
+                        title: Upper
+                        visible: (est_ci)
+                        format: zto
+                    -   name: z
+                        title: z
+                        type: number
+                        format: zto
+                    -   name: pvalue
+                        title: p
+                        type: number
+                        format: zto,pvalue
+            -   name: thresholds
+                title: Thresholds
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                    - bootci
+                    - bootN
+                    - est_ci
+                    - beta_ci
+                    - ci_width
+                    - se
+                    - parallel
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                        combineBelow: true
+                    -   name: level
+                        title: Level
+                        type: text
+                        visible: (cluster)
+                        combineBelow: true
+                    -   name: label
+                        title: Label
+                        type: text
+                        visible: (showlabels)
+                    -   name: lhs
+                        title: Variable
+                        type: text
+                    -   name: rhs
+                        title: Step
+                        type: text
+                    -   name: est
+                        title: Thresholds
+                        type: number
+                        format: zto
+                    -   name: se
+                        title: SE
+                        type: number
+                        format: zto
+                    -   name: ci.lower
+                        type: number
+                        title: Lower
+                        visible: (est_ci)
+                        format: zto
+                    -   name: ci.upper
+                        type: number
+                        title: Upper
+                        visible: (est_ci)
+                        format: zto
+                    -   name: z
+                        title: z
+                        type: number
+                        format: zto
+                    -   name: pvalue
+                        title: p
+                        type: number
+                        format: zto,pvalue
+            -   name: mlmeans
+                title: Expected Means
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                    - bootci
+                    - bootN
+                    - est_ci
+                    - beta_ci
+                    - ci_width
+                    - se
+                    - parallel
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                        combineBelow: true
+                    -   name: level
+                        title: Level
+                        type: text
+                    -   name: lhs
+                        title: Variable
+                        type: text
+                    -   name: est
+                        title: Mean
+                        type: number
+            -   name: defined
+                title: Defined parameters
+                type: Table
+                visible: false
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                    - bootci
+                    - bootN
+                    - est_ci
+                    - beta_ci
+                    - ci_width
+                    - se
+                    - parallel
+                columns:
+                    -   name: lhs
+                        title: Label
+                        type: text
+                    -   name: desc
+                        title: Description
+                        type: text
+                    -   name: rhs
+                        title: Parameter
+                        type: text
+                    -   name: est
+                        title: Estimate
+                        type: number
+                        format: zto
+                    -   name: se
+                        title: SE
+                        type: number
+                        format: zto
+                    -   name: ci.lower
+                        type: number
+                        title: Lower
+                        visible: (est_ci)
+                        format: zto
+                    -   name: ci.upper
+                        type: number
+                        title: Upper
+                        visible: (est_ci)
+                        format: zto
+                    -   name: std.all
+                        type: number
+                        title: β
+                        format: zto
+                    -   name: std.ci.lower
+                        type: number
+                        title: Lower
+                        visible: (beta_ci)
+                    -   name: std.ci.upper
+                        type: number
+                        title: Upper
+                        visible: (beta_ci)
+                    -   name: z
+                        title: z
+                        type: number
+                        format: zto
+                    -   name: pvalue
+                        title: p
+                        type: number
+                        format: zto,pvalue
+    -   name: additional
+        title: Additional outputs
+        type: Group
+        visible: (outputAdditionalFitMeasures || (r2) || outputMardiasCoefficients)
+        items:
+            -   name: reliability
+                title: Reliability indices
+                type: Table
+                visible: false
+                refs: semtools
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                    -   name: level
+                        title: Level
+                        type: text
+                        visible: false
+                        combineBelow: true
+                    -   name: variable
+                        title: Variable
+                        type: text
+                    -   name: alpha
+                        title: α
+                        type: number
+                    -   name: alpha.ord
+                        title: Ordinal α
+                        type: number
+                        visible: false
+                    -   name: omega
+                        title: ω₁
+                        type: number
+                    -   name: omega2
+                        title: ω₂
+                        type: number
+                    -   name: omega3
+                        title: ω₃
+                        type: number
+                    -   name: avevar
+                        title: AVE
+                        type: number
+            -   name: htmt
+                title: Heterotrait-monotrait (HTMT) ratio of correlations
+                type: Table
+                visible: (htmt)
+                refs: semtools
+                columns:
+                    -   name: variable
+                        title: ''
+                        type: text
+            -   name: mardia
+                title: Mardia's coefficients
+                type: Table
+                refs: semtools
+                visible: (outputMardiasCoefficients)
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                rows: 2
+                columns:
+                    -   name: name
+                        title: ''
+                        type: text
+                    -   name: coeff
+                        title: Coefficient
+                        type: number
+                    -   name: z
+                        title: z
+                        type: number
+                    -   name: chi
+                        title: χ²
+                        type: number
+                    -   name: df
+                        title: df
+                        type: integer
+                    -   name: p
+                        title: p
+                        type: number
+                        format: zto,pvalue
+    -   name: covariances
+        title: Covariances and correlations
+        type: Group
+        visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances
+            || cov.lv)
+        items:
+            -   name: observed
+                title: Observed covariances (lower triangle) and correlations (upper
+                    triangle)
+                type: Array
+                visible: (outputObservedCovariances)
+                description: A covariance / correlation matrix table.
+                template:
+                    title: ' ___key___'
+                    type: Table
+                    columns:
+                        -   name: variable
+                            title: ''
+                            type: text
+            -   name: implied
+                title: Fitted covariances (lower triangle) and correlations (upper
+                    triangle)
+                type: Array
+                visible: (outputImpliedCovariances)
+                description: A covariance / correlation matrix table.
+                template:
+                    title: ' ___key___'
+                    type: Table
+                    columns:
+                        -   name: variable
+                            title: ''
+                            type: text
+            -   name: residual
+                title: Residual covariances (lower triangle) and correlations (upper
+                    triangle)
+                type: Array
+                visible: (outputResidualCovariances)
+                description: A covariance / correlation matrix table.
+                template:
+                    title: ' ___key___'
+                    type: Table
+                    columns:
+                        -   name: variable
+                            title: ''
+                            type: text
+            -   name: latent
+                title: Model-implied Covariances for latent variables
+                type: Array
+                visible: (cov.lv)
+                description: A covariance.
+                template:
+                    title: ' ___key___'
+                    type: Table
+                    columns:
+                        -   name: variable
+                            title: ''
+                            type: text
+    -   name: modification
+        title: Modifcation indices
+        type: Group
         clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-
-        rows: 2
-        columns:
-        - name: name
-          title: ""
-          type: text
-        - name: coeff
-          title: Coefficient
-          type: number
-        - name: z
-          title: z
-          type: number
-        - name: chi
-          title: χ²
-          type: number
-        - name: df
-          title: df
-          type: integer
-        - name: p
-          title: p
-          type: number
-          format: zto,pvalue
-
-
-  # Covariances and correlations ==============================================
-  - name: covariances
-    title: "Covariances and correlations"
-    type: Group
-    visible: (outputObservedCovariances || outputImpliedCovariances || outputResidualCovariances || cov.lv)
-    items:
-
-    # all tables below have variable number of rows and columns
-    # Observed covariances and correlations -----------------------------------
-    - name: observed
-      title: Observed covariances (lower triangle) and correlations (upper triangle)
-      type: Array
-      visible: (outputObservedCovariances)
-      description: A covariance / correlation matrix table.
-      template:
-              title:  " ___key___"
-              type: Table
-              columns:
-                      - name: variable
-                        title: ""
-                        type: text
-
-    # Model-implied / fitted covariances and correlations ---------------------
-    - name: implied
-      title: Fitted covariances (lower triangle) and correlations (upper triangle)
-      type: Array
-      visible: (outputImpliedCovariances)
-      description: A covariance / correlation matrix table.
-      template:
-              title:  " ___key___"
-              type: Table
-              columns:
-                      - name: variable
-                        title: ""
-                        type: text
-
-
-    # Residual covariances and correlations -----------------------------------
-    - name: residual
-      title: Residual covariances (lower triangle) and correlations (upper triangle)
-      type: Array
-      visible: (outputResidualCovariances)
-      description: A covariance / correlation matrix table.
-      template:
-              title:  " ___key___"
-              type: Table
-              columns:
-                      - name: variable
-                        title: ""
-                        type: text
-
-
-    - name: latent
-      title: Model-implied Covariances for latent variables
-      type: Array
-      visible: (cov.lv)
-      description: A covariance.
-      template:
-              title:  " ___key___"
-              type: Table
-              columns:
-                      - name: variable
-                        title: ""
-                        type: text
-
-
-
-  # Modification indices ======================================================
-  - name: modification
-    title: "Modifcation indices"
-    type: Group
-    clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-    
-    visible: (outputModificationIndices)
-    items:
-      - name: indices
-        title: 'Modification indices'
-        type: Table
-        clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-        
+            - code
+            - estimator
+            - likelihood
+            - meanstructure
+            - int_ov
+            - int_lv
+            - std_lv
+            - std_ov
+            - cov_x
+            - cov_y
+            - cov_lv
+            - cluster
+            - multigroup
+            - eq_loadings
+            - eq_intercepts
+            - eq_residuals
+            - eq_residual.covariances
+            - eq_means
+            - eq_thresholds
+            - eq_regressions
+            - eq_lv.variances
+            - eq_lv.covariances
+            - esem_terms
+            - rotation
+            - algorithm
+            - orthogonal
+            - efa_std.ov
+            - geomin.epsilon
+            - orthomax.gamma
+            - oblimin.gamma
+            - missing
         visible: (outputModificationIndices)
-#       description:
-        notes:
-          EPC: expected parameter changes and their standardized forms (sEPC); for latent variables (LV),
-            all variables (all), and latent and observed variables except for the exogenous observed variables (nox)
-#       variable number of rows
+        items:
+            -   name: indices
+                title: Modification indices
+                type: Table
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                visible: (outputModificationIndices)
+                notes:
+                    EPC: expected parameter changes and their standardized forms (sEPC);
+                        for latent variables (LV), all variables (all), and latent
+                        and observed variables except for the exogenous observed variables
+                        (nox)
+                columns:
+                    -   name: lgroup
+                        title: Group
+                        type: text
+                        visible: (multigroup)
+                    -   name: level
+                        title: Level
+                        type: text
+                        visible: (cluster)
+                        combineBelow: true
+                    -   name: lhs
+                        title: ''
+                        type: text
+                    -   name: op
+                        title: ''
+                        type: text
+                    -   name: rhs
+                        title: ''
+                        type: text
+                    -   name: mi
+                        title: Modif. index
+                        type: number
+                    -   name: epc
+                        title: EPC
+                        type: number
+                        format: zto
+                    -   name: sepc.lv
+                        title: sEPC (LV)
+                        type: number
+                        format: zto
+                    -   name: sepc.all
+                        title: sEPC (all)
+                        type: number
+                        format: zto
+                    -   name: sepc.nox
+                        title: sEPC (nox)
+                        type: number
+                        format: zto
+    -   name: lavaanoptions
+        type: Table
+        visible: (lavaan_options)
+        title: Lavaan Options
+        refs: lavaan
         columns:
-          - name:  lgroup
-            title: Group
-            type: text
-            visible: (multigroup)
-          - name: level
-            title: Level
-            type: text
-            visible: (cluster)
-            combineBelow: true
-
-          - name: lhs
-            title: ""
-            type: text
-          - name: op
-            title: ""
-            type: text
-          - name: rhs
-            title: ""
-            type: text
-          - name: mi
-            title: Modif. index
-            type: number
-          - name: epc
-            title: EPC
-            type: number
-            format: zto
-          - name: sepc.lv
-            title: sEPC (LV)
-            type: number
-            format: zto
-          - name: sepc.all
-            title: sEPC (all)
-            type: number
-            format: zto
-          - name: sepc.nox
-            title: sEPC (nox)
-            type: number
-            format: zto
-  - name: lavaanoptions
-    type: Table
-    visible: (lavaan_options)
-    title: "Lavaan Options"
-    refs: 
-      - lavaan
-    columns:
-      - name: opt1
-        type: text
-        title: Option
-      - name: value1
-        type: text
-        title: Value
-      - name: opt2
-        type: text
-        title: Option
-      - name: value2
-        type: text
-        title: Value
-      - name: opt3
-        type: text
-        title: Option
-      - name: value3
-        type: text
-        title: Value
-
-
-  # Path model ================================================================
-  - name: pathgroup
-    type: Group
-    title: Path Model
-    visible: (diagram)
-    clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### diagoptions  begins
-                    - diag_shape_man
-                    - diag_shape_lat
-                    - diag_abbrev
-                    - diag_type
-                    - diag_rotate
-                    - diag_labsize
-                    - diag_resid
-                    - diag_paths
-                    - diag_intercepts
-                      ### diagoptions  ends
-    items:
-
-    # Path diagrams -----------------------------------------------------------
-      - name: diagrams
-        title: Path diagrams
-        type: Array
-        description: an array of path diagrams
-        refs: semplot        
+            -   name: opt1
+                type: text
+                title: Option
+            -   name: value1
+                type: text
+                title: Value
+            -   name: opt2
+                type: text
+                title: Option
+            -   name: value2
+                type: text
+                title: Value
+            -   name: opt3
+                type: text
+                title: Option
+            -   name: value3
+                type: text
+                title: Value
+    -   name: pathgroup
+        type: Group
+        title: Path Model
         visible: (diagram)
-        template:
-          title: $key
-          type: Image
-          renderFun: .showDiagram
-          width: 800
-          height: 600
-          clearWith:
-                      ### modeloptions  begins
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                      ### modeloptions  ends
-                      ### diagoptions  begins
-                    - diag_shape_man
-                    - diag_shape_lat
-                    - diag_abbrev
-                    - diag_type
-                    - diag_rotate
-                    - diag_labsize
-                    - diag_resid
-                    - diag_paths
-                    - diag_intercepts
-                      ### diagoptions  ends
-
-    # Path diagram notes ------------------------------------------------------
-      - name: notes
-        type: Html
-        title: ""
-#       description:
-        visible: false
-
-  - name: preds_lv
-    title: Factor scores
-    type: Output            
-    varDescription: Factor scores
-    initInRun: true 
-
-  - name: preds_ov
-    title: Indicators scores
-    type: Output            
-    varDescription: Indicators scores
-    initInRun: true 
-
-  - name: preds_dv
-    title: Dependent vars scores
-    type: Output            
-    varDescription: Dependent vars scores
-    initInRun: true 
+        clearWith:
+            - code
+            - estimator
+            - likelihood
+            - meanstructure
+            - int_ov
+            - int_lv
+            - std_lv
+            - std_ov
+            - cov_x
+            - cov_y
+            - cov_lv
+            - cluster
+            - multigroup
+            - eq_loadings
+            - eq_intercepts
+            - eq_residuals
+            - eq_residual.covariances
+            - eq_means
+            - eq_thresholds
+            - eq_regressions
+            - eq_lv.variances
+            - eq_lv.covariances
+            - esem_terms
+            - rotation
+            - algorithm
+            - orthogonal
+            - efa_std.ov
+            - geomin.epsilon
+            - orthomax.gamma
+            - oblimin.gamma
+            - missing
+            - diag_shape_man
+            - diag_shape_lat
+            - diag_abbrev
+            - diag_type
+            - diag_rotate
+            - diag_labsize
+            - diag_resid
+            - diag_paths
+            - diag_intercepts
+        items:
+            -   name: diagrams
+                title: Path diagrams
+                type: Array
+                description: an array of path diagrams
+                refs: semplot
+                visible: (diagram)
+                template:
+                    title: $key
+                    type: Image
+                    renderFun: .showDiagram
+                    width: 800
+                    height: 600
+                    clearWith:
+                        - code
+                        - estimator
+                        - likelihood
+                        - meanstructure
+                        - int_ov
+                        - int_lv
+                        - std_lv
+                        - std_ov
+                        - cov_x
+                        - cov_y
+                        - cov_lv
+                        - cluster
+                        - multigroup
+                        - eq_loadings
+                        - eq_intercepts
+                        - eq_residuals
+                        - eq_residual.covariances
+                        - eq_means
+                        - eq_thresholds
+                        - eq_regressions
+                        - eq_lv.variances
+                        - eq_lv.covariances
+                        - esem_terms
+                        - rotation
+                        - algorithm
+                        - orthogonal
+                        - efa_std.ov
+                        - geomin.epsilon
+                        - orthomax.gamma
+                        - oblimin.gamma
+                        - missing
+                        - diag_shape_man
+                        - diag_shape_lat
+                        - diag_abbrev
+                        - diag_type
+                        - diag_rotate
+                        - diag_labsize
+                        - diag_resid
+                        - diag_paths
+                        - diag_intercepts
+            -   name: notes
+                type: Html
+                title: ''
+                visible: false
+    -   name: preds_lv
+        title: Factor scores
+        type: Output
+        varDescription: Factor scores
+        initInRun: true
+    -   name: preds_ov
+        title: Indicators scores
+        type: Output
+        varDescription: Indicators scores
+        initInRun: true
+    -   name: preds_dv
+        title: Dependent vars scores
+        type: Output
+        varDescription: Dependent vars scores
+        initInRun: true
