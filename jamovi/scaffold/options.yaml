@@ -1,4 +1,6 @@
-modeloptions:
+- type: scaffold
+  name: modeloptions
+  children:
     - code
     - estimator
     - likelihood
@@ -30,7 +32,9 @@ modeloptions:
     - orthomax.gamma
     - oblimin.gamma
     - missing
-cioptions:
+- type: scaffold
+  name: cioptions
+  children:
     - bootci
     - bootN
     - est_ci
@@ -38,7 +42,9 @@ cioptions:
     - ci_width
     - se
     - parallel
-diagoptions:
+- type: scaffold
+  name: diagoptions
+  children:
     - diag_shape_man
     - diag_shape_lat
     - diag_abbrev

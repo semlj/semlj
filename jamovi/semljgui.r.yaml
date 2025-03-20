@@ -1233,38 +1233,6 @@ items:
                 type: Table
                 visible: (outputObservedCovariances & !outpuCombineCovariances)
                 description: A covariance / correlation matrix table.
-                clearWith:
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
                 columns:
                     -   name: lgroup
                         title: Group
@@ -1282,38 +1250,6 @@ items:
                 title: Fitted covariances (lower triangle) and correlations (upper
                     triangle)
                 type: Table
-                clearWith:
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
                 visible: (outputImpliedCovariances & !outpuCombineCovariances)
                 description: A covariance / correlation matrix table.
                 columns:
@@ -1335,38 +1271,6 @@ items:
                 type: Table
                 visible: (outputResidualCovariances & !outpuCombineCovariances)
                 description: A covariance / correlation matrix table.
-                clearWith:
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
                 columns:
                     -   name: lgroup
                         title: Group
@@ -1383,38 +1287,6 @@ items:
             -   name: combined
                 title: Covariances (lower triangle) and correlations (upper triangle)
                 type: Table
-                clearWith:
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
                 visible: (outpuCombineCovariances)
                 description: A covariance / correlation matrix table.
                 columns:
@@ -1437,38 +1309,6 @@ items:
             -   name: latent
                 title: Model-implied Covariances for latent variables
                 type: Table
-                clearWith:
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
                 visible: false
                 description: A covariance matrix table.
                 columns:
@@ -1525,38 +1365,6 @@ items:
             -   name: indices
                 title: Modification indices
                 type: Table
-                clearWith:
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
                 visible: (outputModificationIndices)
                 notes:
                     EPC: expected parameter changes and their standardized forms (sEPC);
@@ -1654,47 +1462,47 @@ items:
                     renderFun: .showDiagram
                     width: 800
                     height: 600
-                    clearWith:
-                        - code
-                        - estimator
-                        - likelihood
-                        - meanstructure
-                        - int_ov
-                        - int_lv
-                        - std_lv
-                        - std_ov
-                        - cov_x
-                        - cov_y
-                        - cov_lv
-                        - cluster
-                        - multigroup
-                        - eq_loadings
-                        - eq_intercepts
-                        - eq_residuals
-                        - eq_residual.covariances
-                        - eq_means
-                        - eq_thresholds
-                        - eq_regressions
-                        - eq_lv.variances
-                        - eq_lv.covariances
-                        - esem_terms
-                        - rotation
-                        - algorithm
-                        - orthogonal
-                        - efa_std.ov
-                        - geomin.epsilon
-                        - orthomax.gamma
-                        - oblimin.gamma
-                        - missing
-                        - diag_shape_man
-                        - diag_shape_lat
-                        - diag_abbrev
-                        - diag_type
-                        - diag_rotate
-                        - diag_labsize
-                        - diag_resid
-                        - diag_paths
-                        - diag_intercepts
+                clearWith:
+                    - code
+                    - estimator
+                    - likelihood
+                    - meanstructure
+                    - int_ov
+                    - int_lv
+                    - std_lv
+                    - std_ov
+                    - cov_x
+                    - cov_y
+                    - cov_lv
+                    - cluster
+                    - multigroup
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                    - esem_terms
+                    - rotation
+                    - algorithm
+                    - orthogonal
+                    - efa_std.ov
+                    - geomin.epsilon
+                    - orthomax.gamma
+                    - oblimin.gamma
+                    - missing
+                    - diag_shape_man
+                    - diag_shape_lat
+                    - diag_abbrev
+                    - diag_type
+                    - diag_rotate
+                    - diag_labsize
+                    - diag_resid
+                    - diag_paths
+                    - diag_intercepts
             -   name: notes
                 type: Html
                 title: ''
@@ -1718,7 +1526,7 @@ items:
         type: Table
         visible: (constraints_examples)
         title: Syntax examples
-        clearWith: ~
+        clearWith: []
         columns:
             -   name: info
                 type: text

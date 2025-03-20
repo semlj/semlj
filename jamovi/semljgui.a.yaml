@@ -17,7 +17,7 @@ options:
         default: gui
         hidden: true
     -   name: code
-        default: ~
+        default: ""
         type: String
         hidden: true
         description:
@@ -27,6 +27,7 @@ options:
         type: Bool
         title: Do not run
         description: not present in R. Halt running for more confortable input
+        
     -   name: endogenous
         type: Array
         default:
@@ -39,8 +40,10 @@ options:
                     type: String
                 -   name: vars
                     type: Variables
-                    suggested: continuous
-                    permitted: numeric
+                    suggested: 
+                          - continuous
+                    permitted: 
+                          - numeric
         description:
             R: |
                 A list containing named lists that define the `label` of the latent endogenous variable(s) and the `vars` that belong to that latent.
@@ -56,8 +59,10 @@ options:
                     type: String
                 -   name: vars
                     type: Variables
-                    suggested: continuous
-                    permitted: numeric
+                    suggested: 
+                              - continuous
+                    permitted: 
+                              - numeric
         description:
             R: |
                 A list containing named lists that define the `label` of the latent exogenous variables and the `vars` that belong to that latent.
@@ -358,7 +363,8 @@ options:
         suggested:
             - nominal
             - ordinal
-        permitted: factor
+        permitted: 
+            - factor
         default: ~
         description:
             R: Factor defining groups for multigroup analysis.

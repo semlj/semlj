@@ -9,10 +9,6 @@ children:
     -   type: VariableSupplier
         persistentItems: true
         stretchFactor: 1
-        suggested:
-            - continuous
-            - ordinal
-        permitted: numeric
         children:
             -   type: TargetLayoutBox
                 label: Latent Endogenous Variables

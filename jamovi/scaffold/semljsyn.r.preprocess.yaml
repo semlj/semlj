@@ -39,12 +39,18 @@ items:
         title: Overall Tests
         type: Group
         visible: false
-        clearWith: __modeloptions__
+        clearWith: 
+                -   type: scaffold
+                    name: modeloptions
+                    file: options.yaml
         items:
             -   name: main
                 title: Model tests
                 type: Table
-                clearWith: __modeloptions__
+                clearWith: 
+                 -   type: scaffold
+                     name: modeloptions
+                     file: options.yaml
                 columns:
                     -   name: label
                         title: Label
@@ -63,7 +69,10 @@ items:
                 title: Constraints score tests
                 type: Table
                 visible: false
-                clearWith: __modeloptions__
+                clearWith: 
+                 -   type: scaffold
+                     name: modeloptions
+                     file: options.yaml
                 columns:
                     -   name: type
                         type: text
@@ -92,7 +101,10 @@ items:
             -   name: indices
                 title: Fit indices
                 type: Table
-                clearWith: __modeloptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
                 columns:
                     -   name: type
                         title: Type
@@ -121,7 +133,10 @@ items:
                 title: User model versus baseline model
                 type: Table
                 visible: true
-                clearWith: __modeloptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
                 rows: 8
                 columns:
                     -   name: name
@@ -145,7 +160,10 @@ items:
                 title: Additional fit indices
                 type: Table
                 visible: (outputAdditionalFitMeasures)
-                clearWith: __modeloptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
                 columns:
                     -   name: name
                         title: ''
@@ -157,7 +175,10 @@ items:
                 title: R²
                 type: Table
                 visible: false
-                clearWith: __modeloptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
                 columns:
                     -   name: lgroup
                         title: Group
@@ -174,7 +195,10 @@ items:
                 title: Intra-class correlations
                 type: Table
                 visible: false
-                clearWith: __modeloptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
                 columns:
                     -   name: lgroup
                         title: Group
@@ -196,9 +220,14 @@ items:
                 title: Parameters estimates
                 type: Table
                 visible: false
-                clearWith:
-                    - __modeloptions__
-                    - __cioptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: cioptions
+                        file: options.yaml
+                        
                 columns:
                     -   name: lgroup
                         title: Group
@@ -256,9 +285,13 @@ items:
                 title: Measurement model
                 type: Table
                 visible: false
-                clearWith:
-                    - __modeloptions__
-                    - __cioptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: cioptions
+                        file: options.yaml
                 columns:
                     -   name: lgroup
                         title: Group
@@ -317,9 +350,13 @@ items:
                 title: Composites
                 type: Table
                 visible: false
-                clearWith:
-                    - __modeloptions__
-                    - __cioptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: cioptions
+                        file: options.yaml
                 columns:
                     -   name: lgroup
                         title: Group
@@ -377,9 +414,13 @@ items:
             -   name: covariances
                 title: Variances and Covariances
                 type: Table
-                clearWith:
-                    - __modeloptions__
-                    - __cioptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: cioptions
+                        file: options.yaml
                 columns:
                     -   name: lgroup
                         title: Group
@@ -437,9 +478,13 @@ items:
                 title: Intercepts
                 type: Table
                 visible: false
-                clearWith:
-                    - __modeloptions__
-                    - __cioptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: cioptions
+                        file: options.yaml
                 columns:
                     -   name: lgroup
                         title: Group
@@ -488,9 +533,13 @@ items:
                 title: Thresholds
                 type: Table
                 visible: false
-                clearWith:
-                    - __modeloptions__
-                    - __cioptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: cioptions
+                        file: options.yaml
                 columns:
                     -   name: lgroup
                         title: Group
@@ -542,9 +591,13 @@ items:
                 title: Expected Means
                 type: Table
                 visible: false
-                clearWith:
-                    - __modeloptions__
-                    - __cioptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: cioptions
+                        file: options.yaml
                 columns:
                     -   name: lgroup
                         title: Group
@@ -564,9 +617,13 @@ items:
                 title: Defined parameters
                 type: Table
                 visible: false
-                clearWith:
-                    - __modeloptions__
-                    - __cioptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: cioptions
+                        file: options.yaml
                 columns:
                     -   name: lhs
                         title: Label
@@ -625,7 +682,10 @@ items:
                 type: Table
                 visible: false
                 refs: semtools
-                clearWith: __modeloptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
                 columns:
                     -   name: lgroup
                         title: Group
@@ -672,7 +732,10 @@ items:
                 type: Table
                 refs: semtools
                 visible: (outputMardiasCoefficients)
-                clearWith: __modeloptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
                 rows: 2
                 columns:
                     -   name: name
@@ -754,13 +817,19 @@ items:
     -   name: modification
         title: Modifcation indices
         type: Group
-        clearWith: __modeloptions__
+        clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
         visible: (outputModificationIndices)
         items:
             -   name: indices
                 title: Modification indices
                 type: Table
-                clearWith: __modeloptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
                 visible: (outputModificationIndices)
                 notes:
                     EPC: expected parameter changes and their standardized forms (sEPC);
@@ -833,9 +902,13 @@ items:
         type: Group
         title: Path Model
         visible: (diagram)
-        clearWith:
-            - __modeloptions__
-            - __diagoptions__
+        clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: diagoptions
+                        file: options.yaml
         items:
             -   name: diagrams
                 title: Path diagrams
@@ -849,9 +922,13 @@ items:
                     renderFun: .showDiagram
                     width: 800
                     height: 600
-                    clearWith:
-                        - __modeloptions__
-                        - __diagoptions__
+                clearWith: 
+                    -   type: scaffold
+                        name: modeloptions
+                        file: options.yaml
+                    -   type: scaffold
+                        name: diagoptions
+                        file: options.yaml
             -   name: notes
                 type: Html
                 title: ''
