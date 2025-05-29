@@ -650,10 +650,10 @@ options:
       title: Geomin Epsilon
       type: Number
       min: 0
-      default: .50
+      default: .001
       description:
           R: >
-             Geomin epsilon, default=.50
+             Geomin epsilon, default=.001
     - name: orthomax.gamma
       title: Orthomax Gamma
       type: Number
