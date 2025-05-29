@@ -49,8 +49,10 @@ options:
               type: Variables
               suggested:
                 - continuous
+                - ordinal
               permitted:
                 - numeric
+                - factor
       description:
           R: >
              A list containing named lists that define the `label` of the latent endogenous variable(s) and
@@ -72,6 +74,8 @@ options:
                 - continuous
               permitted:
                 - numeric
+                - factor
+
       description:
           R: >
             A list containing named lists that define the `label` of the latent exogenous variables and

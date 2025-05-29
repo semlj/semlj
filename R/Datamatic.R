@@ -59,6 +59,7 @@ Datamatic <- R6::R6Class(
       for (var in vars) {
         if (is.factor(data[[var]])) { 
           data[[var]]<-ordered(data[[var]])
+
           trans<-c(trans,var)
         }
       }

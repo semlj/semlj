@@ -122,9 +122,11 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             "vars",
                             NULL,
                             suggested=list(
-                                "continuous"),
+                                "continuous",
+                                "ordinal"),
                             permitted=list(
-                                "numeric")))))
+                                "numeric",
+                                "factor")))))
             private$..exogenous <- jmvcore::OptionArray$new(
                 "exogenous",
                 exogenous,
@@ -143,7 +145,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             suggested=list(
                                 "continuous"),
                             permitted=list(
-                                "numeric")))))
+                                "numeric",
+                                "factor")))))
             private$..secondorder <- jmvcore::OptionArray$new(
                 "secondorder",
                 secondorder,
