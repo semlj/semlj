@@ -45,38 +45,10 @@ Plotter <- R6::R6Class(
         par<-model@ParTable
         model@ParTable<-sapply(par, function(x) x[check],simplify = F)
         ### end ###
-      
-        
-        ## prepare the semPlotModel object to be passed to .rendefun where
-        ## semPaths will do the actual diagrams
-        
-        ## At the moment (mid-2021) semPaths invokes the graphical device even when DoNotPlot is TRUE,
-        ## which causes a window to pop up in windows and mac when run in jamovi. So, we need to prepare a semPlot object 
-        ## here and make the actual plot in the .renderfun of .b.R with semPaths. 
-        ## for multigroup, we trick the .renderfun semPaths() to believe that there's always only one group
-        ## per call, because the .renderfun is called for each group.
-        ## it's the same now: 25-3-22
-        
-        sm<-semPlot::semPlotModel(model)
-        groups<-unique(sm@Pars$group)
-        images<-private$.plotgroup$diagrams
 
-        if (all(groups=="")) {
-          image<-images$get(key = "0")
-          image$setState(list(semModel = sm))
-          } else {
-          for (i in seq_along(images$itemKeys)) {
-            image<-images$get(key = images$itemKeys[[i]])
-            .sm<-sm
-            .sm@Pars<-.sm@Pars[.sm@Pars$group==groups[i],]
-             image$setState(list(semModel = .sm))
-          }
-
-          }
-
-        ### images are set ####
         
-        ## now we prepare the options for semPaths
+        
+                ## now we prepare the options for semPaths
 
         labs<-self$options$diag_paths
         nodeLabels<-model@pta$vnames$ov.num[[1]]
@@ -97,7 +69,7 @@ Plotter <- R6::R6Class(
         }
 
 
-        self$semPathsOptions<-list(
+        semPathsOptions<-list(
                       layout = layout
                       ,whatLabels=labs
                       ,residuals = self$options$diag_resid
@@ -113,6 +85,39 @@ Plotter <- R6::R6Class(
                       , shapeLat=self$options$diag_shape_lat
                       , edge.label.cex =1.3)
 
+
+              
+        
+        ## prepare the semPlotModel object to be passed to .rendefun where
+        ## semPaths will do the actual diagrams
+        
+        ## At the moment (mid-2021) semPaths invokes the graphical device even when DoNotPlot is TRUE,
+        ## which causes a window to pop up in windows and mac when run in jamovi. So, we need to prepare a semPlot object 
+        ## here and make the actual plot in the .renderfun of .b.R with semPaths. 
+        ## for multigroup, we trick the .renderfun semPaths() to believe that there's always only one group
+        ## per call, because the .renderfun is called for each group.
+        ## it's the same now: 25-3-22
+        
+        sm<-semPlot::semPlotModel(model)
+        groups<-unique(sm@Pars$group)
+        images<-private$.plotgroup$diagrams
+        sm@Original[[1]]<-NULL
+        
+        if (all(groups=="")) {
+          image<-images$get(key = "0")
+          image$setState(list(semModel = sm, semPathsOptions=semPathsOptions))
+          } else {
+          for (i in seq_along(images$itemKeys)) {
+            image<-images$get(key = images$itemKeys[[i]])
+            .sm<-sm
+            .sm@Pars<-.sm@Pars[.sm@Pars$group==groups[i],]
+             image$setState(list(semModel = .sm,semPathsOptions=semPathsOptions))
+          }
+
+          }
+
+        ### images are set ####
+        
         
         return()
       }

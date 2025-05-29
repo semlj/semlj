@@ -274,8 +274,12 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
               return()
           if (!is.something(image$state$semModel))
               return()
-          options<-private$.plotter_machine$semPathsOptions
-        
+#          options<-private$.plotter_machine$semPathsOptions
+           ## all info required by the plot should be in the image$state
+           ## otherwise the plot gives an error when saved with right-click
+           ## in jamovi interface.
+
+           options<-image$state$semPathsOptions       
               # leave this here for future reference
               # semPlot::semPaths(object = image$state$semModel,
               #                   layout =options$layout,
