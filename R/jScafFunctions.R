@@ -2,6 +2,7 @@ j_DEBUG = FALSE
 j_INFO = FALSE
 t_INFO  <- F
 
+
 #### Helper functions used by Scaffold (not exported)
 
 tinfo <- function(...) {
@@ -14,6 +15,7 @@ tinfo <- function(...) {
 
 jinfo <- function(...) {
   if (j_INFO) {
+
     cat("\n")
     cat(paste(list(...)))
     cat("\n")
@@ -21,21 +23,23 @@ jinfo <- function(...) {
 }
 
 
-
 mark <- function(...) {
-  if (!j_DEBUG) 
+  if (!j_DEBUG)
     return()
   
-  if (missing(...))
-    cat("Mark here\n")
+
+  if (missing(...)) cat("Mark here\n")
+  
   items<-list(...)
   
   if (length(items)>1)  cat("______begin________\n\n")
+  
   for (a in items)
     if (is.character(a))
       cat(a,"\n")
   else
     print(a)
+  
   if (length(items)>1)  cat("_____end_______\n\n")
   
 }
@@ -55,14 +59,14 @@ is.something <- function(x, ...) UseMethod(".is.something")
 is.there<-function(pattern,string) length(grep(pattern,string,fixed=T))>0
 
 #### This function run an expression and returns any warnings or errors without stopping the execution.
-try_hard<-function(exp,max_warn=5) {
+try_hard<-function(exp,max_warn=5, silent=FALSE) {
   
   .results<-list(error=FALSE,warning=list(),message=FALSE,obj=FALSE)
   
   .results$obj <- withCallingHandlers(
     tryCatch(exp, error=function(e) {
-      mark("SOURCE:")
-      mark(conditionCall(e))
+      if (!silent) mark("SOURCE:")
+      if (!silent) mark(conditionCall(e))
       .results$error<<-conditionMessage(e)
       NULL
     }), warning=function(w) {
@@ -80,7 +84,7 @@ try_hard<-function(exp,max_warn=5) {
     })
   
   
-  if (!isFALSE(.results$error)) {
+  if (!isFALSE(.results$error) && isFALSE(silent)) {
     mark("CALLER:")
     mark(rlang::enquo(exp))
     mark("ERROR:")
@@ -228,19 +232,6 @@ ebind_square<-function(...) {
   
 }
 
-`ladd<-`<-function(x,value) {
-  x[[length(x)+1]]<-value
-  return(x)
-}
-
-`padd<-` <- function(x, value) {
-  x <- c(0, x)
-  x[[1]] <- value
-  x
-}
-
-###########
-
 
 sourcifyOption<- function(x,...) UseMethod(".sourcifyOption")
 
@@ -324,4 +315,69 @@ clean_lol<-function(alist) {
     if (length(jl)>0) il[[length(il)+1]]<-jl
   }
   il
+}
+
+### syntax functions
+
+`%+%`<-function(a,b) {
+  paste0(a,b)
+}
+
+`%<+%`<-function(a,b) {
+  sprintf(a, b)   
+}
+
+
+`ladd<-`<-function(x,value) {
+  x[[length(x)+1]]<-value
+  return(x)
+}
+
+`padd<-` <- function(x, value) {
+  x <- c(0, x)
+  x[[1]] <- value
+  x
+}
+
+
+is.joption <- function(obj, option) {
+  (option %in% obj$names)
+}
+
+###########
+
+### formatting and stuff ###
+
+format5<-function(x) format(x,digits=5)
+
+
+check_parameters <- function(values, fun=is.null, verbose = TRUE, head="Please fill in the required input:") {
+  
+      needed <- names(values)
+      what   <- unlist(sapply(values,fun))
+      needed <- needed[what]
+      
+      if (length(needed)>0) {
+            if (verbose) {
+            text <- "<p>" %+% head %+% "</p> <ul>" 
+            for (ned in needed) text <- text %+% "<li>" %+% ned %+% "</li>" 
+            text <-  text %+% "</ul>"
+            return(text)
+            } else 
+                return(needed)
+      }
+      return()
+}
+
+test_parameters <- function(obj,values, fun=is.null, verbose = TRUE, head="Please fill in the required input:") {
+  
+  test<-check_parameters(values,fun=fun,verbose=verbose,head=head) 
+ 
+  if (length(test)>0) {
+     obj$ok <-FALSE
+     obj$warning<-list(topic="issues",message=paste(test,collapse=", "), head="info") 
+     call <- rlang::expr(return()) 
+     rlang::eval_bare(call, env = parent.frame())
+     
+  }
 }

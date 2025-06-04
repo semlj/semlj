@@ -87,11 +87,9 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               # prepare some fast stuff anyway, because the table may be already saved 
                               # and should be inited properly
-                              if (isFALSE(self$activated)) {
-                                private$.debug_msg("Not activated")
-                                return()
-                                
-                              }
+                              if (isFALSE(self$activated)) 
+                                 return()
+                              
                               private$.setColumnTitle()
                               private$.ci()
                               self$title
@@ -100,11 +98,8 @@ SmartTable <- R6::R6Class("SmartTable",
 
                               rtable<-private$.getData()
                               
-                              if (is.null(rtable)) {
-                                private$.debug_msg("No data")
-                                return()
-                                
-                              }
+                              if (is.null(rtable))
+                                  return()
 
                               ### expand it if needed
                               if (self$expandOnInit) private$.expand(rtable)
@@ -292,15 +287,12 @@ SmartTable <- R6::R6Class("SmartTable",
                               ### check how to retrieve the data
                               if (inherits(fun,"character") ) {
                                 
-                                if (!(fun %in% names(private$.estimator))) {
-                                  
-                                  private$.debug_msg(fun," not in estimator")
-                                  if (is.null(private$.estimator))
-                                      private$.debug_msg(fun," estimator is NULL")
-                                  
-
-                                  return(NULL)
-                                }
+                                if (!(fun %in% names(private$.estimator)))
+                                    return(NULL)
+                                
+                                if ("ok" %in% names(private$.estimator))
+                                    if (isFALSE(private$.estimator$ok))
+                                        return(NULL)
                                 
                                 output<-try_hard(private$.estimator[[fun]]())
                                 rtable<-output$obj
@@ -360,8 +352,6 @@ SmartTable <- R6::R6Class("SmartTable",
                                   jtable$setRow(rowNo=i,w)
                               }
                               
-                              private$.setHideOn(rtable)
-                              
                               rlist <-private$.listify(rtable)
                               for (i in seq_along(rlist)) {
                                 t<-rlist[[i]]
@@ -373,13 +363,14 @@ SmartTable <- R6::R6Class("SmartTable",
                             .finalize=function() {
                               
                               private$.setColumnTitle()
+                              private$.setHideOn()
                               self$table$setVisible(TRUE)
 
                             },
-                            .setHideOn=function(rtable) {
+                            .setHideOn=function() {
                               
-                              rtable<-private$.framefy(rtable)
                               if (is.something(private$.hideOn)) {
+                                rtable<-self$table$asDF
                                 what<-names(rtable)
                                 for (col in names(private$.hideOn))
                                   if (col %in% what) {
@@ -395,14 +386,17 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               rtable<-private$.framefy(rtable)
                               .names    <-  names(rtable)
-                         
                               .types<-unlist(lapply(rtable,class))
+
                               .types<-gsub("numeric","number",.types)
                               .types<-gsub("integer","number",.types)
                               .types<-gsub("factor","text",.types)
                               .present<-names(self$table$columns)
                               .ncols<-length(.present)
                               .names<-setdiff(.names,.present)
+                              if (is.something(attr(rtable,"types")))
+                                .types<-attr(rtable,"types")
+
                               if (is.something(attr(rtable,"titles")))
                                 .titles<-attr(rtable,"titles")
                               else 
@@ -459,12 +453,11 @@ SmartTable <- R6::R6Class("SmartTable",
                               
                               if (is.null(self$spaceBy))
                                    return()
-                              if (length(self$spaceBy)==1 && self$spaceBy==0)
-                                   return()
+                            
                               
                               try_hard({
                                 
-                                if ("new!" %in% self$spaceBy)
+                                if (self$spaceBy=="new!")
                                      .spaceBy=private$.new_columns
                                 else 
                                      .spaceBy=self$spaceBy

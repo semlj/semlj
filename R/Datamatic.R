@@ -71,7 +71,7 @@ Datamatic <- R6::R6Class(
         }
         if (is.something(trans))
           self$warning<-list(topic="info",
-                            message=glue::glue(DATA_WARNS[["fac_to_ord"]],x=paste(unique(trans),collapse = ",")))
+                            message=DATA_WARNS[["fac_to_ord"]] %<+% paste(unique(trans),collapse = ","))
 
       
         trans<-NULL
@@ -83,7 +83,7 @@ Datamatic <- R6::R6Class(
         }
         if (is.something(trans))
           self$warning<-list(topic="info",
-                                       message=glue::glue(DATA_WARNS[["num_to_fac"]],x=paste(unique(trans),collapse = ",")))
+                                       message=DATA_WARNS[["num_to_fac"]] %<+% paste(unique(trans),collapse = ","))
       
         if (self$missing=="listwise") {
           cdata<-jmvcore::naOmit(data)
@@ -106,7 +106,7 @@ Datamatic <- R6::R6Class(
               ## covariances
               xdata<-as.matrix(ldata[,self$observed])
               if (nrow(xdata) != length(self$observed))
-                self$error<-list(topic="info",message="Number of rows containing covariances is not equal to the number of observed variables.",final=TRUE)
+                self$stop("Group " %+% x %+% ": Number of rows containing covariances is not equal to the number of observed variables.")
 
               L <- xdata * lower.tri(xdata, diag = TRUE)
               xdata <- L + t(L) - diag(diag(L))
@@ -136,9 +136,10 @@ Datamatic <- R6::R6Class(
              
 
       } else {
+        ## here we do not have multigroup
         cdata<-as.matrix(data[,self$observed])
         if (nrow(cdata) != length(self$observed))
-                self$error<-list(topic="info",message="Number of rows containing covariances is not equal to the number of observed variables.",final=TRUE)
+                self$stop("Number of rows containing covariances is not equal to the number of observed variables.")
 
         ## we accept also lower triangular
         L <- cdata * lower.tri(cdata, diag = TRUE)
@@ -154,7 +155,7 @@ Datamatic <- R6::R6Class(
                    D<-diag(data[,self$options$sample_std])
                    cdata<-D %*% cdata %*% D
            } else 
-              self$warning<-list(topic="info",message="Estimation requires covariances as input, please define a column with standard deviations to rescale correlations into covariances.")
+              self$warning<-list(topic="issues",message="Estimation requires covariances as input, please define a column with standard deviations to rescale correlations into covariances.",head="info")
         }
          rownames(cdata)<-colnames(cdata)<-self$observed
       }
@@ -172,11 +173,9 @@ Datamatic <- R6::R6Class(
 
         if (!all(test)) {
           msg<-paste(self$vars[!test],collapse = ",")
-          self$error <-  list(topic="info", message=paste0(
-                        "Variable name not allowed for variables: ",
-                        msg,
-                        ". Please remove characters that are not letters, numbers, dot or underline. Letters may be defined differently in different locales."),
-                        final=TRUE)
+          self$stop("Variable name not allowed for variables: " %+%
+                        msg %+%
+                        ". Please remove characters that are not letters, numbers, dot or underline. Letters may be defined differently in different locales.")
         }
         
         

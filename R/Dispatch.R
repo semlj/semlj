@@ -11,11 +11,14 @@ Dispatch <- R6::R6Class(
             class=TRUE, 
             cloneable=FALSE, ## should improve performance https://r6.r-lib.org/articles/Performance.html ###
             public=list(
+                        interface="jamovi",
                         tables=NULL,
                         initialize=function(results) { 
                           
                                   self$tables<-results
-                                  
+                                  if (is.joption(results$options,".interface"))
+                                           self$interface<-results$options$.interface
+                           
                         },
                         print=function() {
      
@@ -55,7 +58,6 @@ Dispatch <- R6::R6Class(
                                 path<-stringr::str_split(obj$topic,"_")[[1]]
                                 
                                 table<-private$.find_table(path)
-                                
                                 if (!is.something(table)) stop("SCAFFOLD: a message was sent to a non-existing result object: ",obj$topic)
                                 state<-as.list(table$state)
                                 if (!hasName(obj,"key")) obj$key<-jmvcore::toB64(obj$message)
@@ -68,10 +70,15 @@ Dispatch <- R6::R6Class(
                                 if (exists("fromb64")) obj$message<-fromb64(obj$message)
                                 
                                 if (inherits(table,"Html")) {
-                                  content<-table$content
-                                  content<-table$setContent(paste(content,"<div><i>Note:</i>",obj$message,"</div>"))
-                                  table$setVisible(TRUE)
-                                  return()
+                                  if (self$interface=="R") {
+                                       warning(obj$message,call. = FALSE) 
+                                       return()
+                                  } else {
+                                       content<-private$.process_html(table$content,obj)
+                                       content<-table$setContent(content)
+                                       table$setVisible(TRUE)
+                                       return()
+                                  }
                                 }
                                 init<-(hasName(obj,"initOnly") && obj[["initOnly"]]) 
                                 
@@ -104,40 +111,108 @@ Dispatch <- R6::R6Class(
                                     return()
           
                                obj$message<-self$translate(obj$message)
-                          
+                               if (exists("fromb64")) obj$message<-fromb64(obj$message)
+                               
                                if (hasName(obj,"final") && (obj$final))
                                    stop(obj$message)
                           
                                path<-stringr::str_split(obj$topic,"_")[[1]]
                                table<-private$.find_table(path)
-                               table$setError(obj$message)
+                   
+                              if (inherits(table,"Html")) {
+                                  obj$head<-"error"
+                                  table$setContent(private$.process_html(NULL,obj))
+                              } else {
+                                  table$setError(obj$message)
+                              }
+                              table$setVisible(TRUE)
+                           
 
                        },
                        warnings_topics=function() {return(names(private$.warnings))},
                        errors_topics=function() {return(names(private$.errors))}
                       
             ),
-            private = list(
-                      .warnings=list(),
-                      .errors=list(),
-                      .find_table=function(path) {
-                        
-                        tableobj<-self$tables
-                        found<-FALSE
-                        for (aname in path)
-                          if (hasName(tableobj,aname)) {
-                            found<-TRUE
-                            tableobj<-tableobj[[aname]]
-                          }
-                        if (found)
-                             return(tableobj)
-                        else
-                             return(NULL)
-                        
-                      }
-                       
-            ) #end of private
+private = list(
+                .warnings = list(),
+                .errors = list(),
+                .process_html = function(content, obj) {
+                    
+                    style = ""
+                    title = ""
+                    # Contenitore dell'icona con flex e padding
+                    icon_container_style = "display: flex; align-items: center; padding: 10px;"
+                    
+                    # Dimensioni fisse per l'icona e colore di default
+                    icon_style = "font-size: 50px; flex-shrink: 0;"
+                    if (is.something(obj$head)) {
+                        switch (obj$head,
+                                "info" = {
+                                    # SVG per messaggio informativo
+                                    head <- paste0("<div style='", icon_container_style, "'><svg width='50' height='50' xmlns='http://www.w3.org/2000/svg'><circle cx='25' cy='25' r='20' fill='#3e6da9'></circle><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='30' font-family='Arial Black'>i</text></svg></div>")
+                                    style <- "border-color: #3e6da9;"
+                                    
+                                },
+                                "warning" = {
+                                    # SVG per messaggio di avviso
+                                    head <- paste0("<div style='", icon_container_style, "'><svg width='50' height='50' xmlns='http://www.w3.org/2000/svg'><circle cx='25' cy='25' r='20' fill='orange'></circle><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='30' font-family='Arial Black'>!</text></svg></div>")
+                                    style <- "border-left-color: orange;"
+                                    title <- "<h2 style='color:orange;'> Warning</h2>"
+                                },
+                               "wait" = {
+                                    # SVG per messaggio informativo di long time
+                                    head <- paste0("<div style='", icon_container_style, "'><svg width='50' height='50' xmlns='http://www.w3.org/2000/svg'><circle cx='25' cy='25' r='20' fill='none'></circle><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='#3e6da9' font-size='30' font-family='Arial Black'>i</text><g transform='translate(25,25)'><path d='M20,0 A20,20 0 1,1 -6.84,-18.79' fill='none' stroke='#3e6da9' stroke-width='8'><animateTransform attributeName='transform' type='rotate' from='0' to='360' dur='1s' repeatCount='indefinite' /></path></g></svg></div>")
+                                    style <- "border-color: #3e6da9;"
+                                },
+                                "error" = {
+                                    # SVG per messaggio di errore
+                                    head <- paste0("<div style='", icon_container_style, "'><svg width='50' height='50' xmlns='http://www.w3.org/2000/svg'><circle cx='25' cy='25' r='20' fill='red'></circle><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='25' font-family='Arial Black'>X</text></svg></div>")
+                                    style <- "border-color: red;"
+                                    title <- "<h2 style='color:red;'> Error</h2>"
+                                },
+                                {
+                                    head <- obj$head
+                                }
+                        )
+                    } else {
+                        head <- "<div><i>Note:</i></div>"
+                    }
+                    
+                    test <- grep(obj$message, content, fixed = TRUE)
+                    if (length(test) == 0) {
+                        type<-paste0("<div id='",obj$head,"'></div>")
+                        if (length(grep(type,content,fixed=T))>0) {
+                          content<-gsub(type,paste("<div>",obj$message,"</div>",type),content,fixed=T)
+                        } else {
+                          content <- paste0(content, "<div class='notice-box' style='", style, "'>", head, "<div class='content'><div style='display:block'>", title, "<div>",obj$message, "</div>",type,"</div></div></div>")
+                        }
+                    }
+                    return(content)
+                },
+                
+                .find_table = function(path) {
+                    tableobj <- self$tables
+                    found <- FALSE
+                    for (aname in path) {
+                        if (hasName(tableobj, aname)) {
+                            found <- TRUE
+                            tableobj <- tableobj[[aname]]
+                        }
+                    }
+                    if (found)
+                        return(tableobj)
+                    else
+                        return(NULL)
+                }
+            ) # end of private            
 ) #end of class
 
 
 
+### this is for cleaning all html message widgets otherwise some message sticks
+
+dispatch_message_cleaner<-function(jmvobj) {
+  
+  lapply(jmvobj$results$items, function(x) if ("Html" %in% class(x)) x$setContent(" ")  )
+  
+}

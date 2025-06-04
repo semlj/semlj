@@ -1,29 +1,34 @@
 refs:
-   semlj:
-      type: 'software'
-      author: Gallucci, M., Jentschke, S.
-      year: 2021
-      title: "SEMLj: jamovi SEM Analysis"
-      publisher: '[jamovi module]. For help please visit https://semlj.github.io/'
-      url: 'https://semlj.github.io/'
-   lavaan:
-      type: 'article'
-      author: Rosseel, Y.
-      year: 2019
-      title: 'lavaan: An R Package for Structural Equation Modeling'
-      publisher: 'Journal of Statistical Software, 48(2), 1-36'
-      url: 'http://www.jstatsoft.org/v48/i02/'
-   semplot:
-      type: "software"
-      title: "semPlot: Path Diagrams and Visual Analysis of Various SEM Packages' Output"
-      author: Epskamp S. , Stuber S., Nak J., Veenman M,, Jorgensen T.D.
-      year: 2019
-      publisher: "[R Package]. Retrieved from https://CRAN.R-project.org/package=semPlot"
-      url: 'https://CRAN.R-project.org/package=semPlot'
-   semtools:
-      type: "software"
-      title: "semTools: Useful Tools for Structural Equation Modeling"
-      author: Jorgensen, T. D., Pornprasertmanit, S., Schoemann, A. M., Rosseel, Y., Miller, P., Quick, C., Garnier-Villarreal, M., Selig, J., Boulton, A., Preacher, K., Coffman, D., Rhemtulla, M., Robitzsch, A., Enders, C., Arslan, R., Clinton, B., Panko, P., Merkle, E., Chesnut, S., Byrnes, J., Rights, J. D., Longo, Y., Mansolf, M., Ben-Shachar, M. S., Rönkkö, M.
-      year: 2019
-      publisher: "[R Package]. Retrieved from https://CRAN.R-project.org/package=semTools"
-      url: 'https://CRAN.R-project.org/package=semTools'
+    semlj:
+        type: software
+        author: Gallucci, M., Jentschke, S.
+        year: 2021
+        title: 'SEMLj: jamovi SEM Analysis'
+        publisher: '[jamovi module]. For help please visit https://semlj.github.io/'
+        url: https://semlj.github.io/
+    lavaan:
+        type: article
+        author: Rosseel, Y.
+        year: 2019
+        title: 'lavaan: An R Package for Structural Equation Modeling'
+        publisher: Journal of Statistical Software, 48(2), 1-36
+        url: http://www.jstatsoft.org/v48/i02/
+    semplot:
+        type: software
+        title: 'semPlot: Path Diagrams and Visual Analysis of Various SEM Packages''
+            Output'
+        author: Epskamp S. , Stuber S., Nak J., Veenman M,, Jorgensen T.D.
+        year: 2019
+        publisher: '[R Package]. Retrieved from https://CRAN.R-project.org/package=semPlot'
+        url: https://CRAN.R-project.org/package=semPlot
+    semtools:
+        type: software
+        title: 'semTools: Useful Tools for Structural Equation Modeling'
+        author: Jorgensen, T. D., Pornprasertmanit, S., Schoemann, A. M., Rosseel,
+            Y., Miller, P., Quick, C., Garnier-Villarreal, M., Selig, J., Boulton,
+            A., Preacher, K., Coffman, D., Rhemtulla, M., Robitzsch, A., Enders, C.,
+            Arslan, R., Clinton, B., Panko, P., Merkle, E., Chesnut, S., Byrnes, J.,
+            Rights, J. D., Longo, Y., Mansolf, M., Ben-Shachar, M. S., Rönkkö, M.
+        year: 2019
+        publisher: '[R Package]. Retrieved from https://CRAN.R-project.org/package=semTools'
+        url: https://CRAN.R-project.org/package=semTools

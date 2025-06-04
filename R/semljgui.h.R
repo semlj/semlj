@@ -106,8 +106,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..code <- jmvcore::OptionString$new(
                 "code",
                 code,
-                default="",
-                hidden=TRUE)
+                hidden=TRUE,
+                default="")
             private$..donotrun <- jmvcore::OptionBool$new(
                 "donotrun",
                 donotrun)
@@ -325,8 +325,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "ordinal"),
                 permitted=list(
                     "factor",
-                    "id"),
-                default=NULL)
+                    "id"))
             private$..eq_loadings <- jmvcore::OptionBool$new(
                 "eq_loadings",
                 eq_loadings,
@@ -855,6 +854,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     inherit = jmvcore::Group,
     active = list(
         info = function() private$.items[["info"]],
+        issues = function() private$.items[["issues"]],
         fit = function() private$.items[["fit"]],
         models = function() private$.items[["models"]],
         additional = function() private$.items[["additional"]],
@@ -895,6 +895,11 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text", 
                         `title`="", 
                         `combineBelow`=TRUE))))
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="issues",
+                title="Issues",
+                visible=FALSE))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -2836,8 +2841,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="lavaanoptions",
                 visible="(lavaan_options)",
                 title="Lavaan Options",
-                refs=list(
-                    "lavaan"),
+                refs="lavaan",
                 columns=list(
                     list(
                         `name`="opt1", 
@@ -3093,6 +3097,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$issues} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$constraints} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
@@ -3169,7 +3174,7 @@ semljgui <- function(
     cov_y = TRUE,
     cov_lv = TRUE,
     cluster = "",
-    multigroup = NULL,
+    multigroup,
     eq_loadings = FALSE,
     eq_intercepts = FALSE,
     eq_residuals = FALSE,

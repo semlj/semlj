@@ -1,0 +1,167 @@
+title: Structural Equation Modeling
+name: semljsyn
+jus: '3.0'
+stage: 0
+compilerMode: tame
+events:
+    loaded: ./main::loaded
+    update: ./main::update
+    remoteDataChanged: ./main::onDataChanged
+children:
+    -   type: LayoutBox
+        stretchFactor: 1
+        children:
+            -   type: CustomControl
+                stretchFactor: 1
+                name: syntax
+                events:
+                    creating: ./main::editor_creating
+            -   type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                    -   type: CheckBox
+                        name: donotrun
+    -   type: scaffold
+        name: panel_modeloptions
+        file: commons.u.yaml
+    -   type: scaffold
+        name: parameters_options
+        file: commons.u.yaml
+
+    -   type: CollapseBox
+        label: Multi-group analyses
+        collapsed: true
+        stretchFactor: 1
+        style: list
+        children:
+            -   type: LayoutBox
+                margin: large
+                style: list
+                children:
+                    -   type: LayoutBox
+                        margin: large
+                        style: inline
+                        stretchFactor: 1
+                        children:
+                            -   type: TextBox
+                                name: multigroup
+                                stretchFactor: 1
+                                margin: none
+                                format: string
+                                events:
+                                    change: ./gui.events::onChange_multigroup
+                    -   type: Label
+                        label: Equality constraints
+                    -   type: LayoutBox
+                        margin: large
+                        style: inline
+                        children:
+                            -   type: LayoutBox
+                                margin: large
+                                style: list
+                                children:
+                                    -   type: CheckBox
+                                        name: eq_loadings
+                                    -   type: CheckBox
+                                        name: eq_intercepts
+                                    -   type: CheckBox
+                                        name: eq_means
+                            -   type: LayoutBox
+                                margin: large
+                                style: list
+                                children:
+                                    -   type: CheckBox
+                                        name: eq_thresholds
+                                    -   type: CheckBox
+                                        name: eq_residuals
+                                    -   type: CheckBox
+                                        name: eq_residual.covariances
+                            -   type: LayoutBox
+                                margin: large
+                                style: list
+                                children:
+                                    -   type: CheckBox
+                                        name: eq_regressions
+                                    -   type: CheckBox
+                                        name: eq_lv.variances
+                                    -   type: CheckBox
+                                        name: eq_lv.covariances
+    -   type: CollapseBox
+        label: Multi-level analysis
+        collapsed: true
+        stretchFactor: 1
+        style: list
+        children:
+            -   type: LayoutBox
+                margin: large
+                style: list
+                children:
+                    -   type: LayoutBox
+                        margin: large
+                        style: inline
+                        stretchFactor: 1
+                        children:
+                            -   type: TextBox
+                                name: cluster
+                                stretchFactor: 1
+                                margin: none
+                                format: string
+                                events:
+                                    change: ./gui.events::onChange_cluster
+            - type: LayoutBox
+              margin: large
+              children:
+                 - type: CheckBox
+                   name: icc
+                 - type: CheckBox
+                   name: mlmeans
+                   
+    -   type: CollapseBox
+        label: Exploratory SEM options
+        collapsed: true
+        stretchFactor: 1
+        children:
+            -   type: LayoutBox
+                margin: large
+                style: inline
+                children:
+                    -   type: Label
+                        label: Rotation
+                        margin: large
+                        style: list
+                        children:
+                            -   type: ComboBox
+                                name: rotation
+                            -   type: ComboBox
+                                name: algorithm
+                            -   type: CheckBox
+                                name: orthogonal
+                            -   type: CheckBox
+                                name: efa_std.ov
+                    -   type: Label
+                        label: Rotations options
+                        margin: large
+                        style: list
+                        children:
+                            -   type: TextBox
+                                name: geomin.epsilon
+                                format: number
+                                enable: (rotation:geomin)
+                            -   type: TextBox
+                                name: orthomax.gamma
+                                format: number
+                                enable: (rotation:orthomax)
+                            -   type: TextBox
+                                name: oblimin.gamma
+                                format: number
+                                enable: (rotation:oblimin)
+    -   type: scaffold
+        name: output_options
+        file: commons.u.yaml
+    -   type: scaffold
+        name: pathdiagram_options
+        file: commons.u.yaml
+    -   type: scaffold
+        name: datatype_options
+        file: commons.u.yaml

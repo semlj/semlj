@@ -7,12 +7,13 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     public = list(
         initialize = function(
             .caller = "syntax",
-            code = "",
+            .interface = "jamovi",
             syntax = "",
             fonts = "small",
             vars = list(),
             toggle = FALSE,
-            donotrun = FALSE,
+            code = "",
+            donotrun = NULL,
             estimator = "default",
             likelihood = "default",
             missing = "listwise",
@@ -58,13 +59,14 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             constraints_examples = FALSE,
             lavaan_options = FALSE,
             outputAdditionalFitMeasures = FALSE,
-            r2 = "none",
             reliability = FALSE,
+            r2 = "none",
             htmt = FALSE,
             outputMardiasCoefficients = FALSE,
             outputObservedCovariances = FALSE,
             outputImpliedCovariances = FALSE,
             outputResidualCovariances = FALSE,
+            outpuCombineCovariances = FALSE,
             cov.lv = FALSE,
             outputModificationIndices = FALSE,
             miHideLow = FALSE,
@@ -78,7 +80,12 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             diag_labsize = "medium",
             diag_shape_man = "rectangle",
             diag_shape_lat = "circle",
-            diag_abbrev = "5", ...) {
+            diag_abbrev = "5",
+            data_type = "data",
+            sample_n = NULL,
+            sample_mean = NULL,
+            sample_std = NULL,
+            other_vars = NULL, ...) {
 
             super$initialize(
                 package="semlj",
@@ -91,10 +98,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 .caller,
                 default="syntax",
                 hidden=TRUE)
-            private$..code <- jmvcore::OptionString$new(
-                "code",
-                code,
-                default="",
+            private$...interface <- jmvcore::OptionString$new(
+                ".interface",
+                .interface,
+                default="jamovi",
                 hidden=TRUE)
             private$..syntax <- jmvcore::OptionString$new(
                 "syntax",
@@ -120,10 +127,14 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 toggle,
                 default=FALSE,
                 hidden=TRUE)
+            private$..code <- jmvcore::OptionString$new(
+                "code",
+                code,
+                hidden=TRUE,
+                default="")
             private$..donotrun <- jmvcore::OptionBool$new(
                 "donotrun",
-                donotrun,
-                default=FALSE)
+                donotrun)
             private$..estimator <- jmvcore::OptionList$new(
                 "estimator",
                 estimator,
@@ -175,6 +186,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=list(
                     "auto",
                     "standard",
+                    "robust.sem",
                     "robust.sem",
                     "robust.huber.white",
                     "boot"),
@@ -257,8 +269,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nominal",
                     "ordinal"),
                 permitted=list(
-                    "factor"),
-                default=NULL)
+                    "factor"))
             private$..icc <- jmvcore::OptionBool$new(
                 "icc",
                 icc,
@@ -267,9 +278,15 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "mlmeans",
                 mlmeans,
                 default=FALSE)
-            private$..multigroup <- jmvcore::OptionString$new(
+            private$..multigroup <- jmvcore::OptionVariable$new(
                 "multigroup",
-                multigroup)
+                multigroup,
+                suggested=list(
+                    "nominal",
+                    "ordinal"),
+                permitted=list(
+                    "factor",
+                    "id"))
             private$..eq_loadings <- jmvcore::OptionBool$new(
                 "eq_loadings",
                 eq_loadings,
@@ -369,6 +386,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "outputAdditionalFitMeasures",
                 outputAdditionalFitMeasures,
                 default=FALSE)
+            private$..reliability <- jmvcore::OptionBool$new(
+                "reliability",
+                reliability,
+                default=FALSE)
             private$..r2 <- jmvcore::OptionList$new(
                 "r2",
                 r2,
@@ -378,10 +399,6 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "endo",
                     "all"),
                 default="none")
-            private$..reliability <- jmvcore::OptionBool$new(
-                "reliability",
-                reliability,
-                default=FALSE)
             private$..htmt <- jmvcore::OptionBool$new(
                 "htmt",
                 htmt,
@@ -401,6 +418,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..outputResidualCovariances <- jmvcore::OptionBool$new(
                 "outputResidualCovariances",
                 outputResidualCovariances,
+                default=FALSE)
+            private$..outpuCombineCovariances <- jmvcore::OptionBool$new(
+                "outpuCombineCovariances",
+                outpuCombineCovariances,
                 default=FALSE)
             private$..cov.lv <- jmvcore::OptionBool$new(
                 "cov.lv",
@@ -505,13 +526,35 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "preds_ov")
             private$..preds_dv <- jmvcore::OptionOutput$new(
                 "preds_dv")
+            private$..data_type <- jmvcore::OptionList$new(
+                "data_type",
+                data_type,
+                options=list(
+                    "data",
+                    "cov",
+                    "cor"),
+                default="data")
+            private$..sample_n <- jmvcore::OptionString$new(
+                "sample_n",
+                sample_n)
+            private$..sample_mean <- jmvcore::OptionString$new(
+                "sample_mean",
+                sample_mean)
+            private$..sample_std <- jmvcore::OptionString$new(
+                "sample_std",
+                sample_std)
+            private$..other_vars <- jmvcore::OptionVariables$new(
+                "other_vars",
+                other_vars,
+                hidden=TRUE)
 
             self$.addOption(private$...caller)
-            self$.addOption(private$..code)
+            self$.addOption(private$...interface)
             self$.addOption(private$..syntax)
             self$.addOption(private$..fonts)
             self$.addOption(private$..vars)
             self$.addOption(private$..toggle)
+            self$.addOption(private$..code)
             self$.addOption(private$..donotrun)
             self$.addOption(private$..estimator)
             self$.addOption(private$..likelihood)
@@ -558,13 +601,14 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..constraints_examples)
             self$.addOption(private$..lavaan_options)
             self$.addOption(private$..outputAdditionalFitMeasures)
-            self$.addOption(private$..r2)
             self$.addOption(private$..reliability)
+            self$.addOption(private$..r2)
             self$.addOption(private$..htmt)
             self$.addOption(private$..outputMardiasCoefficients)
             self$.addOption(private$..outputObservedCovariances)
             self$.addOption(private$..outputImpliedCovariances)
             self$.addOption(private$..outputResidualCovariances)
+            self$.addOption(private$..outpuCombineCovariances)
             self$.addOption(private$..cov.lv)
             self$.addOption(private$..outputModificationIndices)
             self$.addOption(private$..miHideLow)
@@ -582,14 +626,20 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..preds_lv)
             self$.addOption(private$..preds_ov)
             self$.addOption(private$..preds_dv)
+            self$.addOption(private$..data_type)
+            self$.addOption(private$..sample_n)
+            self$.addOption(private$..sample_mean)
+            self$.addOption(private$..sample_std)
+            self$.addOption(private$..other_vars)
         }),
     active = list(
         .caller = function() private$...caller$value,
-        code = function() private$..code$value,
+        .interface = function() private$...interface$value,
         syntax = function() private$..syntax$value,
         fonts = function() private$..fonts$value,
         vars = function() private$..vars$value,
         toggle = function() private$..toggle$value,
+        code = function() private$..code$value,
         donotrun = function() private$..donotrun$value,
         estimator = function() private$..estimator$value,
         likelihood = function() private$..likelihood$value,
@@ -636,13 +686,14 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         constraints_examples = function() private$..constraints_examples$value,
         lavaan_options = function() private$..lavaan_options$value,
         outputAdditionalFitMeasures = function() private$..outputAdditionalFitMeasures$value,
-        r2 = function() private$..r2$value,
         reliability = function() private$..reliability$value,
+        r2 = function() private$..r2$value,
         htmt = function() private$..htmt$value,
         outputMardiasCoefficients = function() private$..outputMardiasCoefficients$value,
         outputObservedCovariances = function() private$..outputObservedCovariances$value,
         outputImpliedCovariances = function() private$..outputImpliedCovariances$value,
         outputResidualCovariances = function() private$..outputResidualCovariances$value,
+        outpuCombineCovariances = function() private$..outpuCombineCovariances$value,
         cov.lv = function() private$..cov.lv$value,
         outputModificationIndices = function() private$..outputModificationIndices$value,
         miHideLow = function() private$..miHideLow$value,
@@ -659,14 +710,20 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         diag_abbrev = function() private$..diag_abbrev$value,
         preds_lv = function() private$..preds_lv$value,
         preds_ov = function() private$..preds_ov$value,
-        preds_dv = function() private$..preds_dv$value),
+        preds_dv = function() private$..preds_dv$value,
+        data_type = function() private$..data_type$value,
+        sample_n = function() private$..sample_n$value,
+        sample_mean = function() private$..sample_mean$value,
+        sample_std = function() private$..sample_std$value,
+        other_vars = function() private$..other_vars$value),
     private = list(
         ...caller = NA,
-        ..code = NA,
+        ...interface = NA,
         ..syntax = NA,
         ..fonts = NA,
         ..vars = NA,
         ..toggle = NA,
+        ..code = NA,
         ..donotrun = NA,
         ..estimator = NA,
         ..likelihood = NA,
@@ -713,13 +770,14 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..constraints_examples = NA,
         ..lavaan_options = NA,
         ..outputAdditionalFitMeasures = NA,
-        ..r2 = NA,
         ..reliability = NA,
+        ..r2 = NA,
         ..htmt = NA,
         ..outputMardiasCoefficients = NA,
         ..outputObservedCovariances = NA,
         ..outputImpliedCovariances = NA,
         ..outputResidualCovariances = NA,
+        ..outpuCombineCovariances = NA,
         ..cov.lv = NA,
         ..outputModificationIndices = NA,
         ..miHideLow = NA,
@@ -736,7 +794,12 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..diag_abbrev = NA,
         ..preds_lv = NA,
         ..preds_ov = NA,
-        ..preds_dv = NA)
+        ..preds_dv = NA,
+        ..data_type = NA,
+        ..sample_n = NA,
+        ..sample_mean = NA,
+        ..sample_std = NA,
+        ..other_vars = NA)
 )
 
 semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -745,6 +808,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     active = list(
         info = function() private$.items[["info"]],
         synexamples = function() private$.items[["synexamples"]],
+        issues = function() private$.items[["issues"]],
         fit = function() private$.items[["fit"]],
         models = function() private$.items[["models"]],
         additional = function() private$.items[["additional"]],
@@ -803,6 +867,11 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="com", 
                         `type`="text", 
                         `title`="Outcome"))))
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="issues",
+                title="Issues",
+                visible=FALSE))
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
@@ -2450,8 +2519,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="lavaanoptions",
                 visible="(lavaan_options)",
                 title="Lavaan Options",
-                refs=list(
-                    "lavaan"),
+                refs="lavaan",
                 columns=list(
                     list(
                         `name`="opt1", 
@@ -2633,11 +2701,12 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' 
 #' @param data TO ADD
 #' @param .caller .
-#' @param code TO ADD
+#' @param .interface .
 #' @param syntax .
 #' @param fonts .
 #' @param vars .
 #' @param toggle .
+#' @param code The lavaan syntax
 #' @param donotrun not present in R. Halt running for more confortable input
 #' @param estimator The estimator to be used. Can be one of the following:
 #'   "ML" for maximum likelihood, "GLS" for (normal theory) generalized least
@@ -2650,9 +2719,9 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   robust standard errors and a robust (scaled) test statistic. For "MLM",
 #'   "MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem");
 #'   for "MLF", standard errors are based on first-order derivatives
-#'   (information = "first.order"); for "MLR", `Huber-White' robust standard
-#'   errors are used (se="robust.huber.white"). In addition, "MLM" will compute
-#'   a Satorra-Bentler scaled (mean adjusted) test statistic
+#'   (information = "first.order"); for "MLR", \code{Huber-White} robust
+#'   standard errors are used (se="robust.huber.white"). In addition, "MLM" will
+#'   compute a Satorra-Bentler scaled (mean adjusted) test statistic
 #'   (test="satorra.bentler"), "MLMVS" will compute a mean and variance adjusted
 #'   test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV"
 #'   will compute a mean and variance adjusted test statistic (scaled and
@@ -2681,7 +2750,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   between variables.
 #' @param scoretest TO ADD
 #' @param cumscoretest TO ADD
-#' @param se TO ADD
+#' @param se Standard error method.
 #' @param bootci Choose the confidence interval type ("perc" - percentiles
 #'   [default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic"
 #'   - basic).
@@ -2721,9 +2790,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cluster Factor defining cluster in multilevel analysis.
 #' @param icc show intra-class correlations
 #' @param mlmeans unrestricted (h1) within and between means
-#' @param multigroup string (default=""), the separate models (one for each
-#'   level / group in the variable) are fit, instead of fitting the same model
-#'   for the whole dataset (all groups)
+#' @param multigroup Factor defining groups for multigroup analysis.
 #' @param eq_loadings \code{TRUE} or \code{FALSE} (default), constrain the
 #'   factor loadings to be equal across groups (when conducting multi-group
 #'   analyses)
@@ -2768,9 +2835,10 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   of the lavaan model
 #' @param outputAdditionalFitMeasures \code{TRUE} or \code{FALSE} (default),
 #'   show additional fit measures (e.g., CFI, TLI, etc.)
-#' @param r2 .
 #' @param reliability \code{TRUE} or \code{FALSE} (default), show additional
 #'   reliability indices
+#' @param r2 compute R-squared for all endogenous variables (\code{endo}) or
+#'   for all variables in the model (\code{all}). \code{none} for no R-squared
 #' @param htmt \code{TRUE} or \code{FALSE} (default), show
 #'   Heterotrait-monotrait (HTMT) ratio of correlations  as reccomended by
 #'   @henseler2015new
@@ -2785,6 +2853,10 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param outputResidualCovariances \code{TRUE} or \code{FALSE} (default),
 #'   show the covariances and correlations between the residuals of the
 #'   (manifest) variables.
+#' @param outpuCombineCovariances \code{TRUE} or \code{FALSE} (default),
+#'   combine the (up to) three covariance / correlation tables into one table
+#'   (i.e., showing observed, model-implied and residual values for each
+#'   variable combination underneath each other)
 #' @param cov.lv \code{TRUE} or \code{FALSE} (default), model-implied latent
 #'   covariances
 #' @param outputModificationIndices \code{TRUE} or \code{FALSE} (default),
@@ -2814,10 +2886,17 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   "circle").
 #' @param diag_abbrev Choose the length (characters) of the variable name
 #'   abbreviations (default: 5).
+#' @param data_type The type of input data (default: "data"), it can be
+#'   \code{cov} or \code{cor}.
+#' @param sample_n .
+#' @param sample_mean .
+#' @param sample_std .
+#' @param other_vars .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$synexamples} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$issues} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$constraints} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
@@ -2859,12 +2938,13 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 semljsyn <- function(
     data,
     .caller = "syntax",
-    code = "",
+    .interface = "jamovi",
     syntax = "",
     fonts = "small",
     vars = list(),
     toggle = FALSE,
-    donotrun = FALSE,
+    code = "",
+    donotrun,
     estimator = "default",
     likelihood = "default",
     missing = "listwise",
@@ -2886,7 +2966,7 @@ semljsyn <- function(
     cov_x = FALSE,
     cov_y = TRUE,
     cov_lv = TRUE,
-    cluster = NULL,
+    cluster,
     icc = TRUE,
     mlmeans = FALSE,
     multigroup,
@@ -2910,13 +2990,14 @@ semljsyn <- function(
     constraints_examples = FALSE,
     lavaan_options = FALSE,
     outputAdditionalFitMeasures = FALSE,
-    r2 = "none",
     reliability = FALSE,
+    r2 = "none",
     htmt = FALSE,
     outputMardiasCoefficients = FALSE,
     outputObservedCovariances = FALSE,
     outputImpliedCovariances = FALSE,
     outputResidualCovariances = FALSE,
+    outpuCombineCovariances = FALSE,
     cov.lv = FALSE,
     outputModificationIndices = FALSE,
     miHideLow = FALSE,
@@ -2930,28 +3011,38 @@ semljsyn <- function(
     diag_labsize = "medium",
     diag_shape_man = "rectangle",
     diag_shape_lat = "circle",
-    diag_abbrev = "5") {
+    diag_abbrev = "5",
+    data_type = "data",
+    sample_n,
+    sample_mean,
+    sample_std,
+    other_vars) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("semljsyn requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(vars)) vars <- jmvcore::resolveQuo(jmvcore::enquo(vars))
     if ( ! missing(cluster)) cluster <- jmvcore::resolveQuo(jmvcore::enquo(cluster))
+    if ( ! missing(multigroup)) multigroup <- jmvcore::resolveQuo(jmvcore::enquo(multigroup))
+    if ( ! missing(other_vars)) other_vars <- jmvcore::resolveQuo(jmvcore::enquo(other_vars))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
-            `if`( ! missing(cluster), cluster, NULL))
+            `if`( ! missing(cluster), cluster, NULL),
+            `if`( ! missing(multigroup), multigroup, NULL),
+            `if`( ! missing(other_vars), other_vars, NULL))
 
     for (v in cluster) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
     options <- semljsynOptions$new(
         .caller = .caller,
-        code = code,
+        .interface = .interface,
         syntax = syntax,
         fonts = fonts,
         vars = vars,
         toggle = toggle,
+        code = code,
         donotrun = donotrun,
         estimator = estimator,
         likelihood = likelihood,
@@ -2998,13 +3089,14 @@ semljsyn <- function(
         constraints_examples = constraints_examples,
         lavaan_options = lavaan_options,
         outputAdditionalFitMeasures = outputAdditionalFitMeasures,
-        r2 = r2,
         reliability = reliability,
+        r2 = r2,
         htmt = htmt,
         outputMardiasCoefficients = outputMardiasCoefficients,
         outputObservedCovariances = outputObservedCovariances,
         outputImpliedCovariances = outputImpliedCovariances,
         outputResidualCovariances = outputResidualCovariances,
+        outpuCombineCovariances = outpuCombineCovariances,
         cov.lv = cov.lv,
         outputModificationIndices = outputModificationIndices,
         miHideLow = miHideLow,
@@ -3018,7 +3110,12 @@ semljsyn <- function(
         diag_labsize = diag_labsize,
         diag_shape_man = diag_shape_man,
         diag_shape_lat = diag_shape_lat,
-        diag_abbrev = diag_abbrev)
+        diag_abbrev = diag_abbrev,
+        data_type = data_type,
+        sample_n = sample_n,
+        sample_mean = sample_mean,
+        sample_std = sample_std,
+        other_vars = other_vars)
 
     analysis <- semljsynClass$new(
         options = options,

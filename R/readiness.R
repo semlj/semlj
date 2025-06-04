@@ -5,7 +5,7 @@ readiness <- function(options) {
                  ready = TRUE,
                  report = FALSE)
   
-    
+  mark(options$code)  
   if (length(options$code) == 0 | options$code == "") {
     
     result$ready <- FALSE

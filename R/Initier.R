@@ -22,6 +22,8 @@ Initer <- R6::R6Class(
       
       super$initialize(jmvobj)
       self$datamatic<-datamatic
+      self$ok <- self$datamatic$ok
+      if (!self$ok) return()
 
       self$observed    <- datamatic$observed
       self$multigroup  <- datamatic$multigroup

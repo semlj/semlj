@@ -1,0 +1,301 @@
+name: semljsyn
+title: Structural Equation Models
+menuGroup: SEM
+menuTitle: SEM (syntax)
+version: 1.0.0
+jas: '1.2'
+arbitraryCode: true
+options:
+    -   name: data
+        type: Data
+        description:
+            R: |
+                TO ADD
+    -   name: .caller
+        type: String
+        title: submodule
+        default: syntax
+        hidden: true
+    -   name: .interface
+        type: String
+        default: jamovi
+        hidden: true
+    -   name: syntax
+        type: String
+        hidden: true
+        default: ''
+    -   name: fonts
+        type: String
+        default: small
+        hidden: true
+    -   name: vars
+        type: Variables
+        hidden: true
+        default: []
+        permitted:
+            - factor
+            - numeric
+            - id
+    -   name: toggle
+        type: Bool
+        default: false
+        hidden: true
+    -   name: code
+        type: scaffold
+        file: commons.a.yaml
+    -   name: donotrun
+        type: scaffold
+        file: commons.a.yaml
+    -   name: estimator
+        type: scaffold
+        file: commons.a.yaml
+    -   name: likelihood
+        type: scaffold
+        file: commons.a.yaml
+    -   name: missing
+        type: scaffold
+        file: commons.a.yaml
+    -   name: scoretest
+        type: scaffold
+        file: commons.a.yaml
+    -   name: cumscoretest
+        type: scaffold
+        file: commons.a.yaml
+    -   name: se
+        type: scaffold
+        file: commons.a.yaml
+    -   name: bootci
+        type: scaffold
+        file: commons.a.yaml
+    -   name: bootN
+        type: scaffold
+        file: commons.a.yaml
+    -   name: parallel
+        type: scaffold
+        file: commons.a.yaml
+    -   name: est_ci
+        type: scaffold
+        file: commons.a.yaml
+    -   name: beta_ci
+        type: scaffold
+        file: commons.a.yaml
+    -   name: ci_width
+        type: scaffold
+        file: commons.a.yaml
+    -   name: meanstructure
+        type: scaffold
+        file: commons.a.yaml
+    -   name: int_ov
+        type: scaffold
+        file: commons.a.yaml
+    -   name: int_lv
+        type: scaffold
+        file: commons.a.yaml
+    -   name: indirect
+        type: scaffold
+        file: commons.a.yaml
+    -   name: std_lv
+        type: scaffold
+        file: commons.a.yaml
+    -   name: std_ov
+        type: scaffold
+        file: commons.a.yaml
+    -   name: cov_x
+        type: scaffold
+        file: commons.a.yaml
+    -   name: cov_y
+        type: scaffold
+        file: commons.a.yaml
+    -   name: cov_lv
+        type: scaffold
+        file: commons.a.yaml
+    -   name: cluster
+        title: Multi-level clustering factor
+        type: Variable
+        suggested:
+            - nominal
+            - ordinal
+        permitted: factor
+        default: ~
+        description:
+            R: Factor defining cluster in multilevel analysis.
+
+    - name: icc
+      type: Bool
+      title: ICC
+      default: true
+      description:
+          R: >
+             show intra-class correlations
+
+    - name: mlmeans
+      type: Bool
+      title: Between-Within Means
+      default: false
+      description:
+          R: >
+             unrestricted (h1) within and between means 
+
+
+    -   name: multigroup
+        title: Multigroup Analysis Factor
+        type: Variable
+        suggested:
+            - nominal
+            - ordinal
+        permitted:
+            - factor
+            - id
+        default: ~
+        description:
+            R: Factor defining groups for multigroup analysis.
+    -   name: eq_loadings
+        type: scaffold
+        file: commons.a.yaml
+    -   name: eq_intercepts
+        type: scaffold
+        file: commons.a.yaml
+    -   name: eq_residuals
+        type: scaffold
+        file: commons.a.yaml
+    -   name: eq_residual.covariances
+        type: scaffold
+        file: commons.a.yaml
+    -   name: eq_means
+        type: scaffold
+        file: commons.a.yaml
+    -   name: eq_thresholds
+        type: scaffold
+        file: commons.a.yaml
+    -   name: eq_regressions
+        type: scaffold
+        file: commons.a.yaml
+    -   name: eq_lv.variances
+        type: scaffold
+        file: commons.a.yaml
+    -   name: eq_lv.covariances
+        type: scaffold
+        file: commons.a.yaml
+    -   name: rotation
+        type: scaffold
+        file: commons.a.yaml
+    -   name: algorithm
+        type: scaffold
+        file: commons.a.yaml
+    -   name: orthogonal
+        type: scaffold
+        file: commons.a.yaml
+    -   name: efa_std.ov
+        type: scaffold
+        file: commons.a.yaml
+    -   name: geomin.epsilon
+        type: scaffold
+        file: commons.a.yaml
+    -   name: orthomax.gamma
+        type: scaffold
+        file: commons.a.yaml
+    -   name: oblimin.gamma
+        type: scaffold
+        file: commons.a.yaml
+    -   name: showlabels
+        type: scaffold
+        file: commons.a.yaml
+    -   name: constraints_examples
+        type: scaffold
+        file: commons.a.yaml
+    -   name: lavaan_options
+        type: scaffold
+        file: commons.a.yaml
+    -   name: outputAdditionalFitMeasures
+        type: scaffold
+        file: commons.a.yaml
+    -   name: reliability
+        type: scaffold
+        file: commons.a.yaml
+    -   name: r2
+        type: scaffold
+        file: commons.a.yaml
+    -   name: htmt
+        type: scaffold
+        file: commons.a.yaml
+    -   name: outputMardiasCoefficients
+        type: scaffold
+        file: commons.a.yaml
+    -   name: outputObservedCovariances
+        type: scaffold
+        file: commons.a.yaml
+    -   name: outputImpliedCovariances
+        type: scaffold
+        file: commons.a.yaml
+    -   name: outputResidualCovariances
+        type: scaffold
+        file: commons.a.yaml
+    -   name: outpuCombineCovariances
+        type: scaffold
+        file: commons.a.yaml
+    -   name: cov.lv
+        type: scaffold
+        file: commons.a.yaml
+    -   name: outputModificationIndices
+        type: scaffold
+        file: commons.a.yaml
+    -   name: miHideLow
+        type: scaffold
+        file: commons.a.yaml
+    -   name: miThreshold
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diagram
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diag_resid
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diag_intercepts
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diag_paths
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diag_type
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diag_rotate
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diag_labsize
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diag_shape_man
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diag_shape_lat
+        type: scaffold
+        file: commons.a.yaml
+    -   name: diag_abbrev
+        type: scaffold
+        file: commons.a.yaml
+    -   name: preds_lv
+        type: scaffold
+        file: commons.a.yaml
+    -   name: preds_ov
+        type: scaffold
+        file: commons.a.yaml
+    -   name: preds_dv
+        type: scaffold
+        file: commons.a.yaml
+    -   name: data_type
+        type: scaffold
+        file: commons.a.yaml
+    -   name: sample_n
+        type: scaffold
+        file: commons.a.yaml
+    -   name: sample_mean
+        type: scaffold
+        file: commons.a.yaml
+    -   name: sample_std
+        type: scaffold
+        file: commons.a.yaml
+    -   name: other_vars
+        type: scaffold
+        file: commons.a.yaml

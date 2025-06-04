@@ -13,6 +13,9 @@ Runner <- R6::R6Class("Runner",
                           rownames=NULL,
                           estimate = function(data) {
                             
+                            self$ok <- self$datamatic$ok
+                            if (!self$ok) return()
+                            
                             ## save rownames for predicted with missing
                             self$rownames<-rownames(data)
                             ## prepare the options based on Syntax definitions
@@ -76,17 +79,17 @@ Runner <- R6::R6Class("Runner",
                             results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
                             jinfo("Estimating the model...done")
                             
-                            ## check if warnings or errors are produced
-                            self$warning <-  list(topic="info", message=results$warning)
-                            ## if it fails here, we should stop
+                            self$warning <-  list(topic="issues", message=results$warning,head="warning")
+                            ## check if we need to stop or issue a warning
                             error<-results$error
                             if (length(grep("subscript out of bound",error,fixed=T))>0) 
                                    error<-"Model cannot be estimated. Please refine the model or choose different options."
-                            self$error <-  list(topic="info", message=error,final=TRUE)
+                            self$stop(error)
+                           ## no problem if here
 
                             self$model <- results$obj
                             
-                            ### we need the data for mardia's, so we save them here
+                            ### if we need the data for mardia's, so we save them here
                             
                             if (self$option("outputMardiasCoefficients")) {
                                 vars<-setdiff(self$datamatic$observed,self$datamatic$ordered)

@@ -1,4 +1,4 @@
-
+ERROR_TABLE="issues"
 
 NOTES<-list()
 
@@ -57,8 +57,8 @@ WARNS[["noreserved"]]<-"`{var}` label is reserved for indirect effects. Using it
 WARNS[["cov.lv"]]<-"The covariance matrix of latent variables is not positive defenite. Please use 'Model-implied latent' option in 'Output options' panel to inspect it."
 
 DATA_WARNS<-list()
-DATA_WARNS[["fac_to_ord"]]<-"Variable ({x}) has been coerced to ordered type."
-DATA_WARNS[["num_to_fac"]]<-"Variable ({x}) has been coerced to nominal type."
+DATA_WARNS[["fac_to_ord"]]<-"Variable (%s) has been coerced to ordered type."
+DATA_WARNS[["num_to_fac"]]<-"Variable (%s) has been coerced to nominal type."
 DATA_WARNS[["missing"]]<-"There are missing values in the data and they are removed listwise. Please consider other methods of handling missing values available in Model Options. "
 
 ## defined parameters warnings
@@ -84,7 +84,8 @@ TRANS_WARNS<-list()
 TRANS_WARNS[[1]]<-list(original="subscript out of bounds",new="Computation cannot be done") 
 TRANS_WARNS[[2]]<-list(original="lavaan ERROR",sub="The model cannot be estimated, please refine it. Reason: " ) 
 TRANS_WARNS[[3]]<-list(original="covariance matrix of latent",new="Covariance matrix of latent variables is not positive definite.") 
-TRANS_WARNS[[4]]<-list(original="sample.mean=",new="Mean structure requires means as input. Please define a row with the means of each variable to obtain meaningful intercepts. ") 
+#TRANS_WARNS[[4]]<-list(original="sample.mean=",new="Mean structure requires means as input. Please define a row with the means of each variable to obtain meaningful intercepts. ") 
+TRANS_WARNS[[4]]<-list(original="sample.mean=",new=NULL) 
 
 
 ##### some info ####
