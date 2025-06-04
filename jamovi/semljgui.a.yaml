@@ -603,6 +603,7 @@ options:
         - ordinal
       permitted:
         - factor
+        - id
       default:
       description:
           R: Factor defining groups for multigroup analysis.
@@ -1181,5 +1182,39 @@ options:
            @predict, and the implementation is adpted from
            [github SEMpredict](https://github.com/mjderooij/SEMpredict)
  
+
+
+    - name: data_type
+      title: Type of input
+      type: List
+      options:
+        - name: "data"
+          title: Data
+        - name: "cov"
+          title: Covariances
+        - name: "cor"
+          title: Correlations
+      default: "data"
+      description:
+          R: >
+             The type of input data (default: "data"), it can be `cov` or `cor`.
+          ui: >   
+             The type of input data (default: "Data"), it can be `Covariances` or `Correlations`.
+
+    - name: sample_n
+      title: Sample N variable
+      type: String
+
+    - name: sample_mean
+      title: Sample means variable
+      type: String
+
+    - name: sample_std
+      title: Sample STD variable
+      type: String
+
+    - name: other_vars
+      type: Variables
+      hidden: true
 
 ...

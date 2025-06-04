@@ -14,6 +14,8 @@ children:
       - ordinal
     permitted:
       - numeric
+      - factor
+      - id
     children:
       - type: TargetLayoutBox
         label: Latent Endogenous Variables
@@ -350,18 +352,23 @@ children:
                 name: se_standard
                 optionName: se
                 optionPart: standard
+                enable: (data_type:data)
               - name: se_robust.sem
                 type: RadioButton
                 optionName: se
                 optionPart: robust.sem
+                enable: (data_type:data)
               - type: RadioButton
                 name: se_robust.huber.white
                 optionName: se
                 optionPart: robust.huber.white
+                enable: (data_type:data)
               - type: RadioButton
                 name: se_boot
                 optionName: se
                 optionPart: boot
+                enable: (data_type:data)
+
           - type: Label
             label: Bootstrap settings
             margin: large
@@ -815,3 +822,59 @@ children:
                       - type: ComboBox
                         name: diag_abbrev
                         enable: (diagram)
+  - type: CollapseBox
+    label: Input Data
+    name: datatype_options
+    collapsed: true
+    stretchFactor: 1
+    style: list
+    children:
+      - type: LayoutBox
+        margin: large
+        stretchFactor: 1
+        style: list
+        children:
+            - type: Label
+              label: Data type
+              children:
+                  - type: RadioButton
+                    name: datatype_data
+                    optionName: data_type
+                    optionPart: data
+                    events:
+                      change: './gui.events::onEvent_data_type'                    
+                  - type: RadioButton
+                    name: datatype_cov
+                    optionName: data_type
+                    optionPart: cov
+                  - type: RadioButton
+                    name: datatype_cor
+                    optionName: data_type
+                    optionPart: cor
+            - type: Label
+              label: Info variables
+              children:
+                    - type: TextBox
+                      name: sample_n
+                      stretchFactor: 1
+                      margin: none
+                      format: string
+                      enable: (data_type:cov || data_type:cor)
+                      events:
+                            change: './gui.events::onChange_other_vars'
+                    - type: TextBox
+                      name: sample_mean
+                      stretchFactor: 1
+                      margin: none
+                      format: string
+                      enable: (data_type:cov || data_type:cor)
+                      events:
+                            change: './gui.events::onChange_other_vars'
+                    - type: TextBox
+                      name: sample_std
+                      stretchFactor: 1
+                      margin: none
+                      format: string
+                      enable: (data_type:cor)
+                      events:
+                            change: './gui.events::onChange_other_vars'

@@ -122,6 +122,28 @@ const events = {
              }        
      },
 
+     onChange_other_vars: function(ui) {
+       
+          const vec = [ui.sample_n.value(),ui.sample_mean.value(),ui.sample_std.value()];
+          const cleaned = vec.filter(x => x !== null && typeof x === 'string' && x.trim() !== '');
+          ui.other_vars.setValue(cleaned);
+          console.log( ui.other_vars.value())
+  
+    },
+
+     onEvent_data_type: function(ui) {
+       
+      console.log("data type changed in " + ui.data_type.value());
+      if (ui.data_type.value() == "data") {
+           ui.other_vars.setValue([]);
+      }
+      else {
+          ui.other_vars.setValue([ui.sample_n.value(),ui.sample_mean.value(),ui.sample_std.value()]);
+          ui.se.setValue("auto");
+       }
+
+    },
+
      onEvent_nothing: function(ui) {
       console.log("I did not do anything");
     }

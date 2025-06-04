@@ -84,6 +84,7 @@ TRANS_WARNS<-list()
 TRANS_WARNS[[1]]<-list(original="subscript out of bounds",new="Computation cannot be done") 
 TRANS_WARNS[[2]]<-list(original="lavaan ERROR",sub="The model cannot be estimated, please refine it. Reason: " ) 
 TRANS_WARNS[[3]]<-list(original="covariance matrix of latent",new="Covariance matrix of latent variables is not positive definite.") 
+TRANS_WARNS[[4]]<-list(original="sample.mean=",new="Mean structure requires means as input. Please define a row with the means of each variable to obtain meaningful intercepts. ") 
 
 
 ##### some info ####

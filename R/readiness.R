@@ -16,6 +16,15 @@ readiness <- function(options) {
     return(result)
   }
   
+  if (options$data_type != "data" && length(options$sample_n) == 0) {
+    
+    result$ready <- FALSE
+    result$report <- TRUE
+    result$reason <-
+      glue::glue("Please define a column in the dataset containing sample size ")
+    
+    return(result)
+  }
   
   
   #  if ("endogenousTerms" %in% names(options)) {

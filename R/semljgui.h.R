@@ -85,7 +85,12 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             diag_labsize = "medium",
             diag_shape_man = "rectangle",
             diag_shape_lat = "circle",
-            diag_abbrev = "5", ...) {
+            diag_abbrev = "5",
+            data_type = "data",
+            sample_n = NULL,
+            sample_mean = NULL,
+            sample_std = NULL,
+            other_vars = NULL, ...) {
 
             super$initialize(
                 package="semlj",
@@ -319,7 +324,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "nominal",
                     "ordinal"),
                 permitted=list(
-                    "factor"),
+                    "factor",
+                    "id"),
                 default=NULL)
             private$..eq_loadings <- jmvcore::OptionBool$new(
                 "eq_loadings",
@@ -568,6 +574,27 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "preds_ov")
             private$..preds_dv <- jmvcore::OptionOutput$new(
                 "preds_dv")
+            private$..data_type <- jmvcore::OptionList$new(
+                "data_type",
+                data_type,
+                options=list(
+                    "data",
+                    "cov",
+                    "cor"),
+                default="data")
+            private$..sample_n <- jmvcore::OptionString$new(
+                "sample_n",
+                sample_n)
+            private$..sample_mean <- jmvcore::OptionString$new(
+                "sample_mean",
+                sample_mean)
+            private$..sample_std <- jmvcore::OptionString$new(
+                "sample_std",
+                sample_std)
+            private$..other_vars <- jmvcore::OptionVariables$new(
+                "other_vars",
+                other_vars,
+                hidden=TRUE)
 
             self$.addOption(private$...caller)
             self$.addOption(private$..code)
@@ -647,6 +674,11 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..preds_lv)
             self$.addOption(private$..preds_ov)
             self$.addOption(private$..preds_dv)
+            self$.addOption(private$..data_type)
+            self$.addOption(private$..sample_n)
+            self$.addOption(private$..sample_mean)
+            self$.addOption(private$..sample_std)
+            self$.addOption(private$..other_vars)
         }),
     active = list(
         .caller = function() private$...caller$value,
@@ -726,7 +758,12 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         diag_abbrev = function() private$..diag_abbrev$value,
         preds_lv = function() private$..preds_lv$value,
         preds_ov = function() private$..preds_ov$value,
-        preds_dv = function() private$..preds_dv$value),
+        preds_dv = function() private$..preds_dv$value,
+        data_type = function() private$..data_type$value,
+        sample_n = function() private$..sample_n$value,
+        sample_mean = function() private$..sample_mean$value,
+        sample_std = function() private$..sample_std$value,
+        other_vars = function() private$..other_vars$value),
     private = list(
         ...caller = NA,
         ..code = NA,
@@ -805,7 +842,12 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..diag_abbrev = NA,
         ..preds_lv = NA,
         ..preds_ov = NA,
-        ..preds_dv = NA)
+        ..preds_dv = NA,
+        ..data_type = NA,
+        ..sample_n = NA,
+        ..sample_mean = NA,
+        ..sample_std = NA,
+        ..other_vars = NA)
 )
 
 semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -3042,6 +3084,12 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   "circle").
 #' @param diag_abbrev Choose the length (characters) of the variable name
 #'   abbreviations (default: 5).
+#' @param data_type The type of input data (default: "data"), it can be
+#'   \code{cov} or \code{cor}.
+#' @param sample_n .
+#' @param sample_mean .
+#' @param sample_std .
+#' @param other_vars .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
@@ -3165,18 +3213,24 @@ semljgui <- function(
     diag_labsize = "medium",
     diag_shape_man = "rectangle",
     diag_shape_lat = "circle",
-    diag_abbrev = "5") {
+    diag_abbrev = "5",
+    data_type = "data",
+    sample_n,
+    sample_mean,
+    sample_std,
+    other_vars) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("semljgui requires jmvcore to be installed (restart may be required)")
 
     if ( ! missing(multigroup)) multigroup <- jmvcore::resolveQuo(jmvcore::enquo(multigroup))
+    if ( ! missing(other_vars)) other_vars <- jmvcore::resolveQuo(jmvcore::enquo(other_vars))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
-            `if`( ! missing(multigroup), multigroup, NULL))
+            `if`( ! missing(multigroup), multigroup, NULL),
+            `if`( ! missing(other_vars), other_vars, NULL))
 
-    for (v in multigroup) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
     if (inherits(esem_terms, "formula")) esem_terms <- jmvcore::decomposeFormula(esem_terms)
 
     options <- semljguiOptions$new(
@@ -3254,7 +3308,12 @@ semljgui <- function(
         diag_labsize = diag_labsize,
         diag_shape_man = diag_shape_man,
         diag_shape_lat = diag_shape_lat,
-        diag_abbrev = diag_abbrev)
+        diag_abbrev = diag_abbrev,
+        data_type = data_type,
+        sample_n = sample_n,
+        sample_mean = sample_mean,
+        sample_std = sample_std,
+        other_vars = other_vars)
 
     analysis <- semljguiClass$new(
         options = options,

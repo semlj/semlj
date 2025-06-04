@@ -166,11 +166,8 @@ const events = {
 
         this.getActiveVariables = (script) => {
             var any     =  script.split(/[,~+=:*\s]/);
-            console.log(any)
-
             var present =  this.getColumnNames().then((cols) => 
                                cols.filter(col=> any.includes(col)));
-            console.log(present)
             return(present)      
          };
 
@@ -194,12 +191,14 @@ const events = {
 
         this.run = (ui) => {
 
+            console.log("editor is run");
             let script = this.currentSession.getDocument().getValue();
 
               ui.view.model.options.beginEdit();
               ui.code.setValue(script);
-              this.getActiveVariables(script).then((vars) =>
-                        ui.vars.setValue(vars));
+              this.getActiveVariables(script).then((vars) =>{
+                        vars.push(ui.multigroup.value());
+                        ui.vars.setValue(vars)});
     					this.currentSession.allColumns = true;
 
                 // toggle toggle so the analysis *always* reruns

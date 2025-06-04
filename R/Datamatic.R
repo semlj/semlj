@@ -11,7 +11,9 @@ Datamatic <- R6::R6Class(
     ordered=NULL,
     varTable=NULL,
     missing=NULL,
-    
+    sample_n = list(),
+    sample_mean = list(),
+    sample_std = list(),
     initialize=function(jmvobj) {
       
       super$initialize(jmvobj)
@@ -51,46 +53,114 @@ Datamatic <- R6::R6Class(
     
     cleandata=function() {
       
+      jinfo("Cleaning the data")
+
       data<-self$analysis$data
-      trans<-c()
       facts<-c(self$cluster,self$multigroup$var)
       vars<-setdiff(self$vars,facts)
       
-      for (var in vars) {
-        if (is.factor(data[[var]])) { 
-          data[[var]]<-ordered(data[[var]])
-
+      ### here handle standard data
+      if (self$options$data_type == "data") {
+        trans<-c()
+      
+        for (var in vars) {
+          if (is.factor(data[[var]])) { 
+            data[[var]]<-ordered(data[[var]])
           trans<-c(trans,var)
+          }
         }
-      }
-      if (is.something(trans))
-        self$warning<-list(topic="info",
+        if (is.something(trans))
+          self$warning<-list(topic="info",
                             message=glue::glue(DATA_WARNS[["fac_to_ord"]],x=paste(unique(trans),collapse = ",")))
 
       
-      trans<-NULL
-      for (var in facts) {
-      if (!is.factor(data[[var]])) { 
-          data[[var]]<-factor(data[[var]])
-          trans<-c(trans,var)
-      }
-      }
-      if (is.something(trans))
-        self$warning<-list(topic="info",
+        trans<-NULL
+        for (var in facts) {
+          if (!is.factor(data[[var]])) { 
+            data[[var]]<-factor(data[[var]])
+            trans<-c(trans,var)
+          }
+        }
+        if (is.something(trans))
+          self$warning<-list(topic="info",
                                        message=glue::glue(DATA_WARNS[["num_to_fac"]],x=paste(unique(trans),collapse = ",")))
       
-      if (self$missing=="listwise") {
-        cdata<-jmvcore::naOmit(data)
-      
-        if (dim(cdata)[1] != dim(data)[1]) 
+        if (self$missing=="listwise") {
+          cdata<-jmvcore::naOmit(data)
+          if (dim(cdata)[1] != dim(data)[1]) 
                         self$warning<-list(topic="info",
                                        message=DATA_WARNS[["missing"]])
      
-        return(cdata)
-      }
-
-      return(data)
+          return(cdata)
+        }
+      } else { # end of standard dataset handling, if we get here, input is covs or cors
       
+
+      
+        if (is.something(self$multigroup)) {
+          cdata<-list()
+
+          for ( x in self$multigroup$levels) {
+            
+              ldata<-data[data[[self$multigroup$var]]==x,]
+              ## covariances
+              xdata<-as.matrix(ldata[,self$observed])
+              if (nrow(xdata) != length(self$observed))
+                self$error<-list(topic="info",message="Number of rows containing covariances is not equal to the number of observed variables.",final=TRUE)
+
+              L <- xdata * lower.tri(xdata, diag = TRUE)
+              xdata <- L + t(L) - diag(diag(L))
+              
+
+              
+              ## std
+              if (self$options$data_type=="cor" && is.something(self$options$sample_std) && self$options$sample_std %in% names(ldata)) {
+                    D<-diag(ldata[,self$options$sample_std])
+                    xdata<-D %*% xdata %*% D
+              }
+          
+              colnames(xdata)<-rownames(xdata)<-self$observed
+              ladd(cdata)<-xdata
+              ## N
+              xdata<-ldata[,self$options$sample_n]
+              ladd(self$sample_n)<-min(as.numeric(as.character(xdata)))
+              ## means
+              if (is.something(self$options$sample_mean) && self$options$sample_mean %in% names(ldata)) {
+                  xdata<-ldata[,self$options$sample_mean]
+                  ladd(self$sample_mean)<-xdata
+              }
+
+          }
+          
+           names(cdata)<-self$multigroup$levels
+             
+
+      } else {
+        cdata<-as.matrix(data[,self$observed])
+        if (nrow(cdata) != length(self$observed))
+                self$error<-list(topic="info",message="Number of rows containing covariances is not equal to the number of observed variables.",final=TRUE)
+
+        ## we accept also lower triangular
+        L <- cdata * lower.tri(cdata, diag = TRUE)
+        cdata <- L + t(L) - diag(diag(L))
+    
+        self$sample_n<-min(as.numeric(as.character(data[,self$options$sample_n])))
+       
+        if (is.something(self$options$sample_mean) && self$options$sample_mean %in% names(data)) 
+                self$sample_mean<-as.vector(data[,self$options$sample_mean])
+        
+        if (self$options$data_type=="cor") {
+           if (is.something(self$options$sample_std) && self$options$sample_std %in% names(data)) {
+                   D<-diag(data[,self$options$sample_std])
+                   cdata<-D %*% cdata %*% D
+           } else 
+              self$warning<-list(topic="info",message="Estimation requires covariances as input, please define a column with standard deviations to rescale correlations into covariances.")
+        }
+         rownames(cdata)<-colnames(cdata)<-self$observed
+      }
+         return(cdata)
+       
+      } ### end of cov inputs
     }
 
   ), ### end of public
@@ -98,7 +168,6 @@ Datamatic <- R6::R6Class(
     .inspect_data=function() {
        
         data<-self$analysis$data
-        
         test<-(make.names(self$vars) %in% self$vars)
 
         if (!all(test)) {

@@ -349,7 +349,7 @@ children:
         children:
           - type: LayoutBox
             margin: large
-            style: list
+            style: inline
             children:
               - type: LayoutBox
                 margin: large

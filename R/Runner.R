@@ -60,6 +60,16 @@ Runner <- R6::R6Class("Runner",
                               lavoptions[["cluster"]] <- self$cluster
                               lavoptions[["h1"]] <- TRUE
                             }
+                            
+                            ## deal with imput data
+                            if (self$options$data_type != "data") {
+                              
+                              lavoptions$data<-NULL
+                              lavoptions$sample.cov<-data
+                              lavoptions$sample.nobs<-self$datamatic$sample_n
+                              if (self$option("meanstructure") && is.something(self$datamatic$sample_mean))
+                                lavoptions$sample.mean<-self$datamatic$sample_mean
+                            }
 
                             ## estimate the models
                             jinfo("Estimating the model...")
