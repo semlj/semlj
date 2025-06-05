@@ -210,6 +210,9 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$spaceBy          <- "lgroup"
         ladd(private$.smartObjs)   <- aSmartObj
 
+        ## lavaan options table ###
+        aSmartObj                 <- SmartTable$new(self$results$lavaanoptions,runner_machine)
+        ladd(private$.smartObjs)  <- aSmartObj
 
         for (tab in private$.smartObjs) {
           tab$initTable()
