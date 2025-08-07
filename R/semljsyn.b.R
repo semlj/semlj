@@ -175,34 +175,41 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
 
         ## observed covariances table ###
         
-        aSmartObj                  <- SmartArray$new(self$results$covariances$observed, runner_machine)
+        aSmartObj                  <- SmartTable$new(self$results$covariances$observed, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$expandOnInit     <- TRUE
-        aSmartObj$expandOnRun      <- TRUE
-        aSmartObj$expandFrom       <- 2
+        aSmartObj$expandFrom       <- 3
         ladd(private$.smartObjs)   <- aSmartObj
-
+        
         ## implied covariances table ###
         
-        aSmartObj                  <- SmartArray$new(self$results$covariances$implied, runner_machine)
+        aSmartObj                  <- SmartTable$new(self$results$covariances$implied, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$expandOnInit     <- TRUE
-        aSmartObj$expandOnRun      <- TRUE
-        aSmartObj$expandFrom       <- 2
+        aSmartObj$expandFrom       <- 3
         ladd(private$.smartObjs)   <- aSmartObj
         
         ## residuals covariances table ###
         
-        aSmartObj                  <- SmartArray$new(self$results$covariances$residual, runner_machine)
+        aSmartObj                  <- SmartTable$new(self$results$covariances$residual, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$expandOnInit     <- TRUE
-        aSmartObj$expandOnRun      <- TRUE
-        aSmartObj$expandFrom       <- 2
+        aSmartObj$expandFrom       <- 3
         ladd(private$.smartObjs)   <- aSmartObj
         
-
-        ## latent covariances table ###
-        aSmartObj                  <- SmartArray$new(self$results$covariances$latent, runner_machine)
+        ## combined covariances table ###
+        
+        aSmartObj                  <- SmartTable$new(self$results$covariances$combined, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$expandOnInit     <- TRUE
-        aSmartObj$expandOnRun      <- TRUE
-        aSmartObj$expandFrom       <- 2
+        aSmartObj$expandFrom       <- 4
+        ladd(private$.smartObjs)   <- aSmartObj
+        
+        ## latent covariances table ###
+        aSmartObj                  <- SmartTable$new(self$results$covariances$latent, runner_machine)
+        aSmartObj$spaceBy          <- "lgroup"
+        aSmartObj$expandOnInit     <- TRUE
+        aSmartObj$expandFrom       <- 3
         ladd(private$.smartObjs)   <- aSmartObj
         
         ## modification indices table ###

@@ -33,3 +33,15 @@ NULL
 #' @examples
 #' data(secondorder)
 NULL
+
+#' Covariance matrix
+#'
+#' Holzinger and Swineford (1939) dataset consists of 9 variables in form of a covariance matrix
+#'
+#' @docType data
+#' @name Holzinger
+#' @usage data(Holzinger)
+#' @keywords datasets
+#' @examples
+#' data(Holzinger)
+NULL

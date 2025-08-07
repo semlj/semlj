@@ -400,7 +400,7 @@ children:
                                     -   type: CheckBox
                                         name: outputResidualCovariances
                                     -   type: CheckBox
-                                        name: outpuCombineCovariances
+                                        name: outputCombineCovariances
                                     -   type: CheckBox
                                         name: cov.lv
                             -   type: Label
@@ -542,7 +542,7 @@ children:
                                                 enable: (diagram)
     -   type: CollapseBox
         label: Input Data
-        name: datatype_options
+        name: panel_inputdata
         collapsed: true
         stretchFactor: 1
         style: list
@@ -579,7 +579,7 @@ children:
                                 format: string
                                 enable: (data_type:cov || data_type:cor)
                                 events:
-                                    change: ./gui.events::onChange_other_vars
+                                    change: ./gui.events::onChange_sample_n
                             -   type: TextBox
                                 name: sample_mean
                                 stretchFactor: 1
@@ -587,7 +587,7 @@ children:
                                 format: string
                                 enable: (data_type:cov || data_type:cor)
                                 events:
-                                    change: ./gui.events::onChange_other_vars
+                                    change: ./gui.events::onChange_sample_mean
                             -   type: TextBox
                                 name: sample_std
                                 stretchFactor: 1
@@ -595,4 +595,4 @@ children:
                                 format: string
                                 enable: (data_type:cor)
                                 events:
-                                    change: ./gui.events::onChange_other_vars
+                                    change: ./gui.events::onChange_sample_std

@@ -460,7 +460,11 @@ Runner <- R6::R6Class("Runner",
                                 one$variable<-names(one)
                                 one
                                 })
+                              tab<-as.data.frame(do.call(rbind,tab))
+                              tab$type<-"observed"
+                              
                             }
+                            
                             return(tab)
                           },
                           run_covariances_implied=function() {
@@ -468,7 +472,7 @@ Runner <- R6::R6Class("Runner",
                             mat = lavaan::inspect(self$model, "fitted")
                             if (self$options$.caller=="gui") {
                               tab<-private$.make_covcor_table(mat)
-                              tab$type<-"observed"
+                              tab$type<-"implied"
                             } else {
                               
                               if ("cov" %in% names(mat))   mat<-list("1"=mat) 
@@ -478,6 +482,9 @@ Runner <- R6::R6Class("Runner",
                                 one$variable<-names(one)
                                 one
                               })
+                              tab<-as.data.frame(do.call(rbind,tab))
+                              tab$type<-"implied"
+                              
                             }
                             return(tab)
                             
@@ -506,6 +513,9 @@ Runner <- R6::R6Class("Runner",
                                 one$variable<-names(one)
                                 one
                               })
+                              tab<-as.data.frame(do.call(rbind,tab))
+                              tab$type<-"residual"
+                              
                             }
                             return(tab)
                             
@@ -521,7 +531,7 @@ Runner <- R6::R6Class("Runner",
                               tab2<-self$run_covariances_implied()
                             if (self$option("outputResidualCovariances"))
                               tab3<-self$run_covariances_residual()
-                            
+                            mark(tab1)
                             rbind(tab1,tab2,tab3)
                             
                           },
@@ -531,16 +541,17 @@ Runner <- R6::R6Class("Runner",
                             
                             if (self$options$.caller=="gui") {
                               tab<-private$.make_covcor_table(obj,"none")
-                  
                               tab
                             } else {
                             if (!inherits(obj,"list")) obj<-list("1"=obj)
-                            lapply(obj, function(x) {
+                            tab<-lapply(obj, function(x) {
                               x[upper.tri(x,diag=FALSE)]<-x[lower.tri(x,diag = FALSE)]
                               x<-as.data.frame(x)
                               x$variable<-names(x)
                               x
                               })
+                            tab<-as.data.frame(do.call(rbind,tab))
+                            return(tab)
                             }
 
                           },

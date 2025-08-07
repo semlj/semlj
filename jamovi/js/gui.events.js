@@ -122,23 +122,43 @@ const events = {
              }        
      },
 
-     onChange_other_vars: function(ui) {
+     onChange_sample_n: function(ui) {
        
-          const vec = [ui.sample_n.value(),ui.sample_mean.value(),ui.sample_std.value()];
-          const cleaned = vec.filter(x => x !== null && typeof x === 'string' && x.trim() !== '');
-          ui.other_vars.setValue(cleaned);
-          console.log( ui.other_vars.value())
-  
-    },
+       var val = ui.sample_n.value();
+       if (typeof(val)==="string")
+             if (val.replace(/ /g,'').length===0)
+                ui.sample_n.setValue(null);
+             
+
+     },
+
+     onChange_sample_mean: function(ui) {
+       
+       var val = ui.sample_mean.value();
+       if (typeof(val)==="string")
+             if (val.replace(/ /g,'').length===0)
+                ui.sample_mean.setValue(null);
+
+     },
+
+     onChange_sample_std: function(ui) {
+       
+       var val = ui.sample_std.value();
+       if (typeof(val)==="string")
+             if (val.replace(/ /g,'').length===0)
+                ui.sample_std.setValue(null);
+
+     },
 
      onEvent_data_type: function(ui) {
        
       console.log("data type changed in " + ui.data_type.value());
       if (ui.data_type.value() == "data") {
-           ui.other_vars.setValue([]);
-      }
-      else {
-          ui.other_vars.setValue([ui.sample_n.value(),ui.sample_mean.value(),ui.sample_std.value()]);
+           ui.sample_n.setValue(null);
+           ui.sample_mean.setValue(null);
+           ui.sample_std.setValue(null);
+           
+      } else {
           ui.se.setValue("auto");
        }
 

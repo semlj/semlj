@@ -266,95 +266,22 @@ Initer <- R6::R6Class(
 
     init_covariances_observed=function() {
      
-       ###      
-       if (self$options$.caller=="gui") {
-         
-          .length <- length(self$observed)
-           tab <- cbind(variable=self$observed, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
-           names(tab)<-c("variable",self$observed)
-           tab<-private$.make_empty_table(tab)
-           return(tab)
-       }
-       if (self$options$.caller=="syntax") {
-        
-         k<-1
-         mkeys<-list("")
-         gkeys<-list("")
-         if (is.something(self$cluster)) {
-                     k<-2
-                     mkeys<-c("Level: Within","Level: Between")
-         }
-         if (is.something(self$multigroup)) {
-                     k<-k*self$multigroup$nlevels
-                     gkeys<-paste("Group: ",self$multigroup$levels)
-         }
-         keys<-expand.grid(mkeys,gkeys)
-         df<-data.frame(variable=c(".","."))
-         tab<-lapply(1:k, function(x) return(df))
-         names(tab)<-paste(keys$Var1,keys$Var2,sep=" ")
-         return(tab)
-       }
+       .length <- length(self$observed)
+
+       tab <- cbind(variable=self$observed, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
+       names(tab)<-c("variable",self$observed)
+       tab<-private$.make_empty_table(tab)
+       return(tab)
+       
     },
     init_covariances_implied=function() {
-  
-      if (self$options$.caller=="gui") {
-        
-        .length <- length(self$observed)
-        tab <- cbind(variable=self$observed, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
-        names(tab)<-c("variable",self$observed)
-        tab<-private$.make_empty_table(tab)
-        return(tab)
-      }
-      if (self$options$.caller=="syntax") {
-        
-        k<-1
-        mkeys<-list("")
-        gkeys<-list("")
-        if (is.something(self$cluster)) {
-          k<-2
-          mkeys<-c("Level: Within","Level: Between")
-        }
-        if (is.something(self$multigroup)) {
-          k<-k*self$multigroup$nlevels
-          gkeys<-paste("Group: ",self$multigroup$levels)
-        }
-        keys<-expand.grid(mkeys,gkeys)
-        df<-data.frame(variable=c(".","."))
-        tab<-lapply(1:k, function(x) return(df))
-        names(tab)<-paste(keys$Var1,keys$Var2,sep=" ")
-        return(tab)
-      }
       
+       return(self$init_covariances_observed())
+
     },
     init_covariances_residual=function() {
-  
-      if (self$options$.caller=="gui") {
-        
-        .length <- length(self$observed)
-        tab <- cbind(variable=self$observed, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$observed))));
-        names(tab)<-c("variable",self$observed)
-        tab<-private$.make_empty_table(tab)
-        return(tab)
-      }
-      if (self$options$.caller=="syntax") {
-        
-        k<-1
-        mkeys<-list("")
-        gkeys<-list("")
-        if (is.something(self$cluster)) {
-          k<-2
-          mkeys<-c("Level: Within","Level: Between")
-        }
-        if (is.something(self$multigroup)) {
-          k<-k*self$multigroup$nlevels
-          gkeys<-paste("Group: ",self$multigroup$levels)
-        }
-        keys<-expand.grid(mkeys,gkeys)
-        df<-data.frame(variable=c(".","."))
-        tab<-lapply(1:k, function(x) return(df))
-        names(tab)<-paste(keys$Var1,keys$Var2,sep=" ")
-        return(tab)
-      }
+      
+      return(self$init_covariances_observed())
       
      },
      init_covariances_combined=function() {
@@ -371,34 +298,13 @@ Initer <- R6::R6Class(
       },
 
       init_covariances_latent=function() {
-  
-        if (self$options$.caller=="gui") {
-          
-          .length <- length(self$latent)
-          tab <- cbind(variable=self$latent, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
-          names(tab)<-c("variable",self$latent)
-          tab<-private$.make_empty_table(tab)
-          return(tab)
-        }
-        if (self$options$.caller=="syntax") {
-          
-          k<-1
-          mkeys<-list("")
-          gkeys<-list("")
-          if (is.something(self$cluster)) {
-            k<-2
-            mkeys<-c("Level: Within","Level: Between")
-          }
-          if (is.something(self$multigroup)) {
-            k<-k*self$multigroup$nlevels
-            gkeys<-paste("Group: ",self$multigroup$levels)
-          }
-          keys<-expand.grid(mkeys,gkeys)
-          df<-data.frame(variable=".")
-          tab<-lapply(1:k, function(x) return(df))
-          names(tab)<-paste(keys$Var1,keys$Var2,sep=" ")
-          return(tab)
-        }
+
+        .length <- length(self$latent)
+        tab <- cbind(variable=self$latent, as.data.frame(matrix(".", ncol=.length, nrow=.length, dimnames=list(NULL, self$latent))));
+        names(tab)<-c("variable",self$latent)
+        tab<-private$.make_empty_table(tab)
+        return(tab)
+        
         
       },
       init_lavaanoptions=function() {

@@ -4,8 +4,8 @@ readiness <- function(options) {
   result <- list(reason = NULL,
                  ready = TRUE,
                  report = FALSE)
+  jinfo("READINESS: check")
   
-  mark(options$code)  
   if (length(options$code) == 0 | options$code == "") {
     
     result$ready <- FALSE
@@ -15,8 +15,8 @@ readiness <- function(options) {
     
     return(result)
   }
-  
-  if (options$data_type != "data" && length(options$sample_n) == 0) {
+ mark(options$data_type,length(options$sample_n))
+  if (options$data_type != "data" && length(options$sample_n) == 0 ) {
     
     result$ready <- FALSE
     result$report <- TRUE

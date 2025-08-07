@@ -2,163 +2,408 @@
 % Please edit documentation in R/semljgui.h.R
 \name{semljgui}
 \alias{semljgui}
-\title{SEM for jamovi}
+\title{Structural Equation Models}
 \usage{
 semljgui(
   data,
-  endogenous = NULL,
-  factors = NULL,
-  covs = NULL,
-  multigroup = NULL,
-  se = "standard",
-  r2ci = "fisher",
-  r2test = FALSE,
-  bootci = "perc",
-  ci = TRUE,
-  ciWidth = 95,
-  bootN = 1000,
-  showintercepts = TRUE,
-  intercepts = TRUE,
-  indirect = FALSE,
-  contrasts = NULL,
-  showContrastCode = FALSE,
-  scaling = NULL,
+  .caller = "gui",
+  code = "",
+  donotrun,
+  endogenous = list(list(label = "Endogenous1", vars = list())),
+  exogenous = list(list(label = "Exogenous1", vars = list())),
+  secondorder = list(list(label = "Factor1", vars = list())),
   endogenousTerms = list(list()),
-  diagram = FALSE,
-  diag_paths = "est",
-  diag_resid = FALSE,
-  diag_labsize = "medium",
-  diag_rotate = "1",
-  diag_type = "circle",
-  diag_shape = "rectangle",
-  diag_abbrev = "0",
   varcov,
-  cov_y = TRUE,
-  cov_x = TRUE,
   constraints = list(),
-  syntax,
-  code,
-  constraints_examples = FALSE,
-  showlabels = FALSE,
+  estimator = "default",
+  likelihood = "default",
+  missing = "listwise",
   scoretest = TRUE,
   cumscoretest = FALSE,
-  estimator = "ML",
-  likelihood = "normal",
-  formula
+  se = "auto",
+  bootci = "perc",
+  bootN = 1000,
+  parallel = FALSE,
+  est_ci = TRUE,
+  beta_ci = FALSE,
+  ci_width = 95,
+  meanstructure = TRUE,
+  int_ov = TRUE,
+  int_lv = FALSE,
+  indirect = FALSE,
+  std_lv = "fix_first",
+  std_ov = FALSE,
+  cov_x = FALSE,
+  cov_y = TRUE,
+  cov_lv = TRUE,
+  cluster = "",
+  multigroup,
+  eq_loadings = FALSE,
+  eq_intercepts = FALSE,
+  eq_residuals = FALSE,
+  eq_residual.covariances = FALSE,
+  eq_means = FALSE,
+  eq_thresholds = FALSE,
+  eq_regressions = FALSE,
+  eq_lv.variances = FALSE,
+  eq_lv.covariances = FALSE,
+  esem_terms = list(list()),
+  rotation = "geomin",
+  algorithm = "gpa",
+  orthogonal = FALSE,
+  efa_std.ov = TRUE,
+  geomin.epsilon = 0.001,
+  orthomax.gamma = 1,
+  oblimin.gamma = 0,
+  showlabels = FALSE,
+  constraints_examples = FALSE,
+  lavaan_options = FALSE,
+  outputAdditionalFitMeasures = FALSE,
+  reliability = FALSE,
+  r2 = "none",
+  htmt = FALSE,
+  outputMardiasCoefficients = FALSE,
+  outputObservedCovariances = FALSE,
+  outputImpliedCovariances = FALSE,
+  outputResidualCovariances = FALSE,
+  outpuCombineCovariances = FALSE,
+  cov.lv = FALSE,
+  outputModificationIndices = FALSE,
+  miHideLow = FALSE,
+  miThreshold = 10,
+  diagram = FALSE,
+  diag_resid = FALSE,
+  diag_intercepts = FALSE,
+  diag_paths = "est",
+  diag_type = "tree",
+  diag_rotate = "2",
+  diag_labsize = "medium",
+  diag_shape_man = "rectangle",
+  diag_shape_lat = "circle",
+  diag_abbrev = "5",
+  data_type = "data",
+  sample_n,
+  sample_mean,
+  sample_std
 )
 }
 \arguments{
-\item{data}{the data as a data frame}
+\item{data}{TO ADD}
 
-\item{endogenous}{a vector of strings naming the mediators from \code{data}}
+\item{.caller}{.}
 
-\item{factors}{a vector of strings naming the fixed factors from
-\code{data}}
+\item{code}{The lavaan syntax}
 
-\item{covs}{a vector of strings naming the covariates from \code{data}}
+\item{donotrun}{not present in R. Halt running for more confortable input}
 
-\item{multigroup}{factor defining groups for multigroup analysis}
+\item{endogenous}{A list containing named lists that define the
+\code{label} of the latent endogenous variable(s) and the \code{vars} that
+belong to that latent.}
 
-\item{se}{.}
+\item{exogenous}{A list containing named lists that define the \code{label}
+of the latent exogenous variables and the \code{vars} that belong to that
+latent.}
 
-\item{r2ci}{Choose the confidence interval type}
+\item{secondorder}{A list containing named lists that define the
+\code{label} of the second order latent factors  and the \code{vars} that
+belong to that latent.}
 
-\item{r2test}{.}
-
-\item{bootci}{Choose the confidence interval type}
-
-\item{ci}{.}
-
-\item{ciWidth}{a number between 50 and 99.9 (default: 95) specifying the
-confidence interval width for the parameter estimates}
-
-\item{bootN}{number of bootstrap samples for estimating confidence
-intervals}
-
-\item{showintercepts}{\code{TRUE} or \code{FALSE} (default), show
-intercepts}
-
-\item{intercepts}{\code{TRUE} or \code{FALSE} (default), show intercepts}
-
-\item{indirect}{\code{TRUE} or \code{FALSE} (default), show intercepts}
-
-\item{contrasts}{a list of lists specifying the factor and type of contrast
-to use, one of \code{'deviation'}, \code{'simple'}, \code{'difference'},
-\code{'helmert'}, \code{'repeated'} or \code{'polynomial'}}
-
-\item{showContrastCode}{\code{TRUE} or \code{FALSE} (default), provide
-contrast coefficients tables}
-
-\item{scaling}{a named vector of the form \code{c(var1='type',
-var2='type2')} specifying the transformation to apply to covariates, one of
-\code{'centered'} to the mean, \code{'standardized'},\code{'log'} or
-\code{'none'}. \code{'none'} leaves the variable as it is.}
-
-\item{endogenousTerms}{a list of lists specifying the models for with the
+\item{endogenousTerms}{A list of lists specifying the models for with the
 mediators as dependent variables.}
 
+\item{varcov}{A list of lists specifying the  covariances that need to be
+estimated.}
+
+\item{constraints}{A list of lists specifying the models random effects.}
+
+\item{estimator}{The estimator to be used. Can be one of the following:
+"ML" for maximum likelihood, "GLS" for (normal theory) generalized least
+squares, "WLS" for weighted least squares (sometimes called ADF
+estimation), "ULS" for unweighted least squares, "DWLS" for diagonally
+weighted least squares, and "DLS" for distributionally-weighted least
+squares. These are the main options that affect the estimation. For
+convenience, the "ML" option can be extended as "MLM", "MLMV", "MLMVS",
+"MLF", and "MLR". The estimation will still be plain "ML", but now with
+robust standard errors and a robust (scaled) test statistic. For "MLM",
+"MLMV", "MLMVS", classic robust standard errors are used (se="robust.sem");
+for "MLF", standard errors are based on first-order derivatives
+(information = "first.order"); for "MLR", \code{Huber-White} robust
+standard errors are used (se="robust.huber.white"). In addition, "MLM" will
+compute a Satorra-Bentler scaled (mean adjusted) test statistic
+(test="satorra.bentler"), "MLMVS" will compute a mean and variance adjusted
+test statistic (Satterthwaite style) (test="mean.var.adjusted"), "MLMV"
+will compute a mean and variance adjusted test statistic (scaled and
+shifted) (test="scaled.shifted"), and "MLR" will compute a test statistic
+which is asymptotically equivalent to the Yuan-Bentler T2-star test
+statistic (test="yuan.bentler.mplus"). Analogously, the estimators "WLSM"
+and "WLSMV" imply the "DWLS" estimator (not the "WLS" estimator) with
+robust standard errors and a mean or mean and variance adjusted test
+statistic. Estimators "ULSM" and "ULSMV" imply the "ULS" estimator with
+robust standard errors and a mean or mean and variance adjusted test
+statistic.}
+
+\item{likelihood}{Only relevant for ML estimation. If "wishart", the
+wishart likelihood approach is used. In this approach, the covariance
+matrix has been divided by N-1, and both standard errors and test
+statistics are based on N-1. If "normal", the normal likelihood approach is
+used. Here, the covariance matrix has been divided by N, and both standard
+errors and test statistics are based on N. If "default", it depends on the
+mimic option: if mimic="lavaan" or mimic="Mplus", normal likelihood is
+used; otherwise, wishart likelihood is used.}
+
+\item{missing}{Handling of missing values. \code{listwise} delete rows with
+missing.  \code{missing=ml} for ‘full information’ maximum likelihood
+estimation. \code{missing=ml.x} for ‘full information’ maximum likelihood
+estimation  that includes also the fixed exogenous variables.
+\code{ml=robust.two.stage} uses a two stage appraoch whereas
+\code{ml=pairwise} delete case pairwise before computing the covariances
+between variables.}
+
+\item{scoretest}{TO ADD}
+
+\item{cumscoretest}{TO ADD}
+
+\item{se}{Standard error method.}
+
+\item{bootci}{Choose the confidence interval type ("perc" - percentiles
+[default], "bca.simple" - adjusted bias-corrected, "norm" - normal, "basic"
+- basic).}
+
+\item{bootN}{The number of bootstrap samples for estimating confidence
+intervals.}
+
+\item{parallel}{use parallel computation for bootstrap C.I}
+
+\item{est_ci}{\code{TRUE} or \code{FALSE} (default), show confidence
+intervals for estimates}
+
+\item{beta_ci}{\code{TRUE} or \code{FALSE} (default), show confidence
+intervals for standardized estimates}
+
+\item{ci_width}{A number between 50 and 99.9 (default: 95) specifying the
+confidence interval width for the parameter estimates.}
+
+\item{meanstructure}{If TRUE, the means of the observed variables enter the
+model. Required for calculating the intercepts of the estimates.}
+
+\item{int_ov}{\code{TRUE} or \code{FALSE} (default), calculate intercepts
+for observed variables}
+
+\item{int_lv}{\code{TRUE} or \code{FALSE} (default), calculate intercepts
+for latent variables}
+
+\item{indirect}{\code{TRUE} or \code{FALSE} (default), TO ADD}
+
+\item{std_lv}{If \code{fix_first} (default), the factor loading of the
+first indicator is set to 1.0 for every latent variable. If \code{std_res},
+the metric of each latent variable is determined by fixing their (residual)
+variances to 1.0. If there are multiple groups, "std_res" is chosen and
+"loadings" is included in the group.label argument, then only the latent
+variances i of the first group will be fixed to 1.0, while the latent
+variances of other groups are set free.}
+
+\item{std_ov}{If TRUE, all observed variables are standardized before
+entering the analysis.}
+
+\item{cov_x}{If \code{TRUE}, the exogenous covariates are considered fixed
+variables and the means, variances and covariances of these variables are
+fixed to their sample values. If \code{FALSE}, they are considered random,
+and the means, variances and covariances are free parameters. If "default",
+the value is set depending on the mimic option.}
+
+\item{cov_y}{\code{TRUE} (default) or \code{FALSE}, TO ADD}
+
+\item{cov_lv}{\code{TRUE} (default) or \code{FALSE}, is the negation of
+orthogonal option}
+
+\item{cluster}{Not used in gui}
+
+\item{multigroup}{Factor defining groups for multigroup analysis.}
+
+\item{eq_loadings}{\code{TRUE} or \code{FALSE} (default), constrain the
+factor loadings to be equal across groups (when conducting multi-group
+analyses)}
+
+\item{eq_intercepts}{\code{TRUE} or \code{FALSE} (default), constrain the
+intercepts of the observed variables to be equal across groups (when
+conducting multi-group analyses)}
+
+\item{eq_residuals}{\code{TRUE} or \code{FALSE} (default), constrain the
+residual variances of the observed variables to be equal across groups
+(when conducting multi-group analyses)}
+
+\item{eq_residual.covariances}{\code{TRUE} or \code{FALSE} (default),
+constrain the residual covariances of the observed variables to be equal
+across groups (when conducting multi-group analyses)}
+
+\item{eq_means}{\code{TRUE} or \code{FALSE} (default), constrain the
+intercepts / means of the latent variables to be equal across groups (when
+conducting multi-group analyses)}
+
+\item{eq_thresholds}{\code{TRUE} or \code{FALSE} (default), constrain the
+sample-based thresholds (means for continuous observed mvariables) to be
+equal across groups (when conducting multi-group analyses)}
+
+\item{eq_regressions}{\code{TRUE} or \code{FALSE} (default), constrain all
+regression coefficients in the model to be equal across groups (when
+conducting multi-group analyses)}
+
+\item{eq_lv.variances}{\code{TRUE} or \code{FALSE} (default), constrain the
+(residual) variances of the latent variables to be equal across groups
+(when conducting multi-group analyses)}
+
+\item{eq_lv.covariances}{\code{TRUE} or \code{FALSE} (default), constrain
+the (residual) covariances of the latent variables to be equal across
+groups (when conducting multi-group analyses)}
+
+\item{esem_terms}{A list of list containing blocks of factors to be
+factorialized toghether.}
+
+\item{rotation}{Rotation methods as implemented in lavaan >0.6-13}
+
+\item{algorithm}{Optional algorithm for rotation, derfaul is \code{gpa}}
+
+\item{orthogonal}{\code{TRUE} or \code{FALSE} (default), whether the
+roation should be orthogonal}
+
+\item{efa_std.ov}{\code{TRUE} or \code{FALSE} (default), whether observed
+variables should be standardized}
+
+\item{geomin.epsilon}{Geomin epsilon, default=.5}
+
+\item{orthomax.gamma}{Geomin epsilon, default=.001}
+
+\item{oblimin.gamma}{Oblimin gamma, default=0}
+
+\item{showlabels}{\code{TRUE} or \code{FALSE} (default), show the labels of
+the parameters in the model}
+
+\item{constraints_examples}{\code{TRUE} or \code{FALSE} (default), show
+examples of the lavaan model syntax}
+
+\item{lavaan_options}{\code{TRUE} or \code{FALSE} (default), show options
+of the lavaan model}
+
+\item{outputAdditionalFitMeasures}{\code{TRUE} or \code{FALSE} (default),
+show additional fit measures (e.g., CFI, TLI, etc.)}
+
+\item{reliability}{\code{TRUE} or \code{FALSE} (default), show additional
+reliability indices}
+
+\item{r2}{compute R-squared for all endogenous variables (\code{endo}) or
+for all variables in the model (\code{all}). \code{none} for no R-squared}
+
+\item{htmt}{\code{TRUE} or \code{FALSE} (default), show
+Heterotrait-monotrait (HTMT) ratio of correlations  as reccomended by
+@henseler2015new}
+
+\item{outputMardiasCoefficients}{\code{TRUE} or \code{FALSE} (default),
+show Mardia's coefficients for multivariate skewness and kurtosis}
+
+\item{outputObservedCovariances}{\code{TRUE} or \code{FALSE} (default),
+show the covariances and correlations between the observed values of the
+(manifest) variables}
+
+\item{outputImpliedCovariances}{\code{TRUE} or \code{FALSE} (default), show
+the covariances and correlations between the model-implied / fitted values
+of the (manifest) variables}
+
+\item{outputResidualCovariances}{\code{TRUE} or \code{FALSE} (default),
+show the covariances and correlations between the residuals of the
+(manifest) variables.}
+
+\item{outpuCombineCovariances}{\code{TRUE} or \code{FALSE} (default),
+combine the (up to) three covariance / correlation tables into one table
+(i.e., showing observed, model-implied and residual values for each
+variable combination underneath each other)}
+
+\item{cov.lv}{\code{TRUE} or \code{FALSE} (default), model-implied latent
+covariances}
+
+\item{outputModificationIndices}{\code{TRUE} or \code{FALSE} (default),
+show modification indices for if certain terms were removed from the model}
+
+\item{miHideLow}{\code{TRUE} or \code{FALSE} (default), hide modification
+indices below a certain threshold.}
+
+\item{miThreshold}{Numeric (default: 10), set a threshold the modification
+indices must exceed in order to be shown.}
+
 \item{diagram}{\code{TRUE} or \code{FALSE} (default), produce a path
-diagram}
+diagram.}
 
-\item{diag_paths}{Choose the diagram labels}
+\item{diag_resid}{\code{TRUE} or \code{FALSE} (default), show the residuals
+(for the observed variables).}
 
-\item{diag_resid}{\code{TRUE} or \code{FALSE} (default), produce a path
-diagram}
+\item{diag_intercepts}{\code{TRUE} or \code{FALSE} (default), show the
+variable intercepts.}
 
-\item{diag_labsize}{Choose the diagram labels}
+\item{diag_paths}{Choose the values shown along the paths ("est" [coeffic.,
+default], "stand" [betas], "name" [labels], "hide" [nothing]).}
 
-\item{diag_rotate}{Choose the diagram labels}
+\item{diag_type}{Choose the layout of the path diagram ("tree" [default],
+"tree2", "circle", "circle2", "spring").}
 
-\item{diag_type}{Choose the diagram labels}
+\item{diag_rotate}{Choose the rotation of the path diagram (placement of
+the exog. variables; "1": top, "2": left (default), "3": bottom, "4":
+right).}
 
-\item{diag_shape}{Choose the diagram labels}
+\item{diag_labsize}{Choose the node size for the variables (default:
+"medium").}
 
-\item{diag_abbrev}{Choose the diagram labels}
+\item{diag_shape_man}{Choose the shape for the manifest variables (default:
+"rectangle").}
 
-\item{varcov}{a list of lists specifying the  covariances that need to be
-estimated}
+\item{diag_shape_lat}{Choose the shape for the latent variables (default:
+"circle").}
 
-\item{cov_y}{\code{TRUE} or \code{FALSE} (default), produce a path diagram}
+\item{diag_abbrev}{Choose the length (characters) of the variable name
+abbreviations (default: 5).}
 
-\item{cov_x}{\code{TRUE} or \code{FALSE} (default), produce a path diagram}
+\item{data_type}{The type of input data (default: "data"), it can be
+\code{cov} or \code{cor}.}
 
-\item{constraints}{a list of lists specifying the models random effects.}
+\item{sample_n}{The sample size of the covariance matrix}
 
-\item{syntax}{.}
+\item{sample_mean}{The sample means}
 
-\item{code}{.}
-
-\item{constraints_examples}{.}
-
-\item{showlabels}{.}
-
-\item{scoretest}{.}
-
-\item{cumscoretest}{.}
-
-\item{estimator}{Choose the diagram labels}
-
-\item{likelihood}{Choose the diagram labels}
-
-\item{formula}{(optional) the formula to use, see the examples}
+\item{sample_std}{The sample standard deviations}
 }
 \value{
 A results object containing:
 \tabular{llllll}{
-  \code{results$model} \tab \tab \tab \tab \tab The underlying \code{lavaan} object \cr
   \code{results$info} \tab \tab \tab \tab \tab a table \cr
+  \code{results$issues} \tab \tab \tab \tab \tab a html \cr
   \code{results$fit$main} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit$constraints} \tab \tab \tab \tab \tab a table \cr
   \code{results$fit$indices} \tab \tab \tab \tab \tab a table \cr
-  \code{results$models$r2} \tab \tab \tab \tab \tab a table \cr
+  \code{results$fit$modelbaseline} \tab \tab \tab \tab \tab a table \cr
+  \code{results$fit$moreindices} \tab \tab \tab \tab \tab a table \cr
+  \code{results$fit$rsquared} \tab \tab \tab \tab \tab a table \cr
+  \code{results$fit$icc} \tab \tab \tab \tab \tab a table \cr
   \code{results$models$coefficients} \tab \tab \tab \tab \tab a table \cr
-  \code{results$models$correlations} \tab \tab \tab \tab \tab a table \cr
+  \code{results$models$loadings} \tab \tab \tab \tab \tab a table \cr
+  \code{results$models$composites} \tab \tab \tab \tab \tab a table \cr
+  \code{results$models$covariances} \tab \tab \tab \tab \tab a table \cr
   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
+  \code{results$models$thresholds} \tab \tab \tab \tab \tab a table \cr
   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
-  \code{results$models$contrastCodeTable} \tab \tab \tab \tab \tab a table \cr
+  \code{results$additional$reliability} \tab \tab \tab \tab \tab a table \cr
+  \code{results$additional$htmt} \tab \tab \tab \tab \tab a table \cr
+  \code{results$additional$mardia} \tab \tab \tab \tab \tab a table \cr
+  \code{results$covariances$observed} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+  \code{results$covariances$implied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+  \code{results$covariances$residual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+  \code{results$covariances$combined} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
+  \code{results$covariances$latent} \tab \tab \tab \tab \tab A covariance matrix table. \cr
+  \code{results$modification$indices} \tab \tab \tab \tab \tab a table \cr
   \code{results$pathgroup$diagrams} \tab \tab \tab \tab \tab an array of path diagrams \cr
-  \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a table \cr
-  \code{results$contraintsnotes} \tab \tab \tab \tab \tab a table \cr
+  \code{results$pathgroup$notes} \tab \tab \tab \tab \tab a html \cr
+  \code{results$preds_lv} \tab \tab \tab \tab \tab an output \cr
+  \code{results$preds_ov} \tab \tab \tab \tab \tab an output \cr
+  \code{results$preds_dv} \tab \tab \tab \tab \tab an output \cr
+  \code{results$synexamples} \tab \tab \tab \tab \tab a table \cr
+  \code{results$lavaanoptions} \tab \tab \tab \tab \tab a table \cr
 }
 
 Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -168,5 +413,5 @@ Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.f
 \code{as.data.frame(results$info)}
 }
 \description{
-Path Analysis
+Structural Equation Models
 }

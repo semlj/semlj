@@ -427,7 +427,7 @@
     default: 0.001
     description:
         R: |
-            Geomin epsilon, default=.001
+            Geomin epsilon, default=.5
 -   name: orthomax.gamma
     title: Orthomax Gamma
     type: Number
@@ -549,7 +549,7 @@
             show the covariances and correlations between the residuals of the (manifest) variables.
         R: |
             `TRUE` or `FALSE` (default), show the covariances and correlations between the residuals of the (manifest) variables.
--   name: outpuCombineCovariances
+-   name: outputCombineCovariances
     type: Bool
     title: Combined into one table
     default: false
@@ -790,13 +790,28 @@
             The type of input data (default: "Data"), it can be `Covariances` or `Correlations`.
 -   name: sample_n
     title: Sample N variable
-    type: String
+    type: Variable
+    description:
+        R: |
+            The sample size of the covariance matrix
+        ui: |
+            The column name in the dataset containing the sample size of the covariances
+    
 -   name: sample_mean
     title: Sample means variable
     type: String
+    description:
+        R: |
+            The sample means
+        ui: |
+            The column name in the dataset containing the sample means of the observed variables
+
 -   name: sample_std
     title: Sample STD variable
     type: String
--   name: other_vars
-    type: Variables
-    hidden: true
+    description:
+        R: |
+            The sample standard deviations
+        ui: |
+            The column name in the dataset containing the sample standard deviations of the observed variables
+

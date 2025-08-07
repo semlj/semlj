@@ -274,7 +274,7 @@ options:
     -   name: outputResidualCovariances
         type: scaffold
         file: commons.a.yaml
-    -   name: outpuCombineCovariances
+    -   name: outputCombineCovariances
         type: scaffold
         file: commons.a.yaml
     -   name: cov.lv
@@ -338,8 +338,5 @@ options:
         type: scaffold
         file: commons.a.yaml
     -   name: sample_std
-        type: scaffold
-        file: commons.a.yaml
-    -   name: other_vars
         type: scaffold
         file: commons.a.yaml

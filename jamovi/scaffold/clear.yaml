@@ -1,0 +1,73 @@
+-   type: scaffold
+    name: opts_model
+    children:
+            - code
+            - estimator
+            - likelihood
+            - meanstructure
+            - int_ov
+            - int_lv
+            - std_lv
+            - std_ov
+            - cov_x
+            - cov_y
+            - cov_lv
+            - cluster
+            - donotrun
+            - multigroup
+            - esem_terms
+            - rotation
+            - algorithm
+            - orthogonal
+            - efa_std.ov
+            - geomin.epsilon
+            - orthomax.gamma
+            - oblimin.gamma
+            - missing
+            
+-   type: scaffold
+    name: opts_data
+    children:
+         - data_type
+         - sample_n
+         - sample_mean
+         - sample_std
+         
+-   type: scaffold
+    name: opts_eq
+    children:
+            - eq_loadings
+            - eq_intercepts
+            - eq_residuals
+            - eq_residual.covariances
+            - eq_means
+            - eq_thresholds
+            - eq_regressions
+            - eq_lv.variances
+            - eq_lv.covariances
+
+-   type: scaffold
+    name: opts_coefs
+    children:
+         
+           - bootci
+           - bootN
+           - est_ci
+           - beta_ci
+           - ci_width
+           - se
+           - parallel
+
+-   type: scaffold
+    name: opts_plot
+    children:
+
+            - diag_shape_man
+            - diag_shape_lat
+            - diag_abbrev
+            - diag_type
+            - diag_rotate
+            - diag_labsize
+            - diag_resid
+            - diag_paths
+            - diag_intercepts

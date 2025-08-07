@@ -97,7 +97,7 @@ children:
             -   type: CheckBox
                 name: donotrun
     -   type: CollapseBox
-        label: Second Oder Factors
+        label: Second Order Factors
         collapsed: true
         stretchFactor: 1
         children:
@@ -412,5 +412,5 @@ children:
         name: pathdiagram_options
         file: commons.u.yaml
     -   type: scaffold
-        name: datatype_options
+        name: panel_inputdata
         file: commons.u.yaml

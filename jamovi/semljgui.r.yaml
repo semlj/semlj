@@ -41,16 +41,8 @@ items:
             - cov_y
             - cov_lv
             - cluster
+            - donotrun
             - multigroup
-            - eq_loadings
-            - eq_intercepts
-            - eq_residuals
-            - eq_residual.covariances
-            - eq_means
-            - eq_thresholds
-            - eq_regressions
-            - eq_lv.variances
-            - eq_lv.covariances
             - esem_terms
             - rotation
             - algorithm
@@ -60,6 +52,19 @@ items:
             - orthomax.gamma
             - oblimin.gamma
             - missing
+            - data_type
+            - sample_n
+            - sample_mean
+            - sample_std
+            - eq_loadings
+            - eq_intercepts
+            - eq_residuals
+            - eq_residual.covariances
+            - eq_means
+            - eq_thresholds
+            - eq_regressions
+            - eq_lv.variances
+            - eq_lv.covariances
         items:
             -   name: main
                 title: Model tests
@@ -77,16 +82,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -96,6 +93,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 columns:
                     -   name: label
                         title: Label
@@ -127,16 +137,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -146,6 +148,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 columns:
                     -   name: type
                         type: text
@@ -187,16 +202,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -206,6 +213,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 columns:
                     -   name: type
                         title: Type
@@ -247,16 +267,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -266,6 +278,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 rows: 8
                 columns:
                     -   name: name
@@ -302,16 +327,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -321,6 +338,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 columns:
                     -   name: name
                         title: ''
@@ -345,16 +375,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -364,6 +386,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 columns:
                     -   name: lgroup
                         title: Group
@@ -393,16 +428,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -412,6 +439,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 columns:
                     -   name: lgroup
                         title: Group
@@ -446,16 +486,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -465,6 +497,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                     - bootci
                     - bootN
                     - est_ci
@@ -524,45 +569,6 @@ items:
                 title: Measurement model
                 type: Table
                 visible: false
-                clearWith:
-                    - code
-                    - estimator
-                    - likelihood
-                    - meanstructure
-                    - int_ov
-                    - int_lv
-                    - std_lv
-                    - std_ov
-                    - cov_x
-                    - cov_y
-                    - cov_lv
-                    - cluster
-                    - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
-                    - esem_terms
-                    - rotation
-                    - algorithm
-                    - orthogonal
-                    - efa_std.ov
-                    - geomin.epsilon
-                    - orthomax.gamma
-                    - oblimin.gamma
-                    - missing
-                    - bootci
-                    - bootN
-                    - est_ci
-                    - beta_ci
-                    - ci_width
-                    - se
-                    - parallel
                 columns:
                     -   name: lgroup
                         title: Group
@@ -629,16 +635,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -648,6 +646,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                     - bootci
                     - bootN
                     - est_ci
@@ -720,16 +731,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -739,6 +742,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                     - bootci
                     - bootN
                     - est_ci
@@ -811,16 +827,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -830,6 +838,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                     - bootci
                     - bootN
                     - est_ci
@@ -893,16 +914,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -912,6 +925,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                     - bootci
                     - bootN
                     - est_ci
@@ -978,16 +1004,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -997,6 +1015,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                     - bootci
                     - bootN
                     - est_ci
@@ -1075,16 +1106,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -1094,6 +1117,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 columns:
                     -   name: lgroup
                         title: Group
@@ -1153,16 +1189,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -1172,6 +1200,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 rows: 2
                 columns:
                     -   name: name
@@ -1211,16 +1252,8 @@ items:
             - cov_y
             - cov_lv
             - cluster
+            - donotrun
             - multigroup
-            - eq_loadings
-            - eq_intercepts
-            - eq_residuals
-            - eq_residual.covariances
-            - eq_means
-            - eq_thresholds
-            - eq_regressions
-            - eq_lv.variances
-            - eq_lv.covariances
             - esem_terms
             - rotation
             - algorithm
@@ -1230,12 +1263,25 @@ items:
             - orthomax.gamma
             - oblimin.gamma
             - missing
+            - data_type
+            - sample_n
+            - sample_mean
+            - sample_std
+            - eq_loadings
+            - eq_intercepts
+            - eq_residuals
+            - eq_residual.covariances
+            - eq_means
+            - eq_thresholds
+            - eq_regressions
+            - eq_lv.variances
+            - eq_lv.covariances
         items:
             -   name: observed
                 title: Observed covariances (lower triangle) and correlations (upper
                     triangle)
                 type: Table
-                visible: (outputObservedCovariances & !outpuCombineCovariances)
+                visible: (outputObservedCovariances & !outputCombineCovariances)
                 description: A covariance / correlation matrix table.
                 clearWith:
                     - code
@@ -1250,16 +1296,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -1269,6 +1307,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 columns:
                     -   name: lgroup
                         title: Group
@@ -1299,16 +1350,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -1318,7 +1361,20 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
-                visible: (outputImpliedCovariances & !outpuCombineCovariances)
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                visible: (outputImpliedCovariances & !outputCombineCovariances)
                 description: A covariance / correlation matrix table.
                 columns:
                     -   name: lgroup
@@ -1337,7 +1393,7 @@ items:
                 title: Residual covariances (lower triangle) and correlations (upper
                     triangle)
                 type: Table
-                visible: (outputResidualCovariances & !outpuCombineCovariances)
+                visible: (outputResidualCovariances & !outputCombineCovariances)
                 description: A covariance / correlation matrix table.
                 clearWith:
                     - code
@@ -1352,16 +1408,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -1371,6 +1419,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 columns:
                     -   name: lgroup
                         title: Group
@@ -1400,16 +1461,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -1419,6 +1472,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 visible: (outpuCombineCovariances)
                 description: A covariance / correlation matrix table.
                 columns:
@@ -1454,16 +1520,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -1473,7 +1531,20 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
-                visible: false
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
+                visible: (cov.lv)
                 description: A covariance matrix table.
                 columns:
                     -   name: lgroup
@@ -1505,16 +1576,8 @@ items:
             - cov_y
             - cov_lv
             - cluster
+            - donotrun
             - multigroup
-            - eq_loadings
-            - eq_intercepts
-            - eq_residuals
-            - eq_residual.covariances
-            - eq_means
-            - eq_thresholds
-            - eq_regressions
-            - eq_lv.variances
-            - eq_lv.covariances
             - esem_terms
             - rotation
             - algorithm
@@ -1524,6 +1587,19 @@ items:
             - orthomax.gamma
             - oblimin.gamma
             - missing
+            - data_type
+            - sample_n
+            - sample_mean
+            - sample_std
+            - eq_loadings
+            - eq_intercepts
+            - eq_residuals
+            - eq_residual.covariances
+            - eq_means
+            - eq_thresholds
+            - eq_regressions
+            - eq_lv.variances
+            - eq_lv.covariances
         visible: (outputModificationIndices)
         items:
             -   name: indices
@@ -1542,16 +1618,8 @@ items:
                     - cov_y
                     - cov_lv
                     - cluster
+                    - donotrun
                     - multigroup
-                    - eq_loadings
-                    - eq_intercepts
-                    - eq_residuals
-                    - eq_residual.covariances
-                    - eq_means
-                    - eq_thresholds
-                    - eq_regressions
-                    - eq_lv.variances
-                    - eq_lv.covariances
                     - esem_terms
                     - rotation
                     - algorithm
@@ -1561,6 +1629,19 @@ items:
                     - orthomax.gamma
                     - oblimin.gamma
                     - missing
+                    - data_type
+                    - sample_n
+                    - sample_mean
+                    - sample_std
+                    - eq_loadings
+                    - eq_intercepts
+                    - eq_residuals
+                    - eq_residual.covariances
+                    - eq_means
+                    - eq_thresholds
+                    - eq_regressions
+                    - eq_lv.variances
+                    - eq_lv.covariances
                 visible: (outputModificationIndices)
                 notes:
                     EPC: expected parameter changes and their standardized forms (sEPC);
@@ -1617,16 +1698,8 @@ items:
             - cov_y
             - cov_lv
             - cluster
+            - donotrun
             - multigroup
-            - eq_loadings
-            - eq_intercepts
-            - eq_residuals
-            - eq_residual.covariances
-            - eq_means
-            - eq_thresholds
-            - eq_regressions
-            - eq_lv.variances
-            - eq_lv.covariances
             - esem_terms
             - rotation
             - algorithm
@@ -1636,6 +1709,19 @@ items:
             - orthomax.gamma
             - oblimin.gamma
             - missing
+            - data_type
+            - sample_n
+            - sample_mean
+            - sample_std
+            - eq_loadings
+            - eq_intercepts
+            - eq_residuals
+            - eq_residual.covariances
+            - eq_means
+            - eq_thresholds
+            - eq_regressions
+            - eq_lv.variances
+            - eq_lv.covariances
             - diag_shape_man
             - diag_shape_lat
             - diag_abbrev
@@ -1671,16 +1757,8 @@ items:
                         - cov_y
                         - cov_lv
                         - cluster
+                        - donotrun
                         - multigroup
-                        - eq_loadings
-                        - eq_intercepts
-                        - eq_residuals
-                        - eq_residual.covariances
-                        - eq_means
-                        - eq_thresholds
-                        - eq_regressions
-                        - eq_lv.variances
-                        - eq_lv.covariances
                         - esem_terms
                         - rotation
                         - algorithm
@@ -1690,6 +1768,19 @@ items:
                         - orthomax.gamma
                         - oblimin.gamma
                         - missing
+                        - data_type
+                        - sample_n
+                        - sample_mean
+                        - sample_std
+                        - eq_loadings
+                        - eq_intercepts
+                        - eq_residuals
+                        - eq_residual.covariances
+                        - eq_means
+                        - eq_thresholds
+                        - eq_regressions
+                        - eq_lv.variances
+                        - eq_lv.covariances
                         - diag_shape_man
                         - diag_shape_lat
                         - diag_abbrev
@@ -1722,7 +1813,6 @@ items:
         type: Table
         visible: (constraints_examples)
         title: Syntax examples
-        clearWith: ~
         columns:
             -   name: info
                 type: text
