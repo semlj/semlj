@@ -1,3 +1,12 @@
+-   name: multigroup_analyses
+    type: Label
+    label: Analyses
+    margin: large
+    style: list
+    children:
+               -   type: CheckBox
+                   name: meas_invariance
+                  
 -   name: multigroup_ec
     type: Label
     label: Equality constraints

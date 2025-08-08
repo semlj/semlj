@@ -39,11 +39,11 @@ children:
                 margin: large
                 style: list
                 children:
-                    -   type: LayoutBox
-                        margin: large
-                        style: inline
-                        stretchFactor: 1
-                        children:
+                  -   type: LayoutBox
+                      margin: large
+                      style: inline
+                      stretchFactor: 1
+                      children:
                             -   type: TextBox
                                 name: multigroup
                                 stretchFactor: 1
@@ -51,9 +51,12 @@ children:
                                 format: string
                                 events:
                                     change: ./gui.events::onChange_multigroup
-                    - name: multigroup_ec
-                      type: scaffold
-                      file: commons.u.yaml
+                  - name: multigroup_ec
+                    type: scaffold
+                    file: commons.u.yaml
+                  - name: multigroup_analyses
+                    type: scaffold
+                    file: commons.u.yaml
                                     
     -   type: CollapseBox
         label: Multi-level analysis

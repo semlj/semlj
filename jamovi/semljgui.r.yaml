@@ -1297,7 +1297,7 @@ items:
                         title: p
                         type: number
                         format: zto,pvalue
-    -   name: measInvariance
+    -   name: invariance
         title: Measurement Invariance
         type: Group
         clearWith:
@@ -1337,11 +1337,12 @@ items:
             - eq_regressions
             - eq_lv.variances
             - eq_lv.covariances
-        visible: (outputMeasInv)
+        visible: (meas_invariance)
         items:
-            -   name: measInvarianceTable
+            -   name: invTable
                 title: Measurement invariance
                 type: Table
+                visible: (meas_invariance)
                 clearWith:
                     - code
                     - estimator

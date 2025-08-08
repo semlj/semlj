@@ -815,3 +815,11 @@
         ui: |
             The column name in the dataset containing the sample standard deviations of the observed variables
 
+### measurement invariance
+
+-   name: meas_invariance
+    title: Measurement Invariance
+    type: Bool
+    description:
+        R: |
+            Performs measurement invariance analysis

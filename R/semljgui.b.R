@@ -129,6 +129,12 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$activateOnData   <-TRUE
         ladd(private$.smartObjs)   <- aSmartObj
 
+        
+        aSmartObj <- SmartTable$new(self$results$invariance$invTable,runner_machine)
+        aSmartObj$spaceBy <- "model"
+        aSmartObj$debug   <- TRUE
+        ladd(private$.smartObjs) <- aSmartObj
+        
         ## reliability matrix table ###
         
         aSmartObj                  <- SmartTable$new(self$results$additional$reliability, runner_machine)

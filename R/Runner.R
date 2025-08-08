@@ -420,6 +420,14 @@ Runner <- R6::R6Class("Runner",
                             return(tab)
                             
                           },
+                          
+                          run_invariance_results = function() {
+                            
+                            mark(lavaan::fitmeasures(self$model))
+                            mod1<-lavaan::update(self$model,std.lv = TRUE, group.equal = c("loadings"))
+                            mark(lavaan::fitmeasures(mod1))
+                            
+                          },
                           run_additional_reliability=function() {
 
                             tab<-list()

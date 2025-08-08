@@ -288,6 +288,9 @@ children:
                   - name: multigroup_ec
                     type: scaffold
                     file: commons.u.yaml
+                  - name: multigroup_analyses
+                    type: scaffold
+                    file: commons.u.yaml
 
     -   type: CollapseBox
         label: Exploratory SEM options

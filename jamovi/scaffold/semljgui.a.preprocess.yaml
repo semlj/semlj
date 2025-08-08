@@ -340,3 +340,9 @@ options:
     -   name: sample_std
         type: scaffold
         file: commons.a.yaml
+
+### measurement invariance
+
+    -   name: meas_invariance
+        type: scaffold
+        file: commons.a.yaml

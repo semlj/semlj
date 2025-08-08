@@ -18,7 +18,7 @@ items:
     -   name: additional
         type: scaffold
         file: commons.r.yaml
-    -   name: measInvariance
+    -   name: invariance
         type: scaffold
         file: commons.r.yaml
     -   name: covariances

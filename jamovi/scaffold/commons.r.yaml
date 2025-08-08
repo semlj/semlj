@@ -1149,7 +1149,7 @@
                 title: Value
 
  # Measurment invariance ======================================================
-  - name: measInvariance
+  - name: invariance
     title: "Measurement Invariance"
     type: Group
     clearWith:
@@ -1162,11 +1162,12 @@
             - type: scaffold
               name: opts_eq
               file: clear.yaml
-    visible: (outputMeasInv)
+    visible: (meas_invariance)
     items:
-      - name: measInvarianceTable
+      - name: invTable
         title: 'Measurement invariance'
         type: Table
+        visible: (meas_invariance)
         clearWith:
             - type: scaffold
               name: opts_model

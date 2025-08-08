@@ -89,7 +89,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             data_type = "data",
             sample_n = NULL,
             sample_mean = NULL,
-            sample_std = NULL, ...) {
+            sample_std = NULL,
+            meas_invariance = NULL, ...) {
 
             super$initialize(
                 package="semlj",
@@ -589,6 +590,9 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..sample_std <- jmvcore::OptionString$new(
                 "sample_std",
                 sample_std)
+            private$..meas_invariance <- jmvcore::OptionBool$new(
+                "meas_invariance",
+                meas_invariance)
 
             self$.addOption(private$...caller)
             self$.addOption(private$..code)
@@ -672,6 +676,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..sample_n)
             self$.addOption(private$..sample_mean)
             self$.addOption(private$..sample_std)
+            self$.addOption(private$..meas_invariance)
         }),
     active = list(
         .caller = function() private$...caller$value,
@@ -755,7 +760,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         data_type = function() private$..data_type$value,
         sample_n = function() private$..sample_n$value,
         sample_mean = function() private$..sample_mean$value,
-        sample_std = function() private$..sample_std$value),
+        sample_std = function() private$..sample_std$value,
+        meas_invariance = function() private$..meas_invariance$value),
     private = list(
         ...caller = NA,
         ..code = NA,
@@ -838,7 +844,8 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..data_type = NA,
         ..sample_n = NA,
         ..sample_mean = NA,
-        ..sample_std = NA)
+        ..sample_std = NA,
+        ..meas_invariance = NA)
 )
 
 semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -850,7 +857,7 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$.items[["fit"]],
         models = function() private$.items[["models"]],
         additional = function() private$.items[["additional"]],
-        measInvariance = function() private$.items[["measInvariance"]],
+        invariance = function() private$.items[["invariance"]],
         covariances = function() private$.items[["covariances"]],
         modification = function() private$.items[["modification"]],
         pathgroup = function() private$.items[["pathgroup"]],
@@ -2352,13 +2359,13 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
-                    measInvarianceTable = function() private$.items[["measInvarianceTable"]]),
+                    invTable = function() private$.items[["invTable"]]),
                 private = list(),
                 public=list(
                     initialize=function(options) {
                         super$initialize(
                             options=options,
-                            name="measInvariance",
+                            name="invariance",
                             title="Measurement Invariance",
                             clearWith=list(
                     "code",
@@ -2399,8 +2406,9 @@ semljguiResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "eq_lv.covariances"))
                         self$add(jmvcore::Table$new(
                             options=options,
-                            name="measInvarianceTable",
+                            name="invTable",
                             title="Measurement invariance",
+                            visible="(meas_invariance)",
                             clearWith=list(
                                 "code",
                                 "estimator",
@@ -3377,6 +3385,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param sample_n The sample size of the covariance matrix
 #' @param sample_mean The sample means
 #' @param sample_std The sample standard deviations
+#' @param meas_invariance Performs measurement invariance analysis
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$info} \tab \tab \tab \tab \tab a table \cr
@@ -3399,7 +3408,7 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$additional$reliability} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$htmt} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$mardia} \tab \tab \tab \tab \tab a table \cr
-#'   \code{results$measInvariance$measInvarianceTable} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$invariance$invTable} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$covariances$observed} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$covariances$implied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$covariances$residual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
@@ -3507,7 +3516,8 @@ semljgui <- function(
     data_type = "data",
     sample_n,
     sample_mean,
-    sample_std) {
+    sample_std,
+    meas_invariance) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("semljgui requires jmvcore to be installed (restart may be required)")
@@ -3601,7 +3611,8 @@ semljgui <- function(
         data_type = data_type,
         sample_n = sample_n,
         sample_mean = sample_mean,
-        sample_std = sample_std)
+        sample_std = sample_std,
+        meas_invariance = meas_invariance)
 
     analysis <- semljguiClass$new(
         options = options,

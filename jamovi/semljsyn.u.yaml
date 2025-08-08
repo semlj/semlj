@@ -275,6 +275,14 @@ children:
                                                 name: eq_lv.variances
                                             -   type: CheckBox
                                                 name: eq_lv.covariances
+                    -   name: multigroup_analyses
+                        type: Label
+                        label: Analyses
+                        margin: large
+                        style: list
+                        children:
+                            -   type: CheckBox
+                                name: meas_invariance
     -   type: CollapseBox
         label: Multi-level analysis
         collapsed: true
