@@ -18,6 +18,10 @@ Runner <- R6::R6Class("Runner",
                             
                             ## save rownames for predicted with missing
                             self$rownames<-rownames(data)
+                            # save the data. Notice that we do not waste memory here, because self$data is only a reference to data
+                            # (do not apply functions to data, such as data.frame(), otherwise it makes a copy and we do not want that)
+                            self$data     <- data
+                            
                             ## prepare the options based on Syntax definitions
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
@@ -421,12 +425,11 @@ Runner <- R6::R6Class("Runner",
                             
                           },
                           
-                          run_invariance_results = function() {
-                            
-                            mark(lavaan::fitmeasures(self$model))
-                            mod1<-lavaan::update(self$model,std.lv = TRUE, group.equal = c("loadings"))
-                            mark(lavaan::fitmeasures(mod1))
-                            
+                          ## Measurment Invariance Analysis :  by Joao Maroco :-)
+                          
+                          run_invariance_invTable = function() {
+                            ## you have self$data if you need it  
+                            ### here the code
                           },
                           run_additional_reliability=function() {
 

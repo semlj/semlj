@@ -6,6 +6,7 @@ Initer <- R6::R6Class(
   cloneable=FALSE, ## should improve performance https://r6.r-lib.org/articles/Performance.html ###
   inherit = Scaffold,
   public=list(
+    data = NULL,
     datamatic=NULL,
     endogenous=NULL,
     observed=NULL,
