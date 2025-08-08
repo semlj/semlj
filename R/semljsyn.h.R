@@ -803,6 +803,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         fit = function() private$.items[["fit"]],
         models = function() private$.items[["models"]],
         additional = function() private$.items[["additional"]],
+        measInvariance = function() private$.items[["measInvariance"]],
         covariances = function() private$.items[["covariances"]],
         modification = function() private$.items[["modification"]],
         pathgroup = function() private$.items[["pathgroup"]],
@@ -2304,6 +2305,138 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$add(R6::R6Class(
                 inherit = jmvcore::Group,
                 active = list(
+                    measInvarianceTable = function() private$.items[["measInvarianceTable"]]),
+                private = list(),
+                public=list(
+                    initialize=function(options) {
+                        super$initialize(
+                            options=options,
+                            name="measInvariance",
+                            title="Measurement Invariance",
+                            clearWith=list(
+                    "code",
+                    "estimator",
+                    "likelihood",
+                    "meanstructure",
+                    "int_ov",
+                    "int_lv",
+                    "std_lv",
+                    "std_ov",
+                    "cov_x",
+                    "cov_y",
+                    "cov_lv",
+                    "cluster",
+                    "donotrun",
+                    "multigroup",
+                    "esem_terms",
+                    "rotation",
+                    "algorithm",
+                    "orthogonal",
+                    "efa_std.ov",
+                    "geomin.epsilon",
+                    "orthomax.gamma",
+                    "oblimin.gamma",
+                    "missing",
+                    "data_type",
+                    "sample_n",
+                    "sample_mean",
+                    "sample_std",
+                    "eq_loadings",
+                    "eq_intercepts",
+                    "eq_residuals",
+                    "eq_residual.covariances",
+                    "eq_means",
+                    "eq_thresholds",
+                    "eq_regressions",
+                    "eq_lv.variances",
+                    "eq_lv.covariances"))
+                        self$add(jmvcore::Table$new(
+                            options=options,
+                            name="measInvarianceTable",
+                            title="Measurement invariance",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "donotrun",
+                                "multigroup",
+                                "esem_terms",
+                                "rotation",
+                                "algorithm",
+                                "orthogonal",
+                                "efa_std.ov",
+                                "geomin.epsilon",
+                                "orthomax.gamma",
+                                "oblimin.gamma",
+                                "missing",
+                                "data_type",
+                                "sample_n",
+                                "sample_mean",
+                                "sample_std",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances"),
+                            columns=list(
+                                list(
+                                    `name`="model", 
+                                    `title`="Model", 
+                                    `type`="text", 
+                                    `visible`="(multigroup)"),
+                                list(
+                                    `name`="chi2", 
+                                    `title`="\u03C7\u00B2", 
+                                    `type`="number"),
+                                list(
+                                    `name`="df", 
+                                    `title`="df", 
+                                    `type`="number"),
+                                list(
+                                    `name`="delta.chi2", 
+                                    `title`="\u0394\u03C7\u00B2", 
+                                    `type`="number"),
+                                list(
+                                    `name`="delta.df", 
+                                    `title`="\u0394df", 
+                                    `type`="number"),
+                                list(
+                                    `name`="pvalue", 
+                                    `title`="p", 
+                                    `type`="number", 
+                                    `format`="zto,pvalue"),
+                                list(
+                                    `name`="cfi", 
+                                    `title`="CFI", 
+                                    `type`="number"),
+                                list(
+                                    `name`="delta.cfi", 
+                                    `title`="\u0394CFI", 
+                                    `type`="number"),
+                                list(
+                                    `name`="rmsea", 
+                                    `title`="RMSEA", 
+                                    `type`="number"),
+                                list(
+                                    `name`="delta.rmsea", 
+                                    `title`="\u0394RMSEA", 
+                                    `type`="number"))))}))$new(options=options))
+            self$add(R6::R6Class(
+                inherit = jmvcore::Group,
+                active = list(
                     observed = function() private$.items[["observed"]],
                     implied = function() private$.items[["implied"]],
                     residual = function() private$.items[["residual"]],
@@ -2357,7 +2490,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="observed",
                             title="Observed covariances (lower triangle) and correlations (upper triangle)",
-                            visible="(outputObservedCovariances & !outpuCombineCovariances)",
+                            visible="(outputObservedCovariances & !outputCombineCovariances)",
                             clearWith=list(
                                 "code",
                                 "estimator",
@@ -2452,7 +2585,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances"),
-                            visible="(outputImpliedCovariances & !outpuCombineCovariances)",
+                            visible="(outputImpliedCovariances & !outputCombineCovariances)",
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -2473,7 +2606,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             options=options,
                             name="residual",
                             title="Residual covariances (lower triangle) and correlations (upper triangle)",
-                            visible="(outputResidualCovariances & !outpuCombineCovariances)",
+                            visible="(outputResidualCovariances & !outputCombineCovariances)",
                             clearWith=list(
                                 "code",
                                 "estimator",
@@ -2568,7 +2701,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances"),
-                            visible="(outputCombineCovariances)",
+                            visible="(outpuCombineCovariances)",
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -3210,6 +3343,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$additional$reliability} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$htmt} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$additional$mardia} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$measInvariance$measInvarianceTable} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$covariances$observed} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$covariances$implied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
 #'   \code{results$covariances$residual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr

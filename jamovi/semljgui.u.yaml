@@ -469,7 +469,9 @@ children:
         stretchFactor: 1
         style: list
         children:
-            -   type: LayoutBox
+            -   name: multigroup_ec
+                type: Label
+                label: Equality constraints
                 margin: large
                 style: list
                 children:

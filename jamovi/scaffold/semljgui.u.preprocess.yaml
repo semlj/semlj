@@ -285,46 +285,10 @@ children:
         stretchFactor: 1
         style: list
         children:
-            -   type: LayoutBox
-                margin: large
-                style: list
-                children:
-                    -   type: Label
-                        label: Equality constraints
-                    -   type: LayoutBox
-                        margin: large
-                        style: inline
-                        children:
-                            -   type: LayoutBox
-                                margin: large
-                                style: list
-                                children:
-                                    -   type: CheckBox
-                                        name: eq_loadings
-                                    -   type: CheckBox
-                                        name: eq_intercepts
-                                    -   type: CheckBox
-                                        name: eq_means
-                            -   type: LayoutBox
-                                margin: large
-                                style: list
-                                children:
-                                    -   type: CheckBox
-                                        name: eq_thresholds
-                                    -   type: CheckBox
-                                        name: eq_residuals
-                                    -   type: CheckBox
-                                        name: eq_residual.covariances
-                            -   type: LayoutBox
-                                margin: large
-                                style: list
-                                children:
-                                    -   type: CheckBox
-                                        name: eq_regressions
-                                    -   type: CheckBox
-                                        name: eq_lv.variances
-                                    -   type: CheckBox
-                                        name: eq_lv.covariances
+                  - name: multigroup_ec
+                    type: scaffold
+                    file: commons.u.yaml
+
     -   type: CollapseBox
         label: Exploratory SEM options
         collapsed: true

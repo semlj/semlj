@@ -15,7 +15,7 @@ readiness <- function(options) {
     
     return(result)
   }
- mark(options$data_type,length(options$sample_n))
+  
   if (options$data_type != "data" && length(options$sample_n) == 0 ) {
     
     result$ready <- FALSE

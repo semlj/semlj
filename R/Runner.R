@@ -423,8 +423,10 @@ Runner <- R6::R6Class("Runner",
                           run_additional_reliability=function() {
 
                             tab<-list()
+                            #results<-try_hard(semTools::compRelSEM(self$model))
+                            ## This should be changed because semTools will not support ::reliability() anymore
                             results<-try_hard(semTools::reliability(self$model))
-                            self$warning<-list(topic="additional_reliability",message=results$warning)
+#                            self$warning<-list(topic="additional_reliability",message=results$warning)
                             self$warning<-list(topic="additional_reliability",message=results$error)
                             if (isFALSE(results$error))
                                 tab<-private$.make_matrix_table(results$obj,fun=t)
@@ -531,7 +533,6 @@ Runner <- R6::R6Class("Runner",
                               tab2<-self$run_covariances_implied()
                             if (self$option("outputResidualCovariances"))
                               tab3<-self$run_covariances_residual()
-                            mark(tab1)
                             rbind(tab1,tab2,tab3)
                             
                           },
