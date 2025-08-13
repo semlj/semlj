@@ -1391,26 +1391,26 @@ items:
                     -   name: df
                         title: df
                         type: number
-                    -   name: delta.chi2
+                    -   name: delta_chi2
                         title: Δχ²
                         type: number
-                    -   name: delta.df
+                    -   name: delta_df
                         title: Δdf
                         type: number
-                    -   name: pvalue
+                    -   name: p
                         title: p
                         type: number
                         format: zto,pvalue
                     -   name: cfi
                         title: CFI
                         type: number
-                    -   name: delta.cfi
+                    -   name: delta_cfi
                         title: ΔCFI
                         type: number
                     -   name: rmsea
                         title: RMSEA
                         type: number
-                    -   name: delta.rmsea
+                    -   name: delta_rmsea
                         title: ΔRMSEA
                         type: number
     -   name: covariances
@@ -1664,7 +1664,7 @@ items:
                     - eq_regressions
                     - eq_lv.variances
                     - eq_lv.covariances
-                visible: (outpuCombineCovariances)
+                visible: (outputCombineCovariances)
                 description: A covariance / correlation matrix table.
                 columns:
                     -   name: lgroup

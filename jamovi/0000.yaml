@@ -41,10 +41,15 @@ datasets:
   - name: secondorder
     path: secondorder.csv
     description: Example data for second order mediation analysis
-  - name: Holzinger & Swine
-    path: Holzinger.csv
+  - name: Holzinger & Swineford (matrix)
+    path: holzinger_mat.csv
     description: >-
       Covariance matrix. Holzinger and Swineford (1939) dataset consists of 9
+      variables, with two groups
+  - name: Holzinger & Swineford (original)
+    path: holzinger_long.csv
+    description: >-
+      Data set long format. Holzinger and Swineford (1939) dataset consists of 9
       variables, with two groups
 usesNative: true
 minApp: 2.3.12

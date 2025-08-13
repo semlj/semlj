@@ -17,11 +17,15 @@ Initer <- R6::R6Class(
     cluster=NULL,
     varTable=NULL,
     user_syntax=NULL,
+    lavaan_options=NULL,
     moretests=FALSE,
     indirect_names=NULL,
     initialize=function(jmvobj,datamatic) {
       
       super$initialize(jmvobj)
+      ### we want to clean the html message objects
+      dispatch_message_cleaner(jmvobj)
+      
       self$datamatic<-datamatic
       self$ok <- self$datamatic$ok
       if (!self$ok) return()
@@ -246,6 +250,15 @@ Initer <- R6::R6Class(
       return(tab)
       
     },
+    init_invariance_invTable = function() {
+      
+      mark(self$option("multigroup"))
+
+      if (!self$option("multigroup")) {
+         self$warning<-list(topic="issues",message="Measurement invariance requires a multigroup variable to be defined",head="info")
+         return()
+      }
+    },
     init_additional_reliability=function() {
 
        tab <- as.data.frame(matrix(self$latent,ncol=1))
@@ -459,7 +472,12 @@ Initer <- R6::R6Class(
           lavoptions[["group.equal"]]<-group.equal
         
       }
-      
+
+      ### we save the options for future reference. Remove options that cannot be passed to lavaan() and do not include the model!
+      self$lavaan_options<-lavoptions
+      self$lavaan_options$ngroups<-NULL
+      self$lavaan_options$model<-NULL
+
       ### if ordered variables are present, datamatic prepared a varTable containing
       ### the information about the variables. we need to pass it to lavaanify()
       

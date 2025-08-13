@@ -34,15 +34,15 @@ Runner <- R6::R6Class("Runner",
                                                std.ov     = self$options$std_ov,
                                                bootstrap  = self$options$bootN,
                                                fixed.x    = self$options$cov_x,
-                                               missing    = self$options$missing,
-                                               rotation   = self$options$rotation,
-                                               
-                                               rotation.args=list(
-                                                 orthogonal=self$options$orthogonal,
-                                                 geomin.epsilon=self$options$geomin.epsilon,
-                                                 orthomax.gamma=self$options$orthomax.gamma,
-                                                 oblimin.gamma=self$options$oblimin.gamma
-                                               )
+                                               missing    = self$options$missing
+#                                               rotation   = self$options$rotation,
+#                                               
+#                                               rotation.args=list(
+#                                                 orthogonal=self$options$orthogonal,
+#                                                 geomin.epsilon=self$options$geomin.epsilon,
+#                                                 orthomax.gamma=self$options$orthomax.gamma,
+#                                                 oblimin.gamma=self$options$oblimin.gamma
+#                                               )
                             )
                             
                             if (self$options$se!="auto") 
@@ -77,6 +77,7 @@ Runner <- R6::R6Class("Runner",
                               if (self$option("meanstructure") && is.something(self$datamatic$sample_mean))
                                 lavoptions$sample.mean<-self$datamatic$sample_mean
                             }
+                            self$lavaan_options<-c(self$lavaan_options,lavoptions)
 
                             ## estimate the models
                             jinfo("Estimating the model...")
@@ -428,8 +429,88 @@ Runner <- R6::R6Class("Runner",
                           ## Measurment Invariance Analysis :  by Joao Maroco :-)
                           
                           run_invariance_invTable = function() {
-                            ## you have self$data if you need it  
-                            ### here the code
+                            
+                            ## here we want to use update, so all the constrained models required
+                            ## by the invariance analysis are consistent with user options
+                            ## however, self$model is estimated with model=ParTable, and update()
+                            ## does not work with model=ParTable, only with model=string.
+                            ## thus, we first re-estimate the model being sure that all options are
+                            ## honored, then we use the latter model for updates
+                            ## the estimation is done with private$.update_model()
+                            opts<-self$lavaan_options
+                           
+                            opts$model<-self$user_syntax
+                            
+                           # configural model
+                            ## this always works, otherwise the main model has already failed
+                            mod_config<-do.call(lavaan::lavaan,opts)
+                            
+                            mod_metric<-mod_scalar<-mod_means<-mod_regres<-NULL
+                            
+                            labels <- c(mod_config="Configural", 
+                                        mod_metric="Metric",
+                                        mod_scalar="Scalar",
+                                        mod_means="Means",
+                                        mod_regres="Regression")
+                            
+                            # Metric invariance (equal loadings)
+                            jinfo("Fitting metric invariance model...")
+                            
+                            mod<-try_hard(stats::update(mod_config,group.equal="loadings"))
+                            if (!isFALSE(mod$error)) {
+                              self$warning<-list(topic="invariance_invTable",message="The metric model cannot be estimated")
+                            }
+                            else
+                              mod_metric<-mod$obj
+                            
+                            jinfo("Fitting scalar invariance model...")
+                            mod<-try_hard(stats::update(mod_config,group.equal=c("loadings", "intercepts")))
+                            if (!isFALSE(mod$error)) {
+                              self$warning<-list(topic="invariance_invTable",message="The scalar model cannot be estimated")
+                            }
+                            else
+                              mod_scalar<-mod$obj
+                            
+                            # latent means invariance (equal structural paths)
+                            jinfo("Fitting latent means invariance model...")                            
+                            mod<-try_hard(stats::update(mod_config,group.equal= c("loadings", "intercepts", "means")))
+                            if (!isFALSE(mod$error)) {
+                              self$warning<-list(topic="invariance_invTable",message="The latent means model cannot be estimated")
+                            }
+                            else
+                              mod_means<-mod$obj
+                          
+                            jinfo("Fitting regression invariance model...")                            
+                            mod<-try_hard(stats::update(mod_config,group.equal= c("loadings", "intercepts", "regressions")))
+                            if (!isFALSE(mod$error)) {
+                              self$warning<-list(topic="invariance_invTable",message="The regression model cannot be estimated")
+                            }
+                            else
+                              mod_regress<-mod$obj
+                            
+                            
+                            # Likelihood ratio tests (Chi² difference tests)
+                            tab<-NULL
+                            models<-c(mod_config,mod_metric,mod_scalar,mod_means,mod_regres)
+                            jinfo("Running nested model comparisons...")
+                            lrt_call <- try_hard(lavaan::lavTestLRT(mod_config,mod_metric,mod_scalar,mod_means,mod_regres))
+                         
+                            if (!isFALSE(lrt_call$error)) 
+                                 self$warning <- list(topic = "invariance_invTable",message = "Likelihood ratio test failed.")
+                               else 
+                                 tab <- as.data.frame(lrt_call$obj)
+                            if (!isFALSE(lrt_call$warning)) 
+                              self$warning <- list(topic = "invariance_invTable",message = lrt_call$warning)
+
+                           
+                            tab2<-do.call(rbind,lapply(models,function(x) lavaan::lavInspect(x,"fit")[c("cfi","rmsea")]))
+                            tab<-as.data.frame(cbind(tab,tab2))
+                            names(tab)<-c("df","aic","bic","chi2","delta_chi2","delta_rmsea","delta_df","p","cfi","rmsea")   
+                            
+                            ### this makes dif x-x+1. Maybe would make more sense to take the difference with configural model
+                            tab$delta_cfi<-c(NA,diff(tab$cfi))
+                            tab$model<-labels[rownames(tab)]
+                            return(tab)
                           },
                           run_additional_reliability=function() {
 

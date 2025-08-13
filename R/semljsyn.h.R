@@ -2414,15 +2414,15 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="df", 
                                     `type`="number"),
                                 list(
-                                    `name`="delta.chi2", 
+                                    `name`="delta_chi2", 
                                     `title`="\u0394\u03C7\u00B2", 
                                     `type`="number"),
                                 list(
-                                    `name`="delta.df", 
+                                    `name`="delta_df", 
                                     `title`="\u0394df", 
                                     `type`="number"),
                                 list(
-                                    `name`="pvalue", 
+                                    `name`="p", 
                                     `title`="p", 
                                     `type`="number", 
                                     `format`="zto,pvalue"),
@@ -2431,7 +2431,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="CFI", 
                                     `type`="number"),
                                 list(
-                                    `name`="delta.cfi", 
+                                    `name`="delta_cfi", 
                                     `title`="\u0394CFI", 
                                     `type`="number"),
                                 list(
@@ -2439,7 +2439,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                     `title`="RMSEA", 
                                     `type`="number"),
                                 list(
-                                    `name`="delta.rmsea", 
+                                    `name`="delta_rmsea", 
                                     `title`="\u0394RMSEA", 
                                     `type`="number"))))}))$new(options=options))
             self$add(R6::R6Class(
@@ -2709,7 +2709,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                                 "eq_regressions",
                                 "eq_lv.variances",
                                 "eq_lv.covariances"),
-                            visible="(outpuCombineCovariances)",
+                            visible="(outputCombineCovariances)",
                             columns=list(
                                 list(
                                     `name`="lgroup", 

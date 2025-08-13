@@ -39,9 +39,21 @@ NULL
 #' Holzinger and Swineford (1939) dataset consists of 9 variables in form of a covariance matrix
 #'
 #' @docType data
-#' @name Holzinger
-#' @usage data(Holzinger)
+#' @name holzinger_mat
+#' @usage data(holzinger_mat)
 #' @keywords datasets
 #' @examples
-#' data(Holzinger)
+#' data(holzinger_mat)
+NULL
+
+#' Data set
+#'
+#' Holzinger and Swineford (1939) dataset consists of 9 variables in the original long format
+#'
+#' @docType data
+#' @name holzinger_long
+#' @usage data(Holzinger_long)
+#' @keywords datasets
+#' @examples
+#' data(holzinger_long)
 NULL
