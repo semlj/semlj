@@ -486,7 +486,7 @@ Runner <- R6::R6Class("Runner",
                               self$warning<-list(topic="invariance_invTable",message="The regression model cannot be estimated")
                             }
                             else
-                              mod_regress<-mod$obj
+                              mod_regres<-mod$obj
                             
                             
                             # Likelihood ratio tests (Chi² difference tests)
