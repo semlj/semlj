@@ -19,9 +19,12 @@ Datamatic <- R6::R6Class(
       super$initialize(jmvobj)
       
       astring<-self$options$code
-      reg<-"[=~:+\n]"
+      mark("code",astring)
+      reg<-"[<=~:+\n]"
       ## split by syntax operators
       avec<-stringr::str_split(astring,reg)[[1]]
+      mark("code",avec)
+      
       ## remove empty lines
       avec<-avec[sapply(avec, function(a) a!="")]
       ## remove product operator
