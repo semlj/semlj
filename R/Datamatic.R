@@ -19,11 +19,10 @@ Datamatic <- R6::R6Class(
       super$initialize(jmvobj)
       
       astring<-self$options$code
-      mark("code",astring)
       reg<-"[<=~:+\n]"
       ## split by syntax operators
       avec<-stringr::str_split(astring,reg)[[1]]
-      mark("code",avec)
+      
       
       ## remove empty lines
       avec<-avec[sapply(avec, function(a) a!="")]
@@ -90,15 +89,13 @@ Datamatic <- R6::R6Class(
       
         if (self$missing=="listwise") {
           cdata<-jmvcore::naOmit(data)
-          if (dim(cdata)[1] != dim(data)[1]) 
+          if (dim(data)[1] != dim(data)[1]) 
                         self$warning<-list(topic="info",
                                        message=DATA_WARNS[["missing"]])
      
-          return(cdata)
+          data<-cdata
         }
       } else { # end of standard dataset handling, if we get here, input is covs or cors
-      
-
       
         if (is.something(self$multigroup)) {
           cdata<-list()
@@ -113,9 +110,6 @@ Datamatic <- R6::R6Class(
 
               L <- xdata * lower.tri(xdata, diag = TRUE)
               xdata <- L + t(L) - diag(diag(L))
-              
-
-              
               ## std
               if (self$options$data_type=="cor" && is.something(self$options$sample_std) && self$options$sample_std %in% names(ldata)) {
                     D<-diag(ldata[,self$options$sample_std])
@@ -136,6 +130,7 @@ Datamatic <- R6::R6Class(
           }
           
            names(cdata)<-self$multigroup$levels
+           data<-cdata
              
 
       } else {
@@ -162,9 +157,13 @@ Datamatic <- R6::R6Class(
         }
          rownames(cdata)<-colnames(cdata)<-self$observed
       }
-         return(cdata)
+         data<-cdata
        
       } ### end of cov inputs
+      # be sure there are not NaN 
+      for ( x in names(data)) data[[x]][is.nan(data[[x]])]<-NA
+      ## return data, whatever transformation has been done
+      return(data)
     }
 
   ), ### end of public

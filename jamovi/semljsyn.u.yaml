@@ -161,6 +161,8 @@ children:
                                 children:
                                     -   type: CheckBox
                                         name: cov_x
+                                    -   type: CheckBox
+                                        name: free_res
                             -   type: Label
                                 label: Correlated terms
                                 margin: large

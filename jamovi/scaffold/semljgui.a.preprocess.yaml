@@ -165,6 +165,10 @@ options:
     -   name: cov_lv
         type: scaffold
         file: commons.a.yaml
+    -   name: free_res
+        type: scaffold
+        file: commons.a.yaml
+
     -   name: cluster
         default: ''
         type: String

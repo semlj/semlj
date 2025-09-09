@@ -25,7 +25,6 @@ Runner <- R6::R6Class("Runner",
                             ## prepare the options based on Syntax definitions
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
-
                             
                             lavoptions <- list(model = private$.lav_structure, 
                                                data = data,
@@ -78,22 +77,30 @@ Runner <- R6::R6Class("Runner",
                                 lavoptions$sample.mean<-self$datamatic$sample_mean
                             }
                             self$lavaan_options<-c(self$lavaan_options,lavoptions)
-
+                           
                             ## estimate the models
                             jinfo("Estimating the model...")
-                            results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
+                            results <- try_hard({ xdo.call(lavaan::lavaan, lavoptions) })
                             jinfo("Estimating the model...done")
                             
-                            self$warning <-  list(topic="issues", message=results$warning,head="warning")
                             ## check if we need to stop or issue a warning
-                            error<-results$error
-                            if (length(grep("subscript out of bound",error,fixed=T))>0) 
-                                   error<-"Model cannot be estimated. Please refine the model or choose different options."
-                            self$stop(error)
+
+                            if (!isFALSE(results$error)) {
+                              if (length(grep("subscript out of bound",results$error,fixed=T))>0) 
+                                self$stop("Model cannot be estimated. Please refine the model or choose different options.")
+                              ### lavaan() may fail combining missing methods and passing ParTable as a model
+                              ### we try passing the syntax
+                              jinfo("Safer estimation of the model")
+                              lavopts<-self$lavaan_options
+                              lavopts$model<-private$.lavaan_syntax()
+                              results <- try_hard({ do.call(lavaan::lavaan, lavopts) })
+                              self$warning <-  list(topic="issues", message=results$warning,head="warning") 
+                              self$stop(results$error)
+                            }
+                            
                            ## no problem if here
 
                             self$model <- results$obj
-                            
                             ### if we need the data for mardia's, so we save them here
                             
                             if (self$option("outputMardiasCoefficients")) {

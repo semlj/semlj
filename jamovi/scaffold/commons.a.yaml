@@ -253,6 +253,15 @@
     description:
         R: |
             `TRUE` (default) or `FALSE`, is the negation of orthogonal option
+
+-   name: free_res
+    type: Bool
+    title: Estimate residual variances
+    default: true
+    description:
+        R: |
+            `FALSE` (default) or `TRUE`, free observed and residual variances
+
 -   name: cluster
     default: ''
     type: String

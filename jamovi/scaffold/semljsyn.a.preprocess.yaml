@@ -109,6 +109,10 @@ options:
     -   name: cov_lv
         type: scaffold
         file: commons.a.yaml
+    -   name: free_res
+        type: scaffold
+        file: commons.a.yaml
+
     -   name: cluster
         title: Multi-level clustering factor
         type: Variable

@@ -62,6 +62,7 @@ Initer <- R6::R6Class(
       alist[[length(alist)+1]]<-c(info="Iterations", value="") 
       alist[[length(alist)+1]]<-c(info="",value="")
       
+
       for (m in self$user_syntax)
         alist[[length(alist)+1]]<-c(info="Model",value=m)
 
@@ -252,7 +253,6 @@ Initer <- R6::R6Class(
     },
     init_invariance_invTable = function() {
       
-      mark(self$option("multigroup"))
 
       if (!self$option("multigroup")) {
          self$warning<-list(topic="issues",message="Measurement invariance requires a multigroup variable to be defined",head="info")
@@ -344,8 +344,7 @@ Initer <- R6::R6Class(
       synt<-stringr::str_replace_all(synt, "[\r]" , "")
       avec<-stringr::str_split(synt,"\n")[[1]]
       avec<-avec[sapply(avec, function(a) a!="")]
-      avec<-avec[grep("#",avec,fixed = T,invert = T)]
-      
+      avec <- gsub("#.*$", "", avec)
       # here we check if the user used .pN. labels and warn if that is the case 
       check<-stringr::str_extract(avec, ".p\\d+\\.")
       check<-check[!unlist(sapply(check,is.na))]
@@ -420,7 +419,7 @@ Initer <- R6::R6Class(
     
     ## lavaanify the information available to obtain a info table representing the parameters structure.
     ## That is, the parameter names, labels, etc
-    
+
     .make_structure = function() {
       lavoptions <- list(
         model = private$.lavaan_syntax(),
@@ -430,7 +429,7 @@ Initer <- R6::R6Class(
         # auto.fix.first - see below                          # TRUE (unless std.lv = TRUE) for sem + cfa + growth
         # std.lv - see below                                  # 
         auto.fix.single = TRUE,                               # TRUE for sem + cfa + growth - to be implemented as option
-        auto.var = TRUE,                                      # TRUE for sem + cfa + growth - to be implemented as option
+        auto.var = self$options$free_res,                     # free observed and residual variances                
         auto.cov.lv.x =TRUE,                                  # TRUE for sem + cfa + growth - to be implemented as option
         auto.efa = TRUE,                                      # TRUE for sem + cfa + growth - to be implemented as option
         auto.th = TRUE,                                       # TRUE for sem + cfa + growth - to be implemented as option

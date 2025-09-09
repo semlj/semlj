@@ -35,6 +35,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cov_x = FALSE,
             cov_y = TRUE,
             cov_lv = TRUE,
+            free_res = TRUE,
             cluster = NULL,
             icc = TRUE,
             mlmeans = FALSE,
@@ -261,6 +262,10 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..cov_lv <- jmvcore::OptionBool$new(
                 "cov_lv",
                 cov_lv,
+                default=TRUE)
+            private$..free_res <- jmvcore::OptionBool$new(
+                "free_res",
+                free_res,
                 default=TRUE)
             private$..cluster <- jmvcore::OptionVariable$new(
                 "cluster",
@@ -576,6 +581,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cov_x)
             self$.addOption(private$..cov_y)
             self$.addOption(private$..cov_lv)
+            self$.addOption(private$..free_res)
             self$.addOption(private$..cluster)
             self$.addOption(private$..icc)
             self$.addOption(private$..mlmeans)
@@ -661,6 +667,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cov_x = function() private$..cov_x$value,
         cov_y = function() private$..cov_y$value,
         cov_lv = function() private$..cov_lv$value,
+        free_res = function() private$..free_res$value,
         cluster = function() private$..cluster$value,
         icc = function() private$..icc$value,
         mlmeans = function() private$..mlmeans$value,
@@ -745,6 +752,7 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cov_x = NA,
         ..cov_y = NA,
         ..cov_lv = NA,
+        ..free_res = NA,
         ..cluster = NA,
         ..icc = NA,
         ..mlmeans = NA,
@@ -3225,6 +3233,8 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cov_y \code{TRUE} (default) or \code{FALSE}, TO ADD
 #' @param cov_lv \code{TRUE} (default) or \code{FALSE}, is the negation of
 #'   orthogonal option
+#' @param free_res \code{FALSE} (default) or \code{TRUE}, free observed and
+#'   residual variances
 #' @param cluster Factor defining cluster in multilevel analysis.
 #' @param icc show intra-class correlations
 #' @param mlmeans unrestricted (h1) within and between means
@@ -3406,6 +3416,7 @@ semljsyn <- function(
     cov_x = FALSE,
     cov_y = TRUE,
     cov_lv = TRUE,
+    free_res = TRUE,
     cluster,
     icc = TRUE,
     mlmeans = FALSE,
@@ -3505,6 +3516,7 @@ semljsyn <- function(
         cov_x = cov_x,
         cov_y = cov_y,
         cov_lv = cov_lv,
+        free_res = free_res,
         cluster = cluster,
         icc = icc,
         mlmeans = mlmeans,

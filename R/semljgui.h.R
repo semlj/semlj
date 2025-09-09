@@ -40,6 +40,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             cov_x = FALSE,
             cov_y = TRUE,
             cov_lv = TRUE,
+            free_res = TRUE,
             cluster = "",
             multigroup = NULL,
             eq_loadings = FALSE,
@@ -311,6 +312,10 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..cov_lv <- jmvcore::OptionBool$new(
                 "cov_lv",
                 cov_lv,
+                default=TRUE)
+            private$..free_res <- jmvcore::OptionBool$new(
+                "free_res",
+                free_res,
                 default=TRUE)
             private$..cluster <- jmvcore::OptionString$new(
                 "cluster",
@@ -624,6 +629,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..cov_x)
             self$.addOption(private$..cov_y)
             self$.addOption(private$..cov_lv)
+            self$.addOption(private$..free_res)
             self$.addOption(private$..cluster)
             self$.addOption(private$..multigroup)
             self$.addOption(private$..eq_loadings)
@@ -709,6 +715,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         cov_x = function() private$..cov_x$value,
         cov_y = function() private$..cov_y$value,
         cov_lv = function() private$..cov_lv$value,
+        free_res = function() private$..free_res$value,
         cluster = function() private$..cluster$value,
         multigroup = function() private$..multigroup$value,
         eq_loadings = function() private$..eq_loadings$value,
@@ -793,6 +800,7 @@ semljguiOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..cov_x = NA,
         ..cov_y = NA,
         ..cov_lv = NA,
+        ..free_res = NA,
         ..cluster = NA,
         ..multigroup = NA,
         ..eq_loadings = NA,
@@ -3281,6 +3289,8 @@ semljguiBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param cov_y \code{TRUE} (default) or \code{FALSE}, TO ADD
 #' @param cov_lv \code{TRUE} (default) or \code{FALSE}, is the negation of
 #'   orthogonal option
+#' @param free_res \code{FALSE} (default) or \code{TRUE}, free observed and
+#'   residual variances
 #' @param cluster Not used in gui
 #' @param multigroup Factor defining groups for multigroup analysis.
 #' @param eq_loadings \code{TRUE} or \code{FALSE} (default), constrain the
@@ -3467,6 +3477,7 @@ semljgui <- function(
     cov_x = FALSE,
     cov_y = TRUE,
     cov_lv = TRUE,
+    free_res = TRUE,
     cluster = "",
     multigroup,
     eq_loadings = FALSE,
@@ -3563,6 +3574,7 @@ semljgui <- function(
         cov_x = cov_x,
         cov_y = cov_y,
         cov_lv = cov_lv,
+        free_res = free_res,
         cluster = cluster,
         multigroup = multigroup,
         eq_loadings = eq_loadings,
