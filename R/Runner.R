@@ -2,6 +2,10 @@
 ## defined by Initer, but it fills them with the results. It also adds a few tables not defined in Initer
 ## Any function that produce a table goes here
 
+### for each table `tablename` defined  seml.b.R is the function `run_tablename()` is looked up and executed.
+### the function should return a list of lists or a data.frame to be digested by SmarTable.R to fill in a `tablename` object in *.r.yaml
+### before any table function is executed, `estimate()` function is run.
+
 Runner <- R6::R6Class("Runner",
                         inherit = Initer,
                         cloneable=FALSE,
