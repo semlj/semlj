@@ -602,6 +602,8 @@
     description:
         R: |
             Numeric (default: 10), set a threshold the modification indices must exceed in order to be shown.
+
+
 -   name: diagram
     title: Path diagram
     type: Bool

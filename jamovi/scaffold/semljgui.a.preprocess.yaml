@@ -293,6 +293,9 @@ options:
     -   name: miThreshold
         type: scaffold
         file: commons.a.yaml
+
+### path diagram
+
     -   name: diagram
         type: scaffold
         file: commons.a.yaml

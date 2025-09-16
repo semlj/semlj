@@ -30,6 +30,10 @@ Runner <- R6::R6Class("Runner",
                             ## NOTE: for some reasons, when `<-` is present in the model fixed.x passed by lavaanify()
                             ##       is not considered by lavaan(). We passed again and it works
                             
+                            ## TODO: This must go away. we want to estimate the model for sure
+                            ##      using the options accumulated in self$self$lavaan_options (not using .lav_structure)
+                            ##      I keep it because we want to be sure that all the options are incorporated
+                            
                             lavoptions <- list(model = private$.lav_structure, 
                                                data = data,
                                                estimator  = self$options$estimator,
@@ -38,15 +42,19 @@ Runner <- R6::R6Class("Runner",
                                                bootstrap  = self$options$bootN,
                                                fixed.x    = self$options$cov_x,
                                                missing    = self$options$missing
-#                                               rotation   = self$options$rotation,
-#                                               
-#                                               rotation.args=list(
-#                                                 orthogonal=self$options$orthogonal,
-#                                                 geomin.epsilon=self$options$geomin.epsilon,
-#                                                 orthomax.gamma=self$options$orthomax.gamma,
-#                                                 oblimin.gamma=self$options$oblimin.gamma
-#                                               )
                             )
+                            
+                            #### ESEM options
+                            if (is.something(self$options$esem_terms[[1]])) {
+                              jinfo("MODULE: SEMLj: setting ESEM options")
+                              lavoptions$rotation = self$options$rotation
+                              lavoptions$rotation.args=list(
+                                                    orthogonal=self$options$orthogonal,
+                                                    geomin.epsilon=self$options$geomin.epsilon,
+                                                    orthomax.gamma=self$options$orthomax.gamma,
+                                                    oblimin.gamma=self$options$oblimin.gamma
+                                                    )
+                            }
                             
                             if (self$options$se!="auto") 
                                 lavoptions[["se"]]<-self$options$se
@@ -84,7 +92,7 @@ Runner <- R6::R6Class("Runner",
                            
                             ## estimate the models
                             jinfo("Estimating the model...")
-                            results <- try_hard({ xdo.call(lavaan::lavaan, lavoptions) })
+                            results <- try_hard({ do.call(lavaan::lavaan, lavoptions) })
                             jinfo("Estimating the model...done")
                             
                             ## check if we need to stop or issue a warning
@@ -677,25 +685,26 @@ Runner <- R6::R6Class("Runner",
                           },
                           run_lavaanoptions=function() {
                             
-                            alist<-self$model@Options
-                            alist[26]<-NULL # to ugly to show
-                            results<-try_hard({
-                             alist[sapply(alist,is.null)]<-"NULL"
-                             alist[sapply(alist,function(x) length(x)==0)]<-"EMPTY"
-                             alist<-sapply(alist,function(x)  {
-                                   if (length(x)>1) 
-                                     paste(x,collapse = ",")
-                                   else 
-                                      x})
-                             blist<-names(alist)
-                             amat<-as.data.frame(matrix(unlist(alist),ncol=3))
-                             names(amat)<-c("value1","value2","value3")
-                             bmat<-as.data.frame(matrix(blist,ncol=3))
-                             names(bmat)<-c("opt1","opt2","opt3")
-                             tab<-as.data.frame(cbind(bmat,amat))
-                             tab
-                            })
-                            results$obj
+                            
+                            
+                            results<-list()
+                            opts<-self$lavaan_options
+                            opts$data<-NULL
+                            opts$model<-NULL
+                            for (n in names(opts)) {
+                              x<-opts[[n]]
+                              if (length(x)==0) ladd(results)<-list(opt=n,value="EMPTY",subopt=NA)
+                              if (length(x)>1) 
+                                for (sn in names(x)) ladd(results)<-list(opt=n,value=as.character(x[[sn]]),subopt=sn)
+                              else 
+                                ladd(results)<-list(opt=n,value=as.character(x),subopt=NA)
+                            }
+                            if (!is.something(self$options$esem_terms)) {
+                                results[["roation"]]<-NULL
+                                results[["roation.args"]]<-NULL
+                            }
+
+                            return(results)
                           },
                           
                           savePredRes=function(results,data) {

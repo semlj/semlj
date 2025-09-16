@@ -374,6 +374,8 @@
                                                             name: miThreshold
                                                             format: number
                                                             enable: (outputModificationIndices)
+                           
+
                 -   type: LayoutBox
                     margin: large
                     style: inline

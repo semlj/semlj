@@ -1235,7 +1235,7 @@ items:
                         title: ''
                         type: text
             -   name: mardia
-                title: Mardia's coefficients
+                title: Mardia coefficients
                 type: Table
                 refs: semtools
                 visible: (outputMardiasCoefficients)
@@ -2008,21 +2008,12 @@ items:
         title: Lavaan Options
         refs: lavaan
         columns:
-            -   name: opt1
+            -   name: opt
                 type: text
                 title: Option
-            -   name: value1
+            -   name: value
                 type: text
                 title: Value
-            -   name: opt2
+            -   name: subopt
                 type: text
-                title: Option
-            -   name: value2
-                type: text
-                title: Value
-            -   name: opt3
-                type: text
-                title: Option
-            -   name: value3
-                type: text
-                title: Value
+                title: Sub Opt

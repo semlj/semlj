@@ -2250,7 +2250,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         self$add(jmvcore::Table$new(
                             options=options,
                             name="mardia",
-                            title="Mardia's coefficients",
+                            title="Mardia coefficients",
                             refs="semtools",
                             visible="(outputMardiasCoefficients)",
                             clearWith=list(
@@ -3097,29 +3097,17 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 refs="lavaan",
                 columns=list(
                     list(
-                        `name`="opt1", 
+                        `name`="opt", 
                         `type`="text", 
                         `title`="Option"),
                     list(
-                        `name`="value1", 
+                        `name`="value", 
                         `type`="text", 
                         `title`="Value"),
                     list(
-                        `name`="opt2", 
+                        `name`="subopt", 
                         `type`="text", 
-                        `title`="Option"),
-                    list(
-                        `name`="value2", 
-                        `type`="text", 
-                        `title`="Value"),
-                    list(
-                        `name`="opt3", 
-                        `type`="text", 
-                        `title`="Option"),
-                    list(
-                        `name`="value3", 
-                        `type`="text", 
-                        `title`="Value"))))}))
+                        `title`="Sub Opt"))))}))
 
 semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "semljsynBase",

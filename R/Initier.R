@@ -1,4 +1,8 @@
+## This class takes care of initing (set intial parameters), usually labels, number of rows, etc.
 
+### for each table `tablename` defined in seml.b.R the function `init_tablename()` is looked up and executed.
+### the function should return a list of lists or a data.frame to be digested by SmarTable.R to fill in a `tablename` object in *.r.yaml
+### before any table function is executed, `initialized()` function is run.
 
 Initer <- R6::R6Class(
   "Initer",
