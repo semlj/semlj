@@ -5,6 +5,7 @@ Version: 1.2.8
 Author:
   - Marcello Gallucci
   - Sebastian Jentschke
+  - João Marôco
 Maintainer: Marcello Gallucci <mcfanda@gmail.com>
 Description: Structural equation models based on lavaan, with jamovi output style and functions.
              Provides access to lavaan estimation with options for executing most common tasks

@@ -6,6 +6,7 @@ jms: '1.0'
 authors:
   - Marcello Gallucci
   - Sebastian Jentschke
+  - João Marôco
 maintainer: Marcello Gallucci <mcfanda@gmail.com>
 date: 2022-1-1
 type: R
