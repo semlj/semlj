@@ -462,6 +462,9 @@ Runner <- R6::R6Class("Runner",
                             
                            # configural model
                             ## this always works, otherwise the main model has already failed
+                            ## we just want to be sure that no equal.group is set by the user
+                            opts$group.equal<-NULL
+                            
                             mod_config<-do.call(lavaan::lavaan,opts)
                             
                             mod_metric<-mod_scalar<-mod_means<-mod_regres<-NULL
