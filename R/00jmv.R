@@ -5,10 +5,11 @@
     `semlj`=list(
         `type`="software", 
         `author`="Gallucci, M., Jentschke, S.", 
-        `year`=2021, 
-        `title`="SEMLj: jamovi SEM Analysis", 
-        `publisher`="[jamovi module]. For help please visit https://semlj.github.io/", 
-        `url`="https://semlj.github.io/"), 
+        `year`=2025, 
+        `title`="SEMLj: jamovi SEM Analysis (Version 1.2.8)", 
+        `publisher`="[jamovi module]. https://semlj.github.io/", 
+        `url`="https://semlj.github.io/", 
+        `versioning`="SEMLj: jamovi SEM Analysis"), 
     `lavaan`=list(
         `type`="article", 
         `author`="Rosseel, Y.", 
