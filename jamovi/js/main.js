@@ -24,13 +24,12 @@ const events = {
 
 	    this.editSessions = { };
 
-	  //  let $contents = ui.view.$el;
-   	  let $contents=ui.syntax.$el;
+	 
+   	  let $contents=ui.syntax.el;
    	  console.log("creating editor");
-	    $contents.css('display', 'flex');
-	    $contents.css('flex-direction', 'column');
-
-		$contents.append(`
+   	  $contents.style.display = 'flex';
+      $contents.style.flexDirection = 'column';
+  		$contents.insertAdjacentHTML('beforeend', `
 		    <div id="editor-box">
 		        <div id="toolbar">
 		            <div id="config" title="Configuration"></div>
@@ -40,50 +39,49 @@ const events = {
                 <div id="info">Ctrl + Shift + Enter to run</div>
             </div>`);
 
-        let $config = $contents.find('#config');
-        $config.append(`
-            <div id="menu">
-                <label id="fonts-label">Fonts size</label>
-                <select id="fonts">
-                    <option value="small">Small</option>
-                    <option value="medium">Medium</option>
-                    <option value="large">Large</option>
-                </select>
-            </div>`);
+      let $config = $contents.querySelector('#config');
+      $config.innerHTML = `<div id="menu">
+                            <label id="fonts-label">Fonts size</label>
+                              <select id="fonts">
+                              <option value="small">Small</option>
+                              <option value="medium">Medium</option>
+                              <option value="large">Large</option>
+                             </select>
+                         </div>`
 
-		this.$editor = $contents.find('#editor');
-		this.$run = $contents.find('#run');
-		this.$menu = $contents.find('#menu');
+		this.$editor = $contents.querySelector('#editor');
+		this.$run = $contents.querySelector('#run');
+		this.$menu = $contents.querySelector('#menu');
+		this.$run.addEventListener('click', () => this.run(ui));
 
-		this.$run.on('click', () => this.run(ui));
+		this.$fonts = $config.querySelector('#fonts');
 
-		this.$fonts = $config.find('#fonts');
-
-		this.$fonts.on('change', (event) => {
-		    var size=this.$fonts.children("option:selected").val();
-		    this.$editor.css("font-size",size);
+		this.$fonts.addEventListener('change', (event) => {
+		    var size=this.$fonts.value;
+		    this.$editor.style.fontSize=size;
 		    ui.fonts.setValue(size);
 		});
 
 
 
-		this.$menu.find('input').on('keyup', (event) => {
+	this.$menu.querySelectorAll('input').forEach(el => el.addEventListener('keyup', (event) => {
 		    if (event.keyCode == 13)
 		        this.run(ui);
-		});
+		}));
 
-		$config.on('click', (event) => {
-		    if (event.target === $config[0])
+
+		$config.addEventListener('click', (event) => {
+		    if (event.target === $config)
 		        this.toggleMenu(ui);
 		});
 
-		this.$editor.on('click', () => {
+		this.$editor.addEventListener('click', () => {
             this.hideMenu(ui);
 		});
 
 		if (navigator.platform === 'MacIntel') {
-		    let $info = $contents.find('#info');
-		    $info.text('\u2318 + Shift + Enter to run');
+		    let $info = $contents.querySelector('#info');
+		    $info.textContent='\u2318 + Shift + Enter to run';
 		}
 		
 
@@ -125,7 +123,7 @@ const events = {
                 SuggestIcons.add(event.editor);
         });
 
-        this.editor.commands.on('exec', (event) => {
+        this.editor.commands.addEventListener('exec', (event) => {
             if (event.command.name === 'indent') {
                 let editor = event.editor;
                 let position = editor.getCursorPosition();
@@ -172,18 +170,18 @@ const events = {
          };
 
         this.toggleMenu = (ui) => {
-            if ( ! this.$menu.hasClass('visible'))
+            if ( ! this.$menu.classList.contains('visible'))
 		        this.showMenu(ui);
 		    else
 		        this.hideMenu(ui);
         };
 
         this.showMenu = (ui) => {
-		    this.$menu.addClass('visible');
+		    this.$menu.classList.add('visible');
         };
 
         this.hideMenu = (ui) => {
-	        this.$menu.removeClass('visible');
+	        this.$menu.classList.remove('visible');
 
 	        ui.view.model.options.beginEdit();
 	        ui.view.model.options.endEdit();
@@ -211,7 +209,7 @@ const events = {
             }
     	
 
-        this.$editor.on('keydown', (event) => {
+        this.$editor.addEventListener('keydown', (event) => {
 
             if (event.keyCode === 13 && (event.metaKey || event.ctrlKey) && event.shiftKey) {
                 // ctrl+shift+enter
@@ -268,8 +266,8 @@ const events = {
             this.currentSession = ace.createEditSession(code, 'ace/mode/r');
             this.editSessions[id] = this.currentSession;
         }
-        this.$editor.css("font-size",ui.fonts.value());
-        this.$fonts.val(ui.fonts.value());
+        this.$editor.style.fontSize=ui.fonts.value();
+        this.$fonts.value=ui.fonts.value();
 
         this.editor.setSession(this.currentSession);
     },

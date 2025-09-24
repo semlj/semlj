@@ -45,7 +45,7 @@ Runner <- R6::R6Class("Runner",
                             )
                             
                             #### ESEM options
-                            if (is.something(self$options$esem_terms[[1]])) {
+                            if (self$option("esem_terms") && is.something(self$options$esem_terms[[1]])) {
                               jinfo("MODULE: SEMLj: setting ESEM options")
                               lavoptions$rotation = self$options$rotation
                               lavoptions$rotation.args=list(
@@ -699,7 +699,7 @@ Runner <- R6::R6Class("Runner",
                               else 
                                 ladd(results)<-list(opt=n,value=as.character(x),subopt=NA)
                             }
-                            if (!is.something(self$options$esem_terms)) {
+                            if (self$option("esem_terms")) {
                                 results[["roation"]]<-NULL
                                 results[["roation.args"]]<-NULL
                             }
