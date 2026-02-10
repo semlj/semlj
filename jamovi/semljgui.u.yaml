@@ -99,7 +99,7 @@ children:
       - type: CheckBox
         name: donotrun
   - type: CollapseBox
-    label: Second Oder Factors
+    label: Second Order Factors
     collapsed: true
     stretchFactor: 1
     children:
