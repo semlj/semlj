@@ -35,6 +35,7 @@ semljsyn(
   cov_x = FALSE,
   cov_y = TRUE,
   cov_lv = TRUE,
+  free_res = TRUE,
   cluster,
   icc = TRUE,
   mlmeans = FALSE,
@@ -66,7 +67,7 @@ semljsyn(
   outputObservedCovariances = FALSE,
   outputImpliedCovariances = FALSE,
   outputResidualCovariances = FALSE,
-  outpuCombineCovariances = FALSE,
+  outputCombineCovariances = FALSE,
   cov.lv = FALSE,
   outputModificationIndices = FALSE,
   miHideLow = FALSE,
@@ -84,7 +85,8 @@ semljsyn(
   data_type = "data",
   sample_n,
   sample_mean,
-  sample_std
+  sample_std,
+  meas_invariance
 )
 }
 \arguments{
@@ -206,6 +208,9 @@ the value is set depending on the mimic option.}
 \item{cov_lv}{\code{TRUE} (default) or \code{FALSE}, is the negation of
 orthogonal option}
 
+\item{free_res}{\code{FALSE} (default) or \code{TRUE}, free observed and
+residual variances}
+
 \item{cluster}{Factor defining cluster in multilevel analysis.}
 
 \item{icc}{show intra-class correlations}
@@ -303,7 +308,7 @@ of the (manifest) variables}
 show the covariances and correlations between the residuals of the
 (manifest) variables.}
 
-\item{outpuCombineCovariances}{\code{TRUE} or \code{FALSE} (default),
+\item{outputCombineCovariances}{\code{TRUE} or \code{FALSE} (default),
 combine the (up to) three covariance / correlation tables into one table
 (i.e., showing observed, model-implied and residual values for each
 variable combination underneath each other)}
@@ -359,6 +364,8 @@ abbreviations (default: 5).}
 \item{sample_mean}{The sample means}
 
 \item{sample_std}{The sample standard deviations}
+
+\item{meas_invariance}{Performs measurement invariance analysis}
 }
 \value{
 A results object containing:
@@ -383,6 +390,7 @@ A results object containing:
   \code{results$additional$reliability} \tab \tab \tab \tab \tab a table \cr
   \code{results$additional$htmt} \tab \tab \tab \tab \tab a table \cr
   \code{results$additional$mardia} \tab \tab \tab \tab \tab a table \cr
+  \code{results$invariance$invTable} \tab \tab \tab \tab \tab a table \cr
   \code{results$covariances$observed} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
   \code{results$covariances$implied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
   \code{results$covariances$residual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr

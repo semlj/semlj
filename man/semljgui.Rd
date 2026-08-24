@@ -36,6 +36,7 @@ semljgui(
   cov_x = FALSE,
   cov_y = TRUE,
   cov_lv = TRUE,
+  free_res = TRUE,
   cluster = "",
   multigroup,
   eq_loadings = FALSE,
@@ -66,7 +67,7 @@ semljgui(
   outputObservedCovariances = FALSE,
   outputImpliedCovariances = FALSE,
   outputResidualCovariances = FALSE,
-  outpuCombineCovariances = FALSE,
+  outputCombineCovariances = FALSE,
   cov.lv = FALSE,
   outputModificationIndices = FALSE,
   miHideLow = FALSE,
@@ -84,7 +85,8 @@ semljgui(
   data_type = "data",
   sample_n,
   sample_mean,
-  sample_std
+  sample_std,
+  meas_invariance
 )
 }
 \arguments{
@@ -216,6 +218,9 @@ the value is set depending on the mimic option.}
 \item{cov_lv}{\code{TRUE} (default) or \code{FALSE}, is the negation of
 orthogonal option}
 
+\item{free_res}{\code{FALSE} (default) or \code{TRUE}, free observed and
+residual variances}
+
 \item{cluster}{Not used in gui}
 
 \item{multigroup}{Factor defining groups for multigroup analysis.}
@@ -312,7 +317,7 @@ of the (manifest) variables}
 show the covariances and correlations between the residuals of the
 (manifest) variables.}
 
-\item{outpuCombineCovariances}{\code{TRUE} or \code{FALSE} (default),
+\item{outputCombineCovariances}{\code{TRUE} or \code{FALSE} (default),
 combine the (up to) three covariance / correlation tables into one table
 (i.e., showing observed, model-implied and residual values for each
 variable combination underneath each other)}
@@ -368,6 +373,8 @@ abbreviations (default: 5).}
 \item{sample_mean}{The sample means}
 
 \item{sample_std}{The sample standard deviations}
+
+\item{meas_invariance}{Performs measurement invariance analysis}
 }
 \value{
 A results object containing:
@@ -387,10 +394,12 @@ A results object containing:
   \code{results$models$covariances} \tab \tab \tab \tab \tab a table \cr
   \code{results$models$intercepts} \tab \tab \tab \tab \tab a table \cr
   \code{results$models$thresholds} \tab \tab \tab \tab \tab a table \cr
+  \code{results$models$mlmeans} \tab \tab \tab \tab \tab a table \cr
   \code{results$models$defined} \tab \tab \tab \tab \tab a table \cr
   \code{results$additional$reliability} \tab \tab \tab \tab \tab a table \cr
   \code{results$additional$htmt} \tab \tab \tab \tab \tab a table \cr
   \code{results$additional$mardia} \tab \tab \tab \tab \tab a table \cr
+  \code{results$invariance$invTable} \tab \tab \tab \tab \tab a table \cr
   \code{results$covariances$observed} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
   \code{results$covariances$implied} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr
   \code{results$covariances$residual} \tab \tab \tab \tab \tab A covariance / correlation matrix table. \cr

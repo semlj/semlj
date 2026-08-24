@@ -164,9 +164,18 @@ const events = {
 
         this.getActiveVariables = (script) => {
             var any     =  script.split(/[,~+=:*\s]/);
-            var present =  this.getColumnNames().then((cols) => 
-                               cols.filter(col=> any.includes(col)));
-            return(present)      
+            var present =  this.getColumnNames().then((cols) => {
+                               var vars = cols.filter(col => any.includes(col));
+                               var multigroup = ui.multigroup.value();
+
+                               if (typeof multigroup === 'string' &&
+                                   multigroup.trim() !== '' &&
+                                   !vars.includes(multigroup))
+                                   vars.push(multigroup);
+
+                               return vars;
+                           });
+            return(present)
          };
 
         this.toggleMenu = (ui) => {
@@ -195,7 +204,6 @@ const events = {
               ui.view.model.options.beginEdit();
               ui.code.setValue(script);
               this.getActiveVariables(script).then((vars) =>{
-                        vars.push(ui.multigroup.value());
                         ui.vars.setValue(vars)});
     					this.currentSession.allColumns = true;
 
