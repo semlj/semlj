@@ -3260,7 +3260,7 @@ semljsynBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   roation should be orthogonal
 #' @param efa_std.ov \code{TRUE} or \code{FALSE} (default), whether observed
 #'   variables should be standardized
-#' @param geomin.epsilon Geomin epsilon, default=.001
+#' @param geomin.epsilon Geomin epsilon, default=.5
 #' @param orthomax.gamma Geomin epsilon, default=.001
 #' @param oblimin.gamma Oblimin gamma, default=0
 #' @param showlabels \code{TRUE} or \code{FALSE} (default), show the labels of
