@@ -27,8 +27,6 @@ Initer <- R6::R6Class(
     initialize=function(jmvobj,datamatic) {
       
       super$initialize(jmvobj)
-      ### we want to clean the html message objects
-      dispatch_message_cleaner(jmvobj)
       
       self$datamatic<-datamatic
       self$ok <- self$datamatic$ok

@@ -5,7 +5,7 @@ Datamatic <- R6::R6Class(
   inherit = Scaffold,
   public=list(
     vars=NULL,
-    multigroup=NULL,
+    multigroup=list(),
     observed=NULL,
     cluster=NULL,
     ordered=NULL,
@@ -32,7 +32,7 @@ Datamatic <- R6::R6Class(
       vars<-vars[grep("#",vars,fixed=T,invert = T)]
       vars<-vars[sapply(vars,function(x) x!="")]
       ## remove constraints numeric values
-      vars<-vars[sapply(vars,function(x) is.na(as.numeric(x)))]
+      vars<-vars[sapply(vars,function(x) is.na(suppressWarnings(as.numeric(x))))]
 
       self$vars<-vars
       
@@ -40,7 +40,7 @@ Datamatic <- R6::R6Class(
       if (is.character(mg))
         if(trimws(mg)=="")
           mg<-NULL
-      self$multigroup=mg
+      self$multigroup$var=mg
       
       ml<-self$options$cluster
       if (is.character(ml))
@@ -56,6 +56,7 @@ Datamatic <- R6::R6Class(
     cleandata=function() {
       
       jinfo("Cleaning the data")
+      if (!self$ok) return()
 
       data<-self$analysis$data
       facts<-c(self$cluster,self$multigroup$var)
@@ -64,11 +65,11 @@ Datamatic <- R6::R6Class(
       ### here handle standard data
       if (self$options$data_type == "data") {
         trans<-c()
-      
+        
         for (var in vars) {
           if (is.factor(data[[var]])) { 
             data[[var]]<-ordered(data[[var]])
-          trans<-c(trans,var)
+            trans<-c(trans,var)
           }
         }
         if (is.something(trans))
@@ -86,7 +87,8 @@ Datamatic <- R6::R6Class(
         if (is.something(trans))
           self$warning<-list(topic="info",
                                        message=DATA_WARNS[["num_to_fac"]] %<+% paste(unique(trans),collapse = ","))
-      
+        
+
         if (self$missing=="listwise") {
           cdata<-jmvcore::naOmit(data)
           if (dim(data)[1] != dim(data)[1]) 
@@ -163,6 +165,7 @@ Datamatic <- R6::R6Class(
       # be sure there are not NaN 
       for ( x in names(data)) data[[x]][is.nan(data[[x]])]<-NA
       ## return data, whatever transformation has been done
+    
       return(data)
     }
 
@@ -182,13 +185,15 @@ Datamatic <- R6::R6Class(
         
         
         if (is.something(self$multigroup)) {
-          var<-trimws(self$multigroup)
-          levels<-levels(data[,var])
-          self$multigroup<-list(var=var,levels=levels,nlevels=length(levels))
+          var<-trimws(self$multigroup$var)
+          if (!is.factor(data[[var]]))
+            self$stop("Multigroup variable " %+% var %+% " should be a factor (nominal)")
+          self$multigroup$levels<-levels(data[[var]])
+          self$multigroup$nlevels<-length(levels(data[[var]]))
         }
         self$observed<-intersect(self$vars,names(data))
         if (length(self$observed)==0)
-          self$error <-  list(topic="info", message="No observed variable in the dataset",final=TRUE)
+          self$stop("No observed variable in the dataset")
         
         observed<-self$observed[(!(self$observed %in% c(self$multigroup$var,self$cluster)))]
         self$ordered<-observed[sapply(observed, function(a) any(class(data[[a]]) %in% c("factor","ordered")))]

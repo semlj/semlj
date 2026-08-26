@@ -22,6 +22,9 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
           return()
         }
 
+        ### clear old HTML messages before Datamatic can report new ones
+        dispatch_message_cleaner(self)
+
         ### set up the R6 workhorse class
         data_machine             <- Datamatic$new(self)
         runner_machine           <- Runner$new(self,data_machine)
@@ -132,7 +135,6 @@ semljguiClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         
         aSmartObj <- SmartTable$new(self$results$invariance$invTable,runner_machine)
         aSmartObj$spaceBy <- "model"
-        aSmartObj$debug   <- TRUE
         ladd(private$.smartObjs) <- aSmartObj
         
         ## reliability matrix table ###

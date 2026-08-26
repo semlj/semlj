@@ -68,12 +68,12 @@ Runner <- R6::R6Class("Runner",
                             
 
                             if (is.something(self$multigroup)) {
+                              
                               lavoptions[["group"]] <- self$multigroup$var
                               lavoptions[["group.label"]] <- self$multigroup$levels
                               # TO-DO: test eq_-options
                               # this is dealt with in syntax.R
                             }
-
                             if (is.something(self$cluster)) {
                               lavoptions[["cluster"]] <- self$cluster
                               lavoptions[["h1"]] <- TRUE
