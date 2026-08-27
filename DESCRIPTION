@@ -13,7 +13,7 @@ Description: Structural equation models based on lavaan, with jamovi output styl
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-Imports: jmvcore (>= 0.8.0), lavaan, glue, semPlot, semTools
+Imports: jmvcore (>= 0.8.0), lavaan, glue, semPlot, semTools, R6, rlang, stringr
 Depends: R (>= 3.5.0)
 Exports: semlj
 Config/roxygen2/version: 8.0.0
