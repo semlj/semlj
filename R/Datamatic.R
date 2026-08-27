@@ -99,11 +99,32 @@ Datamatic <- R6::R6Class(
         }
       } else { # end of standard dataset handling, if we get here, input is covs or cors
       
+        sample_n <- self$options$sample_n
+        sample_mean <- self$options$sample_mean
+        sample_std <- self$options$sample_std
+
+        sample_n_ok <- is.something(sample_n) && sample_n %in% names(data)
+        sample_mean_ok <- is.something(sample_mean) && sample_mean %in% names(data)
+        sample_std_ok <- is.something(sample_std) && sample_std %in% names(data)
+
+        if (!sample_n_ok)
+          self$stop("Estimation requires a valid column with sample sizes for covariance or correlation input.")
+
+        matrix_warnings <- character()
+        if (self$options$data_type == "cor" && !sample_std_ok)
+          matrix_warnings <- c(matrix_warnings,
+                               "Estimation requires covariances as input, please define a valid column with standard deviations to rescale correlations into covariances.")
+        if (isTRUE(self$options$meanstructure) && !sample_mean_ok)
+          matrix_warnings <- c(matrix_warnings,
+                               "Mean structure requires a valid column with sample means when covariance or correlation matrices are supplied.")
+        if (length(matrix_warnings) > 0)
+          self$warning <- list(topic="issues", message=matrix_warnings, head="info")
+
         if (is.something(self$multigroup)) {
           cdata<-list()
 
           for ( x in self$multigroup$levels) {
-            
+
               ldata<-data[data[[self$multigroup$var]]==x,]
               ## covariances
               xdata<-as.matrix(ldata[,self$observed])
@@ -113,27 +134,26 @@ Datamatic <- R6::R6Class(
               L <- xdata * lower.tri(xdata, diag = TRUE)
               xdata <- L + t(L) - diag(diag(L))
               ## std
-              if (self$options$data_type=="cor" && is.something(self$options$sample_std) && self$options$sample_std %in% names(ldata)) {
-                    D<-diag(ldata[,self$options$sample_std])
+              if (self$options$data_type=="cor" && sample_std_ok) {
+                    D<-diag(ldata[,sample_std])
                     xdata<-D %*% xdata %*% D
               }
-          
+
               colnames(xdata)<-rownames(xdata)<-self$observed
               ladd(cdata)<-xdata
               ## N
-              xdata<-ldata[,self$options$sample_n]
+              xdata<-ldata[,sample_n]
               ladd(self$sample_n)<-min(as.numeric(as.character(xdata)))
               ## means
-              if (is.something(self$options$sample_mean) && self$options$sample_mean %in% names(ldata)) {
-                  xdata<-ldata[,self$options$sample_mean]
+              if (sample_mean_ok) {
+                  xdata<-ldata[,sample_mean]
                   ladd(self$sample_mean)<-xdata
               }
 
           }
-          
+
            names(cdata)<-self$multigroup$levels
            data<-cdata
-             
 
       } else {
         ## here we do not have multigroup
@@ -144,23 +164,20 @@ Datamatic <- R6::R6Class(
         ## we accept also lower triangular
         L <- cdata * lower.tri(cdata, diag = TRUE)
         cdata <- L + t(L) - diag(diag(L))
-    
-        self$sample_n<-min(as.numeric(as.character(data[,self$options$sample_n])))
-       
-        if (is.something(self$options$sample_mean) && self$options$sample_mean %in% names(data)) 
-                self$sample_mean<-as.vector(data[,self$options$sample_mean])
-        
-        if (self$options$data_type=="cor") {
-           if (is.something(self$options$sample_std) && self$options$sample_std %in% names(data)) {
-                   D<-diag(data[,self$options$sample_std])
+
+        self$sample_n<-min(as.numeric(as.character(data[,sample_n])))
+
+        if (sample_mean_ok)
+                self$sample_mean<-as.vector(data[,sample_mean])
+
+        if (self$options$data_type=="cor" && sample_std_ok) {
+                   D<-diag(data[,sample_std])
                    cdata<-D %*% cdata %*% D
-           } else 
-              self$warning<-list(topic="issues",message="Estimation requires covariances as input, please define a column with standard deviations to rescale correlations into covariances.",head="info")
         }
          rownames(cdata)<-colnames(cdata)<-self$observed
       }
          data<-cdata
-       
+
       } ### end of cov inputs
       # be sure there are not NaN 
       for ( x in names(data)) data[[x]][is.nan(data[[x]])]<-NA

@@ -846,6 +846,10 @@ options:
     -   name: sample_n
         title: Sample N variable
         type: Variable
+        suggested:
+            - continuous
+        permitted:
+            - numeric
         description:
             R: |
                 The sample size of the covariance matrix
@@ -853,7 +857,11 @@ options:
                 The column name in the dataset containing the sample size of the covariances
     -   name: sample_mean
         title: Sample means variable
-        type: String
+        type: Variable
+        suggested:
+            - continuous
+        permitted:
+            - numeric
         description:
             R: |
                 The sample means
@@ -861,7 +869,11 @@ options:
                 The column name in the dataset containing the sample means of the observed variables
     -   name: sample_std
         title: Sample STD variable
-        type: String
+        type: Variable
+        suggested:
+            - continuous
+        permitted:
+            - numeric
         description:
             R: |
                 The sample standard deviations
