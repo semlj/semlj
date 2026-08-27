@@ -324,6 +324,19 @@
                 type: Table
                 visible: false
                 clearWith:
+                    - type: scaffold
+                      name: opts_model
+                      file: clear.yaml
+                    - type: scaffold
+                      name: opts_data
+                      file: clear.yaml
+                    - type: scaffold
+                      name: opts_eq
+                      file: clear.yaml
+                    - type: scaffold
+                      name: opts_coefs
+                      file: clear.yaml
+
                 columns:
                     -   name: lgroup
                         title: Group
@@ -773,6 +786,17 @@
                 title: Heterotrait-monotrait (HTMT) ratio of correlations
                 type: Table
                 visible: (htmt)
+                clearWith:
+                    - type: scaffold
+                      name: opts_model
+                      file: clear.yaml
+                    - type: scaffold
+                      name: opts_data
+                      file: clear.yaml
+                    - type: scaffold
+                      name: opts_eq
+                      file: clear.yaml
+                
                 refs: semtools
                 columns:
                     -   name: variable
@@ -1112,7 +1136,7 @@
       type: Table
       visible: (constraints_examples)
       title: Syntax examples
-      clearWith: ~
+      clearWith: []
       columns:
             -   name: info
                 type: text
