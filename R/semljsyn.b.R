@@ -116,6 +116,7 @@ semljsynClass <- if (requireNamespace("jmvcore", quietly = TRUE)) {
         aSmartObj$spaceBy          <- "lgroup"
         aSmartObj$ci(NULL, self$options$ci_width)
         aSmartObj$ci("std", self$options$ci_width, label='\u03b2')
+        aSmartObj$activated        <- ((self$options$cov.lv) & is.something(runner_machine$latent))
         ladd(private$.smartObjs)   <- aSmartObj
 
         ## intercepts table ###
