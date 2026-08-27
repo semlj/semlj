@@ -381,3 +381,12 @@ test_parameters <- function(obj,values, fun=is.null, verbose = TRUE, head="Pleas
      
   }
 }
+
+## Escape user-supplied labels before using them as regular expressions.
+escape_regex <- function(x) {
+  special <- c("\\", ".", "|", "(", ")", "[", "]", "{", "}", "^", "$", "*", "+", "?")
+  for (char in special)
+    x <- gsub(char, paste0("\\", char), x, fixed=TRUE)
+  x
+}
+

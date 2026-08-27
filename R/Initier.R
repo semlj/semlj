@@ -1,3 +1,4 @@
+
 ## This class takes care of initing (set intial parameters), usually labels, number of rows, etc.
 
 ### for each table `tablename` defined in seml.b.R the function `init_tablename()` is looked up and executed.
@@ -237,7 +238,7 @@ Initer <- R6::R6Class(
               group<-arow$group
               if (is.something(self$multigroup))  groupsub<-SUB[[group]] else groupsub<-""
               target<-paste0(" (",arow$lhs,arow$op,arow$rhs,") ",groupsub)
-              reg<-paste0(arow$label,"(?![0-9])")
+              reg<-paste0(escape_regex(arow$label),"(?![0-9])")
               r<-stringr::str_replace(r,reg,target)
             }
           }
