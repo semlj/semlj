@@ -158,6 +158,7 @@ Datamatic <- R6::R6Class(
       } else {
         ## here we do not have multigroup
         cdata<-as.matrix(data[,self$observed])
+        mark(cdata)
         if (nrow(cdata) != length(self$observed))
                 self$stop("Number of rows containing covariances is not equal to the number of observed variables.")
 
