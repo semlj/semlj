@@ -188,17 +188,25 @@ children:
                                             margin: normal
                                             targetArea: true
                                             children:
-                                                -   type: ListBox
-                                                    enable: (endogenous)
-                                                    name: blockList
-                                                    isTarget: true
-                                                    valueFilter: unique
-                                                    height: auto
-                                                    ghostText: drag variables here
-                                                    events:
-                                                        change: ./gui.events::onChange_endogenousTerms
-                                                    template:
-                                                        type: TermLabel
+                                                -   type: TargetLayoutBox
+                                                    label: empty
+                                                    name: blockName
+                                                    transferAction: interactions
+                                                    stretchFactor: 1
+                                                    margin: normal
+                                                    children:
+                                                        -   type: ListBox
+                                                            enable: (endogenous)
+                                                            name: blockList
+                                                            isTarget: true
+                                                            valueFilter: unique
+                                                            height: auto
+                                                            ghostText: drag variables
+                                                                here
+                                                            events:
+                                                                change: ./gui.events::onChange_endogenousTerms
+                                                            template:
+                                                                type: TermLabel
     -   type: CollapseBox
         label: Variances and covariances
         collapsed: true
