@@ -10,7 +10,7 @@ const events = {
       cleanEndogenousTerms(ui,this);
       cleanSecondOrder(ui,this);
       cleanEsem(ui,this);
-    
+      cleanDataType(ui,this);
       update_syntax(ui,this); 
 
     },
@@ -152,15 +152,7 @@ const events = {
 
      onEvent_data_type: function(ui) {
        
-      console.log("data type changed in " + ui.data_type.value());
-      if (ui.data_type.value() == "data") {
-           ui.sample_n.setValue(null);
-           ui.sample_mean.setValue(null);
-           ui.sample_std.setValue(null);
-           
-      } else {
-          ui.se.setValue("auto");
-       }
+      cleanDataType(ui,this)
 
     },
 
@@ -424,6 +416,25 @@ var cleanEsem= function(ui,context) {
 
     ui.esem_terms.setValue(esemTerms);
 };
+
+
+var cleanDataType= function(ui,context) {
+
+    console.log("cleanDataType");
+    var supplierbox = ui.matrix_data_supplier
+    var data_type=ui.data_type.value();
+    if (data_type == "data") {
+      supplierbox.$el[0].style.display = 'none';
+      ui.sample_n.setValue(null);
+      ui.sample_mean.setValue(null);
+      ui.sample_std.setValue(null);
+    } else {
+      supplierbox.$el[0].style.display = '';
+      ui.se.setValue("auto");
+    }
+    
+};
+
 
 var update_syntax=function(ui,context) {
   
