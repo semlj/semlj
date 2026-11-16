@@ -586,6 +586,7 @@ children:
                                 optionName: data_type
                                 optionPart: cor
                     -   type: VariableSupplier
+                        name: matrix_data_supplier
                         persistentItems: true
                         suggested:
                             - continuous
