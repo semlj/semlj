@@ -527,30 +527,34 @@
                             name: datatype_cor
                             optionName: data_type
                             optionPart: cor
-                -   type: Label
-                    label: Info variables
+                -   type: VariableSupplier
+                    persistentItems: true
+                    suggested:
+                        - continuous
+                    permitted:
+                        - numeric
                     children:
-                        -   type: TextBox
-                            name: sample_n
-                            stretchFactor: 1
-                            margin: none
-                            format: string
-                            enable: (data_type:cov || data_type:cor)
-                            events:
-                                change: ./gui.events::onChange_sample_n
-                        -   type: TextBox
-                            name: sample_mean
-                            stretchFactor: 1
-                            margin: none
-                            format: string
-                            enable: (data_type:cov || data_type:cor)
-                            events:
-                                change: ./gui.events::onChange_sample_mean
-                        -   type: TextBox
-                            name: sample_std
-                            stretchFactor: 1
-                            margin: none
-                            format: string
-                            enable: (data_type:cor)
-                            events:
-                                change: ./gui.events::onChange_sample_std
+                        -   type: TargetLayoutBox
+                            label: Sample size
+                            children:
+                                -   type: VariablesListBox
+                                    name: sample_n
+                                    maxItemCount: 1
+                                    isTarget: true
+                                    enable: (data_type:cov || data_type:cor)
+                        -   type: TargetLayoutBox
+                            label: Sample means
+                            children:
+                                -   type: VariablesListBox
+                                    name: sample_mean
+                                    maxItemCount: 1
+                                    isTarget: true
+                                    enable: (data_type:cov || data_type:cor)
+                        -   type: TargetLayoutBox
+                            label: Sample standard deviations
+                            children:
+                                -   type: VariablesListBox
+                                    name: sample_std
+                                    maxItemCount: 1
+                                    isTarget: true
+                                    enable: (data_type:cor)

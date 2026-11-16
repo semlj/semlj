@@ -541,13 +541,25 @@ semljsynOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 default="data")
             private$..sample_n <- jmvcore::OptionVariable$new(
                 "sample_n",
-                sample_n)
-            private$..sample_mean <- jmvcore::OptionString$new(
+                sample_n,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
+            private$..sample_mean <- jmvcore::OptionVariable$new(
                 "sample_mean",
-                sample_mean)
-            private$..sample_std <- jmvcore::OptionString$new(
+                sample_mean,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
+            private$..sample_std <- jmvcore::OptionVariable$new(
                 "sample_std",
-                sample_std)
+                sample_std,
+                suggested=list(
+                    "continuous"),
+                permitted=list(
+                    "numeric"))
             private$..meas_invariance <- jmvcore::OptionBool$new(
                 "meas_invariance",
                 meas_invariance)
@@ -1482,6 +1494,50 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="loadings",
                             title="Measurement model",
                             visible=FALSE,
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "donotrun",
+                                "multigroup",
+                                "esem_terms",
+                                "rotation",
+                                "algorithm",
+                                "orthogonal",
+                                "efa_std.ov",
+                                "geomin.epsilon",
+                                "orthomax.gamma",
+                                "oblimin.gamma",
+                                "missing",
+                                "data_type",
+                                "sample_n",
+                                "sample_mean",
+                                "sample_std",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances",
+                                "bootci",
+                                "bootN",
+                                "est_ci",
+                                "beta_ci",
+                                "ci_width",
+                                "se",
+                                "parallel"),
                             columns=list(
                                 list(
                                     `name`="lgroup", 
@@ -2241,6 +2297,43 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                             name="htmt",
                             title="Heterotrait-monotrait (HTMT) ratio of correlations",
                             visible="(htmt)",
+                            clearWith=list(
+                                "code",
+                                "estimator",
+                                "likelihood",
+                                "meanstructure",
+                                "int_ov",
+                                "int_lv",
+                                "std_lv",
+                                "std_ov",
+                                "cov_x",
+                                "cov_y",
+                                "cov_lv",
+                                "cluster",
+                                "donotrun",
+                                "multigroup",
+                                "esem_terms",
+                                "rotation",
+                                "algorithm",
+                                "orthogonal",
+                                "efa_std.ov",
+                                "geomin.epsilon",
+                                "orthomax.gamma",
+                                "oblimin.gamma",
+                                "missing",
+                                "data_type",
+                                "sample_n",
+                                "sample_mean",
+                                "sample_std",
+                                "eq_loadings",
+                                "eq_intercepts",
+                                "eq_residuals",
+                                "eq_residual.covariances",
+                                "eq_means",
+                                "eq_thresholds",
+                                "eq_regressions",
+                                "eq_lv.variances",
+                                "eq_lv.covariances"),
                             refs="semtools",
                             columns=list(
                                 list(
@@ -3076,6 +3169,7 @@ semljsynResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="synexamples",
                 visible="(constraints_examples)",
                 title="Syntax examples",
+                clearWith=list(),
                 columns=list(
                     list(
                         `name`="info", 
@@ -3464,13 +3558,17 @@ semljsyn <- function(
     if ( ! missing(cluster)) cluster <- jmvcore::resolveQuo(jmvcore::enquo(cluster))
     if ( ! missing(multigroup)) multigroup <- jmvcore::resolveQuo(jmvcore::enquo(multigroup))
     if ( ! missing(sample_n)) sample_n <- jmvcore::resolveQuo(jmvcore::enquo(sample_n))
+    if ( ! missing(sample_mean)) sample_mean <- jmvcore::resolveQuo(jmvcore::enquo(sample_mean))
+    if ( ! missing(sample_std)) sample_std <- jmvcore::resolveQuo(jmvcore::enquo(sample_std))
     if (missing(data))
         data <- jmvcore::marshalData(
             parent.frame(),
             `if`( ! missing(vars), vars, NULL),
             `if`( ! missing(cluster), cluster, NULL),
             `if`( ! missing(multigroup), multigroup, NULL),
-            `if`( ! missing(sample_n), sample_n, NULL))
+            `if`( ! missing(sample_n), sample_n, NULL),
+            `if`( ! missing(sample_mean), sample_mean, NULL),
+            `if`( ! missing(sample_std), sample_std, NULL))
 
     for (v in cluster) if (v %in% names(data)) data[[v]] <- as.factor(data[[v]])
 
